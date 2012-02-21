@@ -1,0 +1,15 @@
+name: SimpleCircuits
+main: com.dumptruckman.simplecircuits.SimpleCircuitsPlugin
+version: maven-version-number
+author: dumptruckman
+
+commands:
+  sc:
+    description: Main plugin command
+    usage: /<command>
+  scdebug:
+    description: Main plugin command
+    usage: /<command>
+  scd:
+    description: Main plugin command
+    usage: /<command>
