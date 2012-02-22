@@ -1,4 +1,4 @@
-package com.dumptruckman.tools.util;
+package com.dumptruckman.tools.permission;
 
 import com.pneumaticraft.commandhandler.PermissionsInterface;
 import org.bukkit.command.CommandSender;
