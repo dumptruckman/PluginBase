@@ -36,7 +36,7 @@ class CommentedYamlConfiguration {
      *
      * @throws Exception If anything goes wrong while loading this Configuration object into memory.
      */
-    public void load() throws Exception {
+    public void load() {
         config = YamlConfiguration.loadConfiguration(file);
     }
 

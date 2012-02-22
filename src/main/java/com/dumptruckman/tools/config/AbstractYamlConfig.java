@@ -5,6 +5,7 @@ import com.dumptruckman.tools.util.Logging;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Commented Yaml implementation of ConfigBase.
@@ -15,7 +16,7 @@ public abstract class AbstractYamlConfig implements ConfigBase {
      * Add a comment to the top of file.
      */
     protected static final ConfigEntry SETTINGS
-            = new ConfigEntry("settings", null, "# ===[ SimpleCircuits Config ]===");
+            = new ConfigEntry("settings", null, "# ===[ DumptruckTools Config ]===");
 
     /**
      * Locale name config path, default and comments.
@@ -44,7 +45,7 @@ public abstract class AbstractYamlConfig implements ConfigBase {
     private CommentedYamlConfiguration config;
     private PluginBase plugin;
 
-    public AbstractYamlConfig(PluginBase plugin) throws Exception {
+    public AbstractYamlConfig(PluginBase plugin) throws IOException {
         this.plugin = plugin;
         // Make the data folders
         if (this.plugin.getDataFolder().mkdirs()) {

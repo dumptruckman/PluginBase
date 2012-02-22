@@ -1,7 +1,7 @@
 package com.dumptruckman.tools.plugin;
 
 import com.dumptruckman.tools.config.ConfigBase;
-import com.dumptruckman.tools.permission.Perms;
+import com.dumptruckman.tools.permission.Perm;
 import com.dumptruckman.tools.permission.PermHandler;
 import com.dumptruckman.tools.plugin.command.DebugCommand;
 import com.dumptruckman.tools.plugin.command.ReloadCommand;
@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +46,7 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
     @Override
     public void onEnable() {
         Logging.init(this);
-        Perms.register(this);
+        Perm.registerPlugin(this);
 
         try {
             this.getMessager().setLocale(new Locale(this.getSettings().getLocale()));
@@ -84,6 +85,7 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
     }
 
     private void registerCommands() {
+        getCommandHandler();
         getCommandHandler().registerCommand(new DebugCommand<AbstractPluginBase>(this));
         getCommandHandler().registerCommand(new ReloadCommand<AbstractPluginBase>(this));
     }
@@ -123,7 +125,7 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
             try {
                 this.config = newConfigInstance();
                 Logging.fine("Loaded config file!");
-            } catch (Exception e) {  // Catch errors loading the config file and exit out if found.
+            } catch (IOException e) {  // Catch errors loading the config file and exit out if found.
                 Logging.severe("Error loading config file!");
                 Logging.severe(e.getMessage());
                 Bukkit.getPluginManager().disablePlugin(this);
@@ -181,8 +183,5 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
     @Override
     public abstract String getCommandPrefix();
 
-    @Override
-    public abstract String getPluginName();
-
-    protected abstract C newConfigInstance() throws Exception;
+    protected abstract C newConfigInstance() throws IOException;
 }

@@ -33,7 +33,7 @@ import com.dumptruckman.tools.test.utils.TestInstanceCreator;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ AbstractPluginBase.class })
-public class TestDebugMode {
+public class TestDebugModeReload {
     TestInstanceCreator creator;
     Server mockServer;
     CommandSender mockCommandSender;
@@ -55,7 +55,6 @@ public class TestDebugMode {
     public void testEnableDebugMode() {
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("DumptruckTools");
-        System.out.println(plugin);
         PluginBase myPlugin = (PluginBase) plugin;
 
         // Make sure Core is not null
@@ -78,6 +77,9 @@ public class TestDebugMode {
         // Send the debug command.
         String[] debugArgs = new String[] { "debug", "3" };
         plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
+
+        String[] reloadArgs = new String[] { "reload" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", reloadArgs);
 
         Assert.assertEquals(3, myPlugin.getSettings().getDebug());
     }

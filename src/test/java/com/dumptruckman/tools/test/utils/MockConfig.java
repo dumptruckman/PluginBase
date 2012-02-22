@@ -5,9 +5,11 @@ import com.dumptruckman.tools.config.ConfigBase;
 import com.dumptruckman.tools.config.ConfigEntry;
 import com.dumptruckman.tools.plugin.PluginBase;
 
+import java.io.IOException;
+
 public class MockConfig extends AbstractYamlConfig implements ConfigBase {
 
-    public MockConfig(PluginBase plugin) throws Exception {
+    public MockConfig(PluginBase plugin) throws IOException {
         super(plugin);
     }
     @Override

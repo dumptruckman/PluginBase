@@ -1,6 +1,6 @@
 package com.dumptruckman.tools.plugin.command;
 
-import com.dumptruckman.tools.permission.Perms;
+import com.dumptruckman.tools.permission.Perm;
 import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import com.dumptruckman.tools.locale.Message;
 import com.dumptruckman.tools.util.Logging;
@@ -23,7 +23,7 @@ public class DebugCommand<P extends AbstractPluginBase> extends PluginCommand<P>
         this.addKey(plugin.getCommandPrefix() + " debug");
         this.addKey(plugin.getCommandPrefix() + "debug");
         this.addCommandExample("/" + plugin.getCommandPrefix() + " debug " + ChatColor.GOLD + "2");
-        this.setPermission(Perms.COMMAND_DEBUG.getPermission());
+        this.setPermission(Perm.COMMAND_DEBUG.getPermission());
     }
 
     @Override
@@ -54,7 +54,7 @@ public class DebugCommand<P extends AbstractPluginBase> extends PluginCommand<P>
         } else {
             messager.normal(Message.DEBUG_SET, sender, ChatColor.GREEN
                     + Integer.toString(plugin.getSettings().getDebug()));
-            Logging.fine("SimpleCircuits Debug ENABLED");
+            Logging.fine(this.plugin.getDescription().getName() + " debug ENABLED");
         }
     }
 }

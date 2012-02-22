@@ -34,6 +34,4 @@ public interface PluginBase<C extends ConfigBase> extends Plugin, Messaging {
     void setServerFolder(File newServerFolder);
 
     String getCommandPrefix();
-    
-    String getPluginName();
 }
