@@ -1,6 +1,6 @@
 package com.dumptruckman.tools.plugin.command;
 
-import com.dumptruckman.tools.plugin.DumPlugin;
+import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import com.dumptruckman.tools.locale.Message;
 import com.dumptruckman.tools.util.Perm;
 import org.bukkit.command.CommandSender;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Enables debug-information.
  */
-public class ReloadCommand<P extends DumPlugin> extends PluginCommand<P> {
+public class ReloadCommand<P extends AbstractPluginBase> extends PluginCommand<P> {
 
     public ReloadCommand(P plugin) {
         super(plugin);

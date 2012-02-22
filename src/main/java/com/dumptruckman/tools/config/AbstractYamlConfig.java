@@ -1,20 +1,20 @@
 package com.dumptruckman.tools.config;
 
-import com.dumptruckman.tools.plugin.DPlugin;
+import com.dumptruckman.tools.plugin.PluginBase;
 import com.dumptruckman.tools.util.Logging;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 
 /**
- * Commented Yaml implementation of Config.
+ * Commented Yaml implementation of ConfigBase.
  */
-public abstract class AbstractConfig implements DConfig {
+public abstract class AbstractYamlConfig implements ConfigBase {
 
     /**
      * Add a comment to the top of file.
      */
-    private static final ConfigEntry SETTINGS
+    protected static final ConfigEntry SETTINGS
             = new ConfigEntry("settings", null, "# ===[ SimpleCircuits Config ]===");
 
     /**
@@ -38,13 +38,13 @@ public abstract class AbstractConfig implements DConfig {
             + "a first run.");
     
     static {
-        Entries.registerConfig(AbstractConfig.class);
+        Entries.registerConfig(AbstractYamlConfig.class);
     }
 
     private CommentedYamlConfiguration config;
-    private DPlugin plugin;
+    private PluginBase plugin;
 
-    public AbstractConfig(DPlugin plugin) throws Exception {
+    public AbstractYamlConfig(PluginBase plugin) throws Exception {
         this.plugin = plugin;
         // Make the data folders
         if (this.plugin.getDataFolder().mkdirs()) {

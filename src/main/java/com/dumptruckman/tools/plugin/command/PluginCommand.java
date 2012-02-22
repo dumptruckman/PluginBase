@@ -1,6 +1,6 @@
 package com.dumptruckman.tools.plugin.command;
 
-import com.dumptruckman.tools.plugin.DumPlugin;
+import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import com.dumptruckman.tools.locale.Messager;
 import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.command.CommandSender;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * A generic Multiverse-command.
  */
-public abstract class PluginCommand<P extends DumPlugin> extends Command {
+public abstract class PluginCommand<P extends AbstractPluginBase> extends Command {
 
     /**
      * The reference to the core.

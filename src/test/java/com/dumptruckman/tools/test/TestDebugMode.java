@@ -14,8 +14,8 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 
-import com.dumptruckman.tools.plugin.DumPlugin;
-import com.dumptruckman.tools.plugin.DPlugin;
+import com.dumptruckman.tools.plugin.AbstractPluginBase;
+import com.dumptruckman.tools.plugin.PluginBase;
 import junit.framework.Assert;
 
 import org.bukkit.Server;
@@ -32,7 +32,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.dumptruckman.tools.test.utils.TestInstanceCreator;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ DumPlugin.class })
+@PrepareForTest({ AbstractPluginBase.class })
 public class TestDebugMode {
     TestInstanceCreator creator;
     Server mockServer;
@@ -54,8 +54,9 @@ public class TestDebugMode {
     @Test
     public void testEnableDebugMode() {
         // Pull a core instance from the server.
-        Plugin plugin = mockServer.getPluginManager().getPlugin("SimpleCircuits");
-        DPlugin myPlugin = (DPlugin) plugin;
+        Plugin plugin = mockServer.getPluginManager().getPlugin("DumptruckTools");
+        System.out.println(plugin);
+        PluginBase myPlugin = (PluginBase) plugin;
 
         // Make sure Core is not null
         assertNotNull(plugin);
@@ -69,7 +70,7 @@ public class TestDebugMode {
 
         // Initialize a fake command
         Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("sc");
+        when(mockCommand.getName()).thenReturn("dt");
 
         // Assert debug mode is off
         Assert.assertEquals(0, myPlugin.getSettings().getDebug());

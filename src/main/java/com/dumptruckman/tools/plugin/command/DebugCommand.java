@@ -1,6 +1,6 @@
 package com.dumptruckman.tools.plugin.command;
 
-import com.dumptruckman.tools.plugin.DumPlugin;
+import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import com.dumptruckman.tools.locale.Message;
 import com.dumptruckman.tools.util.Perm;
 import com.dumptruckman.tools.util.Logging;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Enables debug-information.
  */
-public class DebugCommand<P extends DumPlugin> extends PluginCommand<P> {
+public class DebugCommand<P extends AbstractPluginBase> extends PluginCommand<P> {
 
     public DebugCommand(P plugin) {
         super(plugin);

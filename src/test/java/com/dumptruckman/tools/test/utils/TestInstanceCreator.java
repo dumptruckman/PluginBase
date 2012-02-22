@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.dumptruckman.tools.plugin.DumPlugin;
+import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import com.dumptruckman.tools.util.FileUtils;
 import junit.framework.Assert;
 
@@ -38,7 +38,7 @@ import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 
 public class TestInstanceCreator {
-    private DumPlugin plugin;
+    private AbstractPluginBase plugin;
     private Server mockServer;
     private CommandSender commandSender;
 
@@ -51,14 +51,14 @@ public class TestInstanceCreator {
             pluginDirectory.mkdirs();
             Assert.assertTrue(pluginDirectory.exists());
 
-            plugin = PowerMockito.spy(new DumPlugin());
+            plugin = PowerMockito.spy(new MockPlugin());
 
             // Let's let all MV files go to bin/test
             doReturn(pluginDirectory).when(plugin).getDataFolder();
 
             // Return a fake PDF file.
-            PluginDescriptionFile pdf = new PluginDescriptionFile("SimpleCircuits", "dev",
-                    "com.dumptruckman.tools.SimpleCircuits");
+            PluginDescriptionFile pdf = new PluginDescriptionFile("DumptruckTools", "1.0",
+                    "com.dumptruckman.tools.test.utils.MockPlugin");
             doReturn(pdf).when(plugin).getDescription();
             doReturn(true).when(plugin).isEnabled();
             plugin.setServerFolder(serverDirectory);
@@ -69,7 +69,7 @@ public class TestInstanceCreator {
             // Mock the Plugin Manager
             PluginManager mockPluginManager = PowerMockito.mock(PluginManager.class);
             when(mockPluginManager.getPlugins()).thenReturn(plugins);
-            when(mockPluginManager.getPlugin("SimpleCircuits")).thenReturn(plugin);
+            when(mockPluginManager.getPlugin("DumptruckTools")).thenReturn(plugin);
             when(mockPluginManager.getPermission(anyString())).thenReturn(null);
 
             // Make some fake folders to fool the fake MV into thinking these worlds exist
@@ -251,7 +251,7 @@ public class TestInstanceCreator {
         return true;
     }
 
-    public DumPlugin getPlugin() {
+    public AbstractPluginBase getPlugin() {
         return this.plugin;
     }
 

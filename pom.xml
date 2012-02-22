@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.dumptruckman</groupId>
     <artifactId>DumptruckTools</artifactId>
-    <version>1.0</version>
+    <version>1.0-SNAPSHOT</version>
     <name>DumptruckTools</name>
     <description>dumptruckman's plugin template and tools</description>
     <properties>
@@ -68,28 +68,6 @@ and adjust the build number accordingly -->
                         <manifestEntries>
                         </manifestEntries>
                     </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.google.code.maven-replacer-plugin</groupId>
-                <artifactId>maven-replacer-plugin</artifactId>
-                <version>1.3.8</version>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <file>target/classes/plugin.yml</file>
-                    <replacements>
-                        <replacement>
-                            <token>maven-version-number</token>
-                            <value>${project.version}-b${project.build.number}</value>
-                        </replacement>
-                    </replacements>
                 </configuration>
             </plugin>
             <!-- Maven Source Plugin -->
@@ -213,7 +191,7 @@ and adjust the build number accordingly -->
     <distributionManagement>
         <repository>
             <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/bukkit-thirdparty</url>
+            <url>http://repo.onarandombox.com/content/repositories/thirdparty-dev</url>
         </repository>
     </distributionManagement>
 </project>

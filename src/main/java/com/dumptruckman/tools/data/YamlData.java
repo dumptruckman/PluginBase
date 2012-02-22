@@ -1,17 +1,15 @@
-package com.dumptruckman.tools.util;
+package com.dumptruckman.tools.data;
 
+import com.dumptruckman.tools.util.Logging;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Yaml implementation of Data.
- */
 public class YamlData {
 
-    private static final String YML = ".yml";
-    private File dataFile = null;
+    protected static final String YML = ".yml";
+    protected File dataFile = null;
 
     public YamlData(JavaPlugin plugin) throws IOException {
         // Make the data folders

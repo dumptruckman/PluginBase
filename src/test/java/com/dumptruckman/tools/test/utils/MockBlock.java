@@ -41,22 +41,6 @@ public class MockBlock implements Block{
      * {@inheritDoc}
      */
     @Override
-    public Block getFace(BlockFace face) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Block getFace(BlockFace face, int distance) {
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Block getRelative(int modX, int modY, int modZ) {
         return null;
     }

@@ -1,6 +1,6 @@
 package com.dumptruckman.tools.plugin;
 
-import com.dumptruckman.tools.config.DConfig;
+import com.dumptruckman.tools.config.ConfigBase;
 import com.dumptruckman.tools.plugin.command.DebugCommand;
 import com.dumptruckman.tools.plugin.command.ReloadCommand;
 import com.dumptruckman.tools.locale.Messager;
@@ -23,7 +23,7 @@ import java.util.Locale;
 /**
  * Main plugin class for dumptruckman's Plugin Template.
  */
-public abstract class DumPlugin<C extends DConfig> extends JavaPlugin implements DPlugin<C> {
+public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugin implements PluginBase<C> {
 
     private C config = null;
     private Messager messager = null;
@@ -84,8 +84,8 @@ public abstract class DumPlugin<C extends DConfig> extends JavaPlugin implements
     }
 
     private void registerCommands() {
-        getCommandHandler().registerCommand(new DebugCommand<DumPlugin>(this));
-        getCommandHandler().registerCommand(new ReloadCommand<DumPlugin>(this));
+        getCommandHandler().registerCommand(new DebugCommand<AbstractPluginBase>(this));
+        getCommandHandler().registerCommand(new ReloadCommand<AbstractPluginBase>(this));
     }
 
     /**
@@ -181,5 +181,5 @@ public abstract class DumPlugin<C extends DConfig> extends JavaPlugin implements
     @Override
     public abstract String getCommandPrefix();
 
-    protected abstract C newConfigInstance();
+    protected abstract C newConfigInstance() throws Exception;
 }

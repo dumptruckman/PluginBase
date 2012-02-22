@@ -3,7 +3,7 @@ package com.dumptruckman.tools.config;
 /**
  * Interface for interacting with the config of this plugin.
  */
-public interface DConfig {
+public interface ConfigBase {
 
     /**
      * Convenience method for saving the config to disk.

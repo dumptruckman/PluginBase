@@ -1,13 +1,13 @@
 package com.dumptruckman.tools.plugin;
 
-import com.dumptruckman.tools.config.DConfig;
+import com.dumptruckman.tools.config.ConfigBase;
 import com.dumptruckman.tools.locale.Messaging;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 
-public interface DPlugin<C extends DConfig> extends Plugin, Messaging {
+public interface PluginBase<C extends ConfigBase> extends Plugin, Messaging {
 
     /**
      * @return The instance of CommandHandler used by this plugin.
