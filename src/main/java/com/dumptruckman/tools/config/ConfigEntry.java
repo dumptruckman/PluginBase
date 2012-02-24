@@ -6,7 +6,7 @@ public class ConfigEntry {
     private Object def;
     private String[] comments;
 
-    ConfigEntry(String path, Object def, String... comments) {
+    public ConfigEntry(String path, Object def, String... comments) {
         this.path = path;
         this.def = def;
         this.comments = comments;
