@@ -1,12 +1,12 @@
 package com.dumptruckman.tools.plugin;
 
 import com.dumptruckman.tools.config.ConfigBase;
+import com.dumptruckman.tools.locale.Messager;
+import com.dumptruckman.tools.locale.SimpleMessager;
 import com.dumptruckman.tools.permission.Perm;
 import com.dumptruckman.tools.permission.PermHandler;
 import com.dumptruckman.tools.plugin.command.DebugCommand;
 import com.dumptruckman.tools.plugin.command.ReloadCommand;
-import com.dumptruckman.tools.locale.Messager;
-import com.dumptruckman.tools.locale.SimpleMessager;
 import com.dumptruckman.tools.util.Logging;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.Bukkit;

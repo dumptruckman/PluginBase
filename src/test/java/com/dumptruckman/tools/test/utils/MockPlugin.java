@@ -8,7 +8,7 @@ public class MockPlugin extends AbstractPluginBase<MockConfig> {
 
     @Override
     public String getCommandPrefix() {
-        return "dt";
+        return "pb";
     }
 
     @Override

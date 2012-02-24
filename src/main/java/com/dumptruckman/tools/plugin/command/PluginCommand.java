@@ -1,7 +1,7 @@
 package com.dumptruckman.tools.plugin.command;
 
-import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import com.dumptruckman.tools.locale.Messager;
+import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import com.pneumaticraft.commandhandler.Command;
 import org.bukkit.command.CommandSender;
 

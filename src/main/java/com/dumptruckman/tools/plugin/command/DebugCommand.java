@@ -1,12 +1,11 @@
 package com.dumptruckman.tools.plugin.command;
 
+import com.dumptruckman.tools.locale.Message;
 import com.dumptruckman.tools.permission.Perm;
 import com.dumptruckman.tools.plugin.AbstractPluginBase;
-import com.dumptruckman.tools.locale.Message;
 import com.dumptruckman.tools.util.Logging;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-
 
 import java.util.List;
 

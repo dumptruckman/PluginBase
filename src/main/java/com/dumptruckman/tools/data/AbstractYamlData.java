@@ -6,12 +6,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.io.IOException;
 
-public class YamlData {
+public abstract class AbstractYamlData {
 
     protected static final String YML = ".yml";
     protected File dataFile = null;
 
-    public YamlData(JavaPlugin plugin) throws IOException {
+    public AbstractYamlData(JavaPlugin plugin) throws IOException {
         // Make the data folders
         if (plugin.getDataFolder().mkdirs()) {
             Logging.info("Created data folder.");

@@ -57,7 +57,7 @@ public class TestInstanceCreator {
             doReturn(pluginDirectory).when(plugin).getDataFolder();
 
             // Return a fake PDF file.
-            PluginDescriptionFile pdf = new PluginDescriptionFile("DumptruckTools", "1.0",
+            PluginDescriptionFile pdf = new PluginDescriptionFile("PluginBase", "1.0",
                     "com.dumptruckman.tools.test.utils.MockPlugin");
             doReturn(pdf).when(plugin).getDescription();
             doReturn(true).when(plugin).isEnabled();
@@ -69,7 +69,7 @@ public class TestInstanceCreator {
             // Mock the Plugin Manager
             PluginManager mockPluginManager = PowerMockito.mock(PluginManager.class);
             when(mockPluginManager.getPlugins()).thenReturn(plugins);
-            when(mockPluginManager.getPlugin("DumptruckTools")).thenReturn(plugin);
+            when(mockPluginManager.getPlugin("PluginBase")).thenReturn(plugin);
             when(mockPluginManager.getPermission(anyString())).thenReturn(null);
 
             // Make some fake folders to fool the fake MV into thinking these worlds exist

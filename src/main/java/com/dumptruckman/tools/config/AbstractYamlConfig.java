@@ -16,7 +16,7 @@ public abstract class AbstractYamlConfig implements ConfigBase {
      * Add a comment to the top of file.
      */
     protected static final ConfigEntry SETTINGS
-            = new ConfigEntry("settings", null, "# ===[ DumptruckTools Config ]===");
+            = new ConfigEntry("settings", null, "# ===[ PluginBase Config ]===");
 
     /**
      * Locale name config path, default and comments.

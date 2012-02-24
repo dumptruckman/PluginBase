@@ -54,7 +54,7 @@ public class TestDebugModeReload {
     @Test
     public void testEnableDebugMode() {
         // Pull a core instance from the server.
-        Plugin plugin = mockServer.getPluginManager().getPlugin("DumptruckTools");
+        Plugin plugin = mockServer.getPluginManager().getPlugin("PluginBase");
         PluginBase myPlugin = (PluginBase) plugin;
 
         // Make sure Core is not null
@@ -69,7 +69,7 @@ public class TestDebugModeReload {
 
         // Initialize a fake command
         Command mockCommand = mock(Command.class);
-        when(mockCommand.getName()).thenReturn("dt");
+        when(mockCommand.getName()).thenReturn("pb");
 
         // Assert debug mode is off
         Assert.assertEquals(0, myPlugin.getSettings().getDebug());
