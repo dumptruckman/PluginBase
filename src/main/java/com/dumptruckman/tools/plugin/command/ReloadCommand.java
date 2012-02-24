@@ -1,6 +1,6 @@
 package com.dumptruckman.tools.plugin.command;
 
-import com.dumptruckman.tools.locale.Messages;
+import com.dumptruckman.tools.locale.BaseMessages;
 import com.dumptruckman.tools.permission.Perm;
 import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import org.bukkit.command.CommandSender;
@@ -25,6 +25,6 @@ public class ReloadCommand<P extends AbstractPluginBase> extends PluginCommand<P
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         plugin.reloadConfig();
-        messager.normal(Messages.RELOAD_COMPLETE, sender);
+        messager.normal(BaseMessages.RELOAD_COMPLETE, sender);
     }
 }

@@ -16,7 +16,7 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
         super(plugin);
     }
 
-    private void send(Messages message, String prefix, CommandSender sender, Object... args) {
+    private void send(BaseMessages message, String prefix, CommandSender sender, Object... args) {
         List<String> messages = this.getMessages(message, args);
         if (!messages.isEmpty()) {
             messages.set(0, prefix + " " + messages.get(0));
@@ -28,15 +28,15 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
      * {@inheritDoc}
      */
     @Override
-    public void bad(Messages message, CommandSender sender, Object... args) {
-        send(message, ChatColor.RED.toString() + this.getMessage(Messages.GENERIC_ERROR), sender, args);
+    public void bad(BaseMessages message, CommandSender sender, Object... args) {
+        send(message, ChatColor.RED.toString() + this.getMessage(BaseMessages.GENERIC_ERROR), sender, args);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void normal(Messages message, CommandSender sender, Object... args) {
+    public void normal(BaseMessages message, CommandSender sender, Object... args) {
         send(message, "", sender, args);
     }
 
@@ -44,24 +44,24 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
      * {@inheritDoc}
      */
     @Override
-    public void good(Messages message, CommandSender sender, Object... args) {
-        send(message, ChatColor.GREEN.toString() + this.getMessage(Messages.GENERIC_SUCCESS), sender, args);
+    public void good(BaseMessages message, CommandSender sender, Object... args) {
+        send(message, ChatColor.GREEN.toString() + this.getMessage(BaseMessages.GENERIC_SUCCESS), sender, args);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void info(Messages message, CommandSender sender, Object... args) {
-        send(message, ChatColor.YELLOW.toString() + this.getMessage(Messages.GENERIC_INFO), sender, args);
+    public void info(BaseMessages message, CommandSender sender, Object... args) {
+        send(message, ChatColor.YELLOW.toString() + this.getMessage(BaseMessages.GENERIC_INFO), sender, args);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void help(Messages message, CommandSender sender, Object... args) {
-        send(message, ChatColor.GRAY.toString() + this.getMessage(Messages.GENERIC_HELP), sender, args);
+    public void help(BaseMessages message, CommandSender sender, Object... args) {
+        send(message, ChatColor.GRAY.toString() + this.getMessage(BaseMessages.GENERIC_HELP), sender, args);
     }
 
     /**

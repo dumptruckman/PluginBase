@@ -1,5 +1,7 @@
 package com.dumptruckman.tools.config;
 
+import org.bukkit.configuration.Configuration;
+
 /**
  * Interface for interacting with the config of this plugin.
  */
@@ -28,6 +30,11 @@ public interface ConfigBase {
      * @return The locale string.
      */
     String getLocale();
+
+    /**
+     * @return The name of the language file to use.
+     */
+    String getLanguageFileName();
 
     /**
      * Tells whether this is the first time the plugin has run as set by a config flag.

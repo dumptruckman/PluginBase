@@ -19,7 +19,7 @@ public class Entries {
             try {
                 if (ConfigEntry.class.isInstance(field.get(null))) {
                     try {
-                        addEntry((ConfigEntry) field.get(null));
+                        entries.add((ConfigEntry) field.get(null));
                     } catch(IllegalAccessException e) {
                         e.printStackTrace();
                     }
@@ -28,9 +28,5 @@ public class Entries {
             } catch (IllegalAccessException ignore) {
             } catch (NullPointerException ignore) { }
         }
-    }
-
-    public static void addEntry(ConfigEntry entry) {
-        entries.add(entry);
     }
 }

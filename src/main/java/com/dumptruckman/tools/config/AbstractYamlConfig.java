@@ -2,7 +2,9 @@ package com.dumptruckman.tools.config;
 
 import com.dumptruckman.tools.plugin.PluginBase;
 import com.dumptruckman.tools.util.Logging;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,9 +22,14 @@ public abstract class AbstractYamlConfig implements ConfigBase {
 
     /**
      * Locale name config path, default and comments.
+     */ //TODO Add more comments about acceptable locales.
+    private static final ConfigEntry LOCALE
+            = new ConfigEntry("settings.language.locale", "en", "# This is the locale you wish to use.");
+    /**
+     * Locale name config path, default and comments.
      */
-    private static final ConfigEntry LANGUAGE_FILE_NAME
-            = new ConfigEntry("settings.locale", "en", "# This is the locale you wish to use.");
+    private static final ConfigEntry LANGUAGE_FILE
+            = new ConfigEntry("settings.language.file", "english.yml", "# This is the language file you wish to use.");
 
     /**
      * Debug Mode config path, default and comments.
@@ -78,28 +85,28 @@ public abstract class AbstractYamlConfig implements ConfigBase {
     private void setDefaults() {
         for (ConfigEntry path : Entries.entries) {
             config.addComment(path.getPath(), path.getComments());
-            if (this.getConfig().get(path.getPath()) == null) {
+            if (getConfig().get(path.getPath()) == null) {
                 if (path.getDefault() != null) {
                     Logging.fine("Config: Defaulting '" + path.getPath() + "' to " + path.getDefault());
-                    this.getConfig().set(path.getPath(), path.getDefault());
+                    getConfig().set(path.getPath(), path.getDefault());
                 }
             }
         }
     }
 
     private Boolean getBoolean(ConfigEntry path) {
-        return this.getConfig().getBoolean(path.getPath(), (Boolean) path.getDefault());
+        return getConfig().getBoolean(path.getPath(), (Boolean) path.getDefault());
     }
 
     private Integer getInt(ConfigEntry path) {
-        return this.getConfig().getInt(path.getPath(), (Integer) path.getDefault());
+        return getConfig().getInt(path.getPath(), (Integer) path.getDefault());
     }
 
     private String getString(ConfigEntry path) {
-        return this.getConfig().getString(path.getPath(), (String) path.getDefault());
+        return getConfig().getString(path.getPath(), (String) path.getDefault());
     }
 
-    protected FileConfiguration getConfig() {
+    protected Configuration getConfig() {
         return this.config.getConfig();
     }
 
@@ -125,7 +132,7 @@ public abstract class AbstractYamlConfig implements ConfigBase {
      */
     @Override
     public int getDebug() {
-        return this.getInt(DEBUG_MODE);
+        return getInt(DEBUG_MODE);
     }
 
     /**
@@ -133,7 +140,15 @@ public abstract class AbstractYamlConfig implements ConfigBase {
      */
     @Override
     public String getLocale() {
-        return this.getString(LANGUAGE_FILE_NAME);
+        return getString(LOCALE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getLanguageFileName() {
+        return getString(LANGUAGE_FILE);
     }
 
     /**
@@ -141,7 +156,7 @@ public abstract class AbstractYamlConfig implements ConfigBase {
      */
     @Override
     public boolean isFirstRun() {
-        return this.getBoolean(FIRST_RUN);
+        return getBoolean(FIRST_RUN);
     }
 
     /**
@@ -149,7 +164,7 @@ public abstract class AbstractYamlConfig implements ConfigBase {
      */
     @Override
     public void setFirstRun(boolean firstRun) {
-        this.getConfig().set(FIRST_RUN.getPath(), firstRun);
+        getConfig().set(FIRST_RUN.getPath(), firstRun);
     }
 
     protected abstract ConfigEntry getSettingsHeader();

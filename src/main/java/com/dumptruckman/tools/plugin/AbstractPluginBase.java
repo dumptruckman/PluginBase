@@ -48,21 +48,21 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
         Logging.init(this);
         Perm.registerPlugin(this);
 
-        this.reloadConfig();
+        reloadConfig();
 
         try {
-            this.getMessager().setLocale(new Locale(this.getSettings().getLocale()));
+            getMessager().setLocale(new Locale(getSettings().getLocale()), getSettings().getLanguageFile());
         } catch (IllegalArgumentException e) {
             Logging.severe(e.getMessage());
-            this.getServer().getPluginManager().disablePlugin(this);
+            getServer().getPluginManager().disablePlugin(this);
             return;
         }
 
         // Register Events
-        this.registerEvents();
+        registerEvents();
 
         // Register Commands
-        this.registerCommands();
+        registerCommands();
 
         // Display enable message/version info
         Logging.info("enabled.", true);
@@ -73,9 +73,10 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
      */
     public void reloadConfig() {
         this.config = null;
+        this.messager = null;
 
         // Do any import first run stuff here.
-        if (this.getSettings().isFirstRun()) {
+        if (getSettings().isFirstRun()) {
             Logging.info("First run!");
         }
     }

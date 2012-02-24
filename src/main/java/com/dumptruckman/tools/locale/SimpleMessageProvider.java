@@ -22,9 +22,10 @@
 package com.dumptruckman.tools.locale;
 
 import com.dumptruckman.tools.util.Font;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,21 +40,22 @@ import java.util.Set;
 /**
  * Implementation of MessageProvider.
  */
-public class SimpleMessageProvider implements LazyLocaleMessageProvider {
+public class SimpleMessageProvider implements MessageProvider {
 
     /**
      * Name of localization folder.
      */
     public static final String LOCALIZATION_FOLDER_NAME = "localization";
 
-    private final HashMap<Locale, HashMap<Messages, List<String>>> messages;
-    private final JavaPlugin plugin;
+    private final HashMap<Locale, HashMap<Message, List<String>>> messages;
+    private final Plugin plugin;
 
     private Locale locale = DEFAULT_LOCALE;
 
-    public SimpleMessageProvider(JavaPlugin plugin) {
+    public SimpleMessageProvider(Plugin plugin) {
         this.plugin = plugin;
-        messages = new HashMap<Locale, HashMap<Messages, List<String>>>();
+
+        messages = new HashMap<Locale, HashMap<Message, List<String>>>();
 
         try {
             loadLocale(locale);
@@ -76,9 +78,10 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
                 throw e;
             }
         }
-        if (!isLocaleLoaded(locale))
+        if (!isLocaleLoaded(locale)) {
             throw new LocalizationLoadingException("Couldn't load the localization: "
                     + locale.toString(), locale);
+        }
     }
 
     /**
@@ -107,6 +110,7 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
     public String format(String string, Object... args) {
         // Replaces & with the Section character
         string = string.replaceAll("(&([a-fA-FkK0-9]))", Font.SECTION_SYMBOL + "$2");
+        string = String.format(this.locale, string);
         // If there are arguments, %n notations in the message will be
         // replaced
         if (args != null) {
@@ -141,11 +145,11 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
         if ((resstream == null) && (filestream == null))
             throw new NoSuchLocalizationException(l);
 
-        messages.put(l, new HashMap<Messages, List<String>>(Messages.values().length));
+        messages.put(l, new HashMap<BaseMessages, List<String>>(BaseMessages.values().length));
 
         FileConfiguration resconfig = (resstream == null) ? null : YamlConfiguration.loadConfiguration(resstream);
         FileConfiguration fileconfig = (filestream == null) ? null : YamlConfiguration.loadConfiguration(filestream);
-        for (Messages m : Messages.values()) {
+        for (BaseMessages m : BaseMessages.values()) {
             List<String> values = m.getDefault();
 
             if (resconfig != null) {
@@ -187,7 +191,7 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      * {@inheritDoc}
      */
     @Override
-    public String getMessage(Messages key, Object... args) {
+    public String getMessage(Message key, Object... args) {
         if (!isLocaleLoaded(locale)) {
             return format(key.getDefault().get(0), args);
         } else
@@ -198,7 +202,7 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      * {@inheritDoc}
      */
     @Override
-    public String getMessage(Messages key, Locale locale, Object... args) {
+    public String getMessage(Message key, Locale locale, Object... args) {
         try {
             maybeLoadLocale(locale);
         } catch (LocalizationLoadingException e) {
@@ -212,7 +216,7 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getMessages(Messages key, Object... args) {
+    public List<String> getMessages(Message key, Object... args) {
         List<String> result;
         if (!isLocaleLoaded(locale)) {
             result = format(key.getDefault(), args);
@@ -226,7 +230,7 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getMessages(Messages key, Locale locale, Object... args) {
+    public List<String> getMessages(Message key, Locale locale, Object... args) {
         try {
             maybeLoadLocale(locale);
         } catch (LocalizationLoadingException e) {
@@ -249,16 +253,16 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      */
     @Override
     public void setLocale(Locale locale) {
-        if (locale == null)
-            throw new IllegalArgumentException("Can't set locale to null!");
-        try {
-            maybeLoadLocale(locale);
-        } catch (LocalizationLoadingException e) {
-            if (!locale.equals(DEFAULT_LOCALE))
-                throw new IllegalArgumentException("Error while trying to load localization for the given Locale!", e);
+        if (locale == null) {
+            throw new IllegalArgumentException("Locale is invalid! (null)");
         }
-
         this.locale = locale;
+    }
+
+
+    @Override
+    public void setLanguage(String languageFileName) {
+        Configuration language = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), languageFileName));
     }
 }
 

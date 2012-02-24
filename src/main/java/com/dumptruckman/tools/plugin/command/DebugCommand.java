@@ -1,6 +1,6 @@
 package com.dumptruckman.tools.plugin.command;
 
-import com.dumptruckman.tools.locale.Messages;
+import com.dumptruckman.tools.locale.BaseMessages;
 import com.dumptruckman.tools.permission.Perm;
 import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import com.dumptruckman.tools.util.Logging;
@@ -40,7 +40,7 @@ public class DebugCommand<P extends AbstractPluginBase> extends PluginCommand<P>
                     plugin.getSettings().setDebug(debugLevel);
                     plugin.getSettings().save();
                 } catch (NumberFormatException e) {
-                    messager.bad(Messages.INVALID_DEBUG, sender);
+                    messager.bad(BaseMessages.INVALID_DEBUG, sender);
                 }
             }
         }
@@ -49,9 +49,9 @@ public class DebugCommand<P extends AbstractPluginBase> extends PluginCommand<P>
 
     private void displayDebugMode(CommandSender sender) {
         if (plugin.getSettings().getDebug() == 0) {
-            messager.normal(Messages.DEBUG_SET, sender, ChatColor.RED + messager.getMessage(Messages.GENERIC_OFF));
+            messager.normal(BaseMessages.DEBUG_SET, sender, ChatColor.RED + messager.getMessage(BaseMessages.GENERIC_OFF));
         } else {
-            messager.normal(Messages.DEBUG_SET, sender, ChatColor.GREEN
+            messager.normal(BaseMessages.DEBUG_SET, sender, ChatColor.GREEN
                     + Integer.toString(plugin.getSettings().getDebug()));
             Logging.fine(this.plugin.getDescription().getName() + " debug ENABLED");
         }
