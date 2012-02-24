@@ -46,14 +46,14 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      */
     public static final String LOCALIZATION_FOLDER_NAME = "localization";
 
-    private final HashMap<Locale, HashMap<Message, List<String>>> messages;
+    private final HashMap<Locale, HashMap<Messages, List<String>>> messages;
     private final JavaPlugin plugin;
 
     private Locale locale = DEFAULT_LOCALE;
 
     public SimpleMessageProvider(JavaPlugin plugin) {
         this.plugin = plugin;
-        messages = new HashMap<Locale, HashMap<Message, List<String>>>();
+        messages = new HashMap<Locale, HashMap<Messages, List<String>>>();
 
         try {
             loadLocale(locale);
@@ -141,11 +141,11 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
         if ((resstream == null) && (filestream == null))
             throw new NoSuchLocalizationException(l);
 
-        messages.put(l, new HashMap<Message, List<String>>(Message.values().length));
+        messages.put(l, new HashMap<Messages, List<String>>(Messages.values().length));
 
         FileConfiguration resconfig = (resstream == null) ? null : YamlConfiguration.loadConfiguration(resstream);
         FileConfiguration fileconfig = (filestream == null) ? null : YamlConfiguration.loadConfiguration(filestream);
-        for (Message m : Message.values()) {
+        for (Messages m : Messages.values()) {
             List<String> values = m.getDefault();
 
             if (resconfig != null) {
@@ -187,7 +187,7 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      * {@inheritDoc}
      */
     @Override
-    public String getMessage(Message key, Object... args) {
+    public String getMessage(Messages key, Object... args) {
         if (!isLocaleLoaded(locale)) {
             return format(key.getDefault().get(0), args);
         } else
@@ -198,7 +198,7 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      * {@inheritDoc}
      */
     @Override
-    public String getMessage(Message key, Locale locale, Object... args) {
+    public String getMessage(Messages key, Locale locale, Object... args) {
         try {
             maybeLoadLocale(locale);
         } catch (LocalizationLoadingException e) {
@@ -212,7 +212,7 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getMessages(Message key, Object... args) {
+    public List<String> getMessages(Messages key, Object... args) {
         List<String> result;
         if (!isLocaleLoaded(locale)) {
             result = format(key.getDefault(), args);
@@ -226,7 +226,7 @@ public class SimpleMessageProvider implements LazyLocaleMessageProvider {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getMessages(Message key, Locale locale, Object... args) {
+    public List<String> getMessages(Messages key, Locale locale, Object... args) {
         try {
             maybeLoadLocale(locale);
         } catch (LocalizationLoadingException e) {

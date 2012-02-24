@@ -36,44 +36,44 @@ public interface MessageProvider {
     Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
     /**
-     * Returns a message (as {@link String}) for the specified key (as {@link Message}).
+     * Returns a message (as {@link String}) for the specified key (as {@link Messages}).
      *
      * @param key  The key
      * @param args Args for String.format()
      * @return The message
      */
-    String getMessage(Message key, Object... args);
+    String getMessage(Messages key, Object... args);
 
     /**
      * Returns a message (as {@link String}) in a specified {@link java.util.Locale} for the specified key
-     * (as {@link Message}).
+     * (as {@link Messages}).
      *
      * @param key    The Key
      * @param locale The {@link java.util.Locale}
      * @param args   Args for String.format()
      * @return The message
      */
-    String getMessage(Message key, Locale locale, Object... args);
+    String getMessage(Messages key, Locale locale, Object... args);
 
     /**
-     * Returns a message (as {@link java.util.List}) of Strings for the specified key (as {@link Message}).
+     * Returns a message (as {@link java.util.List}) of Strings for the specified key (as {@link Messages}).
      *
      * @param key  The key
      * @param args Args for String.format()
      * @return The messages
      */
-    List<String> getMessages(Message key, Object... args);
+    List<String> getMessages(Messages key, Object... args);
 
     /**
      * Returns a message (as {@link java.util.List}) of Strings in a specified {@link java.util.Locale} for the
-     * specified key (as {@link Message}).
+     * specified key (as {@link Messages}).
      *
      * @param key    The key
      * @param locale The {@link java.util.Locale}
      * @param args   Args for String.format()
      * @return The messages
      */
-    List<String> getMessages(Message key, Locale locale, Object... args);
+    List<String> getMessages(Messages key, Locale locale, Object... args);
 
     /**
      * Returns the Locale this MessageProvider is currently using.

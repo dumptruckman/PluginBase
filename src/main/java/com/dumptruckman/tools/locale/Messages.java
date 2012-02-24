@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * An enum containing all messages/strings used by SimpleCircuits.
  */
-public enum Message {
+public enum Messages {
     // BEGIN CHECKSTYLE-SUPPRESSION: Javadoc
     TEST_STRING("a test-string from the enum"),
 
@@ -50,14 +50,14 @@ public enum Message {
 
     private final List<String> def;
 
-    Message(String def, String... extra) {
+    Messages(String def, String... extra) {
         this.def = new ArrayList<String>();
         this.def.add(def);
         this.def.addAll(Arrays.asList(extra));
     }
 
     /**
-     * @return This {@link Message}'s default-message
+     * @return This {@link Messages}'s default-message
      */
     public List<String> getDefault() {
         return def;
