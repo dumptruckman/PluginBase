@@ -48,6 +48,8 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
         Logging.init(this);
         Perm.registerPlugin(this);
 
+        this.reloadConfig();
+
         try {
             this.getMessager().setLocale(new Locale(this.getSettings().getLocale()));
         } catch (IllegalArgumentException e) {
@@ -55,8 +57,6 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
-
-        this.reloadConfig();
 
         // Register Events
         this.registerEvents();
