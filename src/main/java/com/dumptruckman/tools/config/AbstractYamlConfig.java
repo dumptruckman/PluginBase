@@ -44,8 +44,9 @@ public abstract class AbstractYamlConfig implements ConfigBase {
 
     private CommentedYamlConfiguration config;
     private PluginBase plugin;
-
-    public AbstractYamlConfig(PluginBase plugin) throws IOException {
+    
+    protected final void init(PluginBase plugin) throws IOException {
+        Entries.registerConfig(getClass());
         this.plugin = plugin;
         // Make the data folders
         if (this.plugin.getDataFolder().mkdirs()) {
