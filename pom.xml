@@ -5,6 +5,7 @@
     <artifactId>PluginBase</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>PluginBase</name>
+    <url>http://ci.onarandombox.org</url>
     <description>dumptruckman's plugin template and tools</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -191,7 +192,12 @@ and adjust the build number accordingly -->
     <distributionManagement>
         <repository>
             <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/thirdparty-dev</url>
+            <url>http://repo.onarandombox.com/content/repositories/thirdparty/</url>
         </repository>
+        <snapshotRepository>
+            <id>repobo-snap</id>
+            <name>repo.bukkit.org Snapshots</name>
+            <url>http://repo.onarandombox.com/content/repositories/thirdparty-dev/</url>
+        </snapshotRepository>
     </distributionManagement>
 </project>

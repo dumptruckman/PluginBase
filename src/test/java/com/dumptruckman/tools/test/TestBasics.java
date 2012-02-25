@@ -74,7 +74,7 @@ public class TestBasics {
         when(mockCommand.getName()).thenReturn("pb");
 
         // Assert debug mode is off
-        //Assert.assertEquals(0, myPlugin.getSettings().getDebug());
+        Assert.assertEquals(0, myPlugin.getSettings().getDebug());
 
         // Send the debug command.
         String[] debugArgs = new String[] { "debug", "3" };

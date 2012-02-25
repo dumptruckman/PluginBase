@@ -6,6 +6,11 @@ import java.io.IOException;
 
 public class MockPlugin extends AbstractPluginBase<MockConfig> {
     
+    public void onEnable() {
+        MockMessages.init();
+        super.onEnable();
+    }
+    
     @Override
     public String getCommandPrefix() {
         return "pb";

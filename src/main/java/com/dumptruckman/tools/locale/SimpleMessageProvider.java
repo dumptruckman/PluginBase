@@ -30,6 +30,15 @@ public class SimpleMessageProvider implements MessageProvider {
         this.plugin = plugin;
         messages = new HashMap<Message, List<String>>();
     }
+    
+    private List<String> _getMessages(Message key) {
+        List<String> messageList = this.messages.get(key);
+        if (messageList == null) {
+            Logging.warning("There is not language entry for " + key.getPath() + ".  Was it registered?");
+            return new ArrayList<String>();
+        }
+        return messageList;
+    }
 
     /**
      * Formats a list of strings by passing each through {@link #format(String, Object...)}.
@@ -57,7 +66,6 @@ public class SimpleMessageProvider implements MessageProvider {
     public String format(String string, Object... args) {
         // Replaces & with the Section character
         string = string.replaceAll("(&([a-fA-FkK0-9]))", Font.SECTION_SYMBOL + "$2");
-        string = String.format(this.locale, string);
         // If there are arguments, %n notations in the message will be
         // replaced
         if (args != null) {
@@ -65,6 +73,8 @@ public class SimpleMessageProvider implements MessageProvider {
                 string = string.replace("%" + (j + 1), args[j].toString());
             }
         }
+        // Format for locale
+        string = String.format(this.locale, string);
         return string;
     }
 
@@ -73,7 +83,11 @@ public class SimpleMessageProvider implements MessageProvider {
      */
     @Override
     public String getMessage(Message key, Object... args) {
-        return format(messages.get(key).get(0), args);
+        List<String> message = _getMessages(key);
+        if (message.isEmpty()) {
+            return "";
+        }
+        return format(message.get(0), args);
     }
 
     /**
@@ -81,8 +95,7 @@ public class SimpleMessageProvider implements MessageProvider {
      */
     @Override
     public List<String> getMessages(Message key, Object... args) {
-        System.out.println();
-        return format(this.messages.get(key), args);
+        return format(_getMessages(key), args);
     }
 
     /**
@@ -113,29 +126,27 @@ public class SimpleMessageProvider implements MessageProvider {
         File languageFile = new File(this.plugin.getDataFolder(), this.languageFileName);
         this.language = YamlConfiguration.loadConfiguration(languageFile);
         // Prune file
-        for (String key : this.language.getKeys(false)) {
-            System.out.println("found key: " + key);
-            if (!Messages.messages.containsKey(key)) {
-                System.out.println("key not message");
+        for (String key : this.language.getKeys(true)) {
+            if (!Messages.messages.containsKey(key.toLowerCase())) {
                 this.language.set(key, null);
             }
         }
 
-        System.out.println("asdf");
-        System.out.println(Messages.getMessages());
-        System.out.println("asdf");
         // Get language from file, if any is missing, set it to default.
         for (Map.Entry<String, Message> messageEntry : Messages.messages.entrySet()) {
-            System.out.println("looking");
             List<String> messageList = this.language.getStringList(messageEntry.getKey());
-            System.out.println(messageList);
-            if (messageList == null) {
+            if (messageList == null || messageList.isEmpty()) {
                 messageList = messageEntry.getValue().getDefault();
-                this.language.set(messageEntry.getKey(), messageList);
+                this.language.set(messageEntry.getKey().toLowerCase(), messageList);
             }
-            System.out.println(messageList);
             this.messages.put(messageEntry.getValue(), messageList);
         }
+        String ls = System.getProperty("line.separator");
+        this.language.options().header("You may insert color into the strings by preceding the color code with &.  "
+                + "Example: &cThis is red" + ls + ls + "%<number> represents places where"
+                + " data will be filled in by the plugin." + ls + ls + "To create a new "
+                + "language file, change the file name in config.yml and type /" + this.plugin.getCommandPrefix()
+                + " reload" + ls + "This will create a new file for you to edit");
         try {
             this.language.save(languageFile);
         } catch (IOException e) {

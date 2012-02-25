@@ -49,15 +49,6 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
 
         reloadConfig();
 
-        try {
-            getMessager().setLocale(getSettings().getLocale());
-            getMessager().setLanguage(getSettings().getLanguageFileName());
-        } catch (IllegalArgumentException e) {
-            Logging.severe(e.getMessage());
-            Logging.info("Continue with default locale of english.");
-            return;
-        }
-
         // Register Events
         registerEvents();
 

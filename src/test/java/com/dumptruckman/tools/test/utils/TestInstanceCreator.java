@@ -245,7 +245,7 @@ public class TestInstanceCreator {
             return false;
         }
 
-        //FileUtils.deleteFolder(serverDirectory);
+        FileUtils.deleteFolder(serverDirectory);
         MockWorldFactory.clearWorlds();
 
         return true;
