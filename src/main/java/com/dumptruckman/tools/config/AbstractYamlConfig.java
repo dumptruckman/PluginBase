@@ -1,5 +1,6 @@
 package com.dumptruckman.tools.config;
 
+import com.dumptruckman.tools.locale.MessageProvider;
 import com.dumptruckman.tools.plugin.PluginBase;
 import com.dumptruckman.tools.util.Logging;
 import org.bukkit.configuration.Configuration;
@@ -8,6 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Commented Yaml implementation of ConfigBase.
@@ -17,33 +19,30 @@ public abstract class AbstractYamlConfig implements ConfigBase {
     /**
      * Add a comment to the top of file.
      */
-    protected static final ConfigEntry SETTINGS
-            = new ConfigEntry("settings", null, "# ===[ PluginBase Config ]===");
+    protected static final ConfigEntry SETTINGS = new ConfigEntry("settings", null, "# ===[ PluginBase Config ]===");
 
     /**
      * Locale name config path, default and comments.
      */ //TODO Add more comments about acceptable locales.
-    private static final ConfigEntry LOCALE
-            = new ConfigEntry("settings.language.locale", "en", "# This is the locale you wish to use.");
+    private static final ConfigEntry LOCALE = new ConfigEntry("settings.language.locale", "en",
+            "# This is the locale you wish to use.");
     /**
      * Locale name config path, default and comments.
      */
-    private static final ConfigEntry LANGUAGE_FILE
-            = new ConfigEntry("settings.language.file", "english.yml", "# This is the language file you wish to use.");
+    private static final ConfigEntry LANGUAGE_FILE = new ConfigEntry("settings.language.file",
+            MessageProvider.DEFAULT_LANGUAGE_FILE_NAME, "# This is the language file you wish to use.");
 
     /**
      * Debug Mode config path, default and comments.
      */
-    private static final ConfigEntry DEBUG_MODE
-            = new ConfigEntry("settings.debug_level", 0, "# 0 = off, 1-3 display debug info with increasing "
-            + "granularity.");
+    private static final ConfigEntry DEBUG_MODE = new ConfigEntry("settings.debug_level", 0,
+            "# 0 = off, 1-3 display debug info with increasing granularity.");
 
     /**
      * First Run flag config path, default and comments.
      */
-    private static final ConfigEntry FIRST_RUN
-            = new ConfigEntry("settings.first_run", true, "# Will make the plugin perform tasks only done on "
-            + "a first run.");
+    private static final ConfigEntry FIRST_RUN = new ConfigEntry("settings.first_run", true,
+            "# Will make the plugin perform tasks only done on a first run (if any.)");
     
     static {
         Entries.registerConfig(AbstractYamlConfig.class);
@@ -139,8 +138,8 @@ public abstract class AbstractYamlConfig implements ConfigBase {
      * {@inheritDoc}
      */
     @Override
-    public String getLocale() {
-        return getString(LOCALE);
+    public Locale getLocale() {
+        return new Locale(getString(LOCALE));
     }
 
     /**

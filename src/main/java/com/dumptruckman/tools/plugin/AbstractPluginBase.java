@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Main plugin class for dumptruckman's Plugin Template.
@@ -51,10 +50,11 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
         reloadConfig();
 
         try {
-            getMessager().setLocale(new Locale(getSettings().getLocale()), getSettings().getLanguageFile());
+            getMessager().setLocale(getSettings().getLocale());
+            getMessager().setLanguage(getSettings().getLanguageFileName());
         } catch (IllegalArgumentException e) {
             Logging.severe(e.getMessage());
-            getServer().getPluginManager().disablePlugin(this);
+            Logging.info("Continue with default locale of english.");
             return;
         }
 
@@ -143,6 +143,8 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
     public Messager getMessager() {
         if (this.messager == null) {
             this.messager = new SimpleMessager(this);
+            this.messager.setLocale(getSettings().getLocale());
+            this.messager.setLanguage(getSettings().getLanguageFileName());
         }
         return this.messager;
     }
@@ -152,10 +154,6 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
      */
     @Override
     public void setMessager(Messager messager) {
-        if (messager == null) {
-            throw new IllegalArgumentException("The new messager can't be null!");
-        }
-
         this.messager = messager;
     }
 

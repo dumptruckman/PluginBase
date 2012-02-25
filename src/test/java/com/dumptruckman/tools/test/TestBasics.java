@@ -14,8 +14,10 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 
+import com.dumptruckman.tools.locale.Messages;
 import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import com.dumptruckman.tools.plugin.PluginBase;
+import com.dumptruckman.tools.test.utils.MockMessages;
 import junit.framework.Assert;
 
 import org.bukkit.Server;
@@ -33,7 +35,7 @@ import com.dumptruckman.tools.test.utils.TestInstanceCreator;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ AbstractPluginBase.class })
-public class TestDebugModeReload {
+public class TestBasics {
     TestInstanceCreator creator;
     Server mockServer;
     CommandSender mockCommandSender;
@@ -72,7 +74,7 @@ public class TestDebugModeReload {
         when(mockCommand.getName()).thenReturn("pb");
 
         // Assert debug mode is off
-        Assert.assertEquals(0, myPlugin.getSettings().getDebug());
+        //Assert.assertEquals(0, myPlugin.getSettings().getDebug());
 
         // Send the debug command.
         String[] debugArgs = new String[] { "debug", "3" };
@@ -82,5 +84,7 @@ public class TestDebugModeReload {
         plugin.onCommand(mockCommandSender, mockCommand, "", reloadArgs);
 
         Assert.assertEquals(3, myPlugin.getSettings().getDebug());
+        
+        myPlugin.getMessager().good(MockMessages.TEST_MESSAGE, mockCommandSender, "And a test arg");
     }
 }

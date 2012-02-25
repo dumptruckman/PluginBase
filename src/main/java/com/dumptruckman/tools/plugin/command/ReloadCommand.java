@@ -1,6 +1,6 @@
 package com.dumptruckman.tools.plugin.command;
 
-import com.dumptruckman.tools.locale.BaseMessages;
+import com.dumptruckman.tools.locale.Messages;
 import com.dumptruckman.tools.permission.Perm;
 import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import org.bukkit.command.CommandSender;
@@ -14,17 +14,17 @@ public class ReloadCommand<P extends AbstractPluginBase> extends PluginCommand<P
 
     public ReloadCommand(P plugin) {
         super(plugin);
-        this.setName("Reloads config file");
-        this.setCommandUsage("/" + plugin.getCommandPrefix() + " reload");
-        this.setArgRange(0, 0);
-        this.addKey(plugin.getCommandPrefix() + " reload");
-        this.addKey(plugin.getCommandPrefix() + "reload");
-        this.setPermission(Perm.COMMAND_RELOAD.getPermission());
+        setName("Reloads config file");
+        setCommandUsage("/" + plugin.getCommandPrefix() + " reload");
+        setArgRange(0, 0);
+        addKey(plugin.getCommandPrefix() + " reload");
+        addKey(plugin.getCommandPrefix() + "reload");
+        setPermission(Perm.COMMAND_RELOAD.getPermission());
     }
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        plugin.reloadConfig();
-        messager.normal(BaseMessages.RELOAD_COMPLETE, sender);
+        this.plugin.reloadConfig();
+        this.messager.normal(Messages.RELOAD_COMPLETE, sender);
     }
 }

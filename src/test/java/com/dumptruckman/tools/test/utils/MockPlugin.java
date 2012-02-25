@@ -5,7 +5,7 @@ import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import java.io.IOException;
 
 public class MockPlugin extends AbstractPluginBase<MockConfig> {
-
+    
     @Override
     public String getCommandPrefix() {
         return "pb";

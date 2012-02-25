@@ -1,87 +1,34 @@
-/**
- * Copyright (c) 2011, The Multiverse Team All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
- * following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list of conditions and the following
- * disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the
- * following disclaimer in the documentation and/or other materials provided with the distribution.
- * Neither the name of The Multiverse Team nor the names of its contributors may be used to endorse or promote products
- * derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
- * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
- * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
- * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package com.dumptruckman.tools.locale;
 
+import com.dumptruckman.tools.plugin.PluginBase;
 import com.dumptruckman.tools.util.Font;
-import org.bukkit.configuration.Configuration;
+import com.dumptruckman.tools.util.Logging;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
+import java.util.Map;
 
 /**
  * Implementation of MessageProvider.
  */
 public class SimpleMessageProvider implements MessageProvider {
 
-    /**
-     * Name of localization folder.
-     */
-    public static final String LOCALIZATION_FOLDER_NAME = "localization";
-
-    private final HashMap<Locale, HashMap<Message, List<String>>> messages;
-    private final Plugin plugin;
+    private final HashMap<Message, List<String>> messages;
+    private final PluginBase plugin;
 
     private Locale locale = DEFAULT_LOCALE;
+    private String languageFileName = DEFAULT_LANGUAGE_FILE_NAME;
+    private FileConfiguration language = null;
 
-    public SimpleMessageProvider(Plugin plugin) {
+    public SimpleMessageProvider(PluginBase plugin) {
         this.plugin = plugin;
-
-        messages = new HashMap<Locale, HashMap<Message, List<String>>>();
-
-        try {
-            loadLocale(locale);
-        } catch (NoSuchLocalizationException e) {
-            // let's take the defaults from the enum!
-        }
-    }
-
-    /**
-     * Tries to load the locale.
-     *
-     * @param locale Locale to try to load.
-     * @throws LocalizationLoadingException if the Locale could not be loaded.
-     */
-    public void maybeLoadLocale(Locale locale) throws LocalizationLoadingException {
-        if (!isLocaleLoaded(locale)) {
-            try {
-                loadLocale(locale);
-            } catch (NoSuchLocalizationException e) {
-                throw e;
-            }
-        }
-        if (!isLocaleLoaded(locale)) {
-            throw new LocalizationLoadingException("Couldn't load the localization: "
-                    + locale.toString(), locale);
-        }
+        messages = new HashMap<Message, List<String>>();
     }
 
     /**
@@ -125,91 +72,8 @@ public class SimpleMessageProvider implements MessageProvider {
      * {@inheritDoc}
      */
     @Override
-    public void loadLocale(Locale l) throws NoSuchLocalizationException {
-        messages.remove(l);
-
-        InputStream resstream = null;
-        InputStream filestream = null;
-
-        try {
-            filestream = new FileInputStream(new File(plugin.getDataFolder(), l.getLanguage() + ".yml"));
-        } catch (FileNotFoundException e) {
-        }
-
-        try {
-            resstream = plugin.getResource(new StringBuilder(LOCALIZATION_FOLDER_NAME).append("/")
-                    .append(l.getLanguage()).append(".yml").toString());
-        } catch (Exception e) {
-        }
-
-        if ((resstream == null) && (filestream == null))
-            throw new NoSuchLocalizationException(l);
-
-        messages.put(l, new HashMap<BaseMessages, List<String>>(BaseMessages.values().length));
-
-        FileConfiguration resconfig = (resstream == null) ? null : YamlConfiguration.loadConfiguration(resstream);
-        FileConfiguration fileconfig = (filestream == null) ? null : YamlConfiguration.loadConfiguration(filestream);
-        for (BaseMessages m : BaseMessages.values()) {
-            List<String> values = m.getDefault();
-
-            if (resconfig != null) {
-                if (resconfig.isList(m.toString())) {
-                    values = resconfig.getStringList(m.toString());
-                } else {
-                    values.add(resconfig.getString(m.toString(), values.get(0)));
-                }
-            }
-            if (fileconfig != null) {
-                if (fileconfig.isList(m.toString())) {
-                    values = fileconfig.getStringList(m.toString());
-                } else {
-                    values.add(fileconfig.getString(m.toString(), values.get(0)));
-                }
-            }
-
-            messages.get(l).put(m, values);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Set<Locale> getLoadedLocales() {
-        return messages.keySet();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isLocaleLoaded(Locale l) {
-        return messages.containsKey(l);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public String getMessage(Message key, Object... args) {
-        if (!isLocaleLoaded(locale)) {
-            return format(key.getDefault().get(0), args);
-        } else
-            return format(messages.get(locale).get(key).get(0), args);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getMessage(Message key, Locale locale, Object... args) {
-        try {
-            maybeLoadLocale(locale);
-        } catch (LocalizationLoadingException e) {
-            e.printStackTrace();
-            return getMessage(key, args);
-        }
-        return format(messages.get(locale).get(key).get(0), args);
+        return format(messages.get(key).get(0), args);
     }
 
     /**
@@ -217,27 +81,8 @@ public class SimpleMessageProvider implements MessageProvider {
      */
     @Override
     public List<String> getMessages(Message key, Object... args) {
-        List<String> result;
-        if (!isLocaleLoaded(locale)) {
-            result = format(key.getDefault(), args);
-        } else {
-            result = format(this.messages.get(locale).get(key), args);
-        }
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<String> getMessages(Message key, Locale locale, Object... args) {
-        try {
-            maybeLoadLocale(locale);
-        } catch (LocalizationLoadingException e) {
-            e.printStackTrace();
-            return format(getMessages(key), args);
-        }
-        return format(messages.get(locale).get(key), args);
+        System.out.println();
+        return format(this.messages.get(key), args);
     }
 
     /**
@@ -253,16 +98,50 @@ public class SimpleMessageProvider implements MessageProvider {
      */
     @Override
     public void setLocale(Locale locale) {
-        if (locale == null) {
-            throw new IllegalArgumentException("Locale is invalid! (null)");
-        }
         this.locale = locale;
     }
 
 
     @Override
     public void setLanguage(String languageFileName) {
-        Configuration language = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), languageFileName));
+
+        this.languageFileName = languageFileName;
+        loadLanguage();
+    }
+
+    protected final void loadLanguage() {
+        File languageFile = new File(this.plugin.getDataFolder(), this.languageFileName);
+        this.language = YamlConfiguration.loadConfiguration(languageFile);
+        // Prune file
+        for (String key : this.language.getKeys(false)) {
+            System.out.println("found key: " + key);
+            if (!Messages.messages.containsKey(key)) {
+                System.out.println("key not message");
+                this.language.set(key, null);
+            }
+        }
+
+        System.out.println("asdf");
+        System.out.println(Messages.getMessages());
+        System.out.println("asdf");
+        // Get language from file, if any is missing, set it to default.
+        for (Map.Entry<String, Message> messageEntry : Messages.messages.entrySet()) {
+            System.out.println("looking");
+            List<String> messageList = this.language.getStringList(messageEntry.getKey());
+            System.out.println(messageList);
+            if (messageList == null) {
+                messageList = messageEntry.getValue().getDefault();
+                this.language.set(messageEntry.getKey(), messageList);
+            }
+            System.out.println(messageList);
+            this.messages.put(messageEntry.getValue(), messageList);
+        }
+        try {
+            this.language.save(languageFile);
+        } catch (IOException e) {
+            Logging.severe("Could not save language file!");
+            e.printStackTrace();
+        }
     }
 }
 

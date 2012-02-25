@@ -21,8 +21,6 @@
  */
 package com.dumptruckman.tools.locale;
 
-import org.bukkit.configuration.Configuration;
-
 import java.util.List;
 import java.util.Locale;
 
@@ -35,10 +33,11 @@ public interface MessageProvider {
     /**
      * The default locale.
      */
-    Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    final String DEFAULT_LANGUAGE_FILE_NAME = "english.yml";
 
     /**
-     * Returns a message (as {@link String}) for the specified key (as {@link BaseMessages}).
+     * Returns a message (as {@link String}) for the specified key (as {@link Messages}).
      *
      * @param key  The key
      * @param args Args for String.format()
@@ -47,35 +46,13 @@ public interface MessageProvider {
     String getMessage(Message key, Object... args);
 
     /**
-     * Returns a message (as {@link String}) in a specified {@link java.util.Locale} for the specified key
-     * (as {@link BaseMessages}).
-     *
-     * @param key    The Key
-     * @param locale The {@link java.util.Locale}
-     * @param args   Args for String.format()
-     * @return The message
-     */
-    String getMessage(Message key, Locale locale, Object... args);
-
-    /**
-     * Returns a message (as {@link java.util.List}) of Strings for the specified key (as {@link BaseMessages}).
+     * Returns a message (as {@link java.util.List}) of Strings for the specified key (as {@link Messages}).
      *
      * @param key  The key
      * @param args Args for String.format()
      * @return The messages
      */
     List<String> getMessages(Message key, Object... args);
-
-    /**
-     * Returns a message (as {@link java.util.List}) of Strings in a specified {@link java.util.Locale} for the
-     * specified key (as {@link BaseMessages}).
-     *
-     * @param key    The key
-     * @param locale The {@link java.util.Locale}
-     * @param args   Args for String.format()
-     * @return The messages
-     */
-    List<String> getMessages(Message key, Locale locale, Object... args);
 
     /**
      * Returns the Locale this MessageProvider is currently using.
