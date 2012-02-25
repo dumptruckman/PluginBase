@@ -65,7 +65,7 @@ public class SimpleMessageProvider implements MessageProvider {
      */
     public String format(String string, Object... args) {
         // Replaces & with the Section character
-        string = string.replaceAll("(&([a-fA-FkK0-9]))", Font.SECTION_SYMBOL + "$2");
+        string = string.replaceAll("(?i)&([A-FK0-9])", Font.SECTION_SYMBOL + "$1");
         // If there are arguments, %n notations in the message will be
         // replaced
         if (args != null) {

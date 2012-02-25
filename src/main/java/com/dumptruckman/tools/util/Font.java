@@ -12,7 +12,7 @@ public class Font {
     /**
      * Provides the char for a Section symbol.
      */
-    public static final char SECTION_SYMBOL = (char) 167;
+    public static final char SECTION_SYMBOL = '\u00A7';
 
     private static final int LINE_LENGTH = 318;
     private static final HashMap<String, Integer> FONT_WIDTH;
