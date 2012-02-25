@@ -4,8 +4,6 @@ import com.dumptruckman.tools.locale.MessageProvider;
 import com.dumptruckman.tools.plugin.PluginBase;
 import com.dumptruckman.tools.util.Logging;
 import org.bukkit.configuration.Configuration;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;

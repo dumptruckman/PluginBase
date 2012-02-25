@@ -4,7 +4,6 @@ import com.dumptruckman.tools.plugin.PluginBase;
 import com.dumptruckman.tools.util.Font;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 

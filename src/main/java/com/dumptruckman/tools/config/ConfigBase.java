@@ -1,7 +1,5 @@
 package com.dumptruckman.tools.config;
 
-import org.bukkit.configuration.Configuration;
-
 import java.util.Locale;
 
 /**
