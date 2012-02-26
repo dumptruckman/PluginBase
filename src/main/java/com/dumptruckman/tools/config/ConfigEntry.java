@@ -17,7 +17,7 @@ public class ConfigEntry {
      *
      * @return The path for a config option.
      */
-    String getPath() {
+    protected String getPath() {
         return this.path;
     }
 
@@ -26,7 +26,7 @@ public class ConfigEntry {
      *
      * @return The default value for a config path.
      */
-    Object getDefault() {
+    protected Object getDefault() {
         return this.def;
     }
 
@@ -35,7 +35,7 @@ public class ConfigEntry {
      *
      * @return The comments for a config path.
      */
-    String[] getComments() {
+    protected String[] getComments() {
         if (this.comments != null) {
             return this.comments;
         }
