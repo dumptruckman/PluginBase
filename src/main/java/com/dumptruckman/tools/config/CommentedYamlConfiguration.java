@@ -67,10 +67,10 @@ class CommentedYamlConfiguration {
             String[] yamlContents =
                     this.convertFileToString(file).split("[" + System.getProperty("line.separator") + "]");
 
-            // This will hold the newly formatted line
-            String newContents = "";
+            // This will hold the entire newly formatted config
+            StringBuilder newContents = new StringBuilder();
             // This holds the current path the lines are at in the config
-            String currentPath = "";
+            StringBuilder currentPath = new StringBuilder();
             // This tells if the specified path has already been commented
             boolean commentedPath = false;
             // This flags if the line is a node or unknown text.
@@ -82,7 +82,7 @@ class CommentedYamlConfiguration {
             // This will cause the first line to be ignored.
             boolean firstLine = true;
             // Loop through the config lines
-            for (String line : yamlContents) {
+            for (final String line : yamlContents) {
                 if (firstLine) {
                     firstLine = false;
                     if (line.startsWith("#")) {
@@ -103,8 +103,8 @@ class CommentedYamlConfiguration {
                         index = line.length() - 1;
                     }
                     // If currentPath is empty, store the node name as the currentPath. (this is only on the first iteration, i think)
-                    if (currentPath.isEmpty()) {
-                        currentPath = line.substring(0, index);
+                    if (currentPath.toString().isEmpty()) {
+                        currentPath = new StringBuilder(line.substring(0, index));
                     } else {
                         // Calculate the whitespace preceding the node name
                         int whiteSpace = 0;
@@ -118,26 +118,25 @@ class CommentedYamlConfiguration {
                         // Find out if the current depth (whitespace * 2) is greater/lesser/equal to the previous depth
                         if (whiteSpace / 2 > depth) {
                             // Path is deeper.  Add a . and the node name
-                            currentPath += "." + line.substring(whiteSpace, index);
+                            currentPath.append(".").append(line.substring(whiteSpace, index));
                             depth++;
                         } else if (whiteSpace / 2 < depth) {
                             // Path is shallower, calculate current depth from whitespace (whitespace / 2) and subtract that many levels from the currentPath
                             int newDepth = whiteSpace / 2;
                             for (int i = 0; i < depth - newDepth; i++) {
-                                currentPath = currentPath.replace(currentPath.substring(currentPath.lastIndexOf(".")), "");
+                                currentPath.replace(currentPath.lastIndexOf("."), currentPath.length(), "");
                             }
                             // Grab the index of the final period
                             int lastIndex = currentPath.lastIndexOf(".");
                             if (lastIndex < 0) {
                                 // if there isn't a final period, set the current path to nothing because we're at root
-                                currentPath = "";
+                                currentPath = new StringBuilder();
                             } else {
                                 // If there is a final period, replace everything after it with nothing
-                                currentPath = currentPath.replace(currentPath.substring(currentPath.lastIndexOf(".")), "");
-                                currentPath += ".";
+                                currentPath.replace(currentPath.lastIndexOf("."), currentPath.length(), "").append(".");
                             }
                             // Add the new node name to the path
-                            currentPath += line.substring(whiteSpace, index);
+                            currentPath.append(line.substring(whiteSpace, index));
                             // Reset the depth
                             depth = newDepth;
                         } else {
@@ -145,33 +144,30 @@ class CommentedYamlConfiguration {
                             int lastIndex = currentPath.lastIndexOf(".");
                             if (lastIndex < 0) {
                                 // if there isn't a final period, set the current path to nothing because we're at root
-                                currentPath = "";
+                                currentPath = new StringBuilder();
                             } else {
                                 // If there is a final period, replace everything after it with nothing
-                                currentPath = currentPath.replace(currentPath.substring(currentPath.lastIndexOf(".")), "");
-                                currentPath += ".";
+                                currentPath.replace(currentPath.lastIndexOf("."), currentPath.length(), "").append(".");
                             }
                             //currentPath = currentPath.replace(currentPath.substring(currentPath.lastIndexOf(".")), "");
-                            currentPath += line.substring(whiteSpace, index);
+                            currentPath.append(line.substring(whiteSpace, index));
                         }
                     }
                 } else {
                     node = false;
                 }
+                StringBuilder newLine = new StringBuilder(line);
                 if (node) {
                     String comment = null;
                     if (!commentedPath) {
                         // If there's a comment for the current path, retrieve it and flag that path as already commented
-                        comment = comments.get(currentPath);
+                        comment = comments.get(currentPath.toString());
                     }
                     if (comment != null) {
                         // Add the comment to the beginning of the current line
-                        line = comment + System.getProperty("line.separator") + line + System.getProperty("line.separator");
+                        newLine.insert(0, System.getProperty("line.separator")).insert(0, comment);
                         comment = null;
                         commentedPath = true;
-                    } else {
-                        // Add a new line as it is a node, but has no comment
-                        line += System.getProperty("line.separator");
                     }
                     /* Old code for removing uncommented lines.
                      * May need reworking.
@@ -182,8 +178,9 @@ class CommentedYamlConfiguration {
                     }
                     */
                 }
+                newLine.append(System.getProperty("line.separator"));
                 // Add the (modified) line to the total config String
-                newContents += line + ((!node) ? System.getProperty("line.separator") : "");
+                newContents.append(newLine.toString());
             }
             /*
              * Due to a bukkit bug we need to strip any extra new lines from the
@@ -196,7 +193,7 @@ class CommentedYamlConfiguration {
             */
             try {
                 // Write the string to the config file
-                this.stringToFile(newContents, file);
+                this.stringToFile(newContents.toString(), file);
             } catch (IOException e) {
                 saved = false;
             }

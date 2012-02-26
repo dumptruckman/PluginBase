@@ -47,6 +47,7 @@ public class TestInstanceCreator {
     public static final File worldsDirectory = new File("bin/test/server");
 
     public boolean setUp() {
+        FileUtils.deleteFolder(serverDirectory);
         try {
             pluginDirectory.mkdirs();
             Assert.assertTrue(pluginDirectory.exists());
@@ -245,7 +246,7 @@ public class TestInstanceCreator {
             return false;
         }
 
-        FileUtils.deleteFolder(serverDirectory);
+        //FileUtils.deleteFolder(serverDirectory);
         MockWorldFactory.clearWorlds();
 
         return true;
