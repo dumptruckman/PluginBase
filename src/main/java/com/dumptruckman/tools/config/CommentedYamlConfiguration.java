@@ -68,7 +68,7 @@ class CommentedYamlConfiguration {
                     this.convertFileToString(file).split("[" + System.getProperty("line.separator") + "]");
 
             // This will hold the entire newly formatted config
-            StringBuilder newContents = new StringBuilder();
+            StringBuilder newContents = new StringBuilder(config.options().header()).append(System.getProperty("line.separator")).append(System.getProperty("line.separator"));
             // This holds the current path the lines are at in the config
             StringBuilder currentPath = new StringBuilder();
             // This tells if the specified path has already been commented
@@ -83,6 +83,7 @@ class CommentedYamlConfiguration {
             boolean firstLine = true;
             // Loop through the config lines
             for (final String line : yamlContents) {
+                System.out.println(line);
                 if (firstLine) {
                     firstLine = false;
                     if (line.startsWith("#")) {
