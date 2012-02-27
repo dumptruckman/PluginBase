@@ -1,7 +1,7 @@
 package com.dumptruckman.tools.permission;
 
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
+import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
@@ -64,11 +64,11 @@ public class Perm {
     /**
      * Checks if the sender has the node in question.
      *
-     * @param sender CommandSender to check permission for.
+     * @param permissible Permissible to check permission for.
      * @return True if sender has the permission.
      */
-    public final boolean hasPermission(CommandSender sender) throws IllegalStateException {
-        return sender.hasPermission(getPermission());
+    public final boolean hasPermission(Permissible permissible) throws IllegalStateException {
+        return permissible.hasPermission(getPermission());
     }
 
     public final Permission getPermission() throws IllegalStateException {
