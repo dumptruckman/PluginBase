@@ -5,6 +5,7 @@ import com.dumptruckman.tools.locale.Messages;
 import com.dumptruckman.tools.plugin.PluginBase;
 import com.dumptruckman.tools.util.Logging;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class SimpleConfigEntry<T> implements ConfigEntry<T> {
     public SimpleConfigEntry(String path, Object def, String... comments) {
         this.path = path;
         this.def = def;
-        this.comments = Arrays.asList(comments);
-        if (this.comments.isEmpty()) {
-            this.comments.add("");
-        }
+        this.comments = new ArrayList<String>(Arrays.asList(comments));
+        //if (this.comments.isEmpty()) {
+        //    this.comments.add("");
+        //}
         Entries.entries.add(this);
     }
 

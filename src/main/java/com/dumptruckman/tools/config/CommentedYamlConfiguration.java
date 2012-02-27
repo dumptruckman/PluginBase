@@ -164,7 +164,7 @@ class CommentedYamlConfiguration {
                         // If there's a comment for the current path, retrieve it and flag that path as already commented
                         comment = comments.get(currentPath.toString());
                     }
-                    if (comment != null) {
+                    if (comment != null && !comment.isEmpty()) {
                         // Add the comment to the beginning of the current line
                         newLine.insert(0, System.getProperty("line.separator")).insert(0, comment);
                         comment = null;

@@ -23,6 +23,7 @@ public abstract class AbstractYamlConfig implements BaseConfig {
     
     public AbstractYamlConfig(PluginBase plugin) throws IOException {
         Entries.registerConfig(getClass());
+        Entries.registerConfig(super.getClass());
         this.plugin = plugin;
         // Make the data folders
         if (this.plugin.getDataFolder().mkdirs()) {
