@@ -5,9 +5,9 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Entries {
+public final class Entries {
 
-    static final Set<ConfigEntry> entries = new HashSet<ConfigEntry>();
+    protected static final Set<ConfigEntry> entries = new HashSet<ConfigEntry>();
 
     public static void registerConfig(Class configClass) {
         Field[] fields = configClass.getDeclaredFields();

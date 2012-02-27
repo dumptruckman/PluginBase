@@ -13,10 +13,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.util.Locale;
 
-import com.dumptruckman.tools.locale.Messages;
+import com.dumptruckman.tools.config.BaseConfig;
 import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import com.dumptruckman.tools.plugin.PluginBase;
+import com.dumptruckman.tools.test.utils.MockConfig;
 import com.dumptruckman.tools.test.utils.MockMessages;
 import junit.framework.Assert;
 
@@ -74,7 +76,7 @@ public class TestBasics {
         when(mockCommand.getName()).thenReturn("pb");
 
         // Assert debug mode is off
-        Assert.assertEquals(0, myPlugin.getSettings().getDebug());
+        Assert.assertEquals(0, (int) myPlugin.config().get(BaseConfig.DEBUG_MODE));
 
         // Send the debug command.
         String[] debugArgs = new String[] { "debug", "3" };
@@ -83,8 +85,18 @@ public class TestBasics {
         String[] reloadArgs = new String[] { "reload" };
         plugin.onCommand(mockCommandSender, mockCommand, "", reloadArgs);
 
-        Assert.assertEquals(3, myPlugin.getSettings().getDebug());
+        Assert.assertEquals(3, (int) myPlugin.config().get(BaseConfig.DEBUG_MODE));
         
         myPlugin.getMessager().good(MockMessages.TEST_MESSAGE, mockCommandSender, "And a test arg");
+        
+        Assert.assertEquals(BaseConfig.LOCALE.getDefault(), myPlugin.config().get(BaseConfig.LOCALE).toString());
+        
+        myPlugin.config().set(BaseConfig.LOCALE, Locale.CANADA);
+
+        Assert.assertEquals(Locale.CANADA, myPlugin.config().get(BaseConfig.LOCALE));
+        
+        myPlugin.config().save();
+        
+        System.out.println(myPlugin.config().get(MockConfig.TEST));
     }
 }

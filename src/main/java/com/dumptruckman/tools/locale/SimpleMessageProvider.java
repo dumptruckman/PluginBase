@@ -134,6 +134,9 @@ public class SimpleMessageProvider implements MessageProvider {
 
         // Get language from file, if any is missing, set it to default.
         for (Map.Entry<String, Message> messageEntry : Messages.messages.entrySet()) {
+            if (messageEntry.getValue().getPath() == null) {
+                continue;
+            }
             List<String> messageList = this.language.getStringList(messageEntry.getKey());
             if (messageList == null || messageList.isEmpty()) {
                 messageList = messageEntry.getValue().getDefault();

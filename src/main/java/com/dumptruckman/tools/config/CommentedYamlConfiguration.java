@@ -15,6 +15,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * A Configuration wrapper class that allows for comments to be applied to the config paths.
@@ -83,7 +84,6 @@ class CommentedYamlConfiguration {
             boolean firstLine = true;
             // Loop through the config lines
             for (final String line : yamlContents) {
-                System.out.println(line);
                 if (firstLine) {
                     firstLine = false;
                     if (line.startsWith("#")) {
@@ -208,7 +208,7 @@ class CommentedYamlConfiguration {
      * @param path         Configuration path to add comment.
      * @param commentLines Comments to add.  One String per line.
      */
-    public void addComment(String path, String... commentLines) {
+    public void addComment(String path, List<String> commentLines) {
         StringBuilder commentstring = new StringBuilder();
         String leadingSpaces = "";
         for (int n = 0; n < path.length(); n++) {

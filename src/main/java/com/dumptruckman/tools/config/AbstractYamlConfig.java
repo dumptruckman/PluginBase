@@ -1,50 +1,22 @@
 package com.dumptruckman.tools.config;
 
-import com.dumptruckman.tools.locale.MessageProvider;
 import com.dumptruckman.tools.plugin.PluginBase;
 import com.dumptruckman.tools.util.Logging;
 import org.bukkit.configuration.Configuration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public abstract class AbstractYamlConfig implements ConfigBase {
+public abstract class AbstractYamlConfig implements BaseConfig {
 
-    /**
-     * Add a comment to the top of file.
-     */
-    protected static final ConfigEntry SETTINGS = new ConfigEntry("settings", null, "# ===[ PluginBase Config ]===");
-
-    /**
-     * Locale name config path, default and comments.
-     */ //TODO Add more comments about acceptable locales.
-    private static final ConfigEntry LOCALE = new ConfigEntry("settings.language.locale", "en",
-            "# This is the locale you wish to use.");
-    /**
-     * Locale name config path, default and comments.
-     */
-    private static final ConfigEntry LANGUAGE_FILE = new ConfigEntry("settings.language.file",
-            MessageProvider.DEFAULT_LANGUAGE_FILE_NAME, "# This is the language file you wish to use.");
-
-    /**
-     * Debug Mode config path, default and comments.
-     */
-    private static final ConfigEntry DEBUG_MODE = new ConfigEntry("settings.debug_level", 0,
-            "# 0 = off, 1-3 display debug info with increasing granularity.");
-
-    /**
-     * First Run flag config path, default and comments.
-     */
-    private static final ConfigEntry FIRST_RUN = new ConfigEntry("settings.first_run", true,
-            "# Will make the plugin perform tasks only done on a first run (if any.)");
-    
-    static {
-        Entries.registerConfig(AbstractYamlConfig.class);
-    }
+    /*static {
+        Entries.registerConfig(BaseConfig.class);
+    }*/
 
     private CommentedYamlConfiguration config;
     private PluginBase plugin;
@@ -71,6 +43,8 @@ public abstract class AbstractYamlConfig implements ConfigBase {
 
         // Sets defaults config values
         this.setDefaults();
+        
+        config.getConfig().options().header(getHeader());
 
         // Saves the configuration from memory to file
         config.save();
@@ -81,26 +55,98 @@ public abstract class AbstractYamlConfig implements ConfigBase {
      */
     private void setDefaults() {
         for (ConfigEntry path : Entries.entries) {
-            config.addComment(path.getPath(), path.getComments());
-            if (getConfig().get(path.getPath()) == null) {
+            config.addComment(path.getName(), path.getComments());
+            if (getConfig().get(path.getName()) == null) {
                 if (path.getDefault() != null) {
-                    Logging.fine("Config: Defaulting '" + path.getPath() + "' to " + path.getDefault());
-                    getConfig().set(path.getPath(), path.getDefault());
+                    Logging.fine("Config: Defaulting '" + path.getName() + "' to " + path.getDefault());
+                    getConfig().set(path.getName(), path.getDefault());
                 }
             }
         }
     }
 
-    private Boolean getBoolean(ConfigEntry path) {
-        return getConfig().getBoolean(path.getPath(), (Boolean) path.getDefault());
+    private boolean isValid(ConfigEntry entry, Object o) {
+        if (!entry.isValid(o)) {
+            Logging.warning(entry.getName() + " contains an invalid value!");
+            Logging.warning(plugin.getMessager().getMessage(entry.getInvalidMessage()));
+            Logging.warning("Setting to default of: " + entry.getDefault());
+            getConfig().set(entry.getName(), entry.getDefault());
+            return false;
+        }
+        return true;
+    }
+    
+    public Locale get(ConfigEntry<Locale> entry) {
+        if (entry instanceof AdvancedConfigEntry) {
+            Object o = getConfig().get(entry.getName());
+            if (!isValid(entry, o)) {
+                return get(entry);
+            }
+            return (Locale) ((AdvancedConfigEntry) entry).convertForGet(o);
+        } else {
+            return new Locale(entry.getDefault().toString());
+        }
     }
 
-    private Integer getInt(ConfigEntry path) {
-        return getConfig().getInt(path.getPath(), (Integer) path.getDefault());
+    public Boolean get(ConfigEntry<Boolean> entry) {
+        Object o = getConfig().get(entry.getName());
+        if (!isValid(entry, o)) {
+            return get(entry);
+        }
+        if (entry instanceof AdvancedConfigEntry) {
+            return (Boolean) ((AdvancedConfigEntry) entry).convertForGet(o.toString());
+        } else {
+            return getConfig().getBoolean(entry.getName());
+        }
     }
 
-    private String getString(ConfigEntry path) {
-        return getConfig().getString(path.getPath(), (String) path.getDefault());
+    public Integer get(ConfigEntry<Integer> entry) {
+        Object o = getConfig().get(entry.getName());
+        if (!isValid(entry, o)) {
+            return get(entry);
+        }
+        if (entry instanceof AdvancedConfigEntry) {
+            return (Integer) ((AdvancedConfigEntry) entry).convertForGet(o.toString());
+        } else {
+            return getConfig().getInt(entry.getName());
+        }
+    }
+
+
+
+    @Override
+    public String get(ConfigEntry<String> entry) {
+        Object o = getConfig().get(entry.getName());
+        if (!isValid(entry, o)) {
+            return get(entry);
+        }
+        if (entry instanceof AdvancedConfigEntry) {
+            return (String) ((AdvancedConfigEntry) entry).convertForGet(o.toString());
+        } else {
+            return getConfig().getString(entry.getName());
+        }
+    }
+
+    @Override
+    public List get(ConfigEntry<List<String>> entry) {
+        Object o = getConfig().get(entry.getName());
+        if (!isValid(entry, o)) {
+            return get(entry);
+        }
+        if (entry instanceof AdvancedConfigEntry) {
+            return (List<String>) ((AdvancedConfigEntry) entry).convertForGet(o.toString());
+        } else {
+            return getConfig().getStringList(entry.getName());
+        }
+    }
+
+    @Override
+    public void set(ConfigEntry entry, Object newValue) {
+        if (entry instanceof AdvancedConfigEntry) {
+            getConfig().set(entry.getName(), ((AdvancedConfigEntry) entry).convertForSet(newValue));
+        } else {
+            getConfig().set(entry.getName(), newValue);
+        }
     }
 
     protected Configuration getConfig() {
@@ -114,55 +160,27 @@ public abstract class AbstractYamlConfig implements ConfigBase {
     public void save() {
         this.config.save();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setDebug(int globalDebug) {
-        this.getConfig().set(DEBUG_MODE.getPath(), globalDebug);
-        Logging.setDebugMode(globalDebug);
+/*
+    public Object get(ConfigEntry entry) {
+        Object result = getConfig().get(entry.getName());
+        if (!entry.getType().isInstance(result)) {
+            Logging.warning("Config value: " + entry.getName() + " is not valid.");
+            Logging.warning("Setting to default value: " + entry.getDefault());
+            result = entry.getDefault();
+            set(entry, result);
+        }
+        return result;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getDebug() {
-        return getInt(DEBUG_MODE);
+    public void set(ConfigEntry entry, Object newValue) {
+        if (entry.getType().isInstance(newValue)) {
+            getConfig().set(entry.getName(), newValue);
+        } else {
+            throw new IllegalArgumentException("newValue is not correct type for " + entry.getName());
+        }
     }
+    */
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Locale getLocale() {
-        return new Locale(getString(LOCALE));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getLanguageFileName() {
-        return getString(LANGUAGE_FILE);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean isFirstRun() {
-        return getBoolean(FIRST_RUN);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setFirstRun(boolean firstRun) {
-        getConfig().set(FIRST_RUN.getPath(), firstRun);
-    }
-
-    protected abstract ConfigEntry getSettingsHeader();
+    protected abstract ConfigEntry getSettingsEntry();
+    
+    protected abstract String getHeader();
 }

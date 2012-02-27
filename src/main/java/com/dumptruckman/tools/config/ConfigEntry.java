@@ -1,47 +1,39 @@
 package com.dumptruckman.tools.config;
 
-public class ConfigEntry {
+import com.dumptruckman.tools.locale.Message;
 
-    private String path;
-    private Object def;
-    private String[] comments;
+import java.util.List;
 
-    public ConfigEntry(String path, Object def, String... comments) {
-        this.path = path;
-        this.def = def;
-        this.comments = comments;
-    }
+public interface ConfigEntry<T> {
 
     /**
      * Retrieves the path for a config option.
      *
      * @return The path for a config option.
      */
-    protected String getPath() {
-        return this.path;
-    }
+    String getName();
+
+    Class getType();
 
     /**
      * Retrieves the default value for a config path.
      *
      * @return The default value for a config path.
      */
-    protected Object getDefault() {
-        return this.def;
-    }
+    Object getDefault();
 
     /**
      * Retrieves the comment for a config path.
      *
      * @return The comments for a config path.
      */
-    protected String[] getComments() {
-        if (this.comments != null) {
-            return this.comments;
-        }
+    List<String> getComments();
 
-        String[] emptyComments = new String[1];
-        emptyComments[0] = "";
-        return emptyComments;
-    }
+    //T get();
+
+    //void set(T value);
+
+    boolean isValid(Object obj);
+
+    Message getInvalidMessage();
 }

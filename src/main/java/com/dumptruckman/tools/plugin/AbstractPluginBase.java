@@ -1,6 +1,7 @@
 package com.dumptruckman.tools.plugin;
 
-import com.dumptruckman.tools.config.ConfigBase;
+import com.dumptruckman.tools.config.BaseConfig;
+import com.dumptruckman.tools.config.SimpleConfigEntry;
 import com.dumptruckman.tools.locale.Messager;
 import com.dumptruckman.tools.locale.SimpleMessager;
 import com.dumptruckman.tools.permission.Perm;
@@ -23,28 +24,39 @@ import java.util.List;
 /**
  * Main plugin class for dumptruckman's Plugin Template.
  */
-public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugin implements PluginBase<C> {
+public abstract class AbstractPluginBase<C extends BaseConfig> extends JavaPlugin implements PluginBase<C> {
 
     private C config = null;
     private Messager messager = null;
     private File serverFolder = null;
     private CommandHandler commandHandler = null;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onDisable() {
-        // Display disable message/version info
-        Logging.info("disabled.", true);
+    public void preDisable() {
+
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onEnable() {
+    public void onDisable() {
+        preDisable();
+        // Display disable message/version info
+        Logging.info("disabled.", true);
+    }
+
+    public void preEnable() {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void onEnable() {
+        preEnable();
         Logging.init(this);
+        SimpleConfigEntry.init(this);
         Perm.registerPlugin(this);
 
         reloadConfig();
@@ -55,8 +67,13 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
         // Register Commands
         registerCommands();
 
+        postEnable();
         // Display enable message/version info
         Logging.info("enabled.", true);
+    }
+
+    public void postEnable() {
+        
     }
 
     /**
@@ -67,7 +84,7 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
         this.messager = null;
 
         // Do any import first run stuff here.
-        if (getSettings().isFirstRun()) {
+        if (config().get(BaseConfig.FIRST_RUN)) {
             Logging.info("First run!");
         }
     }
@@ -111,7 +128,7 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
      * {@inheritDoc}
      */
     @Override
-    public C getSettings() {
+    public C config() {
         if (this.config == null) {
             // Loads the configuration
             try {
@@ -134,8 +151,8 @@ public abstract class AbstractPluginBase<C extends ConfigBase> extends JavaPlugi
     public Messager getMessager() {
         if (this.messager == null) {
             this.messager = new SimpleMessager(this);
-            this.messager.setLocale(getSettings().getLocale());
-            this.messager.setLanguage(getSettings().getLanguageFileName());
+            this.messager.setLocale(config().get(BaseConfig.LOCALE));
+            this.messager.setLanguage(config().get(BaseConfig.LANGUAGE_FILE));
         }
         return this.messager;
     }

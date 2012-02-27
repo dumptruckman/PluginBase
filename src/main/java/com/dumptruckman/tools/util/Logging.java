@@ -42,6 +42,10 @@ public class Logging {
     public static void setDebugMode(int debugLevel) {
         Logging.DEBUG_LEVEL = debugLevel;
     }
+    
+    public static int getDebugMode() {
+        return Logging.DEBUG_LEVEL;
+    }
 
     /**
      * Adds the plugin name and optionally the version number to the log message.

@@ -1,13 +1,13 @@
 package com.dumptruckman.tools.plugin;
 
-import com.dumptruckman.tools.config.ConfigBase;
+import com.dumptruckman.tools.config.BaseConfig;
 import com.dumptruckman.tools.locale.Messaging;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 
-public interface PluginBase<C extends ConfigBase> extends Plugin, Messaging {
+public interface PluginBase<C extends BaseConfig> extends Plugin, Messaging {
 
     /**
      * @return The instance of CommandHandler used by this plugin.
@@ -17,7 +17,7 @@ public interface PluginBase<C extends ConfigBase> extends Plugin, Messaging {
     /**
      * @return the Config object which contains settings for this plugin.
      */
-    C getSettings();
+    C config();
 
     /**
      * Gets the server's root-folder as {@link java.io.File}.

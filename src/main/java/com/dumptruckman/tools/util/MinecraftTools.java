@@ -27,7 +27,7 @@ public class MinecraftTools {
     /**
      * Converts an amount of seconds to the appropriate amount of ticks.
      *
-     * @param seconds Amount of seconds to convert
+     * @param seconds Amount of seconds to convertForSet
      * @return Ticks converted from seconds.
      */
     public static long convertSecondsToTicks(long seconds) {

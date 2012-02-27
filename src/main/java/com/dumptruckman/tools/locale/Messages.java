@@ -17,6 +17,7 @@ public class Messages {
     public final static Message GENERIC_INFO = new Message("generic.info", "[Info]");
     public final static Message GENERIC_HELP = new Message("generic.help", "[Help]");
     public final static Message GENERIC_OFF = new Message("generic.off", "OFF");
+    public final static Message BLANK = new Message(null, "");
 
     // Reload Command
     public final static Message RELOAD_COMPLETE = new Message("cmd.reload.complete", "&b===[ Reload Complete! ]===");

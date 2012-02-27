@@ -1,5 +1,6 @@
 package com.dumptruckman.tools.plugin.command;
 
+import com.dumptruckman.tools.config.BaseConfig;
 import com.dumptruckman.tools.locale.Messages;
 import com.dumptruckman.tools.permission.Perm;
 import com.dumptruckman.tools.plugin.AbstractPluginBase;
@@ -29,16 +30,16 @@ public class DebugCommand<P extends AbstractPluginBase> extends PluginCommand<P>
     public void runCommand(CommandSender sender, List<String> args) {
         if (args.size() == 1) {
             if (args.get(0).equalsIgnoreCase("off")) {
-                plugin.getSettings().setDebug(0);
-                plugin.getSettings().save();
+                plugin.config().set(BaseConfig.DEBUG_MODE, 0);
+                plugin.config().save();
             } else {
                 try {
                     int debugLevel = Integer.parseInt(args.get(0));
                     if (debugLevel > 3 || debugLevel < 0) {
                         throw new NumberFormatException();
                     }
-                    plugin.getSettings().setDebug(debugLevel);
-                    plugin.getSettings().save();
+                    plugin.config().set(BaseConfig.DEBUG_MODE, debugLevel);
+                    plugin.config().save();
                 } catch (NumberFormatException e) {
                     messager.bad(Messages.INVALID_DEBUG, sender);
                 }
@@ -48,11 +49,11 @@ public class DebugCommand<P extends AbstractPluginBase> extends PluginCommand<P>
     }
 
     private void displayDebugMode(CommandSender sender) {
-        if (plugin.getSettings().getDebug() == 0) {
+        if (this.plugin.config().get(BaseConfig.DEBUG_MODE) == 0) {
             messager.normal(Messages.DEBUG_SET, sender, ChatColor.RED + messager.getMessage(Messages.GENERIC_OFF));
         } else {
             messager.normal(Messages.DEBUG_SET, sender, ChatColor.GREEN
-                    + Integer.toString(plugin.getSettings().getDebug()));
+                    + plugin.config().get(BaseConfig.DEBUG_MODE).toString());
             Logging.fine(this.plugin.getDescription().getName() + " debug ENABLED");
         }
     }
