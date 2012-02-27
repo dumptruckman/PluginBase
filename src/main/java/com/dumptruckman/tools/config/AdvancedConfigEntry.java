@@ -1,7 +1,5 @@
 package com.dumptruckman.tools.config;
 
-import com.dumptruckman.tools.util.Logging;
-
 public abstract class AdvancedConfigEntry<T, K> extends SimpleConfigEntry<T> {
 
     public AdvancedConfigEntry(String path, K def, String... comments) {

@@ -7,19 +7,9 @@
 
 package com.dumptruckman.tools.test.utils;
 
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.dumptruckman.tools.plugin.AbstractPluginBase;
 import com.dumptruckman.tools.util.FileUtils;
 import junit.framework.Assert;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
@@ -36,6 +26,21 @@ import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestInstanceCreator {
     private AbstractPluginBase plugin;
