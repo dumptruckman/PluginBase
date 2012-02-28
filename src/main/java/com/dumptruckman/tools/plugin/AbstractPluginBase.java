@@ -65,7 +65,7 @@ public abstract class AbstractPluginBase<C extends BaseConfig> extends JavaPlugi
         registerEvents();
 
         // Register Commands
-        registerCommands();
+        _registerCommands();
 
         postEnable();
         // Display enable message/version info
@@ -73,6 +73,10 @@ public abstract class AbstractPluginBase<C extends BaseConfig> extends JavaPlugi
     }
 
     public void postEnable() {
+        
+    }
+
+    public void firstRun() {
         
     }
 
@@ -86,6 +90,8 @@ public abstract class AbstractPluginBase<C extends BaseConfig> extends JavaPlugi
         // Do any import first run stuff here.
         if (config().get(BaseConfig.FIRST_RUN)) {
             Logging.info("First run!");
+            firstRun();
+            config().set(BaseConfig.FIRST_RUN, false);
         }
     }
 
@@ -93,8 +99,7 @@ public abstract class AbstractPluginBase<C extends BaseConfig> extends JavaPlugi
         Bukkit.getPluginManager().registerEvents(new PluginListener(this), this);
     }
 
-    private void registerCommands() {
-        getCommandHandler();
+    private final void _registerCommands() {
         getCommandHandler().registerCommand(new DebugCommand<AbstractPluginBase>(this));
         getCommandHandler().registerCommand(new ReloadCommand<AbstractPluginBase>(this));
     }

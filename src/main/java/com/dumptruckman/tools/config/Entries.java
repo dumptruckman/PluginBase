@@ -19,6 +19,7 @@ public final class Entries {
             try {
                 if (ConfigEntry.class.isInstance(field.get(null))) {
                     try {
+
                         entries.add((ConfigEntry) field.get(null));
                     } catch(IllegalAccessException e) {
                         e.printStackTrace();

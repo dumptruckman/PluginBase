@@ -22,8 +22,7 @@ public abstract class AbstractYamlConfig implements BaseConfig {
     private PluginBase plugin;
     
     public AbstractYamlConfig(PluginBase plugin) throws IOException {
-        Entries.registerConfig(getClass());
-        Entries.registerConfig(super.getClass());
+        Entries.registerConfig(BaseConfig.class);
         this.plugin = plugin;
         // Make the data folders
         if (this.plugin.getDataFolder().mkdirs()) {
@@ -72,6 +71,7 @@ public abstract class AbstractYamlConfig implements BaseConfig {
             Logging.warning(plugin.getMessager().getMessage(entry.getInvalidMessage()));
             Logging.warning("Setting to default of: " + entry.getDefault());
             getConfig().set(entry.getName(), entry.getDefault());
+            save();
             return false;
         }
         return true;
@@ -83,7 +83,7 @@ public abstract class AbstractYamlConfig implements BaseConfig {
             if (!isValid(entry, o)) {
                 return get(entry);
             }
-            return (Locale) ((AdvancedConfigEntry) entry).convertForGet(o);
+            return (Locale) ((AdvancedConfigEntry) entry).convertForGet(o.toString());
         } else {
             return new Locale(entry.getDefault().toString());
         }
@@ -142,12 +142,16 @@ public abstract class AbstractYamlConfig implements BaseConfig {
     }
 
     @Override
-    public void set(ConfigEntry entry, Object newValue) {
+    public boolean set(ConfigEntry entry, Object newValue) {
+        if (!entry.isValid(newValue)) {
+            return false;
+        }
         if (entry instanceof AdvancedConfigEntry) {
             getConfig().set(entry.getName(), ((AdvancedConfigEntry) entry).convertForSet(newValue));
         } else {
             getConfig().set(entry.getName(), newValue);
         }
+        return true;
     }
 
     protected Configuration getConfig() {
