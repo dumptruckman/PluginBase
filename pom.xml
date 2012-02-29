@@ -25,4 +25,15 @@
         <module>base</module>
         <module>bukkit</module>
     </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>OnARandomBox</id>
+            <url>http://repo.onarandombox.com/content/repositories/thirdparty/</url>
+        </repository>
+        <snapshotRepository>
+            <id>OnARandomBox</id>
+            <url>http://repo.onarandombox.com/content/repositories/thirdparty-dev/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
