@@ -15,6 +15,10 @@
             <id>onarandombox</id>
             <url>http://repo.onarandombox.com/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>feildmaster</id>
+            <url>http://repo.feildmaster.com/</url>
+        </repository>
     </repositories>
 
     <pluginRepositories>
@@ -85,6 +89,7 @@ and adjust the build number accordingly -->
                     <excludes>
                         <exclude>**/TestCommandSender.java</exclude>
                         <exclude>**/TestInstanceCreator.java</exclude>
+                        <exclude>**/TestBasics.java</exclude>
                     </excludes>
                 </configuration>
                 <dependencies>
@@ -119,12 +124,17 @@ and adjust the build number accordingly -->
                                 <includes>
                                     <include>com.pneumaticraft.commandhandler:CommandHandler</include>
                                     <include>com.dumptruckman.minecraft:Plugin</include>
+                                    <include>com.feildmaster.lib.configuration:ConfigurationLib</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>com.pneumaticraft.commandhandler</pattern>
                                     <shadedPattern>com.dumptruckman.minecraft.commandhandler</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.feildmaster.lib.configuration</pattern>
+                                    <shadedPattern>com.dumptruckman.minecraft.config</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
@@ -134,7 +144,15 @@ and adjust the build number accordingly -->
         </plugins>
     </build>
     <dependencies>
-        <!-- Start of CommandHandler Dependency -->
+        <!-- Start of ConfigurationLib Dependency -->
+        <dependency>
+            <groupId>com.feildmaster.lib.configuration</groupId>
+            <artifactId>ConfigurationLib</artifactId>
+            <version>1.1.2</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <!-- Start of PluginBase Dependency -->
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
             <artifactId>Plugin</artifactId>
@@ -142,7 +160,6 @@ and adjust the build number accordingly -->
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!-- End of CommandHandler Dependency -->
         <!-- Bukkit Dependency -->
         <dependency>
             <groupId>org.bukkit</groupId>
@@ -151,7 +168,6 @@ and adjust the build number accordingly -->
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!-- Bukkit Dependency -->
         <!-- Start of CommandHandler Dependency -->
         <dependency>
             <groupId>com.pneumaticraft.commandhandler</groupId>
@@ -160,7 +176,6 @@ and adjust the build number accordingly -->
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!-- End of CommandHandler Dependency -->
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
@@ -194,7 +209,6 @@ and adjust the build number accordingly -->
             <version>3.0</version>
             <scope>test</scope>
         </dependency>
-        <!-- End of Test Dependencies -->
     </dependencies>
 
     <distributionManagement>

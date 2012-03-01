@@ -1,5 +1,6 @@
 package com.dumptruckman.minecraft.config;
 
+import com.feildmaster.lib.configuration.EnhancedConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -38,7 +39,7 @@ class CommentedYamlConfiguration {
      * @throws Exception If anything goes wrong while loading this Configuration object into memory.
      */
     public void load() {
-        config = YamlConfiguration.loadConfiguration(file);
+        config = EnhancedConfiguration.loadConfiguration(file);
     }
 
     /**
