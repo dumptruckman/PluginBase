@@ -76,7 +76,7 @@ public class Perm {
             if (plugin == null) {
                 throw new IllegalStateException("Plugin must be registered first!");
             }
-            setName(plugin.getDescription().getName() + "." + getName());
+            setName(plugin.getDescription().getName().toLowerCase() + "." + getName());
             this.permission = new Permission(this.name, this.description, this.permissionDefault, this.children);
             Bukkit.getPluginManager().addPermission(this.permission);
             registeredPerms.add(this);
