@@ -26,6 +26,15 @@ public class Messages {
     public final static Message INVALID_DEBUG = new Message("cmd.debug.invalid",
             "&fInvalid debug level.  Please use number 0-3.  &b(3 being many many messages!)");
     public final static Message DEBUG_SET = new Message("cmd.debug.set", "Debug mode is %1");
+    
+    // HelpCommand
+    public final static Message HELP_NAME = new Message("cmd.help.name", "Get help with %1");
+    public final static Message HELP_USAGE = new Message("cmd.help.usage", "/%1 &6[FILTER] [PAGE #]");
+    public final static Message HELP_TITLE = new Message("cmd.help.title", "&b====[ %1 Help ]====");
+    public final static Message HELP_NONE_FOUND = new Message("cmd.help.none_found", "&cSorry... &fNo commands matched your filter: &b%1");
+    public final static Message HELP_MORE_INFO = new Message("cmd.help.more_info", "&b Add a '&5?&b' after a command to see more about it.");
+    public final static Message HELP_PAGES = new Message("cmd.help.pages", "&b Page %1 of %2");
+
 
     // END CHECKSTYLE-SUPPRESSION: Javadoc
 

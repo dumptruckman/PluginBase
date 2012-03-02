@@ -23,6 +23,11 @@ public class Perm {
      */
     public static final Perm COMMAND_RELOAD = new Builder("reload")
             .desc("Reloads the config file.").def(PermissionDefault.OP).build();
+    /**
+     * Permission for help command.
+     */
+    public static final Perm COMMAND_HELP = new Builder("help")
+            .desc("Displays a nice help menu.").def(PermissionDefault.OP).build();
 
     private String name;
     private final String description;
