@@ -18,11 +18,13 @@ public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<
     public DebugCommand(P plugin) {
         super(plugin);
         this.setName("Turn Debug on/off?");
-        this.setCommandUsage("/" + plugin.getCommandPrefix() + " debug" + ChatColor.GOLD + " [1|2|3|off]");
+        this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " debug" + ChatColor.GOLD + " [1|2|3|off]");
         this.setArgRange(0, 1);
-        this.addKey(plugin.getCommandPrefix() + " debug");
-        this.addKey(plugin.getCommandPrefix() + "debug");
-        this.addCommandExample("/" + plugin.getCommandPrefix() + " debug " + ChatColor.GOLD + "2");
+        for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
+            this.addKey(prefix + " debug");
+            this.addKey(prefix + "debug");
+        }
+        this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " debug " + ChatColor.GOLD + "2");
         this.setPermission(Perm.COMMAND_DEBUG.getPermission());
     }
 

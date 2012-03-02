@@ -148,7 +148,7 @@ public class SimpleMessageProvider implements MessageProvider {
         this.language.options().header("You may insert color into the strings by preceding the color code with &.  "
                 + "Example: &cThis is red" + ls + ls + "%<number> represents places where"
                 + " data will be filled in by the plugin." + ls + ls + "To create a new "
-                + "language file, change the file name in config.yml and type /" + this.plugin.getCommandPrefix()
+                + "language file, change the file name in config.yml and type /" + this.plugin.getCommandPrefixes().get(0)
                 + " reload" + ls + "This will create a new file for you to edit");
         try {
             this.language.save(languageFile);

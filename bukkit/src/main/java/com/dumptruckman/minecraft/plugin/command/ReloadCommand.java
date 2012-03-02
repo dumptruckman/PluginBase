@@ -15,10 +15,12 @@ public class ReloadCommand<P extends AbstractBukkitPlugin> extends PluginCommand
     public ReloadCommand(P plugin) {
         super(plugin);
         setName("Reloads config file");
-        setCommandUsage("/" + plugin.getCommandPrefix() + " reload");
+        setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " reload");
         setArgRange(0, 0);
-        addKey(plugin.getCommandPrefix() + " reload");
-        addKey(plugin.getCommandPrefix() + "reload");
+        for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
+            this.addKey(prefix + " reload");
+            this.addKey(prefix + "reload");
+        }
         setPermission(Perm.COMMAND_RELOAD.getPermission());
     }
 

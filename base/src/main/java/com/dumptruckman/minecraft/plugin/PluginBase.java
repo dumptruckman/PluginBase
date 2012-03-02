@@ -3,6 +3,7 @@ package com.dumptruckman.minecraft.plugin;
 import com.dumptruckman.minecraft.config.BaseConfig;
 
 import java.io.File;
+import java.util.List;
 
 public interface PluginBase<C extends BaseConfig> {
 
@@ -31,5 +32,5 @@ public interface PluginBase<C extends BaseConfig> {
     
     File getDataFolder();
     
-    String getCommandPrefix();
+    List<String> getCommandPrefixes();
 }

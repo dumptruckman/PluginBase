@@ -196,7 +196,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     @Override
-    public abstract String getCommandPrefix();
+    public abstract List<String> getCommandPrefixes();
 
     protected abstract C newConfigInstance() throws IOException;
 }

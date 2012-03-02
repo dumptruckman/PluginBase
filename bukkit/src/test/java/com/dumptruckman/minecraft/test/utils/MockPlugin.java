@@ -3,6 +3,8 @@ package com.dumptruckman.minecraft.test.utils;
 import com.dumptruckman.minecraft.plugin.AbstractBukkitPlugin;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class MockPlugin extends AbstractBukkitPlugin<MockConfig> {
 
@@ -11,8 +13,8 @@ public class MockPlugin extends AbstractBukkitPlugin<MockConfig> {
     }
     
     @Override
-    public String getCommandPrefix() {
-        return "pb";
+    public List<String> getCommandPrefixes() {
+        return Arrays.asList("pb");
     }
 
     @Override
