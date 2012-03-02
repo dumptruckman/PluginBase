@@ -13,7 +13,7 @@ public class Logging {
 
     // BEGIN CHECKSTYLE-SUPPRESSION: Name
     private static Logger LOG = Logger.getLogger("Minecraft");
-    private static String NAME = "SimpleCircuits";
+    private static String NAME = "PluginBase";
     private static String VERSION = "v.???";
     private static int DEBUG_LEVEL = 0;
     private static DebugLog debugLog = null;
@@ -28,8 +28,8 @@ public class Logging {
      * @param plugin The plugin.
      */
     public static void init(PluginBase plugin) {
-        NAME = plugin.getName();
-        VERSION = plugin.getVersion();
+        NAME = plugin.getPluginName();
+        VERSION = plugin.getPluginVersion();
         plugin.getDataFolder().mkdirs();
         debugLog = new DebugLog(NAME, plugin.getDataFolder() + File.separator + "debug.log");
     }

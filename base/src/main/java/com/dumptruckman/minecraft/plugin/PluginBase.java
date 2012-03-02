@@ -25,9 +25,9 @@ public interface PluginBase<C extends BaseConfig> {
      */
     void setServerFolder(File newServerFolder);
 
-    String getName();
+    String getPluginName();
     
-    String getVersion();
+    String getPluginVersion();
     
     File getDataFolder();
     

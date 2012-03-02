@@ -186,7 +186,12 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     @Override
-    public String getVersion() {
+    public String getPluginName() {
+        return getDescription().getName();
+    }
+    
+    @Override
+    public String getPluginVersion() {
         return getDescription().getVersion();
     }
 
