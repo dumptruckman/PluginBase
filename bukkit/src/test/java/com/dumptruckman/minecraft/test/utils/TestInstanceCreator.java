@@ -26,6 +26,7 @@ import org.mockito.Matchers;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.MockGateway;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -56,6 +57,8 @@ public class TestInstanceCreator {
         try {
             pluginDirectory.mkdirs();
             Assert.assertTrue(pluginDirectory.exists());
+
+            MockGateway.MOCK_STANDARD_METHODS = false;
 
             plugin = PowerMockito.spy(new MockPlugin());
 
