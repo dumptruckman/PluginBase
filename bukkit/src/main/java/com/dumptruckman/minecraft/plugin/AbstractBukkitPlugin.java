@@ -2,6 +2,7 @@ package com.dumptruckman.minecraft.plugin;
 
 import com.dumptruckman.minecraft.config.BaseConfig;
 import com.dumptruckman.minecraft.config.SimpleConfigEntry;
+import com.dumptruckman.minecraft.locale.CommandMessages;
 import com.dumptruckman.minecraft.locale.Messager;
 import com.dumptruckman.minecraft.locale.SimpleMessager;
 import com.dumptruckman.minecraft.permission.Perm;
@@ -55,6 +56,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     @Override
     public final void onEnable() {
         preEnable();
+        CommandMessages.init();
         Logging.init(this);
         SimpleConfigEntry.init(this);
         Perm.registerPlugin(this);

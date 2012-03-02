@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.plugin.command;
 
 import com.dumptruckman.minecraft.config.BaseConfig;
+import com.dumptruckman.minecraft.locale.CommandMessages;
 import com.dumptruckman.minecraft.locale.Messages;
 import com.dumptruckman.minecraft.permission.Perm;
 import com.dumptruckman.minecraft.plugin.AbstractBukkitPlugin;
@@ -17,8 +18,8 @@ public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<
 
     public DebugCommand(P plugin) {
         super(plugin);
-        this.setName("Turn Debug on/off?");
-        this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " debug" + ChatColor.GOLD + " [1|2|3|off]");
+        this.setName(messager.getMessage(CommandMessages.DEBUG_NAME));
+        this.setCommandUsage(messager.getMessage(CommandMessages.DEBUG_USAGE, plugin.getCommandPrefixes().get(0)));
         this.setArgRange(0, 1);
         for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
             this.addKey(prefix + " debug");
@@ -52,9 +53,9 @@ public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<
 
     private void displayDebugMode(CommandSender sender) {
         if (this.plugin.config().get(BaseConfig.DEBUG_MODE) == 0) {
-            messager.normal(Messages.DEBUG_SET, sender, ChatColor.RED + messager.getMessage(Messages.GENERIC_OFF));
+            messager.normal(CommandMessages.DEBUG_SET, sender, ChatColor.RED + messager.getMessage(Messages.GENERIC_OFF));
         } else {
-            messager.normal(Messages.DEBUG_SET, sender, ChatColor.GREEN
+            messager.normal(CommandMessages.DEBUG_SET, sender, ChatColor.GREEN
                     + plugin.config().get(BaseConfig.DEBUG_MODE).toString());
             Logging.fine(this.plugin.getDescription().getName() + " debug ENABLED");
         }
