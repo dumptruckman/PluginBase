@@ -11,7 +11,7 @@
 
     <scm>
         <connection>scm:git:git://github.com/dumptruckman/PluginBase.git</connection>
-        <url>https://github.com/dumptruckman/craftbook</url>
+        <url>https://github.com/dumptruckman/PluginBase</url>
         <developerConnection>scm:git:git@github.com:dumptruckman/PluginBase.git</developerConnection>
     </scm>
 

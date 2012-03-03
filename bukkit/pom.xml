@@ -133,11 +133,11 @@ and adjust the build number accordingly -->
                             <relocations>
                                 <relocation>
                                     <pattern>com.pneumaticraft.commandhandler</pattern>
-                                    <shadedPattern>com.dumptruckman.minecraft.commandhandler</shadedPattern>
+                                    <shadedPattern>com.dumptruckman.minecraft.pluginbase.commandhandler</shadedPattern>
                                 </relocation>
                                 <relocation>
                                     <pattern>com.feildmaster.lib.configuration</pattern>
-                                    <shadedPattern>com.dumptruckman.minecraft.config</shadedPattern>
+                                    <shadedPattern>com.dumptruckman.minecraft.pluginbase.config</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
