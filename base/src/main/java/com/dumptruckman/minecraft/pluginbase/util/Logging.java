@@ -34,6 +34,10 @@ public class Logging {
         debugLog = new DebugLog(NAME, plugin.getDataFolder() + File.separator + "debug.log");
     }
 
+    public static void close() {
+        debugLog.close();
+    }
+    
     /**
      * @param debugLevel 0 = off, 1-3 = debug level
      */

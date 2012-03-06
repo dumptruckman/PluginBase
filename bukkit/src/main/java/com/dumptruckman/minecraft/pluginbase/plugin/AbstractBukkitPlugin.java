@@ -36,6 +36,11 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
 
     }
 
+    @Override
+    public void onLoad() {
+
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -44,6 +49,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         preDisable();
         // Display disable message/version info
         Logging.info("disabled.", true);
+        Logging.close();
     }
 
     public void preEnable() {
