@@ -58,8 +58,8 @@ public abstract class AbstractYamlConfig implements BaseConfig {
             config.addComment(path.getName(), path.getComments());
             if (getConfig().get(path.getName()) == null) {
                 if (path.getDefault() != null) {
-                    Logging.fine("Config: Defaulting '" + path.getName() + "' to " + path.getDefault());
-                    getConfig().set(path.getName(), path.getDefault());
+                    Logging.fine("Config: Defaulting '" + path.getName() + "' to " + path.serialize(path.getDefault()));
+                    getConfig().set(path.getName(), path.serialize(path.getDefault()));
                 }
             }
         }
@@ -77,80 +77,20 @@ public abstract class AbstractYamlConfig implements BaseConfig {
         return true;
     }
     
-    public Locale get(ConfigEntry<Locale> entry) {
-        if (entry instanceof AdvancedConfigEntry) {
-            Object o = getConfig().get(entry.getName());
-            if (!isValid(entry, o)) {
-                return get(entry);
-            }
-            return (Locale) ((AdvancedConfigEntry) entry).convertForGet(o.toString());
-        } else {
-            return new Locale(entry.getDefault().toString());
+    public <T> T get(ConfigEntry<T> entry) {
+        T t = entry.deserialize(getConfig().get(entry.getName()));
+        if (!isValid(entry, t)) {
+            return entry.getDefault();
         }
-    }
-
-    public Boolean get(ConfigEntry<Boolean> entry) {
-        Object o = getConfig().get(entry.getName());
-        if (!isValid(entry, o)) {
-            return get(entry);
-        }
-        if (entry instanceof AdvancedConfigEntry) {
-            return (Boolean) ((AdvancedConfigEntry) entry).convertForGet(o.toString());
-        } else {
-            return getConfig().getBoolean(entry.getName());
-        }
-    }
-
-    public Integer get(ConfigEntry<Integer> entry) {
-        Object o = getConfig().get(entry.getName());
-        if (!isValid(entry, o)) {
-            return get(entry);
-        }
-        if (entry instanceof AdvancedConfigEntry) {
-            return (Integer) ((AdvancedConfigEntry) entry).convertForGet(o.toString());
-        } else {
-            return getConfig().getInt(entry.getName());
-        }
-    }
-
-
-
-    @Override
-    public String get(ConfigEntry<String> entry) {
-        Object o = getConfig().get(entry.getName());
-        if (!isValid(entry, o)) {
-            return get(entry);
-        }
-        if (entry instanceof AdvancedConfigEntry) {
-            return (String) ((AdvancedConfigEntry) entry).convertForGet(o.toString());
-        } else {
-            return getConfig().getString(entry.getName());
-        }
+        return t;
     }
 
     @Override
-    public List get(ConfigEntry<List<String>> entry) {
-        Object o = getConfig().get(entry.getName());
-        if (!isValid(entry, o)) {
-            return get(entry);
-        }
-        if (entry instanceof AdvancedConfigEntry) {
-            return (List<String>) ((AdvancedConfigEntry) entry).convertForGet(o.toString());
-        } else {
-            return getConfig().getStringList(entry.getName());
-        }
-    }
-
-    @Override
-    public boolean set(ConfigEntry entry, Object newValue) {
+    public <T> boolean set(ConfigEntry<T> entry, T newValue) {
         if (!entry.isValid(newValue)) {
             return false;
         }
-        if (entry instanceof AdvancedConfigEntry) {
-            getConfig().set(entry.getName(), ((AdvancedConfigEntry) entry).convertForSet(newValue));
-        } else {
-            getConfig().set(entry.getName(), newValue);
-        }
+        getConfig().set(entry.getName(), entry.serialize(newValue));
         return true;
     }
 

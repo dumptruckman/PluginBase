@@ -13,14 +13,14 @@ public interface ConfigEntry<T> {
      */
     String getName();
 
-    Class getType();
+    Class<T> getType();
 
     /**
      * Retrieves the default value for a config path.
      *
      * @return The default value for a config path.
      */
-    Object getDefault();
+    T getDefault();
 
     /**
      * Retrieves the comment for a config path.
@@ -34,6 +34,10 @@ public interface ConfigEntry<T> {
     //void set(T value);
 
     boolean isValid(Object obj);
+    
+    Object serialize(T value);
+    
+    T deserialize(Object o);
 
     Message getInvalidMessage();
 }

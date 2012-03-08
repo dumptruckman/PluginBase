@@ -1,9 +1,9 @@
 package com.dumptruckman.minecraft.pluginbase.config;
 
-public abstract class AdvancedConfigEntry<T, K> extends SimpleConfigEntry<T> {
+public abstract class AdvancedConfigEntry<T> extends SimpleConfigEntry<T> {
 
-    public AdvancedConfigEntry(String path, K def, String... comments) {
-        super(path, def, comments);
+    public AdvancedConfigEntry(Class<T> type, String path, T def, String... comments) {
+        super(type, path, def, comments);
     }
 /*
     @Override
@@ -29,7 +29,9 @@ public abstract class AdvancedConfigEntry<T, K> extends SimpleConfigEntry<T> {
         plugin.config().set(this, convertForSet(value));
     }*/
 
-    public abstract K convertForSet(T t);
-    
-    public abstract T convertForGet(K k);
+    @Override
+    public abstract Object serialize(T value);
+
+    @Override
+    public abstract T deserialize(Object o);
 }

@@ -18,13 +18,15 @@ public class SimpleConfigEntry<T> implements ConfigEntry<T> {
     }
 
     private String path;
-    private Object def;
+    private T def;
     private final List<String> comments;
+    private Class<T> type;
 
-    public SimpleConfigEntry(String path, Object def, String... comments) {
+    public SimpleConfigEntry(Class<T> type, String path, T def, String... comments) {
         this.path = path;
         this.def = def;
         this.comments = new ArrayList<String>(Arrays.asList(comments));
+        this.type = type;
         //if (this.comments.isEmpty()) {
         //    this.comments.add("");
         //}
@@ -40,8 +42,8 @@ public class SimpleConfigEntry<T> implements ConfigEntry<T> {
         return this.path;
     }
 
-    public Class getType() {
-        return this.def.getClass();
+    public Class<T> getType() {
+        return this.type;
     }
 
     /**
@@ -49,7 +51,7 @@ public class SimpleConfigEntry<T> implements ConfigEntry<T> {
      *
      * @return The default value for a config path.
      */
-    public Object getDefault() {
+    public T getDefault() {
         return this.def;
     }
 
@@ -74,32 +76,21 @@ public class SimpleConfigEntry<T> implements ConfigEntry<T> {
         return true;
     }
 
-    /* public synchronized T get() {
-        if (!isPluginSet()) {
-            Logging.finest("Retrieved default for '" + getName() + "'");
-            return (T) getDefault();
-        }
-        Object result = plugin.config().get(this);
-        if (getType().isInstance(result)) {
-            return (T) result;
-        } else {
-            throw new IllegalArgumentException(getType() + " is not supported by loaded config!");
-        }
-    }*/
-
-    /* public synchronized void set(T value) {
-        if (!isPluginSet()) {
-            Logging.finest("Cannot set values when Config is unitialized");
-            return;
-        }
-        plugin.config().set(this, value);
-    }*/
-
     public boolean isValid(Object obj) {
         return true;
     }
 
     public Message getInvalidMessage() {
         return Messages.BLANK;
+    }
+
+    @Override
+    public Object serialize(T value) {
+        return value;
+    }
+
+    @Override
+    public T deserialize(Object o) {
+        return getType().cast(o);
     }
 }

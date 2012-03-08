@@ -15,16 +15,17 @@ public interface BaseConfig extends IConfig {
     /**
      * Locale name config path, default and comments.
      */ //TODO Add more comments about acceptable locales.
-    ConfigEntry<Locale> LOCALE = new AdvancedConfigEntry<Locale, String>("settings.language.locale", "en",
-            "# This is the locale you wish to use.") {
+    ConfigEntry<Locale> LOCALE = new AdvancedConfigEntry<Locale>(Locale.class, "settings.language.locale",
+            Locale.ENGLISH, "# This is the locale you wish to use.") {
+
         @Override
-        public String convertForSet(Locale locale) {
-            return locale.toString();
+        public Object serialize(Locale value) {
+            return value.toString();
         }
 
         @Override
-        public Locale convertForGet(String s) {
-            String[] split = s.split("_");
+        public Locale deserialize(Object o) {
+            String[] split = o.toString().split("_");
             switch (split.length) {
                 case 1:
                     return new Locale(split[0]);
@@ -33,7 +34,7 @@ public interface BaseConfig extends IConfig {
                 case 3:
                     return new Locale(split[0], split[1], split[2]);
                 default:
-                    return new Locale(s);
+                    return new Locale(o.toString());
             }
         }
     };
@@ -41,13 +42,13 @@ public interface BaseConfig extends IConfig {
     /**
      * Locale name config path, default and comments.
      */
-    ConfigEntry<String> LANGUAGE_FILE = new SimpleConfigEntry<String>("settings.language.file",
+    ConfigEntry<String> LANGUAGE_FILE = new SimpleConfigEntry<String>(String.class, "settings.language.file",
             MessageProvider.DEFAULT_LANGUAGE_FILE_NAME, "# This is the language file you wish to use.");
 
     /**
      * Debug Mode config path, default and comments.
      */
-    ConfigEntry<Integer> DEBUG_MODE = new SimpleConfigEntry<Integer>("settings.debug_level", 0,
+    ConfigEntry<Integer> DEBUG_MODE = new SimpleConfigEntry<Integer>(Integer.class, "settings.debug_level", 0,
             "# 0 = off, 1-3 display debug info with increasing granularity.") {
         @Override
         public boolean isValid(Object obj) {
@@ -69,6 +70,6 @@ public interface BaseConfig extends IConfig {
     /**
      * First Run flag config path, default and comments.
      */
-    ConfigEntry<Boolean> FIRST_RUN = new SimpleConfigEntry<Boolean>("settings.first_run", true,
+    ConfigEntry<Boolean> FIRST_RUN = new SimpleConfigEntry<Boolean>(Boolean.class, "settings.first_run", true,
             "# Will make the plugin perform tasks only done on a first run (if any.)");
 }

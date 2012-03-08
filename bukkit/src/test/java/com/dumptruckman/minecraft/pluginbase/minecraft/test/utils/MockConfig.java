@@ -11,8 +11,8 @@ import java.io.IOException;
 
 public class MockConfig extends AbstractYamlConfig implements BaseConfig {
     
-    public static final ConfigEntry<Boolean> TEST = new SimpleConfigEntry<Boolean>("test", true, "# ===[ PluginBase Test ]===");
-    public static final ConfigEntry<Null> SETTINGS = new SimpleConfigEntry<Null>("settings", null, "# ===[ PluginBase Settings ]===");
+    public static final ConfigEntry<Boolean> TEST = new SimpleConfigEntry<Boolean>(Boolean.class, "test", true, "# ===[ PluginBase Test ]===");
+    public static final ConfigEntry<Null> SETTINGS = new SimpleConfigEntry<Null>(Null.class, "settings", null, "# ===[ PluginBase Settings ]===");
     
     public MockConfig(BukkitPlugin plugin) throws IOException {
         super(plugin);
