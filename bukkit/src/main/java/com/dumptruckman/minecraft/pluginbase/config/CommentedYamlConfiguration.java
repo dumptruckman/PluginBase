@@ -25,11 +25,13 @@ class CommentedYamlConfiguration {
     private HashMap<String, String> comments;
     private File file;
     private FileConfiguration config = null;
+    private boolean doComments;
 
-    public CommentedYamlConfiguration(File file) {
+    public CommentedYamlConfiguration(File file, boolean doComments) {
         super();
         comments = new HashMap<String, String>();
         this.file = file;
+        this.doComments = doComments;
     }
 
     /**
@@ -62,6 +64,11 @@ class CommentedYamlConfiguration {
         } catch (Exception e) {
             saved = false;
         }
+
+        if (!doComments) {
+            return saved;
+        }
+
         // if there's comments to add and it saved fine, we need to add comments
         if (!comments.isEmpty() && saved) {
             // String array of each line in the config file

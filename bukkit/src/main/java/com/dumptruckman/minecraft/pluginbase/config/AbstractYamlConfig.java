@@ -20,14 +20,14 @@ public abstract class AbstractYamlConfig implements IConfig {
     private BukkitPlugin plugin;
     private Entries entries;
     
-    public AbstractYamlConfig(BukkitPlugin plugin, File configFile, Class<? extends IConfig> configClass) throws IOException {
+    public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, File configFile, Class<? extends IConfig>... configClasses) throws IOException {
         if (configFile.isDirectory()) {
             throw new IllegalArgumentException("configFile may NOT be directory!");
         }
         if (!configFile.getName().endsWith(".yml")) {
             throw new IllegalArgumentException("configFile MUST be yaml!");
         }
-        entries = new Entries(configClass);
+        entries = new Entries(configClasses);
         this.plugin = plugin;
         // Make the data folders
         if (configFile.getParentFile().mkdirs()) {
@@ -42,7 +42,7 @@ public abstract class AbstractYamlConfig implements IConfig {
         }
 
         // Load the configuration file into memory
-        config = new CommentedYamlConfiguration(configFile);
+        config = new CommentedYamlConfiguration(configFile, doComments);
         config.load();
 
         // Sets defaults config values
@@ -128,14 +128,16 @@ public abstract class AbstractYamlConfig implements IConfig {
 
         private final Set<ConfigEntry> entries = new HashSet<ConfigEntry>();
         
-        private Entries(Class<? extends IConfig> configClass) {
+        private Entries(Class<? extends IConfig>... configClasses) {
             Set<Class> classes = new HashSet<Class>();
-            classes.add(configClass);
-            for (Class clazz : configClass.getInterfaces()) {
-                classes.add(clazz);
-            }
-            if (configClass.getSuperclass() != null) {
-                classes.add(configClass.getSuperclass());
+            for (Class configClass : configClasses) {
+                classes.add(configClass);
+                for (Class clazz : configClass.getInterfaces()) {
+                    classes.add(clazz);
+                }
+                if (configClass.getSuperclass() != null) {
+                    classes.add(configClass.getSuperclass());
+                }
             }
             for (Class clazz : classes) {
                 Field[] fields = clazz.getDeclaredFields();

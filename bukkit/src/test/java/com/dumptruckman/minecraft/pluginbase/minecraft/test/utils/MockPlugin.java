@@ -20,6 +20,6 @@ public class MockPlugin extends AbstractBukkitPlugin<MockConfig> {
 
     @Override
     protected MockConfig newConfigInstance() throws IOException {
-        return new MockConfig(this, new File(getDataFolder(), "config.yml"), MockConfig.class);
+        return new MockConfig(this, true, new File(getDataFolder(), "config.yml"), MockConfig.class);
     }
 }

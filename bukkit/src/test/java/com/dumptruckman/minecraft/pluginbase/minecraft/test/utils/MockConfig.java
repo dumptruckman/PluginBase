@@ -16,8 +16,8 @@ public class MockConfig extends AbstractYamlConfig implements BaseConfig {
     public static final ConfigEntry<Boolean> TEST = new SimpleConfigEntry<Boolean>(Boolean.class, "test", true, "# ===[ PluginBase Test ]===");
     public static final ConfigEntry<Null> SETTINGS = new SimpleConfigEntry<Null>(Null.class, "settings", null, "# ===[ PluginBase Settings ]===");
     
-    public MockConfig(BukkitPlugin plugin, File configFile, Class<? extends IConfig> configClass) throws IOException {
-        super(plugin, configFile, configClass);
+    public MockConfig(BukkitPlugin plugin, boolean doComments, File configFile, Class<? extends IConfig> configClass) throws IOException {
+        super(plugin, doComments, configFile, configClass);
     }
 
     @Override
