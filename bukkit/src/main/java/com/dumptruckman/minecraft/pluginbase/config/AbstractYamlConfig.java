@@ -8,19 +8,20 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public abstract class AbstractYamlConfig implements IConfig {
+public abstract class AbstractYamlConfig<C> implements Config<C> {
 
     private CommentedYamlConfiguration config;
     private BukkitPlugin plugin;
     private Entries entries;
     
-    public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, File configFile, Class<? extends IConfig>... configClasses) throws IOException {
+    public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, File configFile, Class<? extends C>... configClasses) throws IOException {
         if (configFile.isDirectory()) {
             throw new IllegalArgumentException("configFile may NOT be directory!");
         }
@@ -128,13 +129,11 @@ public abstract class AbstractYamlConfig implements IConfig {
 
         private final Set<ConfigEntry> entries = new HashSet<ConfigEntry>();
         
-        private Entries(Class<? extends IConfig>... configClasses) {
+        private Entries(Class<? extends C>... configClasses) {
             Set<Class> classes = new HashSet<Class>();
             for (Class configClass : configClasses) {
                 classes.add(configClass);
-                for (Class clazz : configClass.getInterfaces()) {
-                    classes.add(clazz);
-                }
+                classes.addAll(Arrays.asList(configClass.getInterfaces()));
                 if (configClass.getSuperclass() != null) {
                     classes.add(configClass.getSuperclass());
                 }

@@ -4,13 +4,12 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import com.dumptruckman.minecraft.pluginbase.locale.MessageProvider;
 import com.dumptruckman.minecraft.pluginbase.locale.Messages;
 
-import java.util.List;
 import java.util.Locale;
 
 /**
  * Interface for interacting with the config of this plugin.
  */
-public interface BaseConfig extends IConfig {
+public interface BaseConfig<C> extends Config<C> {
 
     /**
      * Locale name config path, default and comments.
