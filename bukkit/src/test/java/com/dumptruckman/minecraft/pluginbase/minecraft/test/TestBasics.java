@@ -10,6 +10,7 @@ package com.dumptruckman.minecraft.pluginbase.minecraft.test;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.MockConfig;
 import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.MockMessages;
+import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.MockPlugin;
 import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.TestInstanceCreator;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
@@ -57,7 +58,7 @@ public class TestBasics {
     public void testEnableDebugMode() {
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("PluginBase");
-        BukkitPlugin myPlugin = (BukkitPlugin) plugin;
+        MockPlugin myPlugin = (MockPlugin) plugin;
 
         // Make sure Core is not null
         assertNotNull(plugin);

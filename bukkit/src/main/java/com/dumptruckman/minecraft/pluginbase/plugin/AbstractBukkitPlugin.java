@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Main plugin class for dumptruckman's Plugin Template.
  */
-public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlugin implements BukkitPlugin<C> {
+public abstract class AbstractBukkitPlugin<C extends BaseConfig<C>> extends JavaPlugin implements BukkitPlugin<C> {
 
     private C config = null;
     private Messager messager = null;

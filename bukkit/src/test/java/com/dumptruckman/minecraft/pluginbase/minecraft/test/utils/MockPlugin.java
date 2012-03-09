@@ -1,5 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.minecraft.test.utils;
 
+import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 
 import java.io.File;
