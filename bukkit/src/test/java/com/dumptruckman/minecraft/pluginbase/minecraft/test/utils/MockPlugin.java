@@ -2,6 +2,7 @@ package com.dumptruckman.minecraft.pluginbase.minecraft.test.utils;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -19,6 +20,6 @@ public class MockPlugin extends AbstractBukkitPlugin<MockConfig> {
 
     @Override
     protected MockConfig newConfigInstance() throws IOException {
-        return new MockConfig(this);
+        return new MockConfig(this, new File(getDataFolder(), "config.yml"), MockConfig.class);
     }
 }

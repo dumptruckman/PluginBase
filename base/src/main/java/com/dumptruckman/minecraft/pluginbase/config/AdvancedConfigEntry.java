@@ -8,7 +8,7 @@ public abstract class AdvancedConfigEntry<T> extends SimpleConfigEntry<T> {
 /*
     @Override
     public T get() {
-        if (!isPluginSet()) {
+        if (!isConfigSet()) {
             Logging.finest("Retrieved default for '" + getName() + "'");
             return convertForGet((K) getDefault());
         }
@@ -22,7 +22,7 @@ public abstract class AdvancedConfigEntry<T> extends SimpleConfigEntry<T> {
 
     @Override
     public synchronized void set(T value) {
-        if (!isPluginSet()) {
+        if (!isConfigSet()) {
             Logging.finest("Cannot set values when Config is unitialized");
             return;
         }

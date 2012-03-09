@@ -252,7 +252,7 @@ class CommentedYamlConfiguration {
                     writer.write(buffer, 0, n);
                 }
             } catch (IOException e) {
-                System.out.println("Exception ");
+                e.printStackTrace();
             } finally {
                 if (is != null) {
                     try {
@@ -276,8 +276,9 @@ class CommentedYamlConfiguration {
      * @throws java.io.IOException
      */
     private boolean stringToFile(String source, File file) throws IOException {
+        OutputStreamWriter out = null;
         try {
-            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+            out = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
 
             source.replaceAll("\n", System.getProperty("line.separator"));
 
@@ -285,8 +286,16 @@ class CommentedYamlConfiguration {
             out.close();
             return true;
         } catch (IOException e) {
-            System.out.println("Exception ");
+            e.printStackTrace();
             return false;
+        } finally {
+            if (out != null) {
+                try {
+                    out.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

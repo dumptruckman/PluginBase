@@ -6,13 +6,17 @@ import org.bukkit.configuration.Configuration;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public abstract class AbstractYamlConfig implements BaseConfig {
+public abstract class AbstractYamlConfig implements IConfig {
 
     /*static {
         Entries.registerConfig(BaseConfig.class);
@@ -20,20 +24,26 @@ public abstract class AbstractYamlConfig implements BaseConfig {
 
     private CommentedYamlConfiguration config;
     private BukkitPlugin plugin;
+    private Entries entries;
     
-    public AbstractYamlConfig(BukkitPlugin plugin) throws IOException {
-        Entries.registerConfig(BaseConfig.class);
+    public AbstractYamlConfig(BukkitPlugin plugin, File configFile, Class<? extends IConfig> configClass) throws IOException {
+        if (configFile.isDirectory()) {
+            throw new IllegalArgumentException("configFile may NOT be directory!");
+        }
+        if (!configFile.getName().endsWith(".yml")) {
+            throw new IllegalArgumentException("configFile MUST be yaml!");
+        }
+        entries = new Entries(configClass);
         this.plugin = plugin;
         // Make the data folders
-        if (this.plugin.getDataFolder().mkdirs()) {
-            Logging.fine("Created data folder.");
+        if (configFile.getParentFile().mkdirs()) {
+            Logging.fine("Created folder for config file.");
         }
 
         // Check if the config file exists.  If not, create it.
-        File configFile = new File(this.plugin.getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             if (configFile.createNewFile()) {
-                Logging.fine("Created config file.");
+                Logging.fine("Created config file: " + configFile.getAbsolutePath());
             }
         }
 
@@ -54,7 +64,7 @@ public abstract class AbstractYamlConfig implements BaseConfig {
      * Loads default settings for any missing config values.
      */
     private void setDefaults() {
-        for (ConfigEntry path : Entries.entries) {
+        for (ConfigEntry path : entries.entries) {
             config.addComment(path.getName(), path.getComments());
             if (getConfig().get(path.getName()) == null) {
                 if (path.getDefault() != null) {
@@ -105,27 +115,67 @@ public abstract class AbstractYamlConfig implements BaseConfig {
     public void save() {
         this.config.save();
     }
-/*
-    public Object get(ConfigEntry entry) {
-        Object result = getConfig().get(entry.getName());
-        if (!entry.getType().isInstance(result)) {
-            Logging.warning("Config value: " + entry.getName() + " is not valid.");
-            Logging.warning("Setting to default value: " + entry.getDefault());
-            result = entry.getDefault();
-            set(entry, result);
-        }
-        return result;
-    }
-    public void set(ConfigEntry entry, Object newValue) {
-        if (entry.getType().isInstance(newValue)) {
-            getConfig().set(entry.getName(), newValue);
-        } else {
-            throw new IllegalArgumentException("newValue is not correct type for " + entry.getName());
-        }
-    }
-    */
 
     protected abstract ConfigEntry getSettingsEntry();
     
     protected abstract String getHeader();
+
+    public final class Entries {
+        
+        private Entries(Class<? extends IConfig> configClass) {
+            Set<Class> classes = new HashSet<Class>();
+            classes.add(configClass);
+            for (Class clazz : configClass.getInterfaces()) {
+                classes.add(clazz);
+            }
+            if (configClass.getSuperclass() != null) {
+                classes.add(configClass.getSuperclass());
+            }
+            for (Class clazz : classes) {
+                Field[] fields = clazz.getDeclaredFields();
+                for (Field field : fields) {
+                    if (!Modifier.isStatic(field.getModifiers())) {
+                        continue;
+                    }
+                    field.setAccessible(true);
+                    try {
+                        if (ConfigEntry.class.isInstance(field.get(null))) {
+                            try {
+    
+                                entries.add((ConfigEntry) field.get(null));
+                            } catch(IllegalAccessException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } catch (IllegalArgumentException ignore) {
+                    } catch (IllegalAccessException ignore) {
+                    } catch (NullPointerException ignore) { }
+                }
+            }
+        }
+
+        protected final Set<ConfigEntry> entries = new HashSet<ConfigEntry>();
+
+        public void registerConfig(Class configClass) {
+            Field[] fields = configClass.getDeclaredFields();
+            for (Field field : fields) {
+                if (!Modifier.isStatic(field.getModifiers())) {
+                    continue;
+                }
+                field.setAccessible(true);
+                try {
+                    if (ConfigEntry.class.isInstance(field.get(null))) {
+                        try {
+
+                            entries.add((ConfigEntry) field.get(null));
+                        } catch(IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (IllegalArgumentException ignore) {
+                } catch (IllegalAccessException ignore) {
+                } catch (NullPointerException ignore) { }
+            }
+        }
+    }
 }
