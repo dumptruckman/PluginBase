@@ -2,7 +2,6 @@ package com.dumptruckman.minecraft.pluginbase.config;
 
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import com.dumptruckman.minecraft.pluginbase.locale.Messages;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +19,6 @@ public class SimpleConfigEntry<T> implements ConfigEntry<T> {
         this.def = def;
         this.comments = new ArrayList<String>(Arrays.asList(comments));
         this.type = type;
-        Entries.entries.add(this);
     }
 
     /**

@@ -9,18 +9,12 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 /**
  * Commented Yaml implementation of ConfigBase.
  */
 public abstract class AbstractYamlConfig implements IConfig {
-
-    /*static {
-        Entries.registerConfig(BaseConfig.class);
-    }*/
 
     private CommentedYamlConfiguration config;
     private BukkitPlugin plugin;
@@ -87,7 +81,14 @@ public abstract class AbstractYamlConfig implements IConfig {
         return true;
     }
     
+    protected final boolean isInConfig(ConfigEntry entry) {
+        return entries.entries.contains(entry);
+    }
+    
     public <T> T get(ConfigEntry<T> entry) {
+        if (!isInConfig(entry)) {
+            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+        }
         T t = entry.deserialize(getConfig().get(entry.getName()));
         if (!isValid(entry, t)) {
             return entry.getDefault();
@@ -97,6 +98,9 @@ public abstract class AbstractYamlConfig implements IConfig {
 
     @Override
     public <T> boolean set(ConfigEntry<T> entry, T newValue) {
+        if (!isInConfig(entry)) {
+            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+        }
         if (!entry.isValid(newValue)) {
             return false;
         }
@@ -120,7 +124,9 @@ public abstract class AbstractYamlConfig implements IConfig {
     
     protected abstract String getHeader();
 
-    public final class Entries {
+    private final class Entries {
+
+        private final Set<ConfigEntry> entries = new HashSet<ConfigEntry>();
         
         private Entries(Class<? extends IConfig> configClass) {
             Set<Class> classes = new HashSet<Class>();
@@ -151,30 +157,6 @@ public abstract class AbstractYamlConfig implements IConfig {
                     } catch (IllegalAccessException ignore) {
                     } catch (NullPointerException ignore) { }
                 }
-            }
-        }
-
-        protected final Set<ConfigEntry> entries = new HashSet<ConfigEntry>();
-
-        public void registerConfig(Class configClass) {
-            Field[] fields = configClass.getDeclaredFields();
-            for (Field field : fields) {
-                if (!Modifier.isStatic(field.getModifiers())) {
-                    continue;
-                }
-                field.setAccessible(true);
-                try {
-                    if (ConfigEntry.class.isInstance(field.get(null))) {
-                        try {
-
-                            entries.add((ConfigEntry) field.get(null));
-                        } catch(IllegalAccessException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } catch (IllegalArgumentException ignore) {
-                } catch (IllegalAccessException ignore) {
-                } catch (NullPointerException ignore) { }
             }
         }
     }
