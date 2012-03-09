@@ -7,7 +7,7 @@ public interface IConfig {
      */
     void save();
     
-    <T> T get(ConfigEntry<T> entry);
+    <T> T get(ConfigEntry<T> entry) throws IllegalArgumentException;
     
-    <T> boolean set(ConfigEntry<T> entry, T value);
+    <T> boolean set(ConfigEntry<T> entry, T value) throws IllegalArgumentException;
 }

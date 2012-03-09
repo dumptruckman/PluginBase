@@ -85,7 +85,7 @@ public abstract class AbstractYamlConfig implements IConfig {
         return entries.entries.contains(entry);
     }
     
-    public <T> T get(ConfigEntry<T> entry) {
+    public <T> T get(ConfigEntry<T> entry) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("ConfigEntry not registered to this config!");
         }
@@ -97,7 +97,7 @@ public abstract class AbstractYamlConfig implements IConfig {
     }
 
     @Override
-    public <T> boolean set(ConfigEntry<T> entry, T newValue) {
+    public <T> boolean set(ConfigEntry<T> entry, T newValue) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("ConfigEntry not registered to this config!");
         }
