@@ -21,11 +21,6 @@ public class MockConfig extends AbstractYamlConfig<MockConfig> implements BaseCo
     }
 
     @Override
-    protected ConfigEntry getSettingsEntry() {
-       return SETTINGS;
-    }
-
-    @Override
     protected String getHeader() {
         return "# ===[ PluginBase Config ]===";
     }
