@@ -9,7 +9,7 @@ import java.util.Locale;
 /**
  * Interface for interacting with the config of this plugin.
  */
-public interface BaseConfig<C> extends Config<C> {
+public interface BaseConfig extends Config {
 
     /**
      * Locale name config path, default and comments.

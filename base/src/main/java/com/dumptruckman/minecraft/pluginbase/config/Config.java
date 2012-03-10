@@ -1,6 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.config;
 
-public interface Config<C> {
+public interface Config {
 
     /**
      * Convenience method for saving the config to disk.

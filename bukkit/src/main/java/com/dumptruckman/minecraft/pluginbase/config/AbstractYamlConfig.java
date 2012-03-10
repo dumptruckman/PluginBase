@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public abstract class AbstractYamlConfig<C> implements Config<C> {
+public abstract class AbstractYamlConfig<C> implements Config {
 
     private CommentedYamlConfiguration config;
     private BukkitPlugin plugin;

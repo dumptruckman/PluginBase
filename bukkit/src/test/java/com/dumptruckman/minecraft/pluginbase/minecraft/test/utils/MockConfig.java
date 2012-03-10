@@ -11,7 +11,7 @@ import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import java.io.File;
 import java.io.IOException;
 
-public class MockConfig extends AbstractYamlConfig<MockConfig> implements BaseConfig<MockConfig> {
+public class MockConfig extends AbstractYamlConfig<MockConfig> implements BaseConfig {
     
     public static final ConfigEntry<Boolean> TEST = new SimpleConfigEntry<Boolean>(Boolean.class, "test", true, "# ===[ PluginBase Test ]===");
     public static final ConfigEntry<Null> SETTINGS = new SimpleConfigEntry<Null>(Null.class, "settings", null, "# ===[ PluginBase Settings ]===");
