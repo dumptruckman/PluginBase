@@ -120,8 +120,6 @@ public abstract class AbstractYamlConfig<C> implements Config {
     public void save() {
         this.config.save();
     }
-
-    protected abstract ConfigEntry getSettingsEntry();
     
     protected abstract String getHeader();
 
