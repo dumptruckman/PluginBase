@@ -84,10 +84,14 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         
     }
 
+    public void preReload() {
+
+    }
+
     /**
      * Nulls the config object and reloads a new one.
      */
-    public void reloadConfig() {
+    public final void reloadConfig() {
         this.config = null;
         this.messager = null;
 
@@ -97,6 +101,10 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
             firstRun();
             config().set(BaseConfig.FIRST_RUN, false);
         }
+    }
+
+    public void postReload() {
+
     }
 
     private final void _registerCommands() {
