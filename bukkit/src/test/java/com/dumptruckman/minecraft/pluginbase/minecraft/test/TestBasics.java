@@ -27,7 +27,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -96,6 +98,14 @@ public class TestBasics {
         
         myPlugin.config().save();
         
-        System.out.println(myPlugin.config().get(MockConfig.TEST));
+        Assert.assertEquals(MockConfig.SPECIFIC_TEST.getNewTypeMap(), myPlugin.config().getMap(MockConfig.SPECIFIC_TEST));
+        Assert.assertEquals(null, myPlugin.config().get(MockConfig.SPECIFIC_TEST.specific("test1")));
+        myPlugin.config().set(MockConfig.SPECIFIC_TEST.specific("test1"), 25);
+        Assert.assertEquals(25, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST.specific("test1")));
+        myPlugin.config().save();
+        plugin.onCommand(mockCommandSender, mockCommand, "", reloadArgs);
+        Map<String, Integer> testMap = new HashMap<String, Integer>(1);
+        testMap.put("test1", 25);
+        Assert.assertEquals(testMap, myPlugin.config().getMap(MockConfig.SPECIFIC_TEST));
     }
 }

@@ -3,13 +3,17 @@ package com.dumptruckman.minecraft.pluginbase.config;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 /**
@@ -62,7 +66,10 @@ public abstract class AbstractYamlConfig<C> implements Config {
         for (ConfigEntry path : entries.entries) {
             config.addComment(path.getName(), path.getComments());
             if (getConfig().get(path.getName()) == null) {
-                if (path.getDefault() != null) {
+                if (path instanceof MappedConfigEntry) {
+                    Logging.fine("Config: Defaulting map for '" + path.getName() + "'");
+                    getConfig().set(path.getName(), ((MappedConfigEntry) path).getNewTypeMap());
+                } else if (path.getDefault() != null) {
                     Logging.fine("Config: Defaulting '" + path.getName() + "' to " + path.serialize(path.getDefault()));
                     getConfig().set(path.getName(), path.serialize(path.getDefault()));
                 }
@@ -85,10 +92,34 @@ public abstract class AbstractYamlConfig<C> implements Config {
     protected final boolean isInConfig(ConfigEntry entry) {
         return entries.entries.contains(entry);
     }
-    
+
+    @Override
+    public <T> Map<String, T> getMap(MappedConfigEntry<T> entry) throws IllegalArgumentException {
+        if (!isInConfig(entry)) {
+            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+        }
+        entry.getName(); // clears any specific path.
+        Object obj = getConfig().get(entry.getName());
+        if (obj instanceof ConfigurationSection) {
+            obj = ((ConfigurationSection) obj).getValues(false);
+        }
+        if (!(obj instanceof Map)) {
+            obj = new HashMap<String, Object>();
+        }
+        Map<String, Object> map = (Map<String, Object>) obj;
+        Map<String, T> resultMap = entry.getNewTypeMap();
+        for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
+            resultMap.put(mapEntry.getKey(), entry.deserialize(mapEntry.getValue()));
+        }
+        return resultMap;
+    }
+
     public <T> T get(ConfigEntry<T> entry) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+        }
+        if (entry instanceof MappedConfigEntry && ((MappedConfigEntry) entry).getSpecificPath().isEmpty()) {
+            throw new IllegalArgumentException("This MappedConfigEntry requires a specific path!");
         }
         T t = entry.deserialize(getConfig().get(entry.getName()));
         if (!isValid(entry, t)) {
@@ -101,6 +132,9 @@ public abstract class AbstractYamlConfig<C> implements Config {
     public <T> boolean set(ConfigEntry<T> entry, T newValue) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+        }
+        if (entry instanceof MappedConfigEntry && ((MappedConfigEntry) entry).getSpecificPath().isEmpty()) {
+            throw new IllegalArgumentException("This MappedConfigEntry requires a specific path!");
         }
         if (!entry.isValid(newValue)) {
             return false;

@@ -1,7 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
-import com.dumptruckman.minecraft.pluginbase.config.SimpleConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
 import com.dumptruckman.minecraft.pluginbase.locale.SimpleMessager;

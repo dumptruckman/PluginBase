@@ -34,9 +34,9 @@ public interface ConfigEntry<T> {
     //void set(T value);
 
     boolean isValid(Object obj);
-    
+
     Object serialize(T value);
-    
+
     T deserialize(Object o);
 
     Message getInvalidMessage();

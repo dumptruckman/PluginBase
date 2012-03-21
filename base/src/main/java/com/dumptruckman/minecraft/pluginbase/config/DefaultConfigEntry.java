@@ -1,31 +1,28 @@
 package com.dumptruckman.minecraft.pluginbase.config;
 
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
-import com.dumptruckman.minecraft.pluginbase.locale.Messages;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class SimpleConfigEntry<T> implements ConfigEntry<T> {
+class DefaultConfigEntry<T> implements ConfigEntry<T> {
 
     private String path;
     private T def;
     private final List<String> comments;
     private Class<T> type;
+    private EntrySerializer<T> serializer;
+    private EntryValidator validator;
 
-    public SimpleConfigEntry(Class<T> type, String path, T def, String... comments) {
+    public DefaultConfigEntry(Class<T> type, String path, T def, List<String> comments,
+                              EntrySerializer<T> serializer, EntryValidator validator) {
         this.path = path;
         this.def = def;
-        this.comments = new ArrayList<String>(Arrays.asList(comments));
+        this.comments = comments;
         this.type = type;
+        this.serializer = serializer;
+        this.validator = validator;
     }
 
-    /**
-     * Retrieves the path for a config option.
-     *
-     * @return The path for a config option.
-     */
     public String getName() {
         return this.path;
     }
@@ -53,20 +50,20 @@ public class SimpleConfigEntry<T> implements ConfigEntry<T> {
     }
 
     public boolean isValid(Object obj) {
-        return true;
+        return validator.isValid(obj);
     }
 
     public Message getInvalidMessage() {
-        return Messages.BLANK;
+        return validator.getInvalidMessage();
     }
 
     @Override
     public Object serialize(T value) {
-        return value;
+        return serializer.serialize(value);
     }
 
     @Override
     public T deserialize(Object o) {
-        return getType().cast(o);
+        return serializer.deserialize(o);
     }
 }
