@@ -37,6 +37,7 @@ public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<
         if (args.size() == 1) {
             if (args.get(0).equalsIgnoreCase("off")) {
                 plugin.config().set(BaseConfig.DEBUG_MODE, 0);
+                Logging.setDebugMode(plugin.config().get(BaseConfig.DEBUG_MODE));
                 plugin.config().save();
             } else {
                 try {
@@ -45,6 +46,7 @@ public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<
                         throw new NumberFormatException();
                     }
                     plugin.config().set(BaseConfig.DEBUG_MODE, debugLevel);
+                    Logging.setDebugMode(plugin.config().get(BaseConfig.DEBUG_MODE));
                     plugin.config().save();
                 } catch (NumberFormatException e) {
                     messager.bad(Messages.INVALID_DEBUG, sender);

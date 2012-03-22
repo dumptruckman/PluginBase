@@ -79,12 +79,16 @@ public class TestBasics {
         // Assert debug mode is off
         Assert.assertEquals(0, (int) myPlugin.config().get(BaseConfig.DEBUG_MODE));
 
+        Assert.assertFalse(myPlugin.config().get(BaseConfig.FIRST_RUN));
+
         // Send the debug command.
         String[] debugArgs = new String[] { "debug", "3" };
         plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
 
         String[] reloadArgs = new String[] { "reload" };
         plugin.onCommand(mockCommandSender, mockCommand, "", reloadArgs);
+
+        Assert.assertFalse(myPlugin.config().get(BaseConfig.FIRST_RUN));
 
         Assert.assertEquals(3, (int) myPlugin.config().get(BaseConfig.DEBUG_MODE));
         

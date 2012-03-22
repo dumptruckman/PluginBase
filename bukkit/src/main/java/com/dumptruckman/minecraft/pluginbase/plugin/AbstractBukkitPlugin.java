@@ -92,12 +92,15 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     public final void reloadConfig() {
         this.config = null;
         this.messager = null;
+        
+        Logging.setDebugMode(config().get(BaseConfig.DEBUG_MODE));
 
         // Do any import first run stuff here.
         if (config().get(BaseConfig.FIRST_RUN)) {
             Logging.info("First run!");
             firstRun();
             config().set(BaseConfig.FIRST_RUN, false);
+            config().save();
         }
     }
 
