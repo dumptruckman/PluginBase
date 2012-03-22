@@ -33,17 +33,19 @@ public class Perm {
     private final String description;
     private final Map<String, Boolean> children;
     private final PermissionDefault permissionDefault;
+    private final Map<String, Boolean> parents;
 
     private final Map<String, Permission> permissionMap = new HashMap<String, Permission>();
     //private Permission permission = null;
     
     private String extra = "";
     
-    private Perm(String name, String description, Map<String, Boolean> children, PermissionDefault permissionDefault) {
+    private Perm(String name, String description, Map<String, Boolean> children, PermissionDefault permissionDefault, Map<String, Boolean> parents) {
         this.name = name;
         this.description = description;
         this.children = children;
         this.permissionDefault = permissionDefault;
+        this.parents = parents;
     }
 
     public final String getName() {
@@ -61,6 +63,10 @@ public class Perm {
 
     public final Map<String, Boolean> getChildren() {
         return this.children;
+    }
+
+    public final Map<String, Boolean> getParents() {
+        return this.parents;
     }
 
     public final PermissionDefault getPermissionDefault() {
@@ -84,6 +90,9 @@ public class Perm {
         if (permission == null) {
             permission = new Permission(getName(), this.description, this.permissionDefault, this.children);
             permissionMap.put(extra, permission);
+            for (Map.Entry<String, Boolean> parent : parents.entrySet()) {
+                permission.addParent(parent.getKey(), parent.getValue());
+            }
         }
         if (!registeredPerms.contains(permission)) {
             Bukkit.getPluginManager().addPermission(permission);
@@ -100,6 +109,7 @@ public class Perm {
         private String description = "";
         private Map<String, Boolean> children = new HashMap<String, Boolean>();
         private PermissionDefault permissionDefault = PermissionDefault.OP;
+        private Map<String, Boolean> parents = new HashMap<String, Boolean>();
 
         public Builder(String permName) {
             this.name = permName;
@@ -115,13 +125,18 @@ public class Perm {
             return this;
         }
 
+        public Builder parent(String name, Boolean state) {
+            parents.put(name, state);
+            return this;
+        }
+
         public Builder def(PermissionDefault permissionDefault) {
             this.permissionDefault = permissionDefault;
             return this;
         }
 
         public Perm build() {
-            return new Perm(this.name, this.description, this.children, this.permissionDefault);
+            return new Perm(this.name, this.description, this.children, this.permissionDefault, this.parents);
         }
     }
 }
