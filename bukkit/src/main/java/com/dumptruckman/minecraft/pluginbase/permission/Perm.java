@@ -29,12 +29,15 @@ public class Perm {
     public static final Perm COMMAND_HELP = new Builder("help")
             .desc("Displays a nice help menu.").def(PermissionDefault.OP).build();
 
-    private String name;
+    private final String name;
     private final String description;
     private final Map<String, Boolean> children;
     private final PermissionDefault permissionDefault;
+
+    private final Map<String, Permission> permissionMap = new HashMap<String, Permission>();
+    //private Permission permission = null;
     
-    private Permission permission = null;
+    private String extra = "";
     
     private Perm(String name, String description, Map<String, Boolean> children, PermissionDefault permissionDefault) {
         this.name = name;
@@ -43,15 +46,13 @@ public class Perm {
         this.permissionDefault = permissionDefault;
     }
 
-    public final void setName(String name) {
-        if (permission != null) {
-            throw new IllegalStateException("Permission already finalized!");
-        }
-        this.name = name;
-    }
-
     public final String getName() {
-        return this.name;
+        return name + extra;
+    }
+    
+    public final Perm specific(String node) {
+        extra = "." + node;
+        return this;
     }
     
     public final String getDescription() {
@@ -72,22 +73,26 @@ public class Perm {
      * @param permissible Permissible to check permission for.
      * @return True if sender has the permission.
      */
-    public final boolean hasPermission(Permissible permissible) throws IllegalStateException {
-        return permissible.hasPermission(getPermission());
+    public final boolean hasPermission(Permissible permissible) {
+        boolean result = permissible.hasPermission(getPermission());;
+        extra = "";
+        return result;
     }
 
-    public final Permission getPermission() throws IllegalStateException {
-        if (!Perm.isRegistered(this)) {
-            if (plugin == null) {
-                throw new IllegalStateException("Plugin must be registered first!");
-            }
-            setName(plugin.getDescription().getName().toLowerCase() + "." + getName());
-            this.permission = new Permission(this.name, this.description, this.permissionDefault, this.children);
-            Bukkit.getPluginManager().addPermission(this.permission);
-            registeredPerms.add(this);
+    public final Permission getPermission() {
+        Permission permission = permissionMap.get(extra);
+        if (permission == null) {
+            permission = new Permission(getName(), this.description, this.permissionDefault, this.children);
+            permissionMap.put(extra, permission);
         }
-        return this.permission;
+        if (!registeredPerms.contains(permission)) {
+            Bukkit.getPluginManager().addPermission(permission);
+            registeredPerms.add(permission);
+        }
+        return permission;
     }
+
+    static final Set<Permission> registeredPerms = new HashSet<Permission>();
 
     public static class Builder {
 
@@ -118,25 +123,5 @@ public class Perm {
         public Perm build() {
             return new Perm(this.name, this.description, this.children, this.permissionDefault);
         }
-    }
-
-    private static Plugin plugin = null;
-
-    /**
-     * Registers all Permission to the plugin.
-     *
-     * @param plugin Plugin to register permissions to.
-     */
-    public static void registerPlugin(Plugin plugin) {
-        if (Perm.plugin != null) {
-            throw new IllegalStateException("May not register another plugin!");
-        }
-        Perm.plugin = plugin;
-    }
-
-    static final Set<Perm> registeredPerms = new HashSet<Perm>();
-    
-    private static boolean isRegistered(Perm perm) {
-        return registeredPerms.contains(perm);
     }
 }

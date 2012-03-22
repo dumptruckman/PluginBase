@@ -63,7 +63,6 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         preEnable();
         CommandMessages.init();
         Logging.init(this);
-        Perm.registerPlugin(this);
 
         reloadConfig();
 
