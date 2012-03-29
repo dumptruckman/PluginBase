@@ -88,6 +88,9 @@ public class TestBasics {
         String[] reloadArgs = new String[] { "reload" };
         plugin.onCommand(mockCommandSender, mockCommand, "", reloadArgs);
 
+        String[] helpArgs = new String[] { "help" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", helpArgs);
+
         Assert.assertFalse(myPlugin.config().get(BaseConfig.FIRST_RUN));
 
         Assert.assertEquals(3, (int) myPlugin.config().get(BaseConfig.DEBUG_MODE));

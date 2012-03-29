@@ -29,11 +29,7 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
         this.setCommandUsage(messager.getMessage(CommandMessages.HELP_USAGE, plugin.getCommandPrefixes().get(0)));
         this.setArgRange(0, 2);
         for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
-            this.addKey(prefix);
-            this.addKey(prefix + "h");
-            this.addKey(prefix + "help");
             this.addKey(prefix + " help");
-            this.addKey(prefix + "search");
             this.addKey(prefix + " search");
         }
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " help ?");

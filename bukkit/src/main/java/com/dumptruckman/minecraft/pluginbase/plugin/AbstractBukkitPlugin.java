@@ -7,6 +7,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.SimpleMessager;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.PermHandler;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.DebugCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.ReloadCommand;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.pneumaticraft.commandhandler.CommandHandler;
@@ -111,6 +112,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     private final void _registerCommands() {
         getCommandHandler().registerCommand(new DebugCommand<AbstractBukkitPlugin>(this));
         getCommandHandler().registerCommand(new ReloadCommand<AbstractBukkitPlugin>(this));
+        getCommandHandler().registerCommand(new HelpCommand<AbstractBukkitPlugin>(this));
     }
 
     /**
