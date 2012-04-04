@@ -16,7 +16,7 @@ public class Perm {
     /**
      * ALL plugin permissions.
      */
-    public static final Perm ALL = new Builder("*").usePluginName().build();
+    public static final Perm ALL = new Builder("*").notAll().usePluginName().build();
 
     /**
      * ALL commmand permissions.
