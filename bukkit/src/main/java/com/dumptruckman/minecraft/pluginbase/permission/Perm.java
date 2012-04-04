@@ -14,20 +14,30 @@ import java.util.Set;
 public class Perm {
 
     /**
+     * ALL plugin permissions.
+     */
+    public static final Perm ALL = new Builder("*").usePluginName().build();
+
+    /**
+     * ALL commmand permissions.
+     */
+    public static final Perm ALL_CMD = new Builder("cmd.*").usePluginName().parent(ALL).build();
+
+    /**
      * Permission for debug command.
      */
-    public static final Perm COMMAND_DEBUG = new Builder("cmd.debug").usePluginName()
-            .desc("Spams the console a bunch.").def(PermissionDefault.OP).build();
+    public static final Perm COMMAND_DEBUG = new Builder("cmd.debug").usePluginName().commandPermission()
+            .desc("Spams the console a bunch.").build();
     /**
      * Permission for reload command.
      */
-    public static final Perm COMMAND_RELOAD = new Builder("cmd.reload").usePluginName()
-            .desc("Reloads the config file.").def(PermissionDefault.OP).build();
+    public static final Perm COMMAND_RELOAD = new Builder("cmd.reload").usePluginName().commandPermission()
+            .desc("Reloads the config file.").build();
     /**
      * Permission for help command.
      */
-    public static final Perm COMMAND_HELP = new Builder("cmd.help").usePluginName()
-            .desc("Displays a nice help menu.").def(PermissionDefault.OP).build();
+    public static final Perm COMMAND_HELP = new Builder("cmd.help").usePluginName().commandPermission()
+            .desc("Displays a nice help menu.").build();
 
     private final String name;
     private final String description;
@@ -119,6 +129,7 @@ public class Perm {
         private PermissionDefault permissionDefault = PermissionDefault.OP;
         private Map<String, Boolean> parents = new HashMap<String, Boolean>();
         private boolean baseName = false;
+        private boolean all = true;
 
         public Builder(String permName) {
             this.name = permName;
@@ -163,6 +174,15 @@ public class Perm {
             return this;
         }
 
+        public Builder notAll() {
+            all = false;
+            return this;
+        }
+
+        public Builder commandPermission() {
+            return parent(ALL_CMD);
+        }
+
         public Builder def(PermissionDefault permissionDefault) {
             this.permissionDefault = permissionDefault;
             return this;
@@ -174,6 +194,9 @@ public class Perm {
         }
 
         public Perm build() {
+            if (all) {
+                parent(ALL);
+            }
             return new Perm(this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName);
         }
     }
