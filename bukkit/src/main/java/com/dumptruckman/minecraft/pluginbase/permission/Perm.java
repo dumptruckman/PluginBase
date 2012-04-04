@@ -129,9 +129,33 @@ public class Perm {
             return this;
         }
 
+        public Builder child(Perm perm) {
+            return child(perm.getName());
+        }
+
+        public Builder child(String name) {
+            return child(name, true);
+        }
+
+        public Builder child(Perm perm, Boolean state) {
+            return child(perm.getName(), state);
+        }
+
         public Builder child(String name, Boolean state) {
             children.put(name, state);
             return this;
+        }
+
+        public Builder parent(Perm perm) {
+            return parent(perm.getName());
+        }
+
+        public Builder parent(String name) {
+            return parent(name, true);
+        }
+
+        public Builder parent(Perm perm, Boolean state) {
+            return parent(perm.getName(), state);
         }
 
         public Builder parent(String name, Boolean state) {
