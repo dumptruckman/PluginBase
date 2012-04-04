@@ -16,12 +16,12 @@ public class Perm {
     /**
      * ALL plugin permissions.
      */
-    public static final Perm ALL = new Builder("*").notAll().usePluginName().build();
+    public static final Perm ALL = new Builder("*").usePluginName().build();
 
     /**
      * ALL commmand permissions.
      */
-    public static final Perm ALL_CMD = new Builder("cmd.*").usePluginName().parent(ALL).build();
+    public static final Perm ALL_CMD = new Builder("cmd.*").usePluginName().addToAll().build();
 
     /**
      * Permission for debug command.
@@ -129,7 +129,7 @@ public class Perm {
         private PermissionDefault permissionDefault = PermissionDefault.OP;
         private Map<String, Boolean> parents = new HashMap<String, Boolean>();
         private boolean baseName = false;
-        private boolean all = true;
+        private boolean all = false;
 
         public Builder(String permName) {
             this.name = permName;
@@ -174,8 +174,8 @@ public class Perm {
             return this;
         }
 
-        public Builder notAll() {
-            all = false;
+        public Builder addToAll() {
+            all = true;
             return this;
         }
 
