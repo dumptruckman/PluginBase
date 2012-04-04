@@ -16,17 +16,17 @@ public class Perm {
     /**
      * Permission for debug command.
      */
-    public static final Perm COMMAND_DEBUG = new Builder("debug").usePluginName()
+    public static final Perm COMMAND_DEBUG = new Builder("cmd.debug").usePluginName()
             .desc("Spams the console a bunch.").def(PermissionDefault.OP).build();
     /**
      * Permission for reload command.
      */
-    public static final Perm COMMAND_RELOAD = new Builder("reload").usePluginName()
+    public static final Perm COMMAND_RELOAD = new Builder("cmd.reload").usePluginName()
             .desc("Reloads the config file.").def(PermissionDefault.OP).build();
     /**
      * Permission for help command.
      */
-    public static final Perm COMMAND_HELP = new Builder("help").usePluginName()
+    public static final Perm COMMAND_HELP = new Builder("cmd.help").usePluginName()
             .desc("Displays a nice help menu.").def(PermissionDefault.OP).build();
 
     private final String name;
