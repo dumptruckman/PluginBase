@@ -18,7 +18,7 @@ import java.util.List;
  * A generic paginated command.
  * @param <T> The type of items on the page.
  */
-public abstract class PaginatedCommand<T> extends Command {
+abstract class PaginatedCommand<T> extends Command {
     private static final int DEFAULT_ITEMS_PER_PAGE = 9;
     /**
      * The number of items per page.

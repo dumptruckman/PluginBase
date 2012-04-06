@@ -27,6 +27,12 @@ public abstract class PluginCommand<P extends AbstractBukkitPlugin> extends Comm
         this.messager = this.plugin.getMessager();
     }
 
+    public final void addPrefixedKey(String key) {
+        for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
+            this.addKey(prefix + key);
+        }
+    }
+
     @Override
     public abstract void runCommand(CommandSender sender, List<String> args);
 }

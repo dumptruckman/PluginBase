@@ -23,6 +23,12 @@ public abstract class PaginatedPluginCommand<T, P extends AbstractBukkitPlugin> 
         this.messager = this.plugin.getMessager();
     }
 
+    public final void addPrefixedKey(String key) {
+        for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
+            this.addKey(prefix + key);
+        }
+    }
+
     @Override
     public abstract void runCommand(CommandSender sender, List<String> args);
 }

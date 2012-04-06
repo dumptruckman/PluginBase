@@ -24,10 +24,7 @@ public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<
         this.setName(messager.getMessage(CommandMessages.DEBUG_NAME));
         this.setCommandUsage(messager.getMessage(CommandMessages.DEBUG_USAGE, plugin.getCommandPrefixes().get(0)));
         this.setArgRange(0, 1);
-        for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
-            this.addKey(prefix + " debug");
-            this.addKey(prefix + "debug");
-        }
+        this.addPrefixedKey(" debug");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " debug " + ChatColor.GOLD + "2");
         this.setPermission(Perm.COMMAND_DEBUG.getPermission());
     }

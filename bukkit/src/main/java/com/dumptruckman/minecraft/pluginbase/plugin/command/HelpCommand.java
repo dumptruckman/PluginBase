@@ -28,10 +28,8 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
         this.setName(messager.getMessage(CommandMessages.HELP_NAME, plugin.getPluginName()));
         this.setCommandUsage(messager.getMessage(CommandMessages.HELP_USAGE, plugin.getCommandPrefixes().get(0)));
         this.setArgRange(0, 2);
-        for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
-            this.addKey(prefix + " help");
-            this.addKey(prefix + " search");
-        }
+        this.addPrefixedKey(" help");
+        this.addPrefixedKey(" search");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " help ?");
         this.setPermission(Perm.COMMAND_HELP.getPermission());
         this.setItemsPerPage(7); // SUPPRESS CHECKSTYLE: MagicNumberCheck

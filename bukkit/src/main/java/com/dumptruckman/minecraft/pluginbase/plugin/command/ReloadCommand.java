@@ -17,10 +17,7 @@ public class ReloadCommand<P extends AbstractBukkitPlugin> extends PluginCommand
         setName(messager.getMessage(CommandMessages.RELOAD_NAME));
         setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " reload");
         setArgRange(0, 0);
-        for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
-            this.addKey(prefix + " reload");
-            this.addKey(prefix + "reload");
-        }
+        this.addPrefixedKey(" reload");
         setPermission(Perm.COMMAND_RELOAD.getPermission());
     }
 
