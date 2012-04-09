@@ -27,11 +27,19 @@ public class Blocks {
 
     @Nullable
     public static Block getBlockAt(BlockLocation loc) {
-        World world = Bukkit.getWorld(loc.getWorld());
+        World world = getWorldFor(loc);
         if (world == null) {
             return null;
         }
         return world.getBlockAt(loc.getX(), loc.getY(), loc.getZ());
+    }
+
+    public static Location getLocation(BlockLocation loc) {
+        World world = getWorldFor(loc);
+        if (world == null) {
+            return null;
+        }
+        return new Location(world, loc.getX(), loc.getY(), loc.getZ());
     }
 
     @Nullable
