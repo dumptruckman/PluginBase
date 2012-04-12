@@ -29,10 +29,6 @@ public interface ConfigEntry<T> {
      */
     List<String> getComments();
 
-    //T get();
-
-    //void set(T value);
-
     boolean isValid(Object obj);
 
     Object serialize(T value);
@@ -40,4 +36,6 @@ public interface ConfigEntry<T> {
     T deserialize(Object o);
 
     Message getInvalidMessage();
+
+    Message getDescription();
 }

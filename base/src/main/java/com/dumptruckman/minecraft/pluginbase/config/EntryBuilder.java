@@ -1,5 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.config;
 
+import com.dumptruckman.minecraft.pluginbase.locale.Message;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,7 @@ public class EntryBuilder<T> {
     private T def = null;
     private List<String> comments = new ArrayList<String>();
     private Class<T> type;
+    private Message description = null;
     private EntrySerializer<T> serializer;
     private EntryValidator validator;
 
@@ -44,11 +47,16 @@ public class EntryBuilder<T> {
         return this;
     }
 
+    public EntryBuilder<T> description(Message message) {
+        description = null;
+        return this;
+    }
+
     public ConfigEntry<T> build() {
-        return new DefaultConfigEntry<T>(type, path, def, comments, serializer, validator);
+        return new DefaultConfigEntry<T>(type, path, def, comments, serializer, validator, description);
     }
 
     public MappedConfigEntry<T> buildMap() {
-        return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator);
+        return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator, description);
     }
 }

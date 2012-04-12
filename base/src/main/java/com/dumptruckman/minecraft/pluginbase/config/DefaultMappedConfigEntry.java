@@ -1,5 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.config;
 
+import com.dumptruckman.minecraft.pluginbase.locale.Message;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +11,8 @@ class DefaultMappedConfigEntry<T> extends DefaultConfigEntry<T> implements Mappe
     private String additionalPath = "";
 
     public DefaultMappedConfigEntry(Class<T> type, String path, T def, List<String> comments,
-                                    EntrySerializer<T> serializer, EntryValidator validator) {
-        super(type, path, def, comments, serializer, validator);
+                                    EntrySerializer<T> serializer, EntryValidator validator, Message description) {
+        super(type, path, def, comments, serializer, validator, description);
     }
 
     public String getName() {

@@ -12,15 +12,17 @@ class DefaultConfigEntry<T> implements ConfigEntry<T> {
     private Class<T> type;
     private EntrySerializer<T> serializer;
     private EntryValidator validator;
+    private Message description;
 
     public DefaultConfigEntry(Class<T> type, String path, T def, List<String> comments,
-                              EntrySerializer<T> serializer, EntryValidator validator) {
+                              EntrySerializer<T> serializer, EntryValidator validator, Message description) {
         this.path = path;
         this.def = def;
         this.comments = comments;
         this.type = type;
         this.serializer = serializer;
         this.validator = validator;
+        this.description = description;
     }
 
     public String getName() {
@@ -55,6 +57,11 @@ class DefaultConfigEntry<T> implements ConfigEntry<T> {
 
     public Message getInvalidMessage() {
         return validator.getInvalidMessage();
+    }
+
+    @Override
+    public Message getDescription() {
+        return description;
     }
 
     @Override
