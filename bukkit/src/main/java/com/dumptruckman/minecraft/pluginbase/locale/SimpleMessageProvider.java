@@ -70,11 +70,15 @@ public class SimpleMessageProvider implements MessageProvider {
         // replaced
         if (args != null) {
             for (int j = 0; j < args.length; j++) {
+                if (args[j] == null) {
+                    args[j] = "NULL";
+                }
                 string = string.replace("%" + (j + 1), args[j].toString());
             }
         }
         // Format for locale
-        string = String.format(this.locale, string);
+        // TODO need a fix for this when language vars are not passed in as args.
+        // string = String.format(this.locale, string);
         return string;
     }
 

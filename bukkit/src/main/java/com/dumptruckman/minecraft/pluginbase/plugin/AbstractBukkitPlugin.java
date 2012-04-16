@@ -9,6 +9,7 @@ import com.dumptruckman.minecraft.pluginbase.permission.PermHandler;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.DebugCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.ReloadCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.VersionCommand;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.pneumaticraft.commandhandler.CommandHandler;
 import org.bukkit.Bukkit;
@@ -112,10 +113,15 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
 
     }
 
+    public List<String> dumpVersionInfo() {
+        return null;
+    }
+
     private final void _registerCommands() {
         getCommandHandler().registerCommand(new DebugCommand<AbstractBukkitPlugin>(this));
         getCommandHandler().registerCommand(new ReloadCommand<AbstractBukkitPlugin>(this));
         getCommandHandler().registerCommand(new HelpCommand<AbstractBukkitPlugin>(this));
+        getCommandHandler().registerCommand(new VersionCommand<AbstractBukkitPlugin>(this));
     }
 
     /**

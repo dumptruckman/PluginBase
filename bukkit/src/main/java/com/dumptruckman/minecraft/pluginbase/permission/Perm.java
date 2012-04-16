@@ -34,6 +34,11 @@ public class Perm {
     public static final Perm COMMAND_RELOAD = new Builder("cmd.reload").usePluginName().commandPermission()
             .desc("Reloads the config file.").build();
     /**
+     * Permission for version command.
+     */
+    public static final Perm COMMAND_VERSION = new Builder("cmd.version").usePluginName().commandPermission()
+            .desc("Reloads the config file.").build();
+    /**
      * Permission for help command.
      */
     public static final Perm COMMAND_HELP = new Builder("cmd.help").usePluginName().commandPermission()

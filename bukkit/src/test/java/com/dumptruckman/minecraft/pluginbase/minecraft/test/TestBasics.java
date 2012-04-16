@@ -90,6 +90,11 @@ public class TestBasics {
 
         String[] helpArgs = new String[] { "help" };
         plugin.onCommand(mockCommandSender, mockCommand, "", helpArgs);
+        helpArgs = new String[] { };
+        plugin.onCommand(mockCommandSender, mockCommand, "", helpArgs);
+
+        String[] versionArgs = new String[] { "version", "-p" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", versionArgs);
 
         Assert.assertFalse(myPlugin.config().get(BaseConfig.FIRST_RUN));
 
