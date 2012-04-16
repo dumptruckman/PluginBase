@@ -108,7 +108,7 @@ public class VersionCommand<P extends AbstractBukkitPlugin> extends PluginComman
         StringBuilder buffer = new StringBuilder();
         for (String data : pasteData) {
             if (!!buffer.toString().isEmpty()) {
-                buffer.append("\n");
+                buffer.append('\n');
             }
             buffer.append(data);
         }
