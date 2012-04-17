@@ -1,7 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
-import com.dumptruckman.minecraft.pluginbase.config.Config;
 import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.locale.Messages;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
@@ -10,20 +9,37 @@ import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Enables debug-information.
  */
 public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<P> {
-    
-    //Config<BaseConfig> config;
+
+    private static Set<String> staticKeys = new LinkedHashSet<String>();
+    private static Set<String> staticPrefixedKeys = new LinkedHashSet<String>();
+
+    public static void addStaticKey(String key) {
+        staticKeys.add(key);
+    }
+
+    public static void addStaticPrefixedKey(String key) {
+        staticPrefixedKeys.add(key);
+    }
 
     public DebugCommand(P plugin) {
         super(plugin);
         this.setName(messager.getMessage(CommandMessages.DEBUG_NAME));
         this.setCommandUsage(messager.getMessage(CommandMessages.DEBUG_USAGE, plugin.getCommandPrefixes().get(0)));
         this.setArgRange(0, 1);
+        for (String key : staticKeys) {
+            this.addKey(key);
+        }
+        for (String key : staticPrefixedKeys) {
+            this.addPrefixedKey(key);
+        }
         this.addPrefixedKey(" debug");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " debug " + ChatColor.GOLD + "2");
         this.setPermission(Perm.COMMAND_DEBUG.getPermission());

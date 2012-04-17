@@ -15,6 +15,17 @@ public class CommandMessages {
     public final static Message DEBUG_USAGE = new Message("cmd.debug.usage", "/%1 debug &6[1|2|3|off]");
     public final static Message DEBUG_SET = new Message("cmd.debug.set", "Debug mode is %1");
 
+    // ReloadCommand
+    public final static Message VERSION_NAME = new Message("cmd.version.name", "Plugin Version Information");
+    public final static Message VERSION_USAGE = new Message("cmd.version.usage", "/%1 version [-p|-b]");
+    public final static Message VERSION_PLAYER = new Message("cmd.version.player",
+            "Version info dumped to console. Please check your server logs.");
+    public final static Message VERSION_PLUGIN_VERSION = new Message("cmd.version.info.plugin_version", "%1 Version: %2");
+    public final static Message VERSION_BUKKIT_VERSION = new Message("cmd.version.info.bukkit_version", "Bukkit Version: %1");
+    public final static Message VERSION_LANG_FILE = new Message("cmd.version.info.lang_file", "Language file: %1");
+    public final static Message VERSION_DEBUG_MODE = new Message("cmd.version.info.debug_mode", "Debug Mode: %1");
+
+
     // HelpCommand
     public final static Message HELP_NAME = new Message("cmd.help.name", "Get help with %1");
     public final static Message HELP_USAGE = new Message("cmd.help.usage", "/%1 &6[FILTER] [PAGE #]");

@@ -16,18 +16,37 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Displays a nice help menu.
  */
 public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPluginCommand<Command, P> {
 
+    private static Set<String> staticKeys = new LinkedHashSet<String>();
+    private static Set<String> staticPrefixedKeys = new LinkedHashSet<String>();
+
+    public static void addStaticKey(String key) {
+        staticKeys.add(key);
+    }
+
+    public static void addStaticPrefixedKey(String key) {
+        staticPrefixedKeys.add(key);
+    }
+
     public HelpCommand(P plugin) {
         super(plugin);
         this.setName(messager.getMessage(CommandMessages.HELP_NAME, plugin.getPluginName()));
         this.setCommandUsage(messager.getMessage(CommandMessages.HELP_USAGE, plugin.getCommandPrefixes().get(0)));
         this.setArgRange(0, 2);
+        for (String key : staticKeys) {
+            this.addKey(key);
+        }
+        for (String key : staticPrefixedKeys) {
+            this.addPrefixedKey(key);
+        }
         this.addPrefixedKey(" help");
         this.addPrefixedKey(" search");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " help ?");
