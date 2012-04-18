@@ -12,12 +12,18 @@ class DefaultListConfigEntry<T> extends DefaultConfigEntry<T> implements ListCon
 
     private String additionalPath = "";
     private Class<? extends List> listClass;
+    private List<T> defList;
 
-    public DefaultListConfigEntry(Class<T> type, String path, T def, List<String> comments,
+    public DefaultListConfigEntry(Class<T> type, String path, List<T> def, List<String> comments,
                                   EntrySerializer<T> serializer, EntryValidator validator, Message description,
                                   Class<? extends List> listClass) {
-        super(type, path, def, comments, serializer, validator, description);
+        super(type, path, null, comments, serializer, validator, description);
         this.listClass = listClass;
+        this.defList = def;
+    }
+
+    public List<T> getDefaultList() {
+        return defList;
     }
 
     @Override

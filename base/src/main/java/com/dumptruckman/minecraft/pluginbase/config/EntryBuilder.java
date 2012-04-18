@@ -11,6 +11,7 @@ public class EntryBuilder<T> {
 
     private String path;
     private T def = null;
+    private List<T> defList = null;
     private List<String> comments = new ArrayList<String>();
     private Class<T> type;
     private Message description = null;
@@ -28,7 +29,12 @@ public class EntryBuilder<T> {
         this.def = def;
         return this;
     }
-    
+
+    public EntryBuilder<T> defList(List<T> def) {
+        this.defList = def;
+        return this;
+    }
+
     public EntryBuilder<T> comment(String comment) {
         comments.add(comment);
         return this;
@@ -67,10 +73,10 @@ public class EntryBuilder<T> {
     }
 
     public ListConfigEntry<T> buildList() {
-        return new DefaultListConfigEntry<T>(type, path, def, comments, serializer, validator, description, ArrayList.class);
+        return new DefaultListConfigEntry<T>(type, path, defList, comments, serializer, validator, description, ArrayList.class);
     }
 
     public ListConfigEntry<T> buildList(Class<? extends List> listClass) {
-        return new DefaultListConfigEntry<T>(type, path, def, comments, serializer, validator, description, listClass);
+        return new DefaultListConfigEntry<T>(type, path, defList, comments, serializer, validator, description, listClass);
     }
 }
