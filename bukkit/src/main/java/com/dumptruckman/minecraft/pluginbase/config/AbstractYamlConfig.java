@@ -148,6 +148,9 @@ public abstract class AbstractYamlConfig<C> implements Config {
         if (entry instanceof MappedConfigEntry && ((MappedConfigEntry) entry).getSpecificPath().isEmpty()) {
             throw new IllegalArgumentException("This MappedConfigEntry requires a specific path!");
         }
+        if (entry instanceof ListConfigEntry) {
+            throw new IllegalArgumentException("May not use get() with ListConfigEntry.  Use getList() instead.");
+        }
         T t = entry.deserialize(getConfig().get(entry.getName()));
         if (!isValid(entry, t)) {
             return entry.getDefault();
