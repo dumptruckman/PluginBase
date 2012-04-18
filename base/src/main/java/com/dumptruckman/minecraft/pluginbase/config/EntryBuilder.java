@@ -59,4 +59,8 @@ public class EntryBuilder<T> {
     public MappedConfigEntry<T> buildMap() {
         return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator, description);
     }
+
+    public ListConfigEntry<T> buildList(Class<? extends List> listClass) {
+        return new DefaultListConfigEntry<T>(type, path, def, comments, serializer, validator, description, listClass);
+    }
 }

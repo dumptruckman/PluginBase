@@ -1,8 +1,5 @@
 package com.dumptruckman.minecraft.pluginbase.config;
 
-import com.dumptruckman.minecraft.pluginbase.locale.Message;
-
-import java.util.List;
 import java.util.Map;
 
 public interface MappedConfigEntry<T> extends ConfigEntry<T> {

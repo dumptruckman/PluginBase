@@ -27,7 +27,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -119,5 +122,13 @@ public class TestBasics {
         Map<String, Integer> testMap = new HashMap<String, Integer>(1);
         testMap.put("test1", 25);
         Assert.assertEquals(testMap, myPlugin.config().getMap(MockConfig.SPECIFIC_TEST));
+
+        Assert.assertEquals(MockConfig.LIST_TEST.getNewTypeList(), myPlugin.config().getList(MockConfig.LIST_TEST));
+        myPlugin.config().set(MockConfig.LIST_TEST, Arrays.asList(25, 41));
+        myPlugin.config().save();
+        plugin.onCommand(mockCommandSender, mockCommand, "", reloadArgs);
+        List<Integer> checkList = myPlugin.config().getList(MockConfig.LIST_TEST);
+        assertTrue(checkList instanceof LinkedList);
+        assertTrue(checkList.contains(25) && checkList.contains(41));
     }
 }

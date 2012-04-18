@@ -4,13 +4,14 @@ import com.dumptruckman.minecraft.pluginbase.config.AbstractYamlConfig;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.EntryBuilder;
+import com.dumptruckman.minecraft.pluginbase.config.ListConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.MappedConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.util.Null;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedList;
 
 public class MockConfig extends AbstractYamlConfig<MockConfig> implements BaseConfig {
     
@@ -21,6 +22,9 @@ public class MockConfig extends AbstractYamlConfig<MockConfig> implements BaseCo
     
     public static final MappedConfigEntry<Integer> SPECIFIC_TEST = new EntryBuilder<Integer>(Integer.class, "specific_test")
             .buildMap();
+
+    public static final ListConfigEntry<Integer> LIST_TEST = new EntryBuilder<Integer>(Integer.class, "list_test")
+            .buildList(LinkedList.class);
     
     public MockConfig(BukkitPlugin plugin, boolean doComments, File configFile, Class<? extends MockConfig> configClass) throws IOException {
         super(plugin, doComments, configFile, configClass);
