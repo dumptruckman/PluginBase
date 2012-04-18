@@ -3,6 +3,7 @@ package com.dumptruckman.minecraft.pluginbase.locale;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.util.Font;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -121,7 +122,6 @@ public class SimpleMessageProvider implements MessageProvider {
 
     @Override
     public void setLanguage(String languageFileName) {
-
         this.languageFileName = languageFileName;
         loadLanguage();
     }
@@ -131,7 +131,11 @@ public class SimpleMessageProvider implements MessageProvider {
         this.language = YamlConfiguration.loadConfiguration(languageFile);
         // Prune file
         for (String key : this.language.getKeys(true)) {
+            if (!(this.language.get(key) instanceof List)) {
+                continue;
+            }
             if (!Messages.messages.containsKey(key.toLowerCase())) {
+                Logging.finer("Removing unused language: " + key);
                 this.language.set(key, null);
             }
         }

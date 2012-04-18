@@ -96,6 +96,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         preReload();
         this.config = null;
         this.messager = null;
+        getMessager();
         
         Logging.setDebugMode(config().get(BaseConfig.DEBUG_MODE));
 
