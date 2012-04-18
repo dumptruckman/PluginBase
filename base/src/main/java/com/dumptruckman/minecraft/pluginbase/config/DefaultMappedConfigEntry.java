@@ -30,9 +30,9 @@ class DefaultMappedConfigEntry<T> extends DefaultConfigEntry<T> implements Mappe
         try {
             return (Map<String, T>) mapClass.newInstance();
         } catch (InstantiationException e) {
-            Logging.warning("Could not instantiate desired class, defaulting to ArrayList");
+            Logging.warning("Could not instantiate desired class, defaulting to HashMap");
         } catch (IllegalAccessException e) {
-            Logging.warning("Could not instantiate desired class, defaulting to ArrayList");
+            Logging.warning("Could not instantiate desired class, defaulting to HashMap");
         }
         return new HashMap<String, T>();
     }
