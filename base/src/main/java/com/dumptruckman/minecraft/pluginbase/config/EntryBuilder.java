@@ -3,7 +3,9 @@ package com.dumptruckman.minecraft.pluginbase.config;
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EntryBuilder<T> {
 
@@ -57,7 +59,15 @@ public class EntryBuilder<T> {
     }
 
     public MappedConfigEntry<T> buildMap() {
-        return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator, description);
+        return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator, description, HashMap.class);
+    }
+
+    public MappedConfigEntry<T> buildMap(Class<? extends Map> mapClass) {
+        return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator, description, mapClass);
+    }
+
+    public ListConfigEntry<T> buildList() {
+        return new DefaultListConfigEntry<T>(type, path, def, comments, serializer, validator, description, ArrayList.class);
     }
 
     public ListConfigEntry<T> buildList(Class<? extends List> listClass) {
