@@ -4,11 +4,9 @@
     <parent>
         <groupId>com.dumptruckman.minecraft</groupId>
         <artifactId>PluginBase</artifactId>
-        <version>1.2-SNAPSHOT</version>
+        <version>1.2</version>
     </parent>
     <artifactId>Plugin</artifactId>
-    <version>1.2-SNAPSHOT</version>
-    <name>Plugin</name>
 
     <repositories>
         <repository>
