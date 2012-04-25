@@ -130,17 +130,17 @@ public class CommandHandler {
      * @return
      */
     private List<String> parseAllQuotedStrings(List<String> args) {
-        String arg = null;
+        StringBuilder arg = null;
         if (args.size() == 0) {
-            arg = "";
+            arg = new StringBuilder("");
         } else {
-            arg = args.get(0);
+            arg = new StringBuilder(args.get(0));
             for (int i = 1; i < args.size(); i++) {
-                arg = arg + " " + args.get(i);
+                arg.append(" ").append(args.get(i));
             }
         }
 
-        List<String> result = ShellParser.safeParseString(arg);
+        List<String> result = ShellParser.safeParseString(arg.toString());
         if (result == null) {
             return new ArrayList<String>();
         } else {
