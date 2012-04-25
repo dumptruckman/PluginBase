@@ -11,7 +11,7 @@ import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.ReloadCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.VersionCommand;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
-import com.pneumaticraft.commandhandler.CommandHandler;
+import com.dumptruckman.minecraft.pluginbase.util.commandhandler.CommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;

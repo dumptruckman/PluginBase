@@ -1,6 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.permission;
 
-import com.pneumaticraft.commandhandler.PermissionsInterface;
+import com.dumptruckman.minecraft.pluginbase.util.commandhandler.PermissionsInterface;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;

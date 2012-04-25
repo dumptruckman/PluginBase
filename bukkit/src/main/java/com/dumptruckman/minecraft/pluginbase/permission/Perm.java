@@ -97,7 +97,7 @@ public class Perm {
      * @return True if sender has the permission.
      */
     public final boolean hasPermission(Permissible permissible) {
-        boolean result = permissible.hasPermission(getPermission());;
+        boolean result = permissible.hasPermission(getPermission());
         extra = "";
         return result;
     }

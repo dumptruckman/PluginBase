@@ -33,4 +33,5 @@ public interface PluginBase<C extends BaseConfig> {
     File getDataFolder();
     
     List<String> getCommandPrefixes();
+
 }

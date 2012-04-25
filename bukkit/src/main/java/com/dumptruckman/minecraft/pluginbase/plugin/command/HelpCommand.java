@@ -10,7 +10,7 @@ package com.dumptruckman.minecraft.pluginbase.plugin.command;
 import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
-import com.pneumaticraft.commandhandler.Command;
+import com.dumptruckman.minecraft.pluginbase.util.commandhandler.Command;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

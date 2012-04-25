@@ -1,11 +1,19 @@
 package com.dumptruckman.minecraft.pluginbase.util.commandhandler;
 
+import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.permissions.Permission;
+import org.bukkit.permissions.PermissionDefault;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public abstract class Command {
-    protected Plugin plugin;
+
+    protected BukkitPlugin plugin;
 
     private int minimumArgLength;
     private int maximumArgLength;
@@ -19,7 +27,7 @@ public abstract class Command {
     private Permission permission;
     private List<Permission> auxPerms;
 
-    public Command(Plugin plugin) {
+    public Command(BukkitPlugin plugin) {
         this.plugin = plugin;
         this.auxPerms = new ArrayList<Permission>();
         this.commandKeys = new ArrayList<CommandKey>();
@@ -62,8 +70,8 @@ public abstract class Command {
      * @param otherPerm The Permission to add.
      */
     public void addAdditonalPermission(Permission otherPerm) {
-        if (this.plugin.getServer().getPluginManager().getPermission(otherPerm.getName()) == null) {
-            this.plugin.getServer().getPluginManager().addPermission(otherPerm);
+        if (Bukkit.getPluginManager().getPermission(otherPerm.getName()) == null) {
+            Bukkit.getServer().getPluginManager().addPermission(otherPerm);
             this.addToParentPerms(otherPerm.getName());
         }
         this.auxPerms.add(otherPerm);
@@ -114,7 +122,7 @@ public abstract class Command {
     public void setPermission(Permission perm) {
         this.permission = perm;
         try {
-            this.plugin.getServer().getPluginManager().addPermission(this.permission);
+            Bukkit.getPluginManager().addPermission(this.permission);
             this.addToParentPerms(this.permission.getName());
         } catch (IllegalArgumentException e) {
         }
@@ -130,36 +138,36 @@ public abstract class Command {
             addToRootPermission("*.*", permStringChopped);
             return;
         }
-        Permission parentPermission = this.plugin.getServer().getPluginManager().getPermission(parentPermString);
+        Permission parentPermission = Bukkit.getPluginManager().getPermission(parentPermString);
         // Creat parent and grandparents
         if (parentPermission == null) {
             parentPermission = new Permission(parentPermString);
-            this.plugin.getServer().getPluginManager().addPermission(parentPermission);
+            Bukkit.getPluginManager().addPermission(parentPermission);
 
             this.addToParentPerms(parentPermString);
         }
         // Create actual perm.
-        Permission actualPermission = this.plugin.getServer().getPluginManager().getPermission(permString);
+        Permission actualPermission = Bukkit.getPluginManager().getPermission(permString);
         // Extra check just to make sure the actual one is added
         if (actualPermission == null) {
 
             actualPermission = new Permission(permString);
-            this.plugin.getServer().getPluginManager().addPermission(actualPermission);
+            Bukkit.getPluginManager().addPermission(actualPermission);
         }
         if (!parentPermission.getChildren().containsKey(permString)) {
             parentPermission.getChildren().put(actualPermission.getName(), true);
-            this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(parentPermission);
+            Bukkit.getPluginManager().recalculatePermissionDefaults(parentPermission);
         }
     }
 
     private void addToRootPermission(String rootPerm, String permStringChopped) {
-        Permission rootPermission = this.plugin.getServer().getPluginManager().getPermission(rootPerm);
+        Permission rootPermission = Bukkit.getPluginManager().getPermission(rootPerm);
         if (rootPermission == null) {
             rootPermission = new Permission(rootPerm);
-            this.plugin.getServer().getPluginManager().addPermission(rootPermission);
+            Bukkit.getPluginManager().addPermission(rootPermission);
         }
         rootPermission.getChildren().put(permStringChopped + ".*", true);
-        this.plugin.getServer().getPluginManager().recalculatePermissionDefaults(rootPermission);
+        Bukkit.getPluginManager().recalculatePermissionDefaults(rootPermission);
     }
 
     /**
@@ -228,7 +236,7 @@ public abstract class Command {
     }
 
     /** @return the plugin */
-    protected Plugin getPlugin() {
+    protected BukkitPlugin getPlugin() {
         return this.plugin;
     }
 
@@ -249,18 +257,18 @@ public abstract class Command {
         return permStrings;
     }
     public void showHelp(CommandSender sender) {
-            sender.sendMessage(ChatColor.AQUA + "--- " + this.getCommandName() + " ---");
-            sender.sendMessage(ChatColor.YELLOW + this.getCommandDesc());
-            sender.sendMessage(ChatColor.DARK_AQUA + this.getCommandUsage());
-            sender.sendMessage("Permission: " + ChatColor.GREEN + this.getPermissionString());
+            sender.sendMessage("\u00a7b--- " + this.getCommandName() + " ---");
+            sender.sendMessage("\u00a7e" + this.getCommandDesc());
+            sender.sendMessage("\u00a73" + this.getCommandUsage());
+            sender.sendMessage("Permission: \u00a7a" + this.getPermissionString());
             String keys = "";
             for (String key : this.getKeyStrings()) {
                 keys += key + ", ";
             }
             keys = keys.substring(0, keys.length() - 2);
-            sender.sendMessage(ChatColor.BLUE + "Aliases: " + ChatColor.RED + keys);
+            sender.sendMessage("\u00a79Aliases: \u00a7c" + keys);
             if (this.getCommandExamples().size() > 0) {
-                sender.sendMessage(ChatColor.LIGHT_PURPLE + "Examples:");
+                sender.sendMessage("\u00a7dExamples:");
                 if (sender instanceof Player) {
                     for (int i = 0; i < 4 && i < this.getCommandExamples().size(); i++) {
                         sender.sendMessage(this.getCommandExamples().get(i));

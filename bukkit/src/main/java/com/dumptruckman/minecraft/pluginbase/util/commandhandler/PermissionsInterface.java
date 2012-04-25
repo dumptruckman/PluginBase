@@ -1,5 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.util.commandhandler;
 
+import org.bukkit.command.CommandSender;
+
 import java.util.List;
 
 public interface PermissionsInterface {

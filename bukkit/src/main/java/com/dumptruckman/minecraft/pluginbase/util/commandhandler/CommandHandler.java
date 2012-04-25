@@ -1,51 +1,29 @@
 package com.dumptruckman.minecraft.pluginbase.util.commandhandler;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.util.shellparser.ShellParser;
+import org.bukkit.command.CommandSender;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
-import java.util.logging.Level;
 
 public class CommandHandler {
 
-    protected Plugin plugin;
+    protected BukkitPlugin plugin;
 
     protected List<QueuedCommand> queuedCommands;
     protected List<Command> allCommands;
 
     protected PermissionsInterface permissions;
-    private Properties props = new Properties();
-    private double version;
 
-    public CommandHandler(Plugin plugin, PermissionsInterface permissions) {
-        try {
-            props.load(this.getClass().getResourceAsStream("/commandhandler.properties"));
-            version = Integer.parseInt(props.getProperty("version", "-1"));
-        } catch (NumberFormatException e) {
-            this.logBadCH(plugin);
-        } catch (FileNotFoundException e) {
-            this.logBadCH(plugin);
-        } catch (IOException e) {
-            this.logBadCH(plugin);
-        }
+    public CommandHandler(BukkitPlugin plugin, PermissionsInterface permissions) {
         this.plugin = plugin;
 
         this.allCommands = new ArrayList<Command>();
         this.queuedCommands = new ArrayList<QueuedCommand>();
         this.permissions = permissions;
-    }
-
-    private void logBadCH(Plugin plugin) {
-        plugin.getLogger().log(Level.SEVERE,
-                        String.format("CommandHandler looks corrupted, meaning this plugin (%s) is corrupted too!",
-                        plugin.getDescription().getName()));
-    }
-
-    public double getVersion() {
-        return this.version;
     }
 
     public List<Command> getCommands(CommandSender sender) {
@@ -179,21 +157,21 @@ public class CommandHandler {
         this.queuedCommands.add(new QueuedCommand(methodName, args, paramTypes, sender, Calendar.getInstance(), this.plugin, success, fail, seconds));
 
         if (message == null) {
-            message = "The command " + ChatColor.RED + commandName + ChatColor.WHITE + " has been halted due to the fact that it could break something!";
+            message = "The command \u00a7c" + commandName + "\u00a7f has been halted due to the fact that it could break something!";
         } else {
-            message = message.replace("{CMD}", ChatColor.RED + commandName + ChatColor.WHITE);
+            message = message.replace("{CMD}", "\u00a7c" + commandName + "\u00a7f");
         }
 
         if (message2 == null) {
-            message2 = "If you still wish to execute " + ChatColor.RED + commandName + ChatColor.WHITE;
+            message2 = "If you still wish to execute \u00a7c" + commandName + "\u00a7f";
         } else {
-            message2 = message2.replace("{CMD}", ChatColor.RED + commandName + ChatColor.WHITE);
+            message2 = message2.replace("{CMD}", "\u00a7c" + commandName + "\u00a7f");
         }
 
         sender.sendMessage(message);
         sender.sendMessage(message2);
-        sender.sendMessage("please type: " + ChatColor.GREEN + "/mvconfirm");
-        sender.sendMessage(ChatColor.GREEN + "/mvconfirm" + ChatColor.WHITE + " will only be available for " + seconds + " seconds.");
+        sender.sendMessage("please type: \u00a7a/mvconfirm");
+        sender.sendMessage("\u00a7a/mvconfirm\u00a7f will only be available for " + seconds + " seconds.");
     }
 
     public void queueCommand(CommandSender sender, String commandName, String methodName, List<? extends Object> args, Class<?>[] paramTypes, String success, String fail) {
@@ -263,8 +241,7 @@ public class CommandHandler {
                 }
                 i++;
             }
-        } catch (IndexOutOfBoundsException e) {
-        }
+        } catch (IndexOutOfBoundsException ignore) { }
         return null;
     }
 
@@ -279,7 +256,7 @@ public class CommandHandler {
             if(notifySender) {
                 sender.sendMessage("You do not have any of the required permission(s):");
                 for (String perm : foundCommand.getAllPermissionStrings()) {
-                    sender.sendMessage(" - " + ChatColor.GREEN + perm);
+                    sender.sendMessage(" - \u00a7a" + perm);
                 }
             }
         }

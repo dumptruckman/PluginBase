@@ -1,5 +1,9 @@
 package com.dumptruckman.minecraft.pluginbase.util.commandhandler;
 
+import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
+import org.bukkit.command.CommandSender;
+
 import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.List;
@@ -9,14 +13,14 @@ public class QueuedCommand {
     private List<? extends Object> args;
     private Class<?> paramTypes[];
     private CommandSender sender;
-    private Plugin plugin;
+    private BukkitPlugin plugin;
     private Calendar timeRequested;
     private String success;
     private String fail;
     private int expiration;
     private boolean alreadyRun;
 
-    public QueuedCommand(String commandName, List<? extends Object> args, Class<?> partypes[], CommandSender sender, Calendar instance, Plugin plugin, String success, String fail, int expiration) {
+    public QueuedCommand(String commandName, List<? extends Object> args, Class<?> partypes[], CommandSender sender, Calendar instance, BukkitPlugin plugin, String success, String fail, int expiration) {
         this.plugin = plugin;
         this.name = commandName;
         this.args = args;

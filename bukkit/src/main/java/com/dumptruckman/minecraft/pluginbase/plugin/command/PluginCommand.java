@@ -1,8 +1,8 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
-import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
-import com.pneumaticraft.commandhandler.Command;
+import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.util.commandhandler.Command;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * A generic Multiverse-command.
  */
-public abstract class PluginCommand<P extends AbstractBukkitPlugin> extends Command {
+public abstract class PluginCommand<P extends BukkitPlugin> extends Command {
 
     /**
      * The reference to the core.
