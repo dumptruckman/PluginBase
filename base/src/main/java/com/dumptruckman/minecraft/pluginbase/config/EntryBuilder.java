@@ -41,7 +41,11 @@ public class EntryBuilder<T> {
     }
     
     public EntryBuilder<T> stringSerializer() {
-        serializer = new DefaultStringSerializer<T>(this.type);
+        if (type.equals(String.class)) {
+            serializer = new StringStringSerializer<T>(this.type);
+        } else {
+            serializer = new DefaultStringSerializer<T>(this.type);
+        }
         return this;
     }
 

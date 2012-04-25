@@ -1,0 +1,40 @@
+package com.dumptruckman.minecraft.pluginbase.config;
+
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+
+class StringStringSerializer<T> implements EntrySerializer<T> {
+
+    private Constructor<T> constructor;
+
+    public StringStringSerializer(Class<T> clazz) {
+        try {
+            constructor = clazz.getConstructor(String.class);
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("Class must be String.class!");
+        }
+    }
+
+    @Override
+    public T deserialize(Object obj) {
+        try {
+            return constructor.newInstance(obj.toString());
+        } catch (IllegalAccessException e) {
+            Logging.severe("Invalid usage of StringStringSerializer!  Somehow used something other than String.class!");
+        } catch (InvocationTargetException e) {
+            Logging.severe("new String(String) is throwing an exception:");
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            Logging.severe("new String(String) is throwing an exception:");
+            e.printStackTrace();
+        }
+        throw new IllegalStateException(this.getClass().getName() + " was used illegally!  Contact dumptruckman!");
+    }
+
+    @Override
+    public Object serialize(T t) {
+        return t;
+    }
+}
