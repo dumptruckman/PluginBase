@@ -24,6 +24,11 @@ public class Perm {
     public static final Perm ALL_CMD = new Builder("cmd.*").usePluginName().addToAll().build();
 
     /**
+     * Permission for confirm command.
+     */
+    public static final Perm COMMAND_CONFIRM = new Builder("cmd.confirm").usePluginName().commandPermission()
+            .desc("If you have not been prompted to use this, it will not do anything.").build();
+    /**
      * Permission for debug command.
      */
     public static final Perm COMMAND_DEBUG = new Builder("cmd.debug").usePluginName().commandPermission()

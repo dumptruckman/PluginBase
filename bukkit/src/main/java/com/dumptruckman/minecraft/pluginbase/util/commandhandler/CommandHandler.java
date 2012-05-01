@@ -170,8 +170,8 @@ public class CommandHandler {
 
         sender.sendMessage(message);
         sender.sendMessage(message2);
-        sender.sendMessage("please type: \u00a7a/mvconfirm");
-        sender.sendMessage("\u00a7a/mvconfirm\u00a7f will only be available for " + seconds + " seconds.");
+        sender.sendMessage("please type: \u00a7a/" + plugin.getCommandPrefixes().get(0) + " confirm");
+        sender.sendMessage("\u00a7a/" + plugin.getCommandPrefixes().get(0) + " confirm\u00a7f will only be available for " + seconds + " seconds.");
     }
 
     public void queueCommand(CommandSender sender, String commandName, String methodName, List<? extends Object> args, Class<?>[] paramTypes, String success, String fail) {

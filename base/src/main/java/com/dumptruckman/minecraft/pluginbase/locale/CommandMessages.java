@@ -10,6 +10,9 @@ public class CommandMessages {
     public final static Message RELOAD_NAME = new Message("cmd.reload.name", "Reloads config file");
     public final static Message RELOAD_COMPLETE = new Message("cmd.reload.complete", "&b===[ Reload Complete! ]===");
 
+    // ConfirmCommand
+    public final static Message CONFIRM_NAME = new Message("cmd.confirm.name", "Confirms a command that could destroy life, the universe and everything.");
+
     // DebugCommand
     public final static Message DEBUG_NAME = new Message("cmd.debug.name", "Turn Debug on/off?");
     public final static Message DEBUG_USAGE = new Message("cmd.debug.usage", "/%1 debug &6[1|2|3|off]");
