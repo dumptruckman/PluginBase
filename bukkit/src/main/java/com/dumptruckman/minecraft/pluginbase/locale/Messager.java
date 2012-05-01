@@ -19,6 +19,14 @@ public interface Messager extends MessageProvider {
     void bad(Message message, CommandSender sender, Object... args);
 
     /**
+     * Sends a message to the specified player with the generic ERROR prefix.
+     *
+     * @param message The message to send.
+     * @param sender  The entity to send the messages to.
+     */
+    void bad(BundledMessage message, CommandSender sender);
+
+    /**
      * Sends a message to the specified player with NO special prefix.
      *
      * @param message The message to send.
@@ -26,6 +34,14 @@ public interface Messager extends MessageProvider {
      * @param args    arguments for String.format().
      */
     void normal(Message message, CommandSender sender, Object... args);
+
+    /**
+     * Sends a message to the specified player with NO special prefix.
+     *
+     * @param message The message to send.
+     * @param sender  The entity to send the messages to.
+     */
+    void normal(BundledMessage message, CommandSender sender);
 
     /**
      * Sends a message to the specified player with the generic SUCCESS prefix.
@@ -37,6 +53,14 @@ public interface Messager extends MessageProvider {
     void good(Message message, CommandSender sender, Object... args);
 
     /**
+     * Sends a message to the specified player with the generic SUCCESS prefix.
+     *
+     * @param message The message to send.
+     * @param sender  The entity to send the messages to.
+     */
+    void good(BundledMessage message, CommandSender sender);
+
+    /**
      * Sends a message to the specified player with the generic INFO prefix.
      *
      * @param message The message to send.
@@ -46,6 +70,14 @@ public interface Messager extends MessageProvider {
     void info(Message message, CommandSender sender, Object... args);
 
     /**
+     * Sends a message to the specified player with the generic INFO prefix.
+     *
+     * @param message The message to send.
+     * @param sender  The entity to send the messages to.
+     */
+    void info(BundledMessage message, CommandSender sender);
+
+    /**
      * Sends a message to the specified player with the generic HELP prefix.
      *
      * @param message The message to send.
@@ -53,6 +85,14 @@ public interface Messager extends MessageProvider {
      * @param args    arguments for String.format().
      */
     void help(Message message, CommandSender sender, Object... args);
+
+    /**
+     * Sends a message to the specified player with the generic HELP prefix.
+     *
+     * @param message The message to send.
+     * @param sender  The entity to send the messages to.
+     */
+    void help(BundledMessage message, CommandSender sender);
 
     /**
      * Sends a message to a player that automatically takes words that are too long and puts them on a new line.

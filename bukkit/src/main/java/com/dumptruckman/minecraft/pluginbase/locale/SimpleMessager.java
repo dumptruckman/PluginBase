@@ -64,6 +64,31 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
         send(message, ChatColor.GRAY.toString() + this.getMessage(Messages.GENERIC_HELP), sender, args);
     }
 
+    @Override
+    public void bad(BundledMessage message, CommandSender sender) {
+        bad(message.getMessage(), sender, message.getArgs());
+    }
+
+    @Override
+    public void normal(BundledMessage message, CommandSender sender) {
+        normal(message.getMessage(), sender, message.getArgs());
+    }
+
+    @Override
+    public void good(BundledMessage message, CommandSender sender) {
+        good(message.getMessage(), sender, message.getArgs());
+    }
+
+    @Override
+    public void info(BundledMessage message, CommandSender sender) {
+        info(message.getMessage(), sender, message.getArgs());
+    }
+
+    @Override
+    public void help(BundledMessage message, CommandSender sender) {
+        help(message.getMessage(), sender, message.getArgs());
+    }
+
     /**
      * {@inheritDoc}
      */
