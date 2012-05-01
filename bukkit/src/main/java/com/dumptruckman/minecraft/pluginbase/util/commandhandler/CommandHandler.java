@@ -1,19 +1,23 @@
 package com.dumptruckman.minecraft.pluginbase.util.commandhandler;
 
+import com.dumptruckman.minecraft.pluginbase.locale.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.QueuedPluginCommand;
 import com.dumptruckman.minecraft.pluginbase.util.shellparser.ShellParser;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class CommandHandler {
 
     protected BukkitPlugin plugin;
 
-    protected List<QueuedCommand> queuedCommands;
+    protected Map<CommandSender, QueuedCommand> queuedCommands;
     protected List<Command> allCommands;
 
     protected PermissionsInterface permissions;
@@ -22,7 +26,7 @@ public class CommandHandler {
         this.plugin = plugin;
 
         this.allCommands = new ArrayList<Command>();
-        this.queuedCommands = new ArrayList<QueuedCommand>();
+        this.queuedCommands = new HashMap<CommandSender, QueuedCommand>();
         this.permissions = permissions;
     }
 
@@ -152,30 +156,21 @@ public class CommandHandler {
      * "The command " + ChatColor.RED + commandName + ChatColor.WHITE + " has been halted due to the fact that it could
      * break something!" "If you still wish to execute " + ChatColor.RED + commandName + ChatColor.WHITE
      */
-    public void queueCommand(CommandSender sender, String commandName, String methodName, List<? extends Object> args, Class<?>[] paramTypes, String message, String message2, String success, String fail, int seconds) {
-        cancelQueuedCommand(sender);
-        this.queuedCommands.add(new QueuedCommand(methodName, args, paramTypes, sender, Calendar.getInstance(), this.plugin, success, fail, seconds));
+    public void queueCommand(CommandSender sender, QueuedPluginCommand command, List<String> args, BundledMessage confirmMessage, int confirmWait) {
+        this.queuedCommands.put(sender, new QueuedCommand(command, args, System.currentTimeMillis() + (confirmWait * 1000)));
 
-        if (message == null) {
-            message = "The command \u00a7c" + commandName + "\u00a7f has been halted due to the fact that it could break something!";
-        } else {
-            message = message.replace("{CMD}", "\u00a7c" + commandName + "\u00a7f");
+        String commandName = command.getKeyStrings().get(0);
+        String confirmCommand = plugin.getCommandPrefixes().get(0) + " confirm";
+
+        if (confirmMessage == null) {
+            confirmMessage = new BundledMessage(CommandMessages.CONFIRM_MESSAGE, commandName);
         }
-
-        if (message2 == null) {
-            message2 = "If you still wish to execute \u00a7c" + commandName + "\u00a7f";
-        } else {
-            message2 = message2.replace("{CMD}", "\u00a7c" + commandName + "\u00a7f");
-        }
-
-        sender.sendMessage(message);
-        sender.sendMessage(message2);
-        sender.sendMessage("please type: \u00a7a/" + plugin.getCommandPrefixes().get(0) + " confirm");
-        sender.sendMessage("\u00a7a/" + plugin.getCommandPrefixes().get(0) + " confirm\u00a7f will only be available for " + seconds + " seconds.");
+        plugin.getMessager().normal(confirmMessage, sender);
+        plugin.getMessager().normal(CommandMessages.CONFIRM_MESSAGE_2, sender, confirmCommand, confirmWait);
     }
 
-    public void queueCommand(CommandSender sender, String commandName, String methodName, List<? extends Object> args, Class<?>[] paramTypes, String success, String fail) {
-        this.queueCommand(sender, commandName, methodName, args, paramTypes, null, null, success, fail, 10);
+    public void queueCommand(CommandSender sender, QueuedPluginCommand command, List<String> args, BundledMessage confirmMessage) {
+        this.queueCommand(sender, command, args, confirmMessage, 10);
     }
 
     /**
@@ -185,42 +180,19 @@ public class CommandHandler {
      *
      * @return
      */
-    public boolean confirmQueuedCommand(CommandSender sender) {
-        for (QueuedCommand com : this.queuedCommands) {
-            if (com.getSender().equals(sender)) {
-                if (com.execute()) {
-                    if (com.getSuccess() != null && com.getSuccess().length() > 0) {
-                        sender.sendMessage(com.getSuccess());
-                    }
-                    return true;
-                } else {
-                    if (com.getFail() != null && com.getFail().length() > 0) {
-                        sender.sendMessage(com.getFail());
-                        return false;
-                    }
-                }
-            }
+    public void confirmQueuedCommand(CommandSender sender) {
+        QueuedCommand command = this.queuedCommands.get(sender);
+        if (command == null) {
+            plugin.getMessager().normal(CommandMessages.QUEUED_NONE, sender);
+            return;
         }
-        return false;
-    }
-
-    /**
-     * Cancels(invalidates) a command that has been requested. This is called when a user types something other than
-     * 'yes' or when they try to queue a second command Queuing a second command will delete the first command
-     * entirely.
-     *
-     * @param sender
-     */
-    public void cancelQueuedCommand(CommandSender sender) {
-        QueuedCommand c = null;
-        for (QueuedCommand com : this.queuedCommands) {
-            if (com.getSender().equals(sender)) {
-                c = com;
-            }
-        }
-        if (c != null) {
-            // Each person is allowed at most one queued command.
-            this.queuedCommands.remove(c);
+        if (System.currentTimeMillis() > command.getExpirationTime()) {
+            plugin.getMessager().bad(CommandMessages.QUEUED_EXPIRED, sender);
+            command.getCommand().onExpire(sender, command.getArgs());
+            this.queuedCommands.remove(sender);
+        } else {
+            command.getCommand().onConfirm(sender, command.getArgs());
+            this.queuedCommands.remove(sender);
         }
     }
 

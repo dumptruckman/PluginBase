@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.MockConfig;
 import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.MockMessages;
 import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.MockPlugin;
+import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.MockQueuedCommand;
 import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.TestInstanceCreator;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
@@ -85,19 +86,27 @@ public class TestBasics {
         Assert.assertFalse(myPlugin.config().get(BaseConfig.FIRST_RUN));
 
         // Send the debug command.
-        String[] debugArgs = new String[] { "debug", "3" };
-        plugin.onCommand(mockCommandSender, mockCommand, "", debugArgs);
+        String[] cmdArgs = new String[] { "debug", "3" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);
 
-        String[] reloadArgs = new String[] { "reload" };
-        plugin.onCommand(mockCommandSender, mockCommand, "", reloadArgs);
+        cmdArgs = new String[] { "reload" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);
 
-        String[] helpArgs = new String[] { "help" };
-        plugin.onCommand(mockCommandSender, mockCommand, "", helpArgs);
-        helpArgs = new String[] { };
-        plugin.onCommand(mockCommandSender, mockCommand, "", helpArgs);
+        cmdArgs = new String[] { "test" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);
 
-        String[] versionArgs = new String[] { "version", "-p" };
-        plugin.onCommand(mockCommandSender, mockCommand, "", versionArgs);
+        cmdArgs = new String[] { "confirm" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);
+
+        Assert.assertTrue(MockQueuedCommand.TEST);
+
+        cmdArgs = new String[] { "help" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);
+        cmdArgs = new String[] { };
+        plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);
+
+        cmdArgs = new String[] { "version", "-p" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);
 
         Assert.assertFalse(myPlugin.config().get(BaseConfig.FIRST_RUN));
 
@@ -118,7 +127,8 @@ public class TestBasics {
         myPlugin.config().set(MockConfig.SPECIFIC_TEST.specific("test1"), 25);
         Assert.assertEquals(25, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST.specific("test1")));
         myPlugin.config().save();
-        plugin.onCommand(mockCommandSender, mockCommand, "", reloadArgs);
+        cmdArgs = new String[] { "reload" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);
         Map<String, Integer> testMap = new HashMap<String, Integer>(1);
         testMap.put("test1", 25);
         Assert.assertEquals(testMap, myPlugin.config().getMap(MockConfig.SPECIFIC_TEST));
@@ -126,7 +136,8 @@ public class TestBasics {
         Assert.assertEquals(MockConfig.LIST_TEST.getNewTypeList(), myPlugin.config().getList(MockConfig.LIST_TEST));
         myPlugin.config().set(MockConfig.LIST_TEST, Arrays.asList(25, 41));
         myPlugin.config().save();
-        plugin.onCommand(mockCommandSender, mockCommand, "", reloadArgs);
+        cmdArgs = new String[] { "reload" };
+        plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);
         List<Integer> checkList = myPlugin.config().getList(MockConfig.LIST_TEST);
         assertTrue(checkList instanceof LinkedList);
         assertTrue(checkList.contains(25) && checkList.contains(41));

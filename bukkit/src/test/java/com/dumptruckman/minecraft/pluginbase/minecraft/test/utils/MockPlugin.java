@@ -15,6 +15,10 @@ public class MockPlugin extends AbstractBukkitPlugin<MockConfig> {
         MockMessages.init();
         HelpCommand.addStaticPrefixedKey("");
     }
+
+    public void postEnable() {
+        getCommandHandler().registerCommand(new MockQueuedCommand(this));
+    }
     
     @Override
     public List<String> getCommandPrefixes() {

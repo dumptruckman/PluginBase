@@ -12,6 +12,16 @@ public class CommandMessages {
 
     // ConfirmCommand
     public final static Message CONFIRM_NAME = new Message("cmd.confirm.name", "Confirms a command that could destroy life, the universe and everything.");
+    public final static Message CONFIRM_MESSAGE = new Message("cmd.confirm.confirm_message",
+            "The command &c%1&f has been halted due to the fact that it could break something!",
+            "If you still wish to execute &c%1&f");
+    public final static Message CONFIRM_MESSAGE_2 = new Message("cmd.confirm.confirm_message_2",
+            "please type: &a/%1",
+            "&a/%1&f will only be available for %2 seconds.");
+    public final static Message QUEUED_EXPIRED = new Message("cmd.queued.expired",
+            "This command has expired. Please type the original command again.");
+    public final static Message QUEUED_NONE = new Message("cmd.queued.none",
+            "You have no commands queued.  Try the original command again.");
 
     // DebugCommand
     public final static Message DEBUG_NAME = new Message("cmd.debug.name", "Turn Debug on/off?");
