@@ -2,10 +2,8 @@ package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
 import com.dumptruckman.minecraft.pluginbase.locale.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.command.CommandSender;
 
-import java.lang.reflect.Method;
 import java.util.List;
 
 /**
