@@ -28,6 +28,12 @@ public abstract class AbstractYamlConfig<C> implements Config {
     private Entries entries;
     
     public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, File configFile, Class<? extends C>... configClasses) throws IOException {
+        if (plugin == null) {
+            throw new IllegalArgumentException("plugin may not be null!");
+        }
+        if (configFile == null) {
+            throw new IllegalArgumentException("configFile may not be null!");
+        }
         if (configFile.isDirectory()) {
             throw new IllegalArgumentException("configFile may NOT be directory!");
         }
@@ -37,8 +43,10 @@ public abstract class AbstractYamlConfig<C> implements Config {
         entries = new Entries(configClasses);
         this.plugin = plugin;
         // Make the data folders
-        if (configFile.getParentFile().mkdirs()) {
-            Logging.fine("Created folder for config file.");
+        if (configFile.getParent() != null) {
+            if (configFile.getParentFile().mkdirs()) {
+                Logging.fine("Created folder for config file.");
+            }
         }
 
         // Check if the config file exists.  If not, create it.
