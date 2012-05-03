@@ -68,6 +68,9 @@ public abstract class AbstractYamlConfig<C> implements Config {
         for (ConfigEntry path : entries.entries) {
             config.addComment(path.getName(), path.getComments());
             if (getConfig().get(path.getName()) == null) {
+                if (path.isDeprecated()) {
+                    continue;
+                }
                 if (path instanceof MappedConfigEntry) {
                     Logging.fine("Config: Defaulting map for '" + path.getName() + "'");
                     getConfig().set(path.getName(), ((MappedConfigEntry) path).getNewTypeMap());
@@ -110,6 +113,9 @@ public abstract class AbstractYamlConfig<C> implements Config {
         }
         entry.getName(); // clears any specific path.
         Object obj = getConfig().get(entry.getName());
+        if (obj == null) {
+            return null;
+        }
         if (obj instanceof ConfigurationSection) {
             obj = ((ConfigurationSection) obj).getValues(false);
         }
@@ -130,6 +136,9 @@ public abstract class AbstractYamlConfig<C> implements Config {
             throw new IllegalArgumentException("ConfigEntry not registered to this config!");
         }
         Object obj = getConfig().get(entry.getName());
+        if (obj == null) {
+            return null;
+        }
         if (!(obj instanceof List)) {
             obj = new ArrayList<Object>();
         }
@@ -151,7 +160,11 @@ public abstract class AbstractYamlConfig<C> implements Config {
         if (entry instanceof ListConfigEntry) {
             throw new IllegalArgumentException("May not use get() with ListConfigEntry.  Use getList() instead.");
         }
-        T t = entry.deserialize(getConfig().get(entry.getName()));
+        Object obj = getConfig().get(entry.getName());
+        if (obj == null) {
+            return null;
+        }
+        T t = entry.deserialize(obj);
         if (!isValid(entry, t)) {
             return entry.getDefault();
         }

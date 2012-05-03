@@ -17,6 +17,7 @@ public class EntryBuilder<T> {
     private Message description = null;
     private EntrySerializer<T> serializer;
     private EntryValidator validator;
+    private boolean deprecated = false;
 
     public EntryBuilder(Class<T> type, String name) {
         this.path = name;
@@ -64,23 +65,28 @@ public class EntryBuilder<T> {
         return this;
     }
 
+    public EntryBuilder<T> deprecated() {
+        deprecated = true;
+        return this;
+    }
+
     public ConfigEntry<T> build() {
-        return new DefaultConfigEntry<T>(type, path, def, comments, serializer, validator, description);
+        return new DefaultConfigEntry<T>(type, path, def, comments, serializer, validator, description, deprecated);
     }
 
     public MappedConfigEntry<T> buildMap() {
-        return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator, description, HashMap.class);
+        return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator, description, deprecated, HashMap.class);
     }
 
     public MappedConfigEntry<T> buildMap(Class<? extends Map> mapClass) {
-        return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator, description, mapClass);
+        return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator, description, deprecated, mapClass);
     }
 
     public ListConfigEntry<T> buildList() {
-        return new DefaultListConfigEntry<T>(type, path, defList, comments, serializer, validator, description, ArrayList.class);
+        return new DefaultListConfigEntry<T>(type, path, defList, comments, serializer, validator, description, deprecated, ArrayList.class);
     }
 
     public ListConfigEntry<T> buildList(Class<? extends List> listClass) {
-        return new DefaultListConfigEntry<T>(type, path, defList, comments, serializer, validator, description, listClass);
+        return new DefaultListConfigEntry<T>(type, path, defList, comments, serializer, validator, description, deprecated, listClass);
     }
 }

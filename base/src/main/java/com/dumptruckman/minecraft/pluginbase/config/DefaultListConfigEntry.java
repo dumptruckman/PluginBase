@@ -4,9 +4,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 class DefaultListConfigEntry<T> extends DefaultConfigEntry<T> implements ListConfigEntry<T> {
 
@@ -16,8 +14,8 @@ class DefaultListConfigEntry<T> extends DefaultConfigEntry<T> implements ListCon
 
     public DefaultListConfigEntry(Class<T> type, String path, List<T> def, List<String> comments,
                                   EntrySerializer<T> serializer, EntryValidator validator, Message description,
-                                  Class<? extends List> listClass) {
-        super(type, path, null, comments, serializer, validator, description);
+                                  boolean deprecated, Class<? extends List> listClass) {
+        super(type, path, null, comments, serializer, validator, description, deprecated);
         this.listClass = listClass;
         this.defList = def;
     }

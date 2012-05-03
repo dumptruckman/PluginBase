@@ -31,6 +31,8 @@ public interface ConfigEntry<T> {
 
     boolean isValid(Object obj);
 
+    boolean isDeprecated();
+
     Object serialize(T value);
 
     T deserialize(Object o);

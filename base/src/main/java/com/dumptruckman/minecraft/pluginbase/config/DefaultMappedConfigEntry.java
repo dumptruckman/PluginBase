@@ -14,8 +14,8 @@ class DefaultMappedConfigEntry<T> extends DefaultConfigEntry<T> implements Mappe
 
     public DefaultMappedConfigEntry(Class<T> type, String path, T def, List<String> comments,
                                     EntrySerializer<T> serializer, EntryValidator validator, Message description,
-                                    Class<? extends Map> mapClass) {
-        super(type, path, def, comments, serializer, validator, description);
+                                    boolean deprecated, Class<? extends Map> mapClass) {
+        super(type, path, def, comments, serializer, validator, description, deprecated);
         this.mapClass = mapClass;
     }
 

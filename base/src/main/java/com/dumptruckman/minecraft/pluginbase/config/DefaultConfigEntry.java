@@ -13,9 +13,11 @@ class DefaultConfigEntry<T> implements ConfigEntry<T> {
     private EntrySerializer<T> serializer;
     private EntryValidator validator;
     private Message description;
+    private boolean deprecated;
 
     public DefaultConfigEntry(Class<T> type, String path, T def, List<String> comments,
-                              EntrySerializer<T> serializer, EntryValidator validator, Message description) {
+                              EntrySerializer<T> serializer, EntryValidator validator, Message description,
+                              boolean deprecated) {
         this.path = path;
         this.def = def;
         this.comments = comments;
@@ -23,6 +25,7 @@ class DefaultConfigEntry<T> implements ConfigEntry<T> {
         this.serializer = serializer;
         this.validator = validator;
         this.description = description;
+        this.deprecated = deprecated;
     }
 
     public String getName() {
@@ -53,6 +56,11 @@ class DefaultConfigEntry<T> implements ConfigEntry<T> {
 
     public boolean isValid(Object obj) {
         return validator.isValid(obj);
+    }
+
+    @Override
+    public boolean isDeprecated() {
+        return deprecated;
     }
 
     public Message getInvalidMessage() {
