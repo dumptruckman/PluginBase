@@ -22,7 +22,15 @@ public class EntryBuilder<T> {
     public EntryBuilder(Class<T> type, String name) {
         this.path = name;
         this.type = type;
-        this.serializer = new DefaultSerializer<T>(type);
+        if (type.equals(String.class)) {
+            this.serializer = new StringStringSerializer<T>(type);
+        } else {
+            try {
+                this.serializer = new DefaultStringSerializer<T>(type);
+            } catch (IllegalArgumentException e) {
+                this.serializer = new DefaultSerializer<T>(type);
+            }
+        }
         this.validator = new DefaultValidator();
     }
     
