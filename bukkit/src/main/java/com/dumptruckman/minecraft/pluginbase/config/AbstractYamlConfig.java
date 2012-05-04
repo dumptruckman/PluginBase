@@ -27,10 +27,6 @@ public abstract class AbstractYamlConfig<C> implements Config {
     private BukkitPlugin plugin;
     private Entries entries;
 
-    public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, File configFile, Class<? extends C>... configClasses) throws IOException {
-        this(plugin, doComments, true, configFile, configClasses);
-    }
-
     public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, boolean autoDefaults, File configFile, Class<? extends C>... configClasses) throws IOException {
         if (plugin == null) {
             throw new IllegalArgumentException("plugin may not be null!");
