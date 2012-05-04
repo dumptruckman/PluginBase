@@ -26,6 +26,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
     private CommentedYamlConfiguration config;
     private BukkitPlugin plugin;
     private Entries entries;
+    private boolean doComments;
 
     public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, boolean autoDefaults, File configFile, Class<? extends C>... configClasses) throws IOException {
         if (plugin == null) {
@@ -40,6 +41,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
         if (!configFile.getName().endsWith(".yml")) {
             throw new IllegalArgumentException("configFile MUST be yaml!");
         }
+        this.doComments = doComments;
         entries = new Entries(configClasses);
         this.plugin = plugin;
         // Make the data folders
@@ -68,7 +70,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
         config.getConfig().options().header(getHeader());
 
         // Saves the configuration from memory to file
-        config.save();
+        save();
     }
 
     /**
@@ -76,7 +78,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
      */
     private void setDefaults() {
         for (ConfigEntry path : entries.entries) {
-            config.addComment(path.getName(), path.getComments());
+            //config.addComment(path.getName(), path.getComments());
             if (getConfig().get(path.getName()) == null) {
                 if (path.isDeprecated()) {
                     continue;
@@ -221,6 +223,11 @@ public abstract class AbstractYamlConfig<C> implements Config {
      */
     @Override
     public void save() {
+        if (doComments) {
+            for (ConfigEntry path : entries.entries) {
+                config.addComment(path.getName(), path.getComments());
+            }
+        }
         this.config.save();
     }
     
