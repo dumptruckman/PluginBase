@@ -61,7 +61,7 @@ public class EntryBuilder<T> {
     }
 
     public EntryBuilder<T> description(Message message) {
-        description = null;
+        description = message;
         return this;
     }
 
