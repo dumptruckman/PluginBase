@@ -27,7 +27,7 @@ public class MockConfig extends AbstractYamlConfig<MockConfig> implements BaseCo
             .buildList(LinkedList.class);
     
     public MockConfig(BukkitPlugin plugin, boolean doComments, File configFile, Class<? extends MockConfig> configClass) throws IOException {
-        super(plugin, doComments, configFile, configClass);
+        super(plugin, doComments, true, configFile, configClass);
     }
 
     @Override
