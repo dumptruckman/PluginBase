@@ -26,8 +26,12 @@ public abstract class AbstractYamlConfig<C> implements Config {
     private CommentedYamlConfiguration config;
     private BukkitPlugin plugin;
     private Entries entries;
-    
+
     public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, File configFile, Class<? extends C>... configClasses) throws IOException {
+        this(plugin, doComments, true, configFile, configClasses);
+    }
+
+    public AbstractYamlConfig(BukkitPlugin plugin, boolean autoDefaults, boolean doComments, File configFile, Class<? extends C>... configClasses) throws IOException {
         if (plugin == null) {
             throw new IllegalArgumentException("plugin may not be null!");
         }
@@ -61,7 +65,9 @@ public abstract class AbstractYamlConfig<C> implements Config {
         config.load();
 
         // Sets defaults config values
-        this.setDefaults();
+        if (autoDefaults) {
+            this.setDefaults();
+        }
         
         config.getConfig().options().header(getHeader());
 
