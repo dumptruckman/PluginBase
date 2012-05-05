@@ -19,7 +19,12 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
     private void send(Message message, String prefix, CommandSender sender, Object... args) {
         List<String> messages = this.getMessages(message, args);
         if (!messages.isEmpty()) {
-            messages.set(0, prefix + " " + messages.get(0));
+            if (prefix.isEmpty()) {
+                messages.set(0, messages.get(0));
+            } else {
+                messages.set(0, prefix + " " + messages.get(0));
+            }
+
             sendMessages(sender, messages);
         }
     }
