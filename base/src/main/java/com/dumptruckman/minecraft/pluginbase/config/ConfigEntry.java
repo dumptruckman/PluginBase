@@ -33,6 +33,8 @@ public interface ConfigEntry<T> {
 
     boolean isDeprecated();
 
+    boolean shouldDefaultIfMissing();
+
     Object serialize(T value);
 
     T deserialize(Object o);

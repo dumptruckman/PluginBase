@@ -14,10 +14,11 @@ class DefaultConfigEntry<T> implements ConfigEntry<T> {
     private EntryValidator validator;
     private Message description;
     private boolean deprecated;
+    private boolean defaultIfMissing;
 
     public DefaultConfigEntry(Class<T> type, String path, T def, List<String> comments,
                               EntrySerializer<T> serializer, EntryValidator validator, Message description,
-                              boolean deprecated) {
+                              boolean deprecated, boolean defaultIfMissing) {
         this.path = path;
         this.def = def;
         this.comments = comments;
@@ -26,6 +27,7 @@ class DefaultConfigEntry<T> implements ConfigEntry<T> {
         this.validator = validator;
         this.description = description;
         this.deprecated = deprecated;
+        this.defaultIfMissing = defaultIfMissing;
     }
 
     public String getName() {
@@ -61,6 +63,11 @@ class DefaultConfigEntry<T> implements ConfigEntry<T> {
     @Override
     public boolean isDeprecated() {
         return deprecated;
+    }
+
+    @Override
+    public boolean shouldDefaultIfMissing() {
+        return defaultIfMissing;
     }
 
     public Message getInvalidMessage() {

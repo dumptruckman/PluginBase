@@ -126,7 +126,12 @@ public abstract class AbstractYamlConfig<C> implements Config {
         entry.getName(); // clears any specific path.
         Object obj = getConfig().get(entry.getName());
         if (obj == null) {
-            return null;
+            if (entry.shouldDefaultIfMissing()) {
+                obj = entry.getDefault();
+            }
+            if (obj == null) {
+                return null;
+            }
         }
         if (obj instanceof ConfigurationSection) {
             obj = ((ConfigurationSection) obj).getValues(false);
@@ -149,7 +154,12 @@ public abstract class AbstractYamlConfig<C> implements Config {
         }
         Object obj = getConfig().get(entry.getName());
         if (obj == null) {
-            return null;
+            if (entry.shouldDefaultIfMissing()) {
+                obj = entry.getDefault();
+            }
+            if (obj == null) {
+                return null;
+            }
         }
         if (!(obj instanceof List)) {
             obj = new ArrayList<Object>();
@@ -174,7 +184,12 @@ public abstract class AbstractYamlConfig<C> implements Config {
         }
         Object obj = getConfig().get(entry.getName());
         if (obj == null) {
-            return null;
+            if (entry.shouldDefaultIfMissing()) {
+                obj = entry.getDefault();
+            }
+            if (obj == null) {
+                return null;
+            }
         }
         T t = entry.deserialize(obj);
         if (!isValid(entry, t)) {
