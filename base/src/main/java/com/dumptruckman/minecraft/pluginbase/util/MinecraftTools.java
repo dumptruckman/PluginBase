@@ -7,7 +7,7 @@ public class MinecraftTools {
 
     private static final int TICKS_PER_SECOND = 20;
 
-    private MinecraftTools() {
+    protected MinecraftTools() {
         throw new AssertionError();
     }
 
