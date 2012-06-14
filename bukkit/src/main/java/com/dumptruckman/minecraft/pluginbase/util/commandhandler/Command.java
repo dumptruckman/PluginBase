@@ -256,28 +256,29 @@ public abstract class Command {
         }
         return permStrings;
     }
+
     public void showHelp(CommandSender sender) {
-            sender.sendMessage("\u00a7b--- " + this.getCommandName() + " ---");
-            sender.sendMessage("\u00a7e" + this.getCommandDesc());
-            sender.sendMessage("\u00a73" + this.getCommandUsage());
-            sender.sendMessage("Permission: \u00a7a" + this.getPermissionString());
-            String keys = "";
-            for (String key : this.getKeyStrings()) {
-                keys += key + ", ";
-            }
-            keys = keys.substring(0, keys.length() - 2);
-            sender.sendMessage("\u00a79Aliases: \u00a7c" + keys);
-            if (this.getCommandExamples().size() > 0) {
-                sender.sendMessage("\u00a7dExamples:");
-                if (sender instanceof Player) {
-                    for (int i = 0; i < 4 && i < this.getCommandExamples().size(); i++) {
-                        sender.sendMessage(this.getCommandExamples().get(i));
-                    }
-                } else {
-                    for (String c : this.getCommandExamples()) {
-                        sender.sendMessage(c);
-                    }
+        sender.sendMessage("\u00a7b--- " + this.getCommandName() + " ---");
+        sender.sendMessage("\u00a7e" + this.getCommandDesc());
+        sender.sendMessage("\u00a73" + this.getCommandUsage());
+        sender.sendMessage("Permission: \u00a7a" + this.getPermissionString());
+        String keys = "";
+        for (String key : this.getKeyStrings()) {
+            keys += key + ", ";
+        }
+        keys = keys.substring(0, keys.length() - 2);
+        sender.sendMessage("\u00a79Aliases: \u00a7c" + keys);
+        if (this.getCommandExamples().size() > 0) {
+            sender.sendMessage("\u00a7dExamples:");
+            if (sender instanceof Player) {
+                for (int i = 0; i < 4 && i < this.getCommandExamples().size(); i++) {
+                    sender.sendMessage(this.getCommandExamples().get(i));
+                }
+            } else {
+                for (String c : this.getCommandExamples()) {
+                    sender.sendMessage(c);
                 }
             }
         }
+    }
 }

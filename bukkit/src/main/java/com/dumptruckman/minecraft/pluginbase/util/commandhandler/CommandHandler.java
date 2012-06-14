@@ -202,19 +202,30 @@ public class CommandHandler {
      * @param flag A param flag, like -s or -g
      * @param args All arguments to search through
      *
-     * @return A string or null
+     * @return A string with flag data or null if no flag/flag data
      */
     public static String getFlag(String flag, List<String> args) {
         int i = 0;
-        try {
-            for (String s : args) {
-                if (s.equalsIgnoreCase(flag)) {
+        for (String s : args) {
+            if (s.equalsIgnoreCase(flag)) {
+                if (args.size() > i + 1) {
                     return args.get(i + 1);
+                } else {
+                    return null;
                 }
-                i++;
             }
-        } catch (IndexOutOfBoundsException ignore) { }
+            i++;
+        }
         return null;
+    }
+
+    public static boolean hasFlag(String flag, List<String> args) {
+        for (String s : args) {
+            if (s.equalsIgnoreCase(flag)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void checkAndRunCommand(CommandSender sender, List<String> parsedArgs, Command foundCommand, boolean notifySender) {
