@@ -12,21 +12,20 @@ public abstract class PaginatedPluginCommand<T, P extends AbstractBukkitPlugin> 
      * The reference to the core.
      */
     protected P plugin;
-    /**
-     * The reference to {@link com.dumptruckman.minecraft.pluginbase.locale.Messager}.
-     */
-    protected Messager messager;
 
     public PaginatedPluginCommand(P plugin) {
         super(plugin);
         this.plugin = plugin;
-        this.messager = this.plugin.getMessager();
     }
 
     public final void addPrefixedKey(String key) {
         for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
             this.addKey(prefix + key);
         }
+    }
+
+    protected Messager getMessager() {
+        return plugin.getMessager();
     }
 
     @Override

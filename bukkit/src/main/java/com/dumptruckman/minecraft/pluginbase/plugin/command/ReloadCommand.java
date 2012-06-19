@@ -27,7 +27,7 @@ public class ReloadCommand<P extends AbstractBukkitPlugin> extends PluginCommand
 
     public ReloadCommand(P plugin) {
         super(plugin);
-        setName(messager.getMessage(CommandMessages.RELOAD_NAME));
+        setName(getMessager().getMessage(CommandMessages.RELOAD_NAME));
         setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " reload");
         setArgRange(0, 0);
         for (String key : staticKeys) {
@@ -43,6 +43,6 @@ public class ReloadCommand<P extends AbstractBukkitPlugin> extends PluginCommand
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
         this.plugin.reloadConfig();
-        this.messager.normal(CommandMessages.RELOAD_COMPLETE, sender);
+        this.getMessager().normal(CommandMessages.RELOAD_COMPLETE, sender);
     }
 }

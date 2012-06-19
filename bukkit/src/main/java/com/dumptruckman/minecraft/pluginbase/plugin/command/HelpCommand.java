@@ -38,8 +38,8 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
 
     public HelpCommand(P plugin) {
         super(plugin);
-        this.setName(messager.getMessage(CommandMessages.HELP_NAME, plugin.getPluginName()));
-        this.setCommandUsage(messager.getMessage(CommandMessages.HELP_USAGE, plugin.getCommandPrefixes().get(0)));
+        this.setName(getMessager().getMessage(CommandMessages.HELP_NAME, plugin.getPluginName()));
+        this.setCommandUsage(getMessager().getMessage(CommandMessages.HELP_USAGE, plugin.getCommandPrefixes().get(0)));
         this.setArgRange(0, 2);
         for (String key : staticKeys) {
             this.addKey(key);
@@ -86,7 +86,7 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        messager.normal(CommandMessages.HELP_TITLE, sender, plugin.getPluginName());
+        getMessager().normal(CommandMessages.HELP_TITLE, sender, plugin.getPluginName());
 
         FilterObject filterObject = this.getPageAndFilter(args);
 
@@ -94,13 +94,13 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
         if (filterObject.getFilter().length() > 0) {
             availableCommands = this.getFilteredItems(availableCommands, filterObject.getFilter());
             if (availableCommands.size() == 0) {
-                messager.normal(CommandMessages.HELP_NONE_FOUND, sender, filterObject.getFilter());
+                getMessager().normal(CommandMessages.HELP_NONE_FOUND, sender, filterObject.getFilter());
                 return;
             }
         }
 
         if (!(sender instanceof Player)) {
-            messager.normal(CommandMessages.HELP_MORE_INFO, sender);
+            getMessager().normal(CommandMessages.HELP_MORE_INFO, sender);
             for (Command c : availableCommands) {
                 sender.sendMessage(ChatColor.AQUA + c.getCommandUsage());
             }
@@ -113,8 +113,8 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
             filterObject.setPage(totalPages);
         }
 
-        messager.normal(CommandMessages.HELP_PAGES, sender, filterObject.getPage(), totalPages);
-        messager.normal(CommandMessages.HELP_MORE_INFO, sender);
+        getMessager().normal(CommandMessages.HELP_PAGES, sender, filterObject.getPage(), totalPages);
+        getMessager().normal(CommandMessages.HELP_MORE_INFO, sender);
 
         this.showPage(filterObject.getPage(), sender, availableCommands);
     }

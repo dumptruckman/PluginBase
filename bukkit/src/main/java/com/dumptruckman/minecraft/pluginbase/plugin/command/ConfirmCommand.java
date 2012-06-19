@@ -31,7 +31,7 @@ public class ConfirmCommand<P extends AbstractBukkitPlugin> extends PluginComman
 
     public ConfirmCommand(P plugin) {
         super(plugin);
-        this.setName(messager.getMessage(CommandMessages.CONFIRM_NAME));
+        this.setName(getMessager().getMessage(CommandMessages.CONFIRM_NAME));
         this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " confirm");
         this.setArgRange(0, 0);
         for (String key : staticKeys) {

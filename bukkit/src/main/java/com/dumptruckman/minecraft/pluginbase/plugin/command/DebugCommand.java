@@ -31,8 +31,8 @@ public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<
 
     public DebugCommand(P plugin) {
         super(plugin);
-        this.setName(messager.getMessage(CommandMessages.DEBUG_NAME));
-        this.setCommandUsage(messager.getMessage(CommandMessages.DEBUG_USAGE, plugin.getCommandPrefixes().get(0)));
+        this.setName(getMessager().getMessage(CommandMessages.DEBUG_NAME));
+        this.setCommandUsage(getMessager().getMessage(CommandMessages.DEBUG_USAGE, plugin.getCommandPrefixes().get(0)));
         this.setArgRange(0, 1);
         for (String key : staticKeys) {
             this.addKey(key);
@@ -62,7 +62,7 @@ public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<
                     Logging.setDebugMode(plugin.config().get(BaseConfig.DEBUG_MODE));
                     plugin.config().save();
                 } catch (NumberFormatException e) {
-                    messager.bad(Messages.INVALID_DEBUG, sender);
+                    getMessager().bad(Messages.INVALID_DEBUG, sender);
                 }
             }
         }
@@ -71,9 +71,9 @@ public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<
 
     private void displayDebugMode(CommandSender sender) {
         if (plugin.config().get(BaseConfig.DEBUG_MODE) == 0) {
-            messager.normal(CommandMessages.DEBUG_SET, sender, ChatColor.RED + messager.getMessage(Messages.GENERIC_OFF));
+            getMessager().normal(CommandMessages.DEBUG_SET, sender, ChatColor.RED + getMessager().getMessage(Messages.GENERIC_OFF));
         } else {
-            messager.normal(CommandMessages.DEBUG_SET, sender, ChatColor.GREEN
+            getMessager().normal(CommandMessages.DEBUG_SET, sender, ChatColor.GREEN
                     + plugin.config().get(BaseConfig.DEBUG_MODE).toString());
             Logging.fine(this.plugin.getDescription().getName() + " debug ENABLED");
         }

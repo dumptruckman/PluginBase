@@ -40,8 +40,8 @@ public class VersionCommand<P extends AbstractBukkitPlugin> extends PluginComman
 
     public VersionCommand(P plugin) {
         super(plugin);
-        this.setName(messager.getMessage(CommandMessages.VERSION_NAME));
-        this.setCommandUsage(messager.getMessage(CommandMessages.VERSION_USAGE, plugin.getCommandPrefixes().get(0)));
+        this.setName(getMessager().getMessage(CommandMessages.VERSION_NAME));
+        this.setCommandUsage(getMessager().getMessage(CommandMessages.VERSION_USAGE, plugin.getCommandPrefixes().get(0)));
         this.setArgRange(0, 1);
         for (String key : staticKeys) {
             this.addKey(key);
@@ -58,14 +58,14 @@ public class VersionCommand<P extends AbstractBukkitPlugin> extends PluginComman
     public void runCommand(final CommandSender sender, final List<String> args) {
         // Check if the command was sent from a Player.
         if (sender instanceof Player) {
-            messager.normal(CommandMessages.VERSION_PLAYER, sender);
+            getMessager().normal(CommandMessages.VERSION_PLAYER, sender);
         }
 
         final List<String> buffer = new LinkedList<String>();
-        buffer.add(messager.getMessage(CommandMessages.VERSION_PLUGIN_VERSION, plugin.getDescription().getName(), plugin.getDescription().getVersion()));
-        buffer.add(messager.getMessage(CommandMessages.VERSION_BUKKIT_VERSION, plugin.getServer().getVersion()));
-        buffer.add(messager.getMessage(CommandMessages.VERSION_LANG_FILE, plugin.config().get(BaseConfig.LANGUAGE_FILE)));
-        buffer.add(messager.getMessage(CommandMessages.VERSION_DEBUG_MODE, plugin.config().get(BaseConfig.DEBUG_MODE)));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_PLUGIN_VERSION, plugin.getDescription().getName(), plugin.getDescription().getVersion()));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_BUKKIT_VERSION, plugin.getServer().getVersion()));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_LANG_FILE, plugin.config().get(BaseConfig.LANGUAGE_FILE)));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_DEBUG_MODE, plugin.config().get(BaseConfig.DEBUG_MODE)));
 
         List<String> versionInfoDump = plugin.dumpVersionInfo();
         if (versionInfoDump != null) {

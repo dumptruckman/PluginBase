@@ -16,15 +16,14 @@ public abstract class PluginCommand<P extends BukkitPlugin> extends Command {
      * The reference to the core.
      */
     protected P plugin;
-    /**
-     * The reference to {@link com.dumptruckman.minecraft.pluginbase.locale.Messager}.
-     */
-    protected Messager messager;
 
     public PluginCommand(P plugin) {
         super(plugin);
         this.plugin = plugin;
-        this.messager = this.plugin.getMessager();
+    }
+
+    protected Messager getMessager() {
+        return plugin.getMessager();
     }
 
     public final void addPrefixedKey(String key) {
