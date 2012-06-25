@@ -168,7 +168,7 @@ public class Font {
                 colorfoundthisline = true;
             }
             if ((width > LINE_LENGTH) && (lastspaceindex != 0)) {
-                if (lastcolor != null && !colorfoundthisline) {
+                if (lastcolor != null && colorfoundthisline) {
                     split.add(Character.toString(SECTION_SYMBOL) + lastcolor
                             + text.substring(lastlineindex, lastspaceindex));
                 } else {
@@ -184,7 +184,7 @@ public class Font {
             }
         }
         if (!text.substring(lastlineindex).isEmpty())
-            if (lastcolor != null && !colorfoundthisline) {
+            if (lastcolor != null && colorfoundthisline) {
                 split.add(Character.toString(SECTION_SYMBOL) + lastcolor
                         + text.substring(lastlineindex));
             } else {
