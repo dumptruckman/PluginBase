@@ -1,9 +1,9 @@
 package com.dumptruckman.minecraft.pluginbase.locale;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-import com.dumptruckman.minecraft.pluginbase.util.Font;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.util.ChatPaginator;
 
 import java.util.List;
 
@@ -99,7 +99,7 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
      */
     @Override
     public void sendMessage(CommandSender player, String message) {
-        List<String> messages = Font.splitString(message);
+        String[] messages = ChatPaginator.wordWrap(message, ChatPaginator.GUARANTEED_NO_WRAP_CHAT_PAGE_WIDTH);
         sendMessages(player, messages);
     }
 
@@ -108,6 +108,12 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
      */
     @Override
     public void sendMessages(CommandSender player, List<String> messages) {
+        for (String s : messages) {
+            player.sendMessage(s);
+        }
+    }
+
+    private void sendMessages(CommandSender player, String[] messages) {
         for (String s : messages) {
             player.sendMessage(s);
         }
