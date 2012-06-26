@@ -1,6 +1,9 @@
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
+import com.dumptruckman.minecraft.pluginbase.database.MySQLDatabase;
+import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
+import com.dumptruckman.minecraft.pluginbase.database.SQLiteDatabase;
 import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
 import com.dumptruckman.minecraft.pluginbase.locale.SimpleMessager;
@@ -33,6 +36,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     private Messager messager = null;
     private File serverFolder = null;
     private CommandHandler commandHandler = null;
+    private SQLDatabase db = null;
 
     public void preDisable() {
 
@@ -47,10 +51,8 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
      * {@inheritDoc}
      */
     @Override
-    public void onDisable() {
+    public final void onDisable() {
         preDisable();
-        // Display disable message/version info
-        Logging.info("disabled.", true);
         Logging.close();
     }
 
@@ -74,8 +76,6 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         _registerCommands();
 
         postEnable();
-        // Display enable message/version info
-        Logging.info("enabled.", true);
     }
 
     public void postEnable() {
@@ -95,6 +95,10 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
      */
     public final void reloadConfig() {
         preReload();
+        if (db != null && db.isConnected()) {
+            db.disconnect();
+        }
+        db = null;
         this.config = null;
         this.messager = null;
         getMessager();
@@ -119,7 +123,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         return null;
     }
 
-    private final void _registerCommands() {
+    private void _registerCommands() {
         getCommandHandler().registerCommand(new DebugCommand<AbstractBukkitPlugin>(this));
         getCommandHandler().registerCommand(new ReloadCommand<AbstractBukkitPlugin>(this));
         getCommandHandler().registerCommand(new HelpCommand<AbstractBukkitPlugin>(this));
@@ -223,6 +227,18 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     @Override
     public String getPluginVersion() {
         return getDescription().getVersion();
+    }
+
+    @Override
+    public SQLDatabase getDB() {
+        if (db == null) {
+            if (config().get(BaseConfig.DB_TYPE).equalsIgnoreCase("mysql")) {
+                db = new MySQLDatabase();
+            } else {
+                db = new SQLiteDatabase();
+            }
+        }
+        return db;
     }
 
     @Override

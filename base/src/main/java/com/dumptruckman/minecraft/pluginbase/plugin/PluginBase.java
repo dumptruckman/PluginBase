@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
+import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 
 import java.io.File;
 import java.util.List;
@@ -34,4 +35,5 @@ public interface PluginBase<C extends BaseConfig> {
     
     List<String> getCommandPrefixes();
 
+    SQLDatabase getDB();
 }
