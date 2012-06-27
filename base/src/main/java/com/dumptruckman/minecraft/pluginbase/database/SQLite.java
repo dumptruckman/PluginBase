@@ -11,6 +11,8 @@ package com.dumptruckman.minecraft.pluginbase.database;
  * SQLite
  */
 
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -67,7 +69,6 @@ public class SQLite extends DatabaseHandler {
     protected boolean initialize() {
         try {
             Class.forName("org.sqlite.JDBC");
-
             return true;
         } catch (ClassNotFoundException e) {
             this.writeError("You need the SQLite library " + e, true);
@@ -90,89 +91,37 @@ public class SQLite extends DatabaseHandler {
     }
 
     @Override
-    public void close() {
-        if (this.connection != null)
-            try {
-                this.connection.close();
-            } catch (SQLException ex) {
-                this.writeError("Error on Connection close: " + ex, true);
-            }
-    }
-
-    @Override
-    public Connection getConnection() {
-        if (this.connection == null)
-            return open();
-        return this.connection;
-    }
-
-    @Override
-    public boolean checkConnection() {
-        //Connection con = this.getConnection(); // Why reopen the connection if the user only wants to hasPerm it?
-        if (this.connection != null)
-            return true;
-        return false;
-    }
-
-    @Override
     public ResultSet query(String query) {
-        //Connection connection = null;
-        Statement statement = null;
-        ResultSet result = null;
-
+        if (!checkConnection()) {
+            Logging.severe("Database connection is closed!");
+            return null;
+        }
         try {
-            this.connection = this.getConnection();
-            statement = this.connection.createStatement();
+            Statement statement = getConnection().createStatement();
 
             switch (this.getStatement(query)) {
                 case SELECT:
-                    result = statement.executeQuery(query);
-                    return result;
-
+                    return statement.executeQuery(query);
                 default:
                     statement.executeUpdate(query);
-                    return result;
+                    return null;
             }
         } catch (SQLException ex) {
             if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
                 return retryResult(query);
-                //this.writeError("",false);
             } else {
                 this.writeError("Error at SQL Query: " + ex.getMessage(), false);
             }
-
         }
         return null;
     }
 
     @Override
-    public boolean createTable(String query) {
-        Statement statement = null;
-        try {
-            if (query.equals("") || query == null) {
-                this.writeError("SQL Create Table query empty.", true);
-                return false;
-            }
-
-            statement = this.connection.createStatement();
-            statement.execute(query);
-            return true;
-        } catch (SQLException ex) {
-            this.writeError(ex.getMessage(), true);
-            return false;
-        }
-    }
-
-    @Override
     public boolean checkTable(String table) {
-        DatabaseMetaData dbm = null;
         try {
-            dbm = this.getConnection().getMetaData();
+            DatabaseMetaData dbm = getConnection().getMetaData();
             ResultSet tables = dbm.getTables(null, null, table, null);
-            if (tables.next())
-                return true;
-            else
-                return false;
+            return tables.next();
         } catch (SQLException e) {
             this.writeError("Failed to hasPerm if table \"" + table + "\" exists: " + e.getMessage(), true);
             return false;
@@ -181,17 +130,17 @@ public class SQLite extends DatabaseHandler {
 
     @Override
     public boolean wipeTable(String table) {
-        Statement statement = null;
-        String query = null;
+        if (!checkConnection()) {
+            Logging.severe("Database connection is closed!");
+            return false;
+        }
         try {
             if (!this.checkTable(table)) {
                 this.writeError("Error at Wipe Table: table, " + table + ", does not exist", true);
                 return false;
             }
-            //Connection connection = getConnection();
-            this.connection = this.getConnection();
-            statement = this.connection.createStatement();
-            query = "DELETE FROM " + table + ";";
+            Statement statement = getConnection().createStatement();
+            String query = "DELETE FROM " + table + ";";
             statement.executeQuery(query);
             return true;
         } catch (SQLException ex) {
@@ -212,14 +161,15 @@ public class SQLite extends DatabaseHandler {
       * @param query The SQL query.
       */
     public void retry(String query) {
+        if (!checkConnection()) {
+            Logging.severe("Database connection is closed!");
+            return;
+        }
         boolean passed = false;
-        Statement statement = null;
-
+        Statement statement;
         while (!passed) {
             try {
-                //Connection connection = getConnection();
-                this.connection = this.getConnection();
-                statement = this.connection.createStatement();
+                statement = getConnection().createStatement();
                 statement.executeQuery(query);
                 passed = true;
             } catch (SQLException ex) {
@@ -239,27 +189,24 @@ public class SQLite extends DatabaseHandler {
       * @return The SQL query result.
       */
     public ResultSet retryResult(String query) {
-        boolean passed = false;
+        if (!checkConnection()) {
+            Logging.severe("Database connection is closed!");
+            return null;
+        }
         Statement statement = null;
-        ResultSet result = null;
-
-        while (!passed) {
+        while (true) {
             try {
                 //Connection connection = getConnection();
                 this.connection = this.getConnection();
                 statement = this.connection.createStatement();
-                result = statement.executeQuery(query);
-                passed = true;
-                return result;
+                return statement.executeQuery(query);
             } catch (SQLException ex) {
                 if (ex.getMessage().toLowerCase().contains("locking") || ex.getMessage().toLowerCase().contains("locked")) {
-                    passed = false;
                 } else {
                     this.writeError("Error at SQL Query: " + ex.getMessage(), false);
+                    return null;
                 }
             }
         }
-
-        return null;
     }
 }

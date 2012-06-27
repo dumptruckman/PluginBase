@@ -3,7 +3,6 @@ package com.dumptruckman.minecraft.pluginbase.database;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 
-import java.net.MalformedURLException;
 import java.sql.ResultSet;
 
 public abstract class SQLDB implements SQLDatabase {
@@ -66,12 +65,12 @@ public abstract class SQLDB implements SQLDatabase {
     }
 
     @Override
-    public boolean checkTable(String name) throws MalformedURLException, InstantiationException, IllegalAccessException {
+    public boolean checkTable(String name) {
         return db.checkTable(name);
     }
 
     @Override
-    public boolean wipeTable(String table) throws MalformedURLException, InstantiationException, IllegalAccessException {
+    public boolean wipeTable(String table) {
         return db.wipeTable(table);
     }
 }

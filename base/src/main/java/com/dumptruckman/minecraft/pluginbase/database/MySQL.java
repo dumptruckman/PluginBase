@@ -11,7 +11,8 @@ package com.dumptruckman.minecraft.pluginbase.database;
  * MySQL
  */
 
-import java.net.MalformedURLException;
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -69,13 +70,13 @@ public class MySQL extends DatabaseHandler {
             Class.forName("com.mysql.jdbc.Driver"); // Check that server's Java has MySQL support.
             return true;
         } catch (ClassNotFoundException e) {
-            this.writeError("Class Not Found Exception: " + e.getMessage() + ".", true);
+            this.writeError("You need the MySQL library " + e, true);;
             return false;
         }
     }
 
     @Override
-    public Connection open() throws MalformedURLException, InstantiationException, IllegalAccessException {
+    public Connection open() {
         if (initialize()) {
             String url = "";
             try {
@@ -85,66 +86,27 @@ public class MySQL extends DatabaseHandler {
             } catch (SQLException e) {
                 this.writeError(url, true);
                 this.writeError("Could not be resolved because of an SQL Exception: " + e.getMessage() + ".", true);
+                return null;
             }
         }
         return this.connection;
     }
 
     @Override
-    public void close() {
-        try {
-            if (this.connection != null)
-                this.connection.close();
-        } catch (Exception e) {
-            this.writeError("Failed to close database connection: " + e.getMessage(), true);
+    public ResultSet query(String query) {
+        if (!checkConnection()) {
+            Logging.severe("Database connection is closed!");
+            return null;
         }
-    }
-
-    @Override
-    public Connection getConnection()
-            throws MalformedURLException, InstantiationException, IllegalAccessException {
-        if (this.connection == null)
-            return open();
-        return this.connection;
-    }
-
-    @Override
-    public boolean checkConnection() {
-        if (this.connection == null) {
-            try {
-                open();
-                return true;
-            } catch (MalformedURLException ex) {
-                this.writeError("MalformedURLException: " + ex.getMessage(), true);
-            } catch (InstantiationException ex) {
-                this.writeError("InstantiationExceptioon: " + ex.getMessage(), true);
-            } catch (IllegalAccessException ex) {
-                this.writeError("IllegalAccessException: " + ex.getMessage(), true);
-            }
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public ResultSet query(String query)
-            throws MalformedURLException, InstantiationException, IllegalAccessException {
-        //Connection connection = null;
-        Statement statement = null;
-        ResultSet result = null;
         try {
-            //connection = getConnection();
-            this.connection = this.getConnection();
-            statement = this.connection.createStatement();
+            Statement statement = getConnection().createStatement();
 
             switch (this.getStatement(query)) {
                 case SELECT:
-                    result = statement.executeQuery(query);
-                    return result;
-
+                    return statement.executeQuery(query);
                 default:
                     statement.executeUpdate(query);
-                    return result;
+                    return null;
             }
         } catch (SQLException ex) {
             this.writeError("Error in SQL query: " + ex.getMessage(), false);
@@ -154,40 +116,16 @@ public class MySQL extends DatabaseHandler {
     }
 
     @Override
-    public boolean createTable(String query) {
-        Statement statement = null;
-        try {
-            this.connection = this.getConnection();
-            if (query.equals("") || query == null) {
-                this.writeError("SQL query empty: createTable(" + query + ")", true);
-                return false;
-            }
-
-            statement = this.connection.createStatement();
-            statement.execute(query);
-            return true;
-        } catch (SQLException e) {
-            this.writeError(e.getMessage(), true);
-            return false;
-        } catch (Exception e) {
-            this.writeError(e.getMessage(), true);
+    public boolean checkTable(String table) {
+        if (!checkConnection()) {
+            Logging.severe("Database connection is closed!");
             return false;
         }
-    }
-
-    @Override
-    public boolean checkTable(String table) throws MalformedURLException, InstantiationException, IllegalAccessException {
         try {
-            //Connection connection = getConnection();
-            this.connection = this.getConnection();
-            Statement statement = this.connection.createStatement();
+            Statement statement = getConnection().createStatement();
 
             ResultSet result = statement.executeQuery("SELECT * FROM " + table);
-
-            if (result == null)
-                return false;
-            if (result != null)
-                return true;
+            return result != null;
         } catch (SQLException e) {
             if (e.getMessage().contains("exist")) {
                 return false;
@@ -197,32 +135,25 @@ public class MySQL extends DatabaseHandler {
             }
         }
 
-
-        if (query("SELECT * FROM " + table) == null) return true;
-        return false;
+        return (query("SELECT * FROM " + table) == null);
     }
 
     @Override
-    public boolean wipeTable(String table) throws MalformedURLException, InstantiationException, IllegalAccessException {
-        //Connection connection = null;
-        Statement statement = null;
-        String query = null;
+    public boolean wipeTable(String table) {
+        if (!checkConnection()) {
+            Logging.severe("Database connection is closed!");
+            return false;
+        }
         try {
             if (!this.checkTable(table)) {
                 this.writeError("Error wiping table: \"" + table + "\" does not exist.", true);
                 return false;
             }
-            //connection = getConnection();
-            this.connection = this.getConnection();
-            statement = this.connection.createStatement();
-            query = "DELETE FROM " + table + ";";
+            Statement statement = getConnection().createStatement();
+            String query = "DELETE FROM " + table + ";";
             statement.executeUpdate(query);
-
             return true;
-        } catch (SQLException e) {
-            if (!e.toString().contains("not return ResultSet"))
-                return false;
-        }
+        } catch (SQLException ignore) { }
         return false;
     }
 }

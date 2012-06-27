@@ -13,9 +13,10 @@ package com.dumptruckman.minecraft.pluginbase.database;
 
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 
-import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /*
  *  SQLLite
@@ -102,12 +103,8 @@ public abstract class DatabaseHandler {
      * <br>
      *
      * @return the success of the method.
-     * @throws MalformedURLException  - cannot access database because of a syntax error in the jdbc:// protocol.
-     * @throws InstantiationException - cannot instantiate an interface or abstract class.
-     * @throws IllegalAccessException - cannot access classes, fields, methods, or constructors that are private.
      */
-    abstract Connection open()
-            throws MalformedURLException, InstantiationException, IllegalAccessException;
+    abstract Connection open();
 
     /**
      * <b>close</b><br>
@@ -116,7 +113,15 @@ public abstract class DatabaseHandler {
      * <br>
      * <br>
      */
-    abstract void close();
+    public void close() {
+        if (this.connection != null) {
+            try {
+                this.connection.close();
+            } catch (SQLException e) {
+                this.writeError("Failed to close database connection: " + e.getMessage(), true);
+            }
+        }
+    }
 
     /**
      * <b>getConnection</b><br>
@@ -126,12 +131,10 @@ public abstract class DatabaseHandler {
      * <br>
      *
      * @return the <a href="http://download.oracle.com/javase/6/docs/api/java/sql/Connection.html">Connection</a> variable.
-     * @throws MalformedURLException  - cannot access database because of a syntax error in the jdbc:// protocol.
-     * @throws InstantiationException - cannot instantiate an interface or abstract class.
-     * @throws IllegalAccessException - cannot access classes, fields, methods, or constructors that are private.
      */
-    abstract Connection getConnection()
-            throws MalformedURLException, InstantiationException, IllegalAccessException;
+    public Connection getConnection() {
+        return this.connection == null ? open() : this.connection;
+    }
 
     /**
      * <b>checkConnection</b><br>
@@ -142,7 +145,9 @@ public abstract class DatabaseHandler {
      *
      * @return the status of the connection, true for up, false for down.
      */
-    abstract boolean checkConnection();
+    public boolean checkConnection() {
+        return this.connection != null || open() != null;
+    }
 
     /**
      * <b>query</b><br>
@@ -152,12 +157,8 @@ public abstract class DatabaseHandler {
      *
      * @param query - the SQL query to send to the database.
      * @return the table of results from the query.
-     * @throws MalformedURLException  - cannot access database because of a syntax error in the jdbc:// protocol.
-     * @throws InstantiationException - cannot instantiate an interface or abstract class.
-     * @throws IllegalAccessException - cannot access classes, fields, methods, or constructors that are private.
      */
-    abstract ResultSet query(String query)
-            throws MalformedURLException, InstantiationException, IllegalAccessException;
+    abstract ResultSet query(String query);
 
     /**
      * <b>getStatement</b><br>
@@ -209,7 +210,25 @@ public abstract class DatabaseHandler {
      * @param query - the SQL query for creating a table.
      * @return the success of the method.
      */
-    abstract boolean createTable(String query);
+    public boolean createTable(String query) {
+        if (!checkConnection()) {
+            Logging.severe("Database connection is closed!");
+            return false;
+        }
+        try {
+            if (query == null || query.equals("")) {
+                this.writeError("SQL query empty: createTable(" + query + ")", true);
+                return false;
+            }
+
+            Statement statement = getConnection().createStatement();
+            statement.execute(query);
+            return true;
+        } catch (SQLException e) {
+            this.writeError(e.getMessage(), true);
+            return false;
+        }
+    }
 
     /**
      * <b>checkTable</b><br>
@@ -220,12 +239,8 @@ public abstract class DatabaseHandler {
      *
      * @param table - name of the table to hasPerm.
      * @return success of the method.
-     * @throws MalformedURLException  - cannot access database because of a syntax error in the jdbc:// protocol.
-     * @throws InstantiationException - cannot instantiate an interface or abstract class.
-     * @throws IllegalAccessException - cannot access classes, fields, methods, or constructors that are private.
      */
-    abstract boolean checkTable(String table)
-            throws MalformedURLException, InstantiationException, IllegalAccessException;
+    abstract boolean checkTable(String table);
 
     /**
      * <b>wipeTable</b><br>
@@ -236,12 +251,8 @@ public abstract class DatabaseHandler {
      *
      * @param table - name of the table to wipe.
      * @return success of the method.
-     * @throws MalformedURLException  - cannot access database because of a syntax error in the jdbc:// protocol.
-     * @throws InstantiationException - cannot instantiate an interface or abstract class.
-     * @throws IllegalAccessException - cannot access classes, fields, methods, or constructors that are private.
      */
-    abstract boolean wipeTable(String table)
-            throws MalformedURLException, InstantiationException, IllegalAccessException;
+    abstract boolean wipeTable(String table);
 
     /*
       *  SQLLite
