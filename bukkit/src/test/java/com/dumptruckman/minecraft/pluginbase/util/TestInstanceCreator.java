@@ -67,6 +67,7 @@ public class TestInstanceCreator {
             // Return a fake PDF file.
             PluginDescriptionFile pdf = new PluginDescriptionFile("PluginBase", "1.1",
                     "com.dumptruckman.minecraft.pluginbase.util.MockPlugin");
+            doReturn(pdf).when(plugin).getDescription();
             doReturn(true).when(plugin).isEnabled();
             plugin.setServerFolder(serverDirectory);
 
