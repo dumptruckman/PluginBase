@@ -130,7 +130,7 @@ and adjust the build number accordingly -->
                                 <includes>
                                     <include>com.pneumaticraft.commandhandler:CommandHandler</include>
                                     <include>com.dumptruckman.minecraft:Plugin</include>
-                                    <include>com.feildmaster.lib.configuration:ConfigurationLib</include>
+                                    <include>com.feildmaster.lib:EnhancedConfiguration</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
