@@ -10,16 +10,12 @@
 
     <repositories>
         <repository>
-            <id>bukkit</id>
-            <url>http://repo.bukkit.com/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>onarandombox</id>
             <url>http://repo.onarandombox.com/content/groups/public/</url>
         </repository>
         <repository>
-            <id>feildmaster</id>
-            <url>http://repo.feildmaster.com/</url>
+            <id>bukkit</id>
+            <url>http://repo.bukkit.com/content/groups/public/</url>
         </repository>
     </repositories>
 
