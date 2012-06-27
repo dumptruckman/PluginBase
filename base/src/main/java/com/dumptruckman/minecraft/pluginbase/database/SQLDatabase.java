@@ -2,7 +2,6 @@ package com.dumptruckman.minecraft.pluginbase.database;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 
-import java.net.MalformedURLException;
 import java.sql.ResultSet;
 
 public interface SQLDatabase {
@@ -17,7 +16,7 @@ public interface SQLDatabase {
 
     boolean createTable(String query);
 
-    boolean checkTable(String name) throws MalformedURLException, InstantiationException, IllegalAccessException;
+    boolean checkTable(String name);
 
-    boolean wipeTable(String table) throws MalformedURLException, InstantiationException, IllegalAccessException;
+    boolean wipeTable(String table);
 }
