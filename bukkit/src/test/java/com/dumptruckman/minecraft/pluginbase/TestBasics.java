@@ -5,16 +5,15 @@
  * with this project.                                                         *
  ******************************************************************************/
 
-package com.dumptruckman.minecraft.pluginbase.minecraft.test;
+package com.dumptruckman.minecraft.pluginbase;
 
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
-import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.MockConfig;
-import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.MockMessages;
-import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.MockPlugin;
-import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.MockQueuedCommand;
-import com.dumptruckman.minecraft.pluginbase.minecraft.test.utils.TestInstanceCreator;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.util.MockConfig;
+import com.dumptruckman.minecraft.pluginbase.util.MockMessages;
+import com.dumptruckman.minecraft.pluginbase.util.MockPlugin;
+import com.dumptruckman.minecraft.pluginbase.util.MockQueuedCommand;
+import com.dumptruckman.minecraft.pluginbase.util.TestInstanceCreator;
 import junit.framework.Assert;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
