@@ -7,14 +7,16 @@ import java.sql.ResultSet;
 
 public abstract class SQLDB implements SQLDatabase {
 
-    protected DatabaseHandler db;
+    protected DatabaseHandler db = null;
 
     private boolean connected = false;
 
     @Override
     public ResultSet query(String query) {
         try {
-            return db.query(query);
+            ResultSet result = db.query(query);
+            Logging.finest("SQL: " + query);
+            return result;
         } catch (Exception e) {
             return null;
         }
@@ -29,9 +31,9 @@ public abstract class SQLDB implements SQLDatabase {
         if (isConnected()) {
             return false;
         }
-        Logging.fine("Connecting to " + getName() + " database.");
-        db = newDB(plugin);
-
+        if (db == null) {
+            db = newDB(plugin);
+        }
         try {
             db.open();
             if (!db.checkConnection()) {
@@ -41,7 +43,7 @@ public abstract class SQLDB implements SQLDatabase {
             Logging.severe("Connection to " + getName() + " database failed.");
             return false;
         }
-        Logging.fine("Connected to " + getName() + " database.");
+        Logging.finest("Connected to " + getName() + " database.");
         connected = true;
         return true;
     }
