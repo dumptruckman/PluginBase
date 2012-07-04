@@ -54,6 +54,7 @@ public abstract class SQLDB implements SQLDatabase {
             return;
         }
         db.close();
+        connected = false;
     }
 
     @Override
