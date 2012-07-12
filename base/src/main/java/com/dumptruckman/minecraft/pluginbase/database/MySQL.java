@@ -81,6 +81,7 @@ public class MySQL extends DatabaseHandler {
             String url = "";
             try {
                 url = "jdbc:mysql://" + this.hostname + ":" + this.portnmbr + "/" + this.database;
+                Logging.finest("Connecting to '" + url + "' with username '" + username + "' and pass '" + password + "'");
                 this.connection = DriverManager.getConnection(url, this.username, this.password);
                 return this.connection;
             } catch (SQLException e) {
