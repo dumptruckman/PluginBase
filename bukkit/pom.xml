@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.dumptruckman.minecraft</groupId>
         <artifactId>PluginBase</artifactId>
-        <version>1.4</version>
+        <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>BukkitPlugin</artifactId>
 
@@ -162,7 +162,7 @@ and adjust the build number accordingly -->
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
             <artifactId>Plugin</artifactId>
-            <version>1.4</version>
+            <version>1.5-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
