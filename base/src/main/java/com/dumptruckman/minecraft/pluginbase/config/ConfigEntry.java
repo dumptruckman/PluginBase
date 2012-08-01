@@ -4,7 +4,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.List;
 
-public interface ConfigEntry<T> {
+interface ConfigEntry<T> {
 
     /**
      * Retrieves the path for a config option.
