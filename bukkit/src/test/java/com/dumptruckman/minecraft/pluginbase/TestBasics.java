@@ -121,23 +121,23 @@ public class TestBasics {
         
         myPlugin.config().save();
         
-        Assert.assertEquals(MockConfig.SPECIFIC_TEST.getNewTypeMap(), myPlugin.config().getMap(MockConfig.SPECIFIC_TEST));
-        Assert.assertEquals(null, myPlugin.config().get(MockConfig.SPECIFIC_TEST.specific("test1")));
-        myPlugin.config().set(MockConfig.SPECIFIC_TEST.specific("test1"), 25);
-        Assert.assertEquals(25, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST.specific("test1")));
+        Assert.assertEquals(MockConfig.SPECIFIC_TEST.getNewTypeMap(), myPlugin.config().get(MockConfig.SPECIFIC_TEST));
+        Assert.assertEquals(null, myPlugin.config().get(MockConfig.SPECIFIC_TEST, "test1"));
+        myPlugin.config().set(MockConfig.SPECIFIC_TEST, "test1", 25);
+        Assert.assertEquals(25, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST, "test1"));
         myPlugin.config().save();
         cmdArgs = new String[] { "reload" };
         plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);
         Map<String, Integer> testMap = new HashMap<String, Integer>(1);
         testMap.put("test1", 25);
-        Assert.assertEquals(testMap, myPlugin.config().getMap(MockConfig.SPECIFIC_TEST));
+        Assert.assertEquals(testMap, myPlugin.config().get(MockConfig.SPECIFIC_TEST));
 
-        Assert.assertEquals(MockConfig.LIST_TEST.getNewTypeList(), myPlugin.config().getList(MockConfig.LIST_TEST));
+        Assert.assertEquals(MockConfig.LIST_TEST.getNewTypeList(), myPlugin.config().get(MockConfig.LIST_TEST));
         myPlugin.config().set(MockConfig.LIST_TEST, Arrays.asList(25, 41));
         myPlugin.config().save();
         cmdArgs = new String[] { "reload" };
         plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);
-        List<Integer> checkList = myPlugin.config().getList(MockConfig.LIST_TEST);
+        List<Integer> checkList = myPlugin.config().get(MockConfig.LIST_TEST);
         assertTrue(checkList instanceof LinkedList);
         assertTrue(checkList.contains(25) && checkList.contains(41));
     }

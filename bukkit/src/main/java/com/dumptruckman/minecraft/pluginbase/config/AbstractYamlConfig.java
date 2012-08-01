@@ -118,20 +118,97 @@ public abstract class AbstractYamlConfig<C> implements Config {
         return entries.entries.contains(entry);
     }
 
-    @Override
-     public <T> Map<String, T> getMap(MappedConfigEntry<T> entry) throws IllegalArgumentException {
+    private Object getEntryValue(ConfigEntry entry) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+            throw new IllegalArgumentException("entry not registered to this config!");
         }
-        entry.getName(); // clears any specific path.
         Object obj = getConfig().get(entry.getName());
         if (obj == null) {
             if (entry.shouldDefaultIfMissing()) {
                 obj = entry.getDefault();
             }
-            if (obj == null) {
-                return null;
-            }
+        }
+        return obj;
+    }
+
+    @Override
+    public <T> T get(SimpleConfigEntry<T> entry) throws IllegalArgumentException {
+        Object obj = getEntryValue(entry);
+        if (obj == null) {
+            return null;
+        }
+        T t = entry.deserialize(obj);
+        if (!isValid(entry, t)) {
+            return entry.getDefault();
+        }
+        return t;
+    }
+
+    @Override
+    public <T> T get(ListConfigEntry<T> entry, int index) throws IllegalArgumentException {
+        Object obj = getEntryValue(entry);
+        if (obj == null) {
+            return null;
+        }
+        if (!(obj instanceof List)) {
+            obj = new ArrayList<Object>();
+        }
+        List<Object> list = (List<Object>) obj;
+        Object res = list.get(index);
+        if (res == null) {
+            return null;
+        }
+        if (!entry.isValid(res)) {
+            return entry.getDefault();
+        }
+        return entry.deserialize(res);
+    }
+
+    @Override
+    public <T> List<T> get(ListConfigEntry<T> entry) throws IllegalArgumentException {
+        Object obj = getEntryValue(entry);
+        if (obj == null) {
+            return null;
+        }
+        if (!(obj instanceof List)) {
+            obj = new ArrayList<Object>();
+        }
+        List<Object> list = (List<Object>) obj;
+        List<T> resultList = entry.getNewTypeList();
+        for (Object o : list) {
+            resultList.add(entry.deserialize(o));
+        }
+        return resultList;
+    }
+
+    @Override
+    public <T> T get(MappedConfigEntry<T> entry, String key) throws IllegalArgumentException {
+        Object obj = getEntryValue(entry);
+        if (obj == null) {
+            return null;
+        }
+        if (obj instanceof ConfigurationSection) {
+            obj = ((ConfigurationSection) obj).getValues(false);
+        }
+        if (!(obj instanceof Map)) {
+            obj = new HashMap<String, Object>();
+        }
+        Map<String, Object> map = (Map<String, Object>) obj;
+        Object res = map.get(key);
+        if (res == null) {
+            return null;
+        }
+        if (!entry.isValid(res)) {
+            return entry.getDefault();
+        }
+        return entry.deserialize(res);
+    }
+
+    @Override
+    public <T> Map<String, T> get(MappedConfigEntry<T> entry) throws IllegalArgumentException {
+        Object obj = getEntryValue(entry);
+        if (obj == null) {
+            return null;
         }
         if (obj instanceof ConfigurationSection) {
             obj = ((ConfigurationSection) obj).getValues(false);
@@ -148,75 +225,26 @@ public abstract class AbstractYamlConfig<C> implements Config {
     }
 
     @Override
-    public <T> List<T> getList(ListConfigEntry<T> entry) throws IllegalArgumentException {
+    public <T> boolean set(SimpleConfigEntry<T> entry, T value) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("ConfigEntry not registered to this config!");
         }
-        Object obj = getConfig().get(entry.getName());
-        if (obj == null) {
-            if (entry.shouldDefaultIfMissing()) {
-                obj = entry.getDefault();
-            }
-            if (obj == null) {
-                return null;
-            }
-        }
-        if (!(obj instanceof List)) {
-            obj = new ArrayList<Object>();
-        }
-        List<Object> list = (List<Object>) obj;
-        List<T> resultList = entry.getNewTypeList();
-        for (Object o : list) {
-            resultList.add(entry.deserialize(o));
-        }
-        return resultList;
-    }
-
-    public <T> T get(ConfigEntry<T> entry) throws IllegalArgumentException {
-        if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
-        }
-        if (entry instanceof MappedConfigEntry && ((MappedConfigEntry) entry).getSpecificPath().isEmpty()) {
-            throw new IllegalArgumentException("This MappedConfigEntry requires a specific path!");
-        }
-        if (entry instanceof ListConfigEntry) {
-            throw new IllegalArgumentException("May not use get() with ListConfigEntry.  Use getList() instead.");
-        }
-        Object obj = getConfig().get(entry.getName());
-        if (obj == null) {
-            if (entry.shouldDefaultIfMissing()) {
-                obj = entry.getDefault();
-            }
-            if (obj == null) {
-                return null;
-            }
-        }
-        T t = entry.deserialize(obj);
-        if (!isValid(entry, t)) {
-            return entry.getDefault();
-        }
-        return t;
-    }
-
-    @Override
-    public <T> boolean set(ConfigEntry<T> entry, T newValue) throws IllegalArgumentException {
-        if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
-        }
-        if (entry instanceof MappedConfigEntry && ((MappedConfigEntry) entry).getSpecificPath().isEmpty()) {
-            throw new IllegalArgumentException("This MappedConfigEntry requires a specific path!");
-        }
-        if (newValue == null) {
+        if (value == null) {
             getConfig().set(entry.getName(), null);
             return true;
         }
-        if (!entry.isValid(newValue)) {
+        if (!entry.isValid(value)) {
             return false;
         }
-        getConfig().set(entry.getName(), entry.serialize(newValue));
+        getConfig().set(entry.getName(), entry.serialize(value));
         return true;
     }
-
+/*
+    @Override
+    public <T> boolean set(ListConfigEntry<T> entry, int index, T value) throws IllegalArgumentException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+*/
     @Override
     public <T> boolean set(ListConfigEntry<T> entry, List<T> newValue) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
@@ -232,6 +260,28 @@ public abstract class AbstractYamlConfig<C> implements Config {
         getConfig().set(entry.getName(), resultList);
         return true;
     }
+
+    @Override
+    public <T> boolean set(MappedConfigEntry<T> entry, String key, T value) throws IllegalArgumentException {
+        if (!isInConfig(entry)) {
+            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+        }
+        if (value == null) {
+            getConfig().set(entry.getName() + "." + key, null);
+            return true;
+        }
+        if (!entry.isValid(value)) {
+            return false;
+        }
+        getConfig().set(entry.getName() + "." + key, entry.serialize(value));
+        return true;
+    }
+/*
+    @Override
+    public <T> boolean set(MappedConfigEntry<T> entry, Map<String, T> value) throws IllegalArgumentException {
+        return false;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+*/
 
     protected Configuration getConfig() {
         return this.config.getConfig();

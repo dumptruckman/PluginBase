@@ -10,13 +10,23 @@ public interface Config {
      */
     void save();
     
-    <T> T get(ConfigEntry<T> entry) throws IllegalArgumentException;
-    
-    <T> Map<String, T> getMap(MappedConfigEntry<T> entry) throws IllegalArgumentException;
+    <T> T get(SimpleConfigEntry<T> entry) throws IllegalArgumentException;
 
-    <T> List<T> getList(ListConfigEntry<T> entry) throws IllegalArgumentException;
+    <T> T get(ListConfigEntry<T> entry, int index) throws IllegalArgumentException;
+
+    <T> List<T> get(ListConfigEntry<T> entry) throws IllegalArgumentException;
+
+    <T> T get(MappedConfigEntry<T> entry, String key) throws IllegalArgumentException;
+
+    <T> Map<String, T> get(MappedConfigEntry<T> entry) throws IllegalArgumentException;
     
-    <T> boolean set(ConfigEntry<T> entry, T value) throws IllegalArgumentException;
+    <T> boolean set(SimpleConfigEntry<T> entry, T value) throws IllegalArgumentException;
+
+    //<T> boolean set(ListConfigEntry<T> entry, int index, T value) throws IllegalArgumentException;
 
     <T> boolean set(ListConfigEntry<T> entry, List<T> value) throws IllegalArgumentException;
+
+    <T> boolean set(MappedConfigEntry<T> entry, String key, T value) throws IllegalArgumentException;
+
+    //<T> boolean set(MappedConfigEntry<T> entry, Map<String, T> value) throws IllegalArgumentException;
 }

@@ -9,7 +9,6 @@ import java.util.Map;
 
 class DefaultMappedConfigEntry<T> extends DefaultConfigEntry<T> implements MappedConfigEntry<T> {
 
-    private String additionalPath = "";
     private Class<? extends Map> mapClass;
 
     public DefaultMappedConfigEntry(Class<T> type, String path, T def, List<String> comments,
@@ -17,12 +16,6 @@ class DefaultMappedConfigEntry<T> extends DefaultConfigEntry<T> implements Mappe
                                     boolean deprecated, boolean defaultIfMissing, Class<? extends Map> mapClass) {
         super(type, path, def, comments, serializer, validator, description, deprecated, defaultIfMissing);
         this.mapClass = mapClass;
-    }
-
-    public String getName() {
-        String result = super.getName() + this.additionalPath;
-        this.additionalPath = "";
-        return result;
     }
 
     @Override
@@ -35,16 +28,5 @@ class DefaultMappedConfigEntry<T> extends DefaultConfigEntry<T> implements Mappe
             Logging.warning("Could not instantiate desired class, defaulting to HashMap");
         }
         return new HashMap<String, T>();
-    }
-
-    @Override
-    public MappedConfigEntry<T> specific(String additionalPath) {
-        this.additionalPath = "." + additionalPath;
-        return this;
-    }
-
-    @Override
-    public String getSpecificPath() {
-        return this.additionalPath;
     }
 }
