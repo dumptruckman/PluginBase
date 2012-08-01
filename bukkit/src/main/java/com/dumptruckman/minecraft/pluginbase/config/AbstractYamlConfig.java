@@ -77,7 +77,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
      * Loads default settings for any missing config values.
      */
     private void setDefaults() {
-        for (BaseConfigEntry path : entries.entries) {
+        for (ConfigEntry path : entries.entries) {
             //config.addComment(path.getName(), path.getComments());
             if (getConfig().get(path.getName()) == null) {
                 if (path.isDeprecated()) {
@@ -102,7 +102,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
         }
     }
 
-    private boolean isValid(BaseConfigEntry entry, Object o) {
+    private boolean isValid(ConfigEntry entry, Object o) {
         if (!entry.isValid(o)) {
             Logging.warning(entry.getName() + " contains an invalid value!");
             Logging.warning(plugin.getMessager().getMessage(entry.getInvalidMessage()));
@@ -114,7 +114,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
         return true;
     }
     
-    protected final boolean isInConfig(BaseConfigEntry entry) {
+    protected final boolean isInConfig(ConfigEntry entry) {
         return entries.entries.contains(entry);
     }
 
@@ -172,7 +172,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
         return resultList;
     }
 
-    public <T> T get(BaseConfigEntry<T> entry) throws IllegalArgumentException {
+    public <T> T get(ConfigEntry<T> entry) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("ConfigEntry not registered to this config!");
         }
@@ -199,7 +199,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
     }
 
     @Override
-    public <T> boolean set(BaseConfigEntry<T> entry, T newValue) throws IllegalArgumentException {
+    public <T> boolean set(ConfigEntry<T> entry, T newValue) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("ConfigEntry not registered to this config!");
         }
@@ -243,7 +243,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
     @Override
     public void save() {
         if (doComments) {
-            for (BaseConfigEntry path : entries.entries) {
+            for (ConfigEntry path : entries.entries) {
                 config.addComment(path.getName(), path.getComments());
             }
         }
@@ -256,7 +256,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
 
     private final class Entries {
 
-        private final Set<BaseConfigEntry> entries = new HashSet<BaseConfigEntry>();
+        private final Set<ConfigEntry> entries = new HashSet<ConfigEntry>();
         
         private Entries(Class<? extends C>... configClasses) {
             Set<Class> classes = new HashSet<Class>();
@@ -275,10 +275,10 @@ public abstract class AbstractYamlConfig<C> implements Config {
                     }
                     field.setAccessible(true);
                     try {
-                        if (BaseConfigEntry.class.isInstance(field.get(null))) {
+                        if (ConfigEntry.class.isInstance(field.get(null))) {
                             try {
     
-                                entries.add((BaseConfigEntry) field.get(null));
+                                entries.add((ConfigEntry) field.get(null));
                             } catch(IllegalAccessException e) {
                                 e.printStackTrace();
                             }

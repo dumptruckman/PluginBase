@@ -10,13 +10,13 @@ public interface Config {
      */
     void save();
     
-    <T> T get(BaseConfigEntry<T> entry) throws IllegalArgumentException;
+    <T> T get(ConfigEntry<T> entry) throws IllegalArgumentException;
     
     <T> Map<String, T> getMap(MappedConfigEntry<T> entry) throws IllegalArgumentException;
 
     <T> List<T> getList(ListConfigEntry<T> entry) throws IllegalArgumentException;
     
-    <T> boolean set(BaseConfigEntry<T> entry, T value) throws IllegalArgumentException;
+    <T> boolean set(ConfigEntry<T> entry, T value) throws IllegalArgumentException;
 
     <T> boolean set(ListConfigEntry<T> entry, List<T> value) throws IllegalArgumentException;
 }

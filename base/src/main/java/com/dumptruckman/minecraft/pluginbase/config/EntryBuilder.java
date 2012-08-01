@@ -84,7 +84,7 @@ public class EntryBuilder<T> {
         return this;
     }
 
-    public BaseConfigEntry<T> build() {
+    public ConfigEntry<T> build() {
         return new DefaultConfigEntry<T>(type, path, def, comments, serializer, validator, description, deprecated, defaultIfMissing);
     }
 
