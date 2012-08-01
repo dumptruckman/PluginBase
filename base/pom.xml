@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.dumptruckman.minecraft</groupId>
         <artifactId>PluginBase</artifactId>
-        <version>1.4-SNAPSHOT</version>
+        <version>1.4</version>
     </parent>
     <artifactId>Plugin</artifactId>
 
