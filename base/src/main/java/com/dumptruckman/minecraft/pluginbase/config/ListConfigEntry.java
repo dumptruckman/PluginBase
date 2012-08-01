@@ -2,7 +2,7 @@ package com.dumptruckman.minecraft.pluginbase.config;
 
 import java.util.List;
 
-public interface ListConfigEntry<T> extends ConfigEntry<T> {
+public interface ListConfigEntry<T> extends BaseConfigEntry<T> {
 
     List<T> getNewTypeList();
 

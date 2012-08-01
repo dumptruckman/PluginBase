@@ -2,7 +2,7 @@ package com.dumptruckman.minecraft.pluginbase.util;
 
 import com.dumptruckman.minecraft.pluginbase.config.AbstractYamlConfig;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
-import com.dumptruckman.minecraft.pluginbase.config.ConfigEntry;
+import com.dumptruckman.minecraft.pluginbase.config.BaseConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.EntryBuilder;
 import com.dumptruckman.minecraft.pluginbase.config.ListConfigEntry;
 import com.dumptruckman.minecraft.pluginbase.config.MappedConfigEntry;
@@ -14,9 +14,9 @@ import java.util.LinkedList;
 
 public class MockConfig extends AbstractYamlConfig<MockConfig> implements BaseConfig {
     
-    public static final ConfigEntry<Boolean> TEST = new EntryBuilder<Boolean>(Boolean.class, "test").def(true)
+    public static final BaseConfigEntry<Boolean> TEST = new EntryBuilder<Boolean>(Boolean.class, "test").def(true)
             .comment("# ===[ PluginBase Test ]===").build();
-    public static final ConfigEntry<Null> SETTINGS = new EntryBuilder<Null>(Null.class, "settings")
+    public static final BaseConfigEntry<Null> SETTINGS = new EntryBuilder<Null>(Null.class, "settings")
             .comment("# ===[ PluginBase Settings ]===").build();
     
     public static final MappedConfigEntry<Integer> SPECIFIC_TEST = new EntryBuilder<Integer>(Integer.class, "specific_test")

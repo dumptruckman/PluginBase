@@ -4,7 +4,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.List;
 
-class DefaultConfigEntry<T> implements ConfigEntry<T> {
+class DefaultConfigEntry<T> implements BaseConfigEntry<T> {
 
     private String path;
     private T def;

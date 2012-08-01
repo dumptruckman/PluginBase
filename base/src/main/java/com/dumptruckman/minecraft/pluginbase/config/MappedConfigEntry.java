@@ -2,7 +2,7 @@ package com.dumptruckman.minecraft.pluginbase.config;
 
 import java.util.Map;
 
-public interface MappedConfigEntry<T> extends ConfigEntry<T> {
+public interface MappedConfigEntry<T> extends BaseConfigEntry<T> {
 
     Map<String, T> getNewTypeMap();
 
