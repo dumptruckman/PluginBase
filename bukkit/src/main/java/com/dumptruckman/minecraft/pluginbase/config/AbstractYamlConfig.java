@@ -2,8 +2,10 @@ package com.dumptruckman.minecraft.pluginbase.config;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import com.dumptruckman.minecraft.pluginbase.util.Null;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +26,7 @@ import java.util.Set;
 public abstract class AbstractYamlConfig<C> implements Config {
 
     private CommentedYamlConfiguration config;
+    private File configFile;
     private BukkitPlugin plugin;
     private Entries entries;
     private boolean doComments;
@@ -41,6 +44,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
         if (!configFile.getName().endsWith(".yml")) {
             throw new IllegalArgumentException("configFile MUST be yaml!");
         }
+        this.configFile = configFile;
         this.doComments = doComments;
         entries = new Entries(configClasses);
         this.plugin = plugin;
@@ -58,9 +62,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
             }
         }
 
-        // Load the configuration file into memory
-        config = new CommentedYamlConfiguration(configFile, doComments);
-        config.load();
+        load();
 
         // Sets defaults config values
         if (autoDefaults) {
@@ -71,6 +73,54 @@ public abstract class AbstractYamlConfig<C> implements Config {
 
         // Saves the configuration from memory to file
         save();
+    }
+
+    private void load() {
+        // Load the configuration file into memory
+        config = new CommentedYamlConfiguration(configFile, doComments);
+        config.load();
+        deserializeAll();
+    }
+
+    private void deserializeAll() {
+        Logging.finer("Beginning deserialization...");
+        for (ConfigEntry entry : entries.entries) {
+            if (getConfig().get(entry.getName()) != null) {
+                if (entry instanceof MappedConfigEntry) {
+                    ConfigurationSection section = getConfig().getConfigurationSection(entry.getName());
+                    if (section == null) {
+                        continue;
+                    }
+                    for (String key : section.getKeys(false)) {
+                        Object obj = section.get(key);
+                        if (obj != null) {
+                            Object res = entry.deserialize(obj);
+                            section.set(key, res);
+                        }
+                    }
+                } else if (entry instanceof ListConfigEntry) {
+                    List list = getConfig().getList(entry.getName());
+                    if (list == null) {
+                        continue;
+                    }
+
+                    List newList = new ArrayList(list.size());
+                    for (int i = 0; i < list.size(); i++) {
+                        Object obj = list.get(i);
+                        Object res = entry.deserialize(obj);
+                        newList.add(res);
+                    }
+                    getConfig().set(entry.getName(), newList);
+                } else if (entry instanceof SimpleConfigEntry && !entry.getType().isAssignableFrom(Null.class)) {
+                    Object obj = getConfig().get(entry.getName());
+                    if (obj == null) {
+                        continue;
+                    }
+                    Object res = entry.deserialize(obj);
+                    getConfig().set(entry.getName(), res);
+                }
+            }
+        }
     }
 
     /**
@@ -95,8 +145,8 @@ public abstract class AbstractYamlConfig<C> implements Config {
                         getConfig().set(path.getName(), listPath.getNewTypeList());
                     }
                 } else if (path.getDefault() != null) {
-                    Logging.fine("Config: Defaulting '" + path.getName() + "' to " + path.serialize(path.getDefault()));
-                    getConfig().set(path.getName(), path.serialize(path.getDefault()));
+                    Logging.fine("Config: Defaulting '" + path.getName() + "' to " + path.getDefault());
+                    getConfig().set(path.getName(), path.getDefault());
                 }
             }
         }
@@ -236,7 +286,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
         if (!entry.isValid(value)) {
             return false;
         }
-        getConfig().set(entry.getName(), entry.serialize(value));
+        getConfig().set(entry.getName(), value);
         return true;
     }
 /*
@@ -255,7 +305,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
             if (!entry.isValid(t)) {
                 return false;
             }
-            resultList.add(entry.serialize(t));
+            resultList.add(t);
         }
         getConfig().set(entry.getName(), resultList);
         return true;
@@ -273,7 +323,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
         if (!entry.isValid(value)) {
             return false;
         }
-        getConfig().set(entry.getName() + "." + key, entry.serialize(value));
+        getConfig().set(entry.getName() + "." + key, value);
         return true;
     }
 /*
@@ -287,17 +337,75 @@ public abstract class AbstractYamlConfig<C> implements Config {
         return this.config.getConfig();
     }
 
+    private void serializeAll(FileConfiguration newConfig) {
+        for (ConfigEntry entry : entries.entries) {
+            if (getConfig().get(entry.getName()) != null) {
+                if (entry instanceof MappedConfigEntry) {
+                    ConfigurationSection section = getConfig().getConfigurationSection(entry.getName());
+                    if (section == null) {
+                        Logging.fine("Missing entry: " + entry.getName());
+                        continue;
+                    }
+                    for (String key : section.getKeys(false)) {
+                        Object obj = section.get(key);
+                        if (entry.getType().isInstance(obj)) {
+                            if (obj != null) {
+                                section.set(key, entry.serialize(entry.getType().cast(obj)));
+                            }
+                        } else {
+                            Logging.warning("Could not serialize: " + entry.getName());
+                        }
+                    }
+                    newConfig.set(entry.getName(), section);
+                } else if (entry instanceof ListConfigEntry) {
+                    List list = getConfig().getList(entry.getName());
+                    if (list == null) {
+                        Logging.fine("Missing entry: " + entry.getName());
+                        continue;
+                    }
+                    List newList = new ArrayList(list.size());
+                    for (Object obj : list) {
+                        if (entry.getType().isInstance(obj)) {
+                            if (obj != null) {
+                                newList.add(entry.serialize(entry.getType().cast(obj)));
+                            }
+                        } else {
+                            Logging.warning("Could not serialize: " + entry.getName());
+                        }
+                    }
+                    newConfig.set(entry.getName(), newList);
+                } else if (entry instanceof SimpleConfigEntry && !entry.getType().isAssignableFrom(Null.class)) {
+                    Object obj = getConfig().get(entry.getName());
+                    if (obj == null) {
+                        Logging.fine("Missing entry: " + entry.getName());
+                        continue;
+                    }
+                    if (entry.getType().isInstance(obj)) {
+                        Object res = entry.serialize(entry.getType().cast(obj));
+                        newConfig.set(entry.getName(), res);
+                    } else {
+                        Logging.warning("Could not serialize '" + entry.getName() + "' since value is '" + obj.getClass() + "' instead of '" + entry.getType() + "'");
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void save() {
+        CommentedYamlConfiguration newConfig = new CommentedYamlConfiguration(configFile, doComments);
+        newConfig.newConfig();
+        newConfig.getConfig().options().header(getHeader());
+        serializeAll(newConfig.getConfig());
         if (doComments) {
             for (ConfigEntry path : entries.entries) {
-                config.addComment(path.getName(), path.getComments());
+                newConfig.addComment(path.getName(), path.getComments());
             }
         }
-        this.config.save();
+        newConfig.save();
     }
     
     protected String getHeader() {

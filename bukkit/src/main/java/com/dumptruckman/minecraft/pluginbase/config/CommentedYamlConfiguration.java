@@ -2,6 +2,7 @@ package com.dumptruckman.minecraft.pluginbase.config;
 
 import com.feildmaster.lib.configuration.EnhancedConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -43,6 +44,10 @@ class CommentedYamlConfiguration {
         config = EnhancedConfiguration.loadConfiguration(file);
     }
 
+    public void newConfig() {
+        config = new YamlConfiguration();
+    }
+
     /**
      * @return The underlying configuration object.
      */
@@ -75,8 +80,12 @@ class CommentedYamlConfiguration {
             String[] yamlContents =
                     this.convertFileToString(file).split("[" + System.getProperty("line.separator") + "]");
 
+            String header = config.options().header();
+            if (header == null) {
+                header = "";
+            }
             // This will hold the entire newly formatted config
-            StringBuilder newContents = new StringBuilder(config.options().header()).append(System.getProperty("line.separator")).append(System.getProperty("line.separator"));
+            StringBuilder newContents = new StringBuilder(header).append(System.getProperty("line.separator")).append(System.getProperty("line.separator"));
             // This holds the current path the lines are at in the config
             StringBuilder currentPath = new StringBuilder();
             // This tells if the specified path has already been commented
