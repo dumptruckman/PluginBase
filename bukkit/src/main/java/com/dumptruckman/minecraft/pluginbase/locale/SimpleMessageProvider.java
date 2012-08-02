@@ -1,9 +1,11 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.locale;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.util.Font;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

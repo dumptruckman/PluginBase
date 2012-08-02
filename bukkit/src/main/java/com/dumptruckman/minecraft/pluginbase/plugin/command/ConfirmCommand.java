@@ -1,12 +1,11 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
-import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.locale.Messages;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import java.util.LinkedHashSet;
