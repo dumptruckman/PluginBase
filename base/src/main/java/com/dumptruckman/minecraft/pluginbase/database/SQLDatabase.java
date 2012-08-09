@@ -8,7 +8,13 @@ import java.sql.SQLException;
 
 public interface SQLDatabase {
 
-    ResultSet query(String string) throws SQLException;
+    void execute(String sql) throws SQLException;
+
+    ResultSet executeQuery(String sql) throws SQLException;
+
+    ResultSet executeQueryLast(String sql) throws SQLException;
+
+    void executeUpdate(String sql) throws SQLException;
 
     boolean checkTable(String name) throws SQLException;
 
