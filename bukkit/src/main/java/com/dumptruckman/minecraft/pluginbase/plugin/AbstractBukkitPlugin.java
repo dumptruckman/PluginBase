@@ -4,6 +4,8 @@
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
+import com.dumptruckman.minecraft.pluginbase.config.SQLConfig;
+import com.dumptruckman.minecraft.pluginbase.config.YamlSQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.MySQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.database.SQLiteDatabase;
@@ -42,6 +44,8 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     private CommandHandler commandHandler = null;
     private SQLDatabase db = null;
     private Metrics metrics;
+
+    protected SQLConfig sqlConfig = null;
 
     public void preDisable() {
 
@@ -106,6 +110,9 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
      */
     public final void reloadConfig() {
         preReload();
+        if (sqlConfig != null) {
+            initDatabase();
+        }
         if (db != null && db.isConnected()) {
             db.disconnect();
         }
@@ -242,6 +249,9 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
 
     @Override
     public SQLDatabase getDB() {
+        if (sqlConfig == null) {
+            throw new IllegalStateException("SQL database not configured for this plugin!");
+        }
         if (db == null) {
             if (config().get(BaseConfig.DB_TYPE).equalsIgnoreCase("mysql")) {
                 db = new MySQLDatabase();
@@ -256,6 +266,14 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     public abstract List<String> getCommandPrefixes();
 
     protected abstract C newConfigInstance() throws IOException;
+
+    protected void initDatabase() {
+        try {
+            sqlConfig = new YamlSQLConfig(this, new File(getDataFolder(), "db_config.yml"));
+        } catch (IOException e) {
+            Logging.severe("Could not create db_config.yml! " + e.getMessage());
+        }
+    }
 
     @Override
     public Metrics getMetrics() {

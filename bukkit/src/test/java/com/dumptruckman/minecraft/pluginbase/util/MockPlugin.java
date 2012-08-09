@@ -14,6 +14,7 @@ public class MockPlugin extends AbstractBukkitPlugin<MockConfig> {
     public void preEnable() {
         MockMessages.init();
         HelpCommand.addStaticPrefixedKey("");
+        initDatabase();
     }
 
     public void postEnable() {
