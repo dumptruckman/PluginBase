@@ -34,13 +34,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyBoolean;
-import static org.mockito.Mockito.anyLong;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class TestInstanceCreator {
     private AbstractBukkitPlugin plugin;
@@ -60,6 +54,18 @@ public class TestInstanceCreator {
             MockGateway.MOCK_STANDARD_METHODS = false;
 
             plugin = PowerMockito.spy(new MockPlugin());
+            PowerMockito.doAnswer(new Answer<Void>() {
+                @Override
+                public Void answer(InvocationOnMock invocation) throws Throwable {
+                    return null; // don't run metrics in tests
+                }
+            }).when(plugin, "setupMetrics");
+            PowerMockito.doAnswer(new Answer<Void>() {
+                @Override
+                public Void answer(InvocationOnMock invocation) throws Throwable {
+                    return null; // don't run metrics in tests
+                }
+            }).when(plugin, "startMetrics");
 
             // Let's let all MV files go to bin/test
             doReturn(pluginDirectory).when(plugin).getDataFolder();

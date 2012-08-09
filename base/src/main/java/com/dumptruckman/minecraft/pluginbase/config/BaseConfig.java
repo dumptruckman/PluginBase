@@ -6,7 +6,6 @@ package com.dumptruckman.minecraft.pluginbase.config;
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import com.dumptruckman.minecraft.pluginbase.locale.MessageProvider;
 import com.dumptruckman.minecraft.pluginbase.locale.Messages;
-import com.dumptruckman.minecraft.pluginbase.util.Null;
 
 import java.util.Locale;
 
@@ -75,16 +74,4 @@ public interface BaseConfig extends Config {
      */
     SimpleConfigEntry<Boolean> FIRST_RUN = new EntryBuilder<Boolean>(Boolean.class, "settings.first_run").def(true)
             .comment("# Will make the plugin perform tasks only done on a first run (if any.)").build();
-
-    SimpleConfigEntry<String> DB_TYPE = new EntryBuilder<String>(String.class, "database.database_type").def("SQLite")
-            .comment("# What type of database to use, if the plugin uses a database.  Base options are SQLite and MySQL.").build();
-
-    SimpleConfigEntry<Null> DB_SETTINGS = new EntryBuilder<Null>(Null.class, "database.settings")
-            .comment("# Settings for non-SQLite databases").build();
-
-    SimpleConfigEntry<String> DB_HOST = new EntryBuilder<String>(String.class, "database.settings.host").def("localhost").build();
-    SimpleConfigEntry<String> DB_PORT = new EntryBuilder<String>(String.class, "database.settings.port").def("3306").build();
-    SimpleConfigEntry<String> DB_USER = new EntryBuilder<String>(String.class, "database.settings.user").def("minecraft").build();
-    SimpleConfigEntry<String> DB_PASS = new EntryBuilder<String>(String.class, "database.settings.pass").def("").build();
-    SimpleConfigEntry<String> DB_DATABASE = new EntryBuilder<String>(String.class, "database.settings.database").def("minecraft").build();
 }

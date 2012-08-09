@@ -3,23 +3,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.database;
 
-import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public interface SQLDatabase {
 
-    boolean isConnected();
+    ResultSet query(String string) throws SQLException;
 
-    boolean connect(PluginBase plugin);
+    boolean checkTable(String name) throws SQLException;
 
-    void disconnect();
-
-    ResultSet query(String string);
-
-    boolean createTable(String query);
-
-    boolean checkTable(String name);
-
-    boolean wipeTable(String table);
+    void shutdown();
 }

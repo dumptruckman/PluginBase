@@ -6,9 +6,9 @@ package com.dumptruckman.minecraft.pluginbase.plugin;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.config.YamlSQLConfig;
-import com.dumptruckman.minecraft.pluginbase.database.MySQLDatabase;
+import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
-import com.dumptruckman.minecraft.pluginbase.database.SQLiteDatabase;
+import com.dumptruckman.minecraft.pluginbase.database.SQLite;
 import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
 import com.dumptruckman.minecraft.pluginbase.locale.SimpleMessager;
@@ -78,11 +78,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         Perm.registerPlugin(this);
         CommandMessages.init();
         Logging.init(this);
-        try {
-            metrics = new Metrics(this);
-        } catch (IOException e) {
-            Logging.warning("Error while enabling plugin metrics: " + e.getMessage());
-        }
+        setupMetrics();
 
         reloadConfig();
 
@@ -90,6 +86,18 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         _registerCommands();
 
         postEnable();
+        startMetrics();
+    }
+
+    private void setupMetrics() {
+        try {
+            metrics = new Metrics(this);
+        } catch (IOException e) {
+            Logging.warning("Error while enabling plugin metrics: " + e.getMessage());
+        }
+    }
+
+    private void startMetrics() {
         getMetrics().start();
     }
 
@@ -110,13 +118,31 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
      */
     public final void reloadConfig() {
         preReload();
+
+        if (db != null) {
+            db.shutdown();
+        }
         if (sqlConfig != null) {
             initDatabase();
+            if (sqlConfig.get(SQLConfig.DB_TYPE).equalsIgnoreCase("mysql")) {
+                try {
+                    db = new MySQL(sqlConfig.get(SQLConfig.DB_HOST),
+                            sqlConfig.get(SQLConfig.DB_PORT),
+                            sqlConfig.get(SQLConfig.DB_DATABASE),
+                            sqlConfig.get(SQLConfig.DB_USER),
+                            sqlConfig.get(SQLConfig.DB_PASS));
+                } catch (ClassNotFoundException e) {
+                    Logging.severe("Your server does not support MySQL!");
+                }
+            } else {
+                try {
+                    db = new SQLite(new File(getDataFolder(), "data"));
+                } catch (ClassNotFoundException e) {
+                    Logging.severe("Your server does not support SQLite!");
+                }
+            }
         }
-        if (db != null && db.isConnected()) {
-            db.disconnect();
-        }
-        db = null;
+
         this.config = null;
         this.messager = null;
         getMessager();
@@ -251,13 +277,6 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     public SQLDatabase getDB() {
         if (sqlConfig == null) {
             throw new IllegalStateException("SQL database not configured for this plugin!");
-        }
-        if (db == null) {
-            if (config().get(BaseConfig.DB_TYPE).equalsIgnoreCase("mysql")) {
-                db = new MySQLDatabase();
-            } else {
-                db = new SQLiteDatabase();
-            }
         }
         return db;
     }
