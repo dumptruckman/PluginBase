@@ -131,6 +131,7 @@ and adjust the build number accordingly -->
                                     <include>com.pneumaticraft.commandhandler:CommandHandler</include>
                                     <include>com.dumptruckman.minecraft:Plugin</include>
                                     <include>com.feildmaster.lib:EnhancedConfiguration</include>
+                                    <include>org.mcstats:metrics</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -141,6 +142,10 @@ and adjust the build number accordingly -->
                                 <relocation>
                                     <pattern>com.feildmaster.lib.configuration</pattern>
                                     <shadedPattern>com.dumptruckman.minecraft.pluginbase.config</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.mcstats</pattern>
+                                    <shadedPattern>com.dumptruckman.minecraft.pluginbase.mcstats</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
