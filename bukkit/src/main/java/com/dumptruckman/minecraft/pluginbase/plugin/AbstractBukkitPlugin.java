@@ -23,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +41,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     private File serverFolder = null;
     private CommandHandler commandHandler = null;
     private SQLDatabase db = null;
+    private Metrics metrics;
 
     public void preDisable() {
 
@@ -72,6 +74,11 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         Perm.registerPlugin(this);
         CommandMessages.init();
         Logging.init(this);
+        try {
+            metrics = new Metrics(this);
+        } catch (IOException e) {
+            Logging.warning("Error while enabling plugin metrics: " + e.getMessage());
+        }
 
         reloadConfig();
 
@@ -79,6 +86,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         _registerCommands();
 
         postEnable();
+        getMetrics().start();
     }
 
     public void postEnable() {
@@ -248,4 +256,9 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     public abstract List<String> getCommandPrefixes();
 
     protected abstract C newConfigInstance() throws IOException;
+
+    @Override
+    public Metrics getMetrics() {
+        return metrics;
+    }
 }
