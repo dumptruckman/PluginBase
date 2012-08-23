@@ -7,59 +7,56 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Queue;
-import java.util.TimerTask;
-import java.util.concurrent.LinkedBlockingQueue;
 
-abstract class SQLDB implements SQLDatabase {
+public abstract class SQLDB implements SQLDatabase {
 
     private final SQLConnectionPool connectionPool;
-
-    private final Queue<String> queryQueue = new LinkedBlockingQueue<String>();
+    private final SQLUpdateQueueThread updateQueueThread;
 
     SQLDB(SQLConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
-
+        this.updateQueueThread = new SQLUpdateQueueThread(connectionPool);
+        updateQueueThread.start();
     }
 
-    private final class QueueProcessor extends TimerTask {
-        private final long timeLimit;
-        private QueueProcessor(int timeLimit) {
-            this.timeLimit = timeLimit;
-        }
-        @Override
-        public void run() {
-            long endTime = System.currentTimeMillis() + timeLimit;
-            while (!queryQueue.isEmpty() && (timeLimit == 0 || System.currentTimeMillis() < endTime)) {
-
-            }
-        }
+    static void executeUpdate(Connection connection, String sqlQuery) throws SQLException {
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(sqlQuery);
     }
 
-    protected final Connection getConnection() throws SQLException {
+    static ResultSet executeQuery(Connection connection, String sqlQuery) throws SQLException {
+        Statement statement = connection.createStatement();
+        return statement.executeQuery(sqlQuery);
+    }
+
+    @Override
+    public final Connection getConnection() throws SQLException {
         return connectionPool.getConnection();
     }
 
-    public void executeUpdate(String sql) throws SQLException {
-        Statement statement = getConnection().createStatement();
-        statement.executeUpdate(sql);
+    @Override
+    public void executeUpdate(String sqlQuery) throws SQLException {
+        updateQueueThread.queueUpdate(sqlQuery);
     }
 
-    public ResultSet executeQuery(String sql) throws SQLException {
-        Statement statement = getConnection().createStatement();
-        return statement.executeQuery(sql);
+    @Override
+    public ResultSet executeQueryNow(String sqlQuery) throws SQLException {
+        return executeQuery(getConnection(), sqlQuery);
     }
 
-    public ResultSet executeQueryLast(String sql) throws SQLException {
-        Statement statement = getConnection().createStatement();
-        return statement.executeQuery(sql);
+    @Override
+    public ResultSet executeQueryLast(String sqlQuery) throws SQLException {
+        updateQueueThread.waitUntilEmpty();
+        return executeQuery(getConnection(), sqlQuery);
     }
 
-    public void execute(String sql) throws SQLException {
+    @Override
+    public void execute(String sqlQuery) throws SQLException {
         Statement statement = getConnection().createStatement();
-        statement.execute(sql);
+        statement.execute(sqlQuery);
     }
 
+    @Override
     public abstract boolean checkTable(String table) throws SQLException;
 
     @Override

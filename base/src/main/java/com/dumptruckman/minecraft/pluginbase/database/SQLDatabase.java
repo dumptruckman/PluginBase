@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.database;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -10,7 +11,7 @@ public interface SQLDatabase {
 
     void execute(String sql) throws SQLException;
 
-    ResultSet executeQuery(String sql) throws SQLException;
+    ResultSet executeQueryNow(String sql) throws SQLException;
 
     ResultSet executeQueryLast(String sql) throws SQLException;
 
@@ -19,4 +20,6 @@ public interface SQLDatabase {
     boolean checkTable(String name) throws SQLException;
 
     void shutdown();
+
+    Connection getConnection() throws SQLException;
 }
