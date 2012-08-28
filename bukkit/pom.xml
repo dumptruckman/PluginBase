@@ -143,10 +143,6 @@ and adjust the build number accordingly -->
                                     <pattern>com.feildmaster.lib.configuration</pattern>
                                     <shadedPattern>com.dumptruckman.minecraft.pluginbase.config</shadedPattern>
                                 </relocation>
-                                <relocation>
-                                    <pattern>org.mcstats</pattern>
-                                    <shadedPattern>com.dumptruckman.minecraft.pluginbase.mcstats</shadedPattern>
-                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
