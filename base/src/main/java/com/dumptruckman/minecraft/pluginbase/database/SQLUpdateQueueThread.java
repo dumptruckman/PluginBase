@@ -16,6 +16,9 @@ final class SQLUpdateQueueThread extends Thread {
 
     private final SQLConnectionPool connectionPool;
     private final BlockingQueue<String> queryQueue = new LinkedBlockingQueue<String>();
+    private final BlockingQueue<String> waitingQueue = new LinkedBlockingQueue<String>();
+
+    private volatile boolean waiting = false;
 
     SQLUpdateQueueThread(SQLConnectionPool connectionPool) {
         super("SQLUpdateQueueThread");
@@ -37,11 +40,19 @@ final class SQLUpdateQueueThread extends Thread {
     }
 
     public void queueUpdate(String query) {
-        queryQueue.add(query);
+        if (waiting) {
+            waitingQueue.add(query);
+        } else {
+            queryQueue.add(query);
+        }
     }
 
     public void waitUntilEmpty() {
+        waiting = true;
         while (!queryQueue.isEmpty()) { }
+        waiting = false;
+        queryQueue.addAll(waitingQueue);
+        waitingQueue.clear();
     }
 
     private Connection getConnection() throws SQLException {
