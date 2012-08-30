@@ -29,10 +29,11 @@ import java.util.Set;
 public abstract class AbstractYamlConfig<C> implements Config {
 
     private CommentedYamlConfiguration config;
-    private File configFile;
-    private BukkitPlugin plugin;
-    private Entries entries;
-    private boolean doComments;
+    private final File configFile;
+    private final BukkitPlugin plugin;
+    private final Entries entries;
+    private final boolean doComments;
+    private final boolean autoDefaults;
 
     public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, boolean autoDefaults, File configFile, Class<? extends C>... configClasses) throws IOException {
         if (plugin == null) {
@@ -49,8 +50,10 @@ public abstract class AbstractYamlConfig<C> implements Config {
         }
         this.configFile = configFile;
         this.doComments = doComments;
-        entries = new Entries(configClasses);
+        this.autoDefaults = autoDefaults;
+        this.entries = new Entries(configClasses);
         this.plugin = plugin;
+
         // Make the data folders
         if (configFile.getParent() != null) {
             if (configFile.getParentFile().mkdirs()) {
@@ -64,25 +67,29 @@ public abstract class AbstractYamlConfig<C> implements Config {
                 Logging.fine("Created config file: " + configFile.getAbsolutePath());
             }
         }
-
+        // Load the configuration file into memory
+        config = new CommentedYamlConfiguration(configFile, doComments);
         load();
-
-        // Sets defaults config values
-        if (autoDefaults) {
-            this.setDefaults();
-        }
-        
-        config.getConfig().options().header(getHeader());
 
         // Saves the configuration from memory to file
         save();
     }
 
-    private void load() {
-        // Load the configuration file into memory
-        config = new CommentedYamlConfiguration(configFile, doComments);
+    private void load() throws IOException {
         config.load();
         deserializeAll();
+
+        // Sets defaults config values
+        if (autoDefaults) {
+            this.setDefaults();
+        }
+
+        config.getConfig().options().header(getHeader());
+    }
+
+    @Override
+    public void reload() throws IOException {
+        load();
     }
 
     private void deserializeAll() {

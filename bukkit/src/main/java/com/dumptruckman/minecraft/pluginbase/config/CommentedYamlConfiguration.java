@@ -26,14 +26,14 @@ import java.util.List;
  */
 class CommentedYamlConfiguration {
 
-    private HashMap<String, String> comments;
-    private File file;
+    private final HashMap<String, String> comments;
+    private final File file;
     private FileConfiguration config = null;
-    private boolean doComments;
+    private final boolean doComments;
 
     public CommentedYamlConfiguration(File file, boolean doComments) {
         super();
-        comments = new HashMap<String, String>();
+        this.comments = new HashMap<String, String>();
         this.file = file;
         this.doComments = doComments;
     }

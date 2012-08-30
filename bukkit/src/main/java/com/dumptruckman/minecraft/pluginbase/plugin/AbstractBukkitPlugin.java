@@ -143,7 +143,21 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
             }
         }
 
-        this.config = null;
+
+        // Loads the configuration
+        try {
+            if (this.config == null) {
+                this.config = newConfigInstance();
+            } else {
+                this.config.reload();
+            }
+            Logging.fine("Loaded config file!");
+        } catch (IOException e) {  // Catch errors loading the config file and exit out if found.
+            Logging.severe("Error loading config file!");
+            Logging.severe(e.getMessage());
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
+        }
         this.messager = null;
         getMessager();
         
@@ -205,18 +219,6 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
      */
     @Override
     public C config() {
-        if (this.config == null) {
-            // Loads the configuration
-            try {
-                this.config = newConfigInstance();
-                Logging.fine("Loaded config file!");
-            } catch (IOException e) {  // Catch errors loading the config file and exit out if found.
-                Logging.severe("Error loading config file!");
-                Logging.severe(e.getMessage());
-                Bukkit.getPluginManager().disablePlugin(this);
-                return null;
-            }
-        }
         return this.config;
     }
 
