@@ -22,7 +22,7 @@ public class EntryBuilder<T> {
     private EntrySerializer<T> serializer;
     private EntryValidator validator;
     private boolean deprecated = false;
-    private boolean defaultIfMissing = false;
+    private boolean defaultIfMissing = true;
 
     public EntryBuilder(Class<T> type, String name) {
         this.path = name;
@@ -79,8 +79,8 @@ public class EntryBuilder<T> {
         return this;
     }
 
-    public EntryBuilder<T> defaultIfMissing() {
-        defaultIfMissing = true;
+    public EntryBuilder<T> allowNull() {
+        defaultIfMissing = false;
         return this;
     }
 
