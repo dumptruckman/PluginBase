@@ -150,8 +150,8 @@ public abstract class AbstractYamlConfig<C> implements Config {
                 } else if (path instanceof ListConfigEntry) {
                     ListConfigEntry listPath = (ListConfigEntry) path;
                     Logging.fine("Config: Defaulting list for '" + path.getName() + "'");
-                    if (listPath.getDefaultList() != null) {
-                        getConfig().set(path.getName(), listPath.getDefaultList());
+                    if (listPath.getDefault() != null) {
+                        getConfig().set(path.getName(), listPath.getDefault());
                     } else {
                         getConfig().set(path.getName(), listPath.getNewTypeList());
                     }

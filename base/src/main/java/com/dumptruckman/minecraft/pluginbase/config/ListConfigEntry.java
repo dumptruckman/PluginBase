@@ -9,5 +9,5 @@ public interface ListConfigEntry<T> extends ConfigEntry<T> {
 
     List<T> getNewTypeList();
 
-    List<T> getDefaultList();
+    List<T> getDefault();
 }

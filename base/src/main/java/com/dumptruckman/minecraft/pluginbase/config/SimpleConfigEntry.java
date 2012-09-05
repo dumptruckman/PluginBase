@@ -10,4 +10,11 @@ package com.dumptruckman.minecraft.pluginbase.config;
  * @param <T> The type for the value of this entry.
  */
 public interface SimpleConfigEntry<T> extends ConfigEntry<T> {
+
+    /**
+     * Retrieves the default value for a config path.
+     *
+     * @return The default value for a config path.
+     */
+    T getDefault();
 }

@@ -17,12 +17,12 @@ class DefaultListConfigEntry<T> extends DefaultConfigEntry<T> implements ListCon
     public DefaultListConfigEntry(Class<T> type, String path, List<T> def, List<String> comments,
                                   EntrySerializer<T> serializer, EntryValidator validator, Message description,
                                   boolean deprecated, boolean defaultIfMissing, Class<? extends List> listClass) {
-        super(type, path, null, comments, serializer, validator, description, deprecated, defaultIfMissing);
+        super(type, null, comments, serializer, validator, description, deprecated, defaultIfMissing);
         this.listClass = listClass;
         this.defList = def;
     }
 
-    public List<T> getDefaultList() {
+    public List<T> getDefault() {
         return defList;
     }
 

@@ -28,7 +28,7 @@ interface ConfigEntry<T> {
      *
      * @return The default value for a config path.
      */
-    T getDefault();
+    Object getDefault();
 
     /**
      * Retrieves the comment for a config path.

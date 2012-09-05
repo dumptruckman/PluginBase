@@ -7,23 +7,21 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.List;
 
-class DefaultConfigEntry<T> implements SimpleConfigEntry<T> {
+abstract class DefaultConfigEntry<T> implements ConfigEntry<T> {
 
-    private String path;
-    private T def;
+    private final String path;
     private final List<String> comments;
-    private Class<T> type;
-    private EntrySerializer<T> serializer;
-    private EntryValidator validator;
-    private Message description;
-    private boolean deprecated;
-    private boolean defaultIfMissing;
+    private final Class<T> type;
+    private final EntrySerializer<T> serializer;
+    private final EntryValidator validator;
+    private final Message description;
+    private final boolean deprecated;
+    private final boolean defaultIfMissing;
 
-    public DefaultConfigEntry(Class<T> type, String path, T def, List<String> comments,
-                              EntrySerializer<T> serializer, EntryValidator validator, Message description,
-                              boolean deprecated, boolean defaultIfMissing) {
+    public DefaultConfigEntry(Class<T> type, String path, List<String> comments,
+            EntrySerializer<T> serializer, EntryValidator validator, Message description,
+            boolean deprecated, boolean defaultIfMissing) {
         this.path = path;
-        this.def = def;
         this.comments = comments;
         this.type = type;
         this.serializer = serializer;
@@ -39,15 +37,6 @@ class DefaultConfigEntry<T> implements SimpleConfigEntry<T> {
 
     public Class<T> getType() {
         return this.type;
-    }
-
-    /**
-     * Retrieves the default value for a config path.
-     *
-     * @return The default value for a config path.
-     */
-    public T getDefault() {
-        return this.def;
     }
 
     /**
