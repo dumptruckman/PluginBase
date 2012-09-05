@@ -18,11 +18,7 @@ public interface Config {
     
     <T> T get(SimpleConfigEntry<T> entry) throws IllegalArgumentException;
 
-    <T> T get(ListConfigEntry<T> entry, int index) throws IllegalArgumentException;
-
     <T> List<T> get(ListConfigEntry<T> entry) throws IllegalArgumentException;
-
-    <T> T get(MappedConfigEntry<T> entry, String key) throws IllegalArgumentException;
 
     <T> Map<String, T> get(MappedConfigEntry<T> entry) throws IllegalArgumentException;
     

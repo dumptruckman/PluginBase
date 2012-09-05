@@ -122,9 +122,9 @@ public class TestBasics {
         myPlugin.config().save();
         
         Assert.assertEquals(MockConfig.SPECIFIC_TEST.getNewTypeMap(), myPlugin.config().get(MockConfig.SPECIFIC_TEST));
-        Assert.assertEquals(null, myPlugin.config().get(MockConfig.SPECIFIC_TEST, "test1"));
+        Assert.assertEquals(null, myPlugin.config().get(MockConfig.SPECIFIC_TEST).get("test1"));
         myPlugin.config().set(MockConfig.SPECIFIC_TEST, "test1", 25);
-        Assert.assertEquals(25, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST, "test1"));
+        Assert.assertEquals(25, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST).get("test1"));
         myPlugin.config().save();
         cmdArgs = new String[] { "reload" };
         plugin.onCommand(mockCommandSender, mockCommand, "", cmdArgs);

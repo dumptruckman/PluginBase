@@ -205,26 +205,6 @@ public abstract class AbstractYamlConfig<C> implements Config {
     }
 
     @Override
-    public <T> T get(ListConfigEntry<T> entry, int index) throws IllegalArgumentException {
-        Object obj = getEntryValue(entry);
-        if (obj == null) {
-            return null;
-        }
-        if (!(obj instanceof List)) {
-            obj = new ArrayList<Object>();
-        }
-        List<Object> list = (List<Object>) obj;
-        Object res = list.get(index);
-        if (res == null) {
-            return null;
-        }
-        if (!entry.isValid(res)) {
-            return entry.getDefault();
-        }
-        return entry.deserialize(res);
-    }
-
-    @Override
     public <T> List<T> get(ListConfigEntry<T> entry) throws IllegalArgumentException {
         Object obj = getEntryValue(entry);
         if (obj == null) {
@@ -239,29 +219,6 @@ public abstract class AbstractYamlConfig<C> implements Config {
             resultList.add(entry.deserialize(o));
         }
         return resultList;
-    }
-
-    @Override
-    public <T> T get(MappedConfigEntry<T> entry, String key) throws IllegalArgumentException {
-        Object obj = getEntryValue(entry);
-        if (obj == null) {
-            return null;
-        }
-        if (obj instanceof ConfigurationSection) {
-            obj = ((ConfigurationSection) obj).getValues(false);
-        }
-        if (!(obj instanceof Map)) {
-            obj = new HashMap<String, Object>();
-        }
-        Map<String, Object> map = (Map<String, Object>) obj;
-        Object res = map.get(key);
-        if (res == null) {
-            return null;
-        }
-        if (!entry.isValid(res)) {
-            return entry.getDefault();
-        }
-        return entry.deserialize(res);
     }
 
     @Override
