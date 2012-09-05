@@ -59,15 +59,6 @@ public class EntryBuilder<T> {
         return this;
     }
 
-    public EntryBuilder<T> stringSerializer() {
-        if (type.equals(String.class)) {
-            serializer = new StringStringSerializer<T>(this.type);
-        } else {
-            serializer = new DefaultStringSerializer<T>(this.type);
-        }
-        return this;
-    }
-
     public EntryBuilder<T> serializer(EntrySerializer<T> customSerializer) {
         serializer = customSerializer;
         return this;
