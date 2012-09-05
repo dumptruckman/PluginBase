@@ -5,6 +5,9 @@ package com.dumptruckman.minecraft.pluginbase.config;
 
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
+/**
+ * Used to validate the serialized value of an entry before attempting to deserialize it.
+ */
 public interface EntryValidator {
 
     boolean isValid(Object obj);

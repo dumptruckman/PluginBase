@@ -17,13 +17,11 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
@@ -200,11 +198,10 @@ public abstract class AbstractYamlConfig<C> implements Config {
         if (obj == null) {
             return null;
         }
-        T t = entry.deserialize(obj);
-        if (!isValid(entry, t)) {
+        if (!isValid(entry, obj)) {
             return entry.getDefault();
         }
-        return t;
+        return entry.deserialize(obj);
     }
 
     @Override
