@@ -1,8 +1,13 @@
 package com.dumptruckman.minecraft.pluginbase.util.time;
 
+import java.text.ParseException;
+
 public class TimeTools {
 
-    static String toShortForm(long second) {
+    public static String toShortForm(long second) {
+        if (second == 0) {
+            return "0s";
+        }
         long minute = second / 60;
         second = second % 60;
         long hour = minute / 60;
@@ -19,13 +24,13 @@ public class TimeTools {
         if (minute != 0) {
             time.append(minute).append("m ");
         }
-        if (second!= 0) {
-            time.append(second).append("s ");
+        if (second != 0) {
+            time.append(second).append("s");
         }
         return time.toString().trim();
     }
 
-    static String toLongForm(long second) {
+    public static String toLongForm(long second) {
         if (second == 0) {
             return "0 seconds";
         }
@@ -71,11 +76,13 @@ public class TimeTools {
         return time.toString().trim();
     }
 
-    static long fromShortForm(String dhms) {
+    public static long fromShortForm(String dhms) throws ParseException {
         long seconds = 0, minutes = 0, hours = 0, days = 0;
+        boolean valid = false;
         if (dhms.contains("d")) {
             try {
                 days = Integer.parseInt(dhms.split("d")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
             if (dhms.contains("h") || dhms.contains("m") || dhms.contains("s")) {
                 dhms = dhms.split("d")[1];
@@ -84,6 +91,7 @@ public class TimeTools {
         if (dhms.contains("h")) {
             try {
                 hours = Integer.parseInt(dhms.split("d")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
             if (dhms.contains("m") || dhms.contains("s")) {
                 dhms = dhms.split("h")[1];
@@ -92,6 +100,7 @@ public class TimeTools {
         if (dhms.contains("m")) {
             try {
                 minutes = Integer.parseInt(dhms.split("m")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
             if (dhms.contains("s")) {
                 dhms = dhms.split("m")[1];
@@ -100,16 +109,22 @@ public class TimeTools {
         if (dhms.contains("s")) {
             try {
                 seconds = Integer.parseInt(dhms.split("s")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
+        }
+        if (!valid) {
+            throw new ParseException("'" + dhms + "' is not a valid duration format!", 0);
         }
         return (days * 86400) + (hours * 3600) + (minutes * 60) + seconds;
     }
 
-    static long fromLongForm(String dhms) {
+    public static long fromLongForm(String dhms) throws ParseException {
         long seconds = 0, minutes = 0, hours = 0, days = 0;
+        boolean valid = false;
         if (dhms.contains("days")) {
             try {
                 days = Integer.parseInt(dhms.split("days")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
             if (dhms.contains("hours") || dhms.contains("hour") || dhms.contains("minutes") || dhms.contains("seconds") || dhms.contains("minute") || dhms.contains("second")) {
                 dhms = dhms.split("days")[1];
@@ -117,6 +132,7 @@ public class TimeTools {
         } else if (dhms.contains("day")) {
             try {
                 days = Integer.parseInt(dhms.split("day")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
             if (dhms.contains("hours") || dhms.contains("hour") || dhms.contains("minutes") || dhms.contains("seconds") || dhms.contains("minute") || dhms.contains("second")) {
                 dhms = dhms.split("day")[1];
@@ -125,6 +141,7 @@ public class TimeTools {
         if (dhms.contains("hours")) {
             try {
                 hours = Integer.parseInt(dhms.split("hours")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
             if (dhms.contains("minutes") || dhms.contains("seconds") || dhms.contains("minute") || dhms.contains("second")) {
                 dhms = dhms.split("hours")[1];
@@ -132,6 +149,7 @@ public class TimeTools {
         } else if (dhms.contains("hour")) {
             try {
                 hours = Integer.parseInt(dhms.split("hour")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
             if (dhms.contains("minutes") || dhms.contains("seconds") || dhms.contains("minute") || dhms.contains("second")) {
                 dhms = dhms.split("hour")[1];
@@ -140,6 +158,7 @@ public class TimeTools {
         if (dhms.contains("minutes")) {
             try {
                 minutes = Integer.parseInt(dhms.split("minutes")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
             if (dhms.contains("seconds") || dhms.contains("second")) {
                 dhms = dhms.split("minutes")[1];
@@ -147,6 +166,7 @@ public class TimeTools {
         } else if (dhms.contains("minute")) {
             try {
                 minutes = Integer.parseInt(dhms.split("minute")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
             if (dhms.contains("seconds") || dhms.contains("second")) {
                 dhms = dhms.split("minute")[1];
@@ -155,11 +175,16 @@ public class TimeTools {
         if (dhms.contains("seconds")) {
             try {
                 seconds = Integer.parseInt(dhms.split("seconds")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
         } else if (dhms.contains("second")) {
             try {
                 seconds = Integer.parseInt(dhms.split("second")[0].replaceAll(" ", ""));
+                valid = true;
             } catch (NumberFormatException ignore) { }
+        }
+        if (!valid) {
+            throw new ParseException("'" + dhms + "' is not a valid duration format!", 0);
         }
         return (days * 86400) + (hours * 3600) + (minutes * 60) + seconds;
     }
