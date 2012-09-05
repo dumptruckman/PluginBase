@@ -11,7 +11,6 @@ import java.util.List;
 
 class DefaultListConfigEntry<T> extends DefaultConfigEntry<T> implements ListConfigEntry<T> {
 
-    private String additionalPath = "";
     private Class<? extends List> listClass;
     private List<T> defList;
 

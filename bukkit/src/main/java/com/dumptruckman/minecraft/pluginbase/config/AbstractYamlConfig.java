@@ -18,10 +18,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Commented Yaml implementation of ConfigBase.
@@ -424,10 +427,10 @@ public abstract class AbstractYamlConfig<C> implements Config {
 
     private final class Entries {
 
-        private final Set<ConfigEntry> entries = new HashSet<ConfigEntry>();
+        private final Set<ConfigEntry> entries = new CopyOnWriteArraySet<ConfigEntry>();
         
         private Entries(Class<? extends C>... configClasses) {
-            Set<Class> classes = new HashSet<Class>();
+            final Set<Class> classes = new LinkedHashSet<Class>(10);
             for (Class configClass : configClasses) {
                 classes.add(configClass);
                 classes.addAll(Arrays.asList(configClass.getInterfaces()));
@@ -436,7 +439,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
                 }
             }
             for (Class clazz : classes) {
-                Field[] fields = clazz.getDeclaredFields();
+                final Field[] fields = clazz.getDeclaredFields();
                 for (Field field : fields) {
                     if (!Modifier.isStatic(field.getModifiers())) {
                         continue;
@@ -445,7 +448,6 @@ public abstract class AbstractYamlConfig<C> implements Config {
                     try {
                         if (ConfigEntry.class.isInstance(field.get(null))) {
                             try {
-    
                                 entries.add((ConfigEntry) field.get(null));
                             } catch(IllegalAccessException e) {
                                 e.printStackTrace();

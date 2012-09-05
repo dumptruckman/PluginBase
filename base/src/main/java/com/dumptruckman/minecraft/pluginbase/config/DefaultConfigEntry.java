@@ -91,4 +91,6 @@ class DefaultConfigEntry<T> implements SimpleConfigEntry<T> {
     public T deserialize(Object o) {
         return serializer.deserialize(o);
     }
+
+
 }
