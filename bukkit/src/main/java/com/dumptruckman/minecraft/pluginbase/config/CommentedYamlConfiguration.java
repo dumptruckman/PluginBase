@@ -237,6 +237,9 @@ class CommentedYamlConfiguration {
         }
         for (String line : commentLines) {
             if (!line.isEmpty()) {
+                if (line.charAt(0) != '#') {
+                    line = "# " + line;
+                }
                 line = leadingSpaces + line;
             } else {
                 line = " ";
