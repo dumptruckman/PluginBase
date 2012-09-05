@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -100,35 +99,51 @@ public abstract class AbstractYamlConfig<C> implements Config {
                 if (entry instanceof MappedConfigEntry) {
                     ConfigurationSection section = getConfig().getConfigurationSection(entry.getName());
                     if (section == null) {
-                        continue;
-                    }
-                    for (String key : section.getKeys(false)) {
-                        Object obj = section.get(key);
-                        if (obj != null) {
-                            Object res = entry.deserialize(obj);
-                            section.set(key, res);
+                        getConfig().set(entry.getName(), entry.getDefault());
+                    } else {
+                        for (String key : section.getKeys(false)) {
+                            Object obj = section.get(key);
+                            if (obj != null) {
+                                if (entry.isValid(obj)) {
+                                    Object res = entry.deserialize(obj);
+                                    section.set(key, res);
+                                } else {
+                                    Logging.warning("Invalid value '" + obj + "' at '" + entry.getName() + getConfig().options().pathSeparator() + key + "'.  Value will be deleted!");
+                                    section.set(key, null);
+                                }
+                            }
                         }
                     }
                 } else if (entry instanceof ListConfigEntry) {
                     List list = getConfig().getList(entry.getName());
                     if (list == null) {
-                        continue;
+                        getConfig().set(entry.getName(), entry.getDefault());
+                    } else {
+                        List newList = new ArrayList(list.size());
+                        for (int i = 0; i < list.size(); i++) {
+                            Object obj = list.get(i);
+                            if (entry.isValid(obj)) {
+                                Object res = entry.deserialize(obj);
+                                newList.add(res);
+                            } else {
+                                Logging.warning("Invalid value '" + obj + "' at '" + entry.getName() + "[" + i + "]'.  Value will be deleted!");
+                            }
+                        }
+                        getConfig().set(entry.getName(), newList);
                     }
-
-                    List newList = new ArrayList(list.size());
-                    for (int i = 0; i < list.size(); i++) {
-                        Object obj = list.get(i);
-                        Object res = entry.deserialize(obj);
-                        newList.add(res);
-                    }
-                    getConfig().set(entry.getName(), newList);
                 } else if (entry instanceof SimpleConfigEntry && !entry.getType().isAssignableFrom(Null.class)) {
                     Object obj = getConfig().get(entry.getName());
                     if (obj == null) {
-                        continue;
+                        getConfig().set(entry.getName(), entry.getDefault());
+                    } else {
+                        if (entry.isValid(obj)) {
+                            Object res = entry.deserialize(obj);
+                            getConfig().set(entry.getName(), res);
+                        } else {
+                            Logging.warning("Invalid value '" + obj + "' at '" + entry.getName() + "'.  Value will be defaulted!");
+                            getConfig().set(entry.getName(), entry.getDefault());
+                        }
                     }
-                    Object res = entry.deserialize(obj);
-                    getConfig().set(entry.getName(), res);
                 }
             }
         }
@@ -146,7 +161,11 @@ public abstract class AbstractYamlConfig<C> implements Config {
                 }
                 if (path instanceof MappedConfigEntry) {
                     Logging.fine("Config: Defaulting map for '" + path.getName() + "'");
-                    getConfig().set(path.getName(), ((MappedConfigEntry) path).getNewTypeMap());
+                    if (path.getDefault() != null) {
+                        getConfig().set(path.getName(), path.getDefault());
+                    } else {
+                        getConfig().set(path.getName(), ((MappedConfigEntry) path).getNewTypeMap());
+                    }
                 } else if (path instanceof ListConfigEntry) {
                     ListConfigEntry listPath = (ListConfigEntry) path;
                     Logging.fine("Config: Defaulting list for '" + path.getName() + "'");
@@ -198,10 +217,13 @@ public abstract class AbstractYamlConfig<C> implements Config {
         if (obj == null) {
             return null;
         }
-        if (!isValid(entry, obj)) {
-            return entry.getDefault();
+        if (!entry.getType().isInstance(obj)) {
+            Logging.fine("An invalid value of '" + obj + "' was detected at '" + entry.getName() + "' during a get call.  Attempting to deserialize and replace...");
+            if (entry.isValid(obj)) {
+                obj = entry.deserialize(obj);
+            }
         }
-        return entry.deserialize(obj);
+        return entry.getType().cast(obj);
     }
 
     @Override
@@ -213,10 +235,20 @@ public abstract class AbstractYamlConfig<C> implements Config {
         if (!(obj instanceof List)) {
             obj = new ArrayList<Object>();
         }
-        List<Object> list = (List<Object>) obj;
+        List list = (List) obj;
         List<T> resultList = entry.getNewTypeList();
-        for (Object o : list) {
-            resultList.add(entry.deserialize(o));
+        for (int i = 0; i < list.size(); i++) {
+            Object o = list.get(i);
+            if (!entry.getType().isInstance(o)) {
+                Logging.fine("An invalid value of '" + o + "' was detected at '" + entry.getName() + "[" + i + "]' during a get call.  Attempting to deserialize and replace...");
+                if (entry.isValid(o)) {
+                    o = entry.deserialize(o);
+                } else {
+                    Logging.warning("Invalid value '" + obj + "' at '" + entry.getName() + "[" + i + "]'!");
+                    continue;
+                }
+            }
+            resultList.add(entry.getType().cast(o));
         }
         return resultList;
     }
@@ -236,7 +268,17 @@ public abstract class AbstractYamlConfig<C> implements Config {
         Map<String, Object> map = (Map<String, Object>) obj;
         Map<String, T> resultMap = entry.getNewTypeMap();
         for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
-            resultMap.put(mapEntry.getKey(), entry.deserialize(mapEntry.getValue()));
+            Object o = mapEntry.getValue();
+            if (!entry.getType().isInstance(o)) {
+                Logging.fine("An invalid value of '" + o + "' was detected at '" + entry.getName() + getConfig().options().pathSeparator() + mapEntry.getKey() + "' during a get call.  Attempting to deserialize and replace...");
+                if (entry.isValid(o)) {
+                    o = entry.deserialize(o);
+                } else {
+                    Logging.warning("Invalid value '" + obj + "' at '" + entry.getName() + getConfig().options().pathSeparator() + mapEntry.getKey() + "'!");
+                    continue;
+                }
+            }
+            resultMap.put(mapEntry.getKey(), entry.getType().cast(o));
         }
         return resultMap;
     }
@@ -256,49 +298,24 @@ public abstract class AbstractYamlConfig<C> implements Config {
         getConfig().set(entry.getName(), value);
         return true;
     }
-/*
-    @Override
-    public <T> boolean set(ListConfigEntry<T> entry, int index, T value) throws IllegalArgumentException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-*/
+
     @Override
     public <T> boolean set(ListConfigEntry<T> entry, List<T> newValue) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("ConfigEntry not registered to this config!");
         }
-        List<Object> resultList = new LinkedList<Object>();
-        for (T t : newValue) {
-            if (!entry.isValid(t)) {
-                return false;
-            }
-            resultList.add(t);
-        }
-        getConfig().set(entry.getName(), resultList);
+        getConfig().set(entry.getName(), newValue);
         return true;
     }
 
     @Override
-    public <T> boolean set(MappedConfigEntry<T> entry, String key, T value) throws IllegalArgumentException {
+    public <T> boolean set(MappedConfigEntry<T> entry, Map<String, T> newValue) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("ConfigEntry not registered to this config!");
         }
-        if (value == null) {
-            getConfig().set(entry.getName() + "." + key, null);
-            return true;
-        }
-        if (!entry.isValid(value)) {
-            return false;
-        }
-        getConfig().set(entry.getName() + "." + key, value);
+        getConfig().set(entry.getName(), newValue);
         return true;
     }
-/*
-    @Override
-    public <T> boolean set(MappedConfigEntry<T> entry, Map<String, T> value) throws IllegalArgumentException {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-*/
 
     protected Configuration getConfig() {
         return this.config.getConfig();
@@ -308,22 +325,31 @@ public abstract class AbstractYamlConfig<C> implements Config {
         for (ConfigEntry entry : entries.entries) {
             if (getConfig().get(entry.getName()) != null) {
                 if (entry instanceof MappedConfigEntry) {
-                    ConfigurationSection section = getConfig().getConfigurationSection(entry.getName());
-                    if (section == null) {
+                    Object o = getConfig().get(entry.getName());
+                    if (o == null) {
                         Logging.fine("Missing entry: " + entry.getName());
                         continue;
                     }
-                    for (String key : section.getKeys(false)) {
-                        Object obj = section.get(key);
+                    Map map;
+                    if (o instanceof ConfigurationSection) {
+                        map = ((ConfigurationSection) o).getValues(false);
+                    } else if (!(o instanceof Map)) {
+                        Logging.fine("Missing entry: " + entry.getName());
+                        continue;
+                    } else {
+                        map = (Map) o;
+                    }
+                    for (Object key : map.keySet()) {
+                        Object obj = map.get(key);
                         if (entry.getType().isInstance(obj)) {
                             if (obj != null) {
-                                section.set(key, entry.serialize(entry.getType().cast(obj)));
+                                map.put(key, entry.serialize(entry.getType().cast(obj)));
                             }
                         } else {
                             Logging.warning("Could not serialize: " + entry.getName());
                         }
                     }
-                    newConfig.set(entry.getName(), section);
+                    newConfig.set(entry.getName(), map);
                 } else if (entry instanceof ListConfigEntry) {
                     List list = getConfig().getList(entry.getName());
                     if (list == null) {
