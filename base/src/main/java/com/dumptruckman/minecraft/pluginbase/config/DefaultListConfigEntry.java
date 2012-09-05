@@ -11,8 +11,8 @@ import java.util.List;
 
 class DefaultListConfigEntry<T> extends DefaultConfigEntry<T> implements ListConfigEntry<T> {
 
-    private Class<? extends List> listClass;
-    private List<T> defList;
+    private final Class<? extends List> listClass;
+    private final List<T> defList;
 
     public DefaultListConfigEntry(Class<T> type, String path, List<T> def, List<String> comments,
                                   EntrySerializer<T> serializer, EntryValidator validator, Message description,

@@ -15,6 +15,7 @@ public class EntryBuilder<T> {
     private String path;
     private T def = null;
     private List<T> defList = null;
+    private Map<String, T> defMap = null;
     private List<String> comments = new ArrayList<String>();
     private Class<T> type;
     private Message description = null;
@@ -48,11 +49,16 @@ public class EntryBuilder<T> {
         return this;
     }
 
+    public EntryBuilder<T> defMap(Map<String, T> def) {
+        this.defMap = def;
+        return this;
+    }
+
     public EntryBuilder<T> comment(String comment) {
         comments.add(comment);
         return this;
     }
-    
+
     public EntryBuilder<T> stringSerializer() {
         if (type.equals(String.class)) {
             serializer = new StringStringSerializer<T>(this.type);
@@ -92,11 +98,11 @@ public class EntryBuilder<T> {
     }
 
     public MappedConfigEntry<T> buildMap() {
-        return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator, description, deprecated, defaultIfMissing, HashMap.class);
+        return new DefaultMappedConfigEntry<T>(type, path, defMap, comments, serializer, validator, description, deprecated, defaultIfMissing, HashMap.class);
     }
 
     public MappedConfigEntry<T> buildMap(Class<? extends Map> mapClass) {
-        return new DefaultMappedConfigEntry<T>(type, path, def, comments, serializer, validator, description, deprecated, defaultIfMissing, mapClass);
+        return new DefaultMappedConfigEntry<T>(type, path, defMap, comments, serializer, validator, description, deprecated, defaultIfMissing, mapClass);
     }
 
     public ListConfigEntry<T> buildList() {

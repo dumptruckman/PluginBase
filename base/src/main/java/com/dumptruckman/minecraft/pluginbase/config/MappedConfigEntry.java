@@ -8,4 +8,6 @@ import java.util.Map;
 public interface MappedConfigEntry<T> extends ConfigEntry<T> {
 
     Map<String, T> getNewTypeMap();
+
+    Map<String, T> getDefaultMap();
 }

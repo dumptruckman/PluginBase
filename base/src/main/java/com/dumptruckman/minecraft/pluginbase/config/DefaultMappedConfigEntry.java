@@ -12,13 +12,15 @@ import java.util.Map;
 
 class DefaultMappedConfigEntry<T> extends DefaultConfigEntry<T> implements MappedConfigEntry<T> {
 
-    private Class<? extends Map> mapClass;
+    private final Class<? extends Map> mapClass;
+    private final Map<String, T> defMap;
 
-    public DefaultMappedConfigEntry(Class<T> type, String path, T def, List<String> comments,
+    public DefaultMappedConfigEntry(Class<T> type, String path, Map<String, T> def, List<String> comments,
                                     EntrySerializer<T> serializer, EntryValidator validator, Message description,
                                     boolean deprecated, boolean defaultIfMissing, Class<? extends Map> mapClass) {
-        super(type, path, def, comments, serializer, validator, description, deprecated, defaultIfMissing);
+        super(type, path, null, comments, serializer, validator, description, deprecated, defaultIfMissing);
         this.mapClass = mapClass;
+        this.defMap = def;
     }
 
     @Override
@@ -31,5 +33,10 @@ class DefaultMappedConfigEntry<T> extends DefaultConfigEntry<T> implements Mappe
             Logging.warning("Could not instantiate desired class, defaulting to HashMap");
         }
         return new HashMap<String, T>();
+    }
+
+    @Override
+    public Map<String, T> getDefaultMap() {
+        return defMap;
     }
 }
