@@ -55,11 +55,11 @@ public final class Duration {
         this.shortForm = TimeTools.toShortForm(seconds);
     }
 
-    public long toSeconds() {
+    public long asSeconds() {
         return duration / 1000L;
     }
 
-    public long toMilliSeconds() {
+    public long asMilliseconds() {
         return duration;
     }
 
