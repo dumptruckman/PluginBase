@@ -22,10 +22,26 @@ public final class Duration {
         if (time < 0) {
             time = 0;
         }
-        return new Duration(time);
+        return new Duration(time * 1000L);
     }
 
+    /**
+     * Returns a new Duration object based on a given number of milliseconds.
+     *
+     * @param duration The length of the duration in milliseconds.
+     * @return a new Duration based on the given number of milliseconds.
+     */
     public static Duration valueOf(final long duration) {
+        return new Duration(duration);
+    }
+
+    /**
+     * Returns a new Duration object based on a given number of seconds.
+     *
+     * @param duration The length of the duration in seconds.
+     * @return a new Duration based on the given number of seconds.
+     */
+    public static Duration fromSeconds(final long duration) {
         return new Duration(duration);
     }
 
@@ -34,11 +50,16 @@ public final class Duration {
 
     private Duration(final long duration) {
         this.duration = duration;
-        this.longForm = TimeTools.toLongForm(duration);
-        this.shortForm = TimeTools.toShortForm(duration);
+        final long seconds = duration / 1000L;
+        this.longForm = TimeTools.toLongForm(seconds);
+        this.shortForm = TimeTools.toShortForm(seconds);
     }
 
-    public long toLong() {
+    public long toSeconds() {
+        return duration / 1000L;
+    }
+
+    public long toMilliSeconds() {
         return duration;
     }
 
