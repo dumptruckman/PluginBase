@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public abstract class AbstractYamlConfig<C> implements Config {
+public abstract class AbstractYamlConfig implements Config {
 
     private CommentedYamlConfiguration config;
     private final File configFile;
@@ -35,7 +35,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
     private final boolean doComments;
     private final boolean autoDefaults;
 
-    public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, boolean autoDefaults, File configFile, Class<? extends C>... configClasses) throws IOException {
+    public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, boolean autoDefaults, File configFile, Class... configClasses) throws IOException {
         if (plugin == null) {
             throw new IllegalArgumentException("plugin may not be null!");
         }
@@ -409,7 +409,7 @@ public abstract class AbstractYamlConfig<C> implements Config {
 
         private final Set<ConfigEntry> entries = new CopyOnWriteArraySet<ConfigEntry>();
         
-        private Entries(Class<? extends C>... configClasses) {
+        private Entries(Class... configClasses) {
             final Set<Class> classes = new LinkedHashSet<Class>(10);
             for (Class configClass : configClasses) {
                 classes.add(configClass);

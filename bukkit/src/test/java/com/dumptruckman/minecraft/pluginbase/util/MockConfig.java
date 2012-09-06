@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
-public class MockConfig extends AbstractYamlConfig<MockConfig> implements BaseConfig {
+public class MockConfig extends AbstractYamlConfig implements BaseConfig {
     
     public static final SimpleConfigEntry<Boolean> TEST = new EntryBuilder<Boolean>(Boolean.class, "test").def(true)
             .comment("# ===[ PluginBase Test ]===").build();
