@@ -12,8 +12,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 final class SQLUpdateQueueThread extends Thread {
 
-    private static SQLUpdateQueueThread instance;
-
     private final SQLConnectionPool connectionPool;
     private final BlockingQueue<String> queryQueue = new LinkedBlockingQueue<String>();
     private final BlockingQueue<String> waitingQueue = new LinkedBlockingQueue<String>();
