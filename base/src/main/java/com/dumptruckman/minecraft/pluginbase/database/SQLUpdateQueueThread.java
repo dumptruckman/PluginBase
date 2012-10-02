@@ -47,6 +47,9 @@ final class SQLUpdateQueueThread extends Thread {
 
     public void waitUntilEmpty() {
         waiting = true;
+        if (!queryQueue.isEmpty()) {
+            Logging.finest(Thread.currentThread() + " will wait for update queue to process before continuing");
+        }
         while (!queryQueue.isEmpty()) { }
         waiting = false;
         queryQueue.addAll(waitingQueue);
