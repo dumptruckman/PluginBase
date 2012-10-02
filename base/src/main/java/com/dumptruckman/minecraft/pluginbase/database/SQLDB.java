@@ -35,7 +35,7 @@ public abstract class SQLDB implements SQLDatabase {
     }
 
     @Override
-    public void executeUpdate(String sqlQuery) {
+    public void queueUpdate(String sqlQuery) {
         updateQueueThread.queueUpdate(sqlQuery);
     }
 
@@ -45,7 +45,7 @@ public abstract class SQLDB implements SQLDatabase {
     }
 
     @Override
-    public ResultSet executeQueryLast(String sqlQuery) throws SQLException {
+    public ResultSet executeQueryAfterQueue(String sqlQuery) throws SQLException {
         updateQueueThread.waitUntilEmpty();
         return executeQuery(getConnection(), sqlQuery);
     }

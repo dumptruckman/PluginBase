@@ -13,9 +13,9 @@ public interface SQLDatabase {
 
     ResultSet executeQueryNow(String sql) throws SQLException;
 
-    ResultSet executeQueryLast(String sql) throws SQLException;
+    ResultSet executeQueryAfterQueue(String sql) throws SQLException;
 
-    void executeUpdate(String sql);
+    void queueUpdate(String sql);
 
     boolean checkTable(String name) throws SQLException;
 
