@@ -35,7 +35,7 @@ public abstract class SQLDB implements SQLDatabase {
     }
 
     @Override
-    public void executeUpdate(String sqlQuery) throws SQLException {
+    public void executeUpdate(String sqlQuery) {
         updateQueueThread.queueUpdate(sqlQuery);
     }
 
