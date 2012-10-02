@@ -15,7 +15,7 @@ public interface SQLDatabase {
 
     ResultSet executeQueryLast(String sql) throws SQLException;
 
-    void executeUpdate(String sql) throws SQLException;
+    void executeUpdate(String sql);
 
     boolean checkTable(String name) throws SQLException;
 
