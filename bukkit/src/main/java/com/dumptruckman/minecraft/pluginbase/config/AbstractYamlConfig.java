@@ -284,6 +284,25 @@ public abstract class AbstractYamlConfig implements Config {
     }
 
     @Override
+    public <T> T get(MappedConfigEntry<T> entry, String key) throws IllegalArgumentException {
+        if (!isInConfig(entry)) {
+            throw new IllegalArgumentException("entry not registered to this config!");
+        }
+        final String path = entry.getName() + getConfig().options().pathSeparator() + key;
+        Object obj = getConfig().get(path);
+        if (obj == null) {
+            return null;
+        }
+        if (!entry.getType().isInstance(obj)) {
+            Logging.fine("An invalid value of '" + obj + "' was detected at '" + path + "' during a get call.  Attempting to deserialize and replace...");
+            if (entry.isValid(obj)) {
+                obj = entry.deserialize(obj);
+            }
+        }
+        return entry.getType().cast(obj);
+    }
+
+    @Override
     public <T> boolean set(SimpleConfigEntry<T> entry, T value) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("ConfigEntry not registered to this config!");
