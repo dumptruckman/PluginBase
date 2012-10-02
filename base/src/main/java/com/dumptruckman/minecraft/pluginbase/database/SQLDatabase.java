@@ -4,22 +4,42 @@
 package com.dumptruckman.minecraft.pluginbase.database;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public interface SQLDatabase {
 
-    void execute(String sql) throws SQLException;
+    /**
+     * Hot and ready for consumption
+     *
+     * @param query
+     * @return
+     * @throws SQLException
+     */
+    PreparedStatement getFreshPreparedStatementHotFromTheOven(String query) throws SQLException;
 
-    ResultSet executeQueryNow(String sql) throws SQLException;
+    /**
+     * Delicious PreparedStatements but with a generate keys attached!
+     *
+     * @param query
+     * @return
+     * @throws SQLException
+     */
+    PreparedStatement getFreshPreparedStatementWithGeneratedKeys(String query) throws SQLException;
 
-    ResultSet executeQueryAfterQueue(String sql) throws SQLException;
+    /**
+     * Gets a connection from the connection pool
+     * @throws SQLException
+     */
+    Connection getConnection() throws SQLException;
 
-    void queueUpdate(String sql);
+    /**
+     * Gets the current connection pool
+     * @return
+     */
+    SQLConnectionPool getPool();
 
     boolean checkTable(String name) throws SQLException;
 
     void shutdown();
-
-    Connection getConnection() throws SQLException;
 }

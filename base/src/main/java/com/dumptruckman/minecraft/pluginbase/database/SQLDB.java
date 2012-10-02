@@ -4,56 +4,34 @@
 package com.dumptruckman.minecraft.pluginbase.database;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public abstract class SQLDB implements SQLDatabase {
 
     private final SQLConnectionPool connectionPool;
-    private final SQLUpdateQueueThread updateQueueThread;
 
     SQLDB(SQLConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
-        this.updateQueueThread = new SQLUpdateQueueThread(connectionPool);
-        updateQueueThread.start();
     }
 
-    static void executeUpdate(Connection connection, String sqlQuery) throws SQLException {
-        Statement statement = connection.createStatement();
-        statement.executeUpdate(sqlQuery);
+    public PreparedStatement getFreshPreparedStatementHotFromTheOven(String query) throws SQLException {
+        final PreparedStatement preparedStatement = getConnection().prepareStatement(query);
+        return preparedStatement;
     }
 
-    static ResultSet executeQuery(Connection connection, String sqlQuery) throws SQLException {
-        Statement statement = connection.createStatement();
-        return statement.executeQuery(sqlQuery);
+    public PreparedStatement getFreshPreparedStatementWithGeneratedKeys(String query) throws SQLException {
+        final PreparedStatement ps = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+        return ps;
     }
 
-    @Override
-    public final Connection getConnection() throws SQLException {
-        return connectionPool.getConnection();
+    public Connection getConnection() throws SQLException {
+        return getPool().getConnection();
     }
 
-    @Override
-    public void queueUpdate(String sqlQuery) {
-        updateQueueThread.queueUpdate(sqlQuery);
-    }
-
-    @Override
-    public ResultSet executeQueryNow(String sqlQuery) throws SQLException {
-        return executeQuery(getConnection(), sqlQuery);
-    }
-
-    @Override
-    public ResultSet executeQueryAfterQueue(String sqlQuery) throws SQLException {
-        updateQueueThread.waitUntilEmpty();
-        return executeQuery(getConnection(), sqlQuery);
-    }
-
-    @Override
-    public void execute(String sqlQuery) throws SQLException {
-        Statement statement = getConnection().createStatement();
-        statement.execute(sqlQuery);
+    public SQLConnectionPool getPool() {
+        return connectionPool;
     }
 
     @Override
