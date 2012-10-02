@@ -317,6 +317,15 @@ public abstract class AbstractYamlConfig implements Config {
         return true;
     }
 
+    @Override
+    public <T> boolean set(MappedConfigEntry<T> entry, String key, T value) throws IllegalArgumentException {
+        if (!isInConfig(entry)) {
+            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+        }
+        getConfig().set(entry.getName() + getConfig().options().pathSeparator() + key, value);
+        return true;
+    }
+
     protected Configuration getConfig() {
         return this.config.getConfig();
     }

@@ -27,4 +27,6 @@ public interface Config {
     <T> boolean set(ListConfigEntry<T> entry, List<T> value) throws IllegalArgumentException;
 
     <T> boolean set(MappedConfigEntry<T> entry, Map<String, T> value) throws IllegalArgumentException;
+
+    <T> boolean set(MappedConfigEntry<T> entry, String key, T value) throws IllegalArgumentException;
 }
