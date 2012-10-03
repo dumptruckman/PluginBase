@@ -409,6 +409,13 @@ abstract class SQLConnectionPool implements Closeable {
                 return conn.isValid(1);
             } catch (final SQLException ex) {
                 return false;
+            } catch (final AbstractMethodError ignore) {
+                try {
+                    conn.prepareStatement("SELECT 1").executeQuery();
+                    return true;
+                } catch (final SQLException e) {
+                    return false;
+                }
             }
         }
 
