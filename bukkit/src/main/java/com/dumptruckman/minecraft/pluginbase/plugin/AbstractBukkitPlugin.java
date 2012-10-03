@@ -284,6 +284,11 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     @Override
+    public SQLConfig sqlConfig() {
+        return sqlConfig;
+    }
+
+    @Override
     public abstract List<String> getCommandPrefixes();
 
     protected abstract C newConfigInstance() throws IOException;
