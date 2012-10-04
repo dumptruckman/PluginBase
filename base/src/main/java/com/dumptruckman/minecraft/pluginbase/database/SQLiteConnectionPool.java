@@ -31,4 +31,8 @@ class SQLiteConnectionPool extends SQLConnectionPool {
     protected Connection getBaseConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
     }
+
+    public Connection getConnection() throws SQLException {
+        return getBaseConnection();
+    }
 }

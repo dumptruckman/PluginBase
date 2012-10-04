@@ -18,6 +18,10 @@ public class SQLite extends SQLDB {
     public boolean checkTable(String table) throws SQLException {
         DatabaseMetaData dbm = getConnection().getMetaData();
         ResultSet tables = dbm.getTables(null, null, table, null);
-        return tables.next();
+        try {
+            return tables.next();
+        } finally {
+            tables.close();
+        }
     }
 }
