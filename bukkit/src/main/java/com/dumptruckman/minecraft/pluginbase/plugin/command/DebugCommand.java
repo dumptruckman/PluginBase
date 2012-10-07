@@ -52,18 +52,18 @@ public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<
     public void runCommand(CommandSender sender, List<String> args) {
         if (args.size() == 1) {
             if (args.get(0).equalsIgnoreCase("off")) {
-                plugin.config().set(BaseConfig.DEBUG_MODE, 0);
-                Logging.setDebugMode(plugin.config().get(BaseConfig.DEBUG_MODE));
-                plugin.config().save();
+                getPlugin().config().set(BaseConfig.DEBUG_MODE, 0);
+                Logging.setDebugMode(getPlugin().config().get(BaseConfig.DEBUG_MODE));
+                getPlugin().config().save();
             } else {
                 try {
                     int debugLevel = Integer.parseInt(args.get(0));
                     if (debugLevel > 3 || debugLevel < 0) {
                         throw new NumberFormatException();
                     }
-                    plugin.config().set(BaseConfig.DEBUG_MODE, debugLevel);
-                    Logging.setDebugMode(plugin.config().get(BaseConfig.DEBUG_MODE));
-                    plugin.config().save();
+                    getPlugin().config().set(BaseConfig.DEBUG_MODE, debugLevel);
+                    Logging.setDebugMode(getPlugin().config().get(BaseConfig.DEBUG_MODE));
+                    getPlugin().config().save();
                 } catch (NumberFormatException e) {
                     getMessager().bad(Messages.INVALID_DEBUG, sender);
                 }
@@ -73,12 +73,12 @@ public class DebugCommand<P extends AbstractBukkitPlugin> extends PluginCommand<
     }
 
     private void displayDebugMode(CommandSender sender) {
-        if (plugin.config().get(BaseConfig.DEBUG_MODE) == 0) {
+        if (getPlugin().config().get(BaseConfig.DEBUG_MODE) == 0) {
             getMessager().normal(CommandMessages.DEBUG_SET, sender, ChatColor.RED + getMessager().getMessage(Messages.GENERIC_OFF));
         } else {
             getMessager().normal(CommandMessages.DEBUG_SET, sender, ChatColor.GREEN
-                    + plugin.config().get(BaseConfig.DEBUG_MODE).toString());
-            Logging.fine(this.plugin.getDescription().getName() + " debug ENABLED");
+                    + getPlugin().config().get(BaseConfig.DEBUG_MODE).toString());
+            Logging.fine(getPlugin().getDescription().getName() + " debug ENABLED");
         }
     }
 }

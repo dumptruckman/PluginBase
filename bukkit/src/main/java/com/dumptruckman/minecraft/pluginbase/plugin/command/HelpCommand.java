@@ -68,8 +68,8 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
             } else if (c.getCommandUsage().matches("(?i).*" + filter + ".*")) {
                 filtered.add(c);
             } else {
-                for (String example : c.getCommandExamples()) {
-                    if (example.matches("(?i).*" + filter + ".*")) {
+                for (final Object example : c.getCommandExamples()) {
+                    if (example.toString().matches("(?i).*" + filter + ".*")) {
                         filtered.add(c);
                         break;
                     }

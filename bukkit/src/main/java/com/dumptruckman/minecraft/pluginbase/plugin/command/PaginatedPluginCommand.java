@@ -22,13 +22,13 @@ public abstract class PaginatedPluginCommand<T, P extends AbstractBukkitPlugin> 
     }
 
     public final void addPrefixedKey(String key) {
-        for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
+        for (String prefix : (List<String>) getPlugin().getCommandPrefixes()) {
             this.addKey(prefix + key);
         }
     }
 
     protected Messager getMessager() {
-        return plugin.getMessager();
+        return getPlugin().getMessager();
     }
 
     @Override

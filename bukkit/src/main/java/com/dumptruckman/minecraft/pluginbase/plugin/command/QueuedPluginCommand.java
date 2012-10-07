@@ -30,7 +30,7 @@ public abstract class QueuedPluginCommand<P extends AbstractBukkitPlugin> extend
     @Override
     public final void runCommand(CommandSender sender, List<String> args) {
         preConfirm(sender, args);
-        this.plugin.getCommandHandler().queueCommand(sender, this, args, confirmMessage);
+        getPlugin().getCommandHandler().queueCommand(sender, this, args, confirmMessage);
     }
 
     public abstract void preConfirm(CommandSender sender, List<String> args);

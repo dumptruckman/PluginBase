@@ -39,13 +39,13 @@ public class ReloadCommand<P extends AbstractBukkitPlugin> extends PluginCommand
         for (String key : staticPrefixedKeys) {
             this.addPrefixedKey(key);
         }
-        this.addPrefixedKey(" reload");
+        addPrefixedKey(" reload");
         setPermission(Perm.COMMAND_RELOAD.getPermission());
     }
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        this.plugin.reloadConfig();
-        this.getMessager().normal(CommandMessages.RELOAD_COMPLETE, sender);
+        getPlugin().reloadConfig();
+        getMessager().normal(CommandMessages.RELOAD_COMPLETE, sender);
     }
 }

@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Command {
+public abstract class Command<P extends BukkitPlugin> {
 
-    protected BukkitPlugin plugin;
+    private P plugin;
 
     private int minimumArgLength;
     private int maximumArgLength;
@@ -30,7 +30,7 @@ public abstract class Command {
     private Permission permission;
     private List<Permission> auxPerms;
 
-    public Command(BukkitPlugin plugin) {
+    public Command(P plugin) {
         this.plugin = plugin;
         this.auxPerms = new ArrayList<Permission>();
         this.commandKeys = new ArrayList<CommandKey>();
@@ -239,7 +239,7 @@ public abstract class Command {
     }
 
     /** @return the plugin */
-    protected BukkitPlugin getPlugin() {
+    protected P getPlugin() {
         return this.plugin;
     }
 

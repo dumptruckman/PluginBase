@@ -46,6 +46,6 @@ public class ConfirmCommand<P extends AbstractBukkitPlugin> extends PluginComman
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        plugin.getCommandHandler().confirmQueuedCommand(sender);
+        getPlugin().getCommandHandler().confirmQueuedCommand(sender);
     }
 }

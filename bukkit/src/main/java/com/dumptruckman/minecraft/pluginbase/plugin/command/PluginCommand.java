@@ -13,24 +13,27 @@ import java.util.List;
 /**
  * A generic Multiverse-command.
  */
-public abstract class PluginCommand<P extends BukkitPlugin> extends Command {
-
-    /**
-     * The reference to the core.
-     */
-    protected P plugin;
+public abstract class PluginCommand<P extends BukkitPlugin> extends Command<P> {
 
     public PluginCommand(P plugin) {
         super(plugin);
-        this.plugin = plugin;
     }
 
+    /**
+     * Retrieves the Messager associated with the BukkitPlugin this command is for.
+     * @return
+     */
     protected Messager getMessager() {
-        return plugin.getMessager();
+        return getPlugin().getMessager();
     }
 
+    /**
+     * Adds a command key (alias) that is prefixed with the Plugin's command prefix.
+     *
+     * @param key
+     */
     public final void addPrefixedKey(String key) {
-        for (String prefix : (List<String>) plugin.getCommandPrefixes()) {
+        for (String prefix : (List<String>) getPlugin().getCommandPrefixes()) {
             this.addKey(prefix + key);
         }
     }

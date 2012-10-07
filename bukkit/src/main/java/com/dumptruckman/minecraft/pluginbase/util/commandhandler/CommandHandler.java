@@ -162,7 +162,7 @@ public class CommandHandler {
     public void queueCommand(CommandSender sender, QueuedPluginCommand command, List<String> args, BundledMessage confirmMessage, int confirmWait) {
         this.queuedCommands.put(sender, new QueuedCommand(command, args, System.currentTimeMillis() + (confirmWait * 1000)));
 
-        String commandName = command.getKeyStrings().get(0);
+        String commandName = command.getKeyStrings().get(0).toString();
         String confirmCommand = plugin.getCommandPrefixes().get(0) + " confirm";
 
         if (confirmMessage == null) {
@@ -241,7 +241,7 @@ public class CommandHandler {
         } else {
             if(notifySender) {
                 sender.sendMessage("You do not have any of the required permission(s):");
-                for (String perm : foundCommand.getAllPermissionStrings()) {
+                for (final Object perm : foundCommand.getAllPermissionStrings()) {
                     sender.sendMessage(" - \u00a7a" + perm);
                 }
             }

@@ -65,12 +65,12 @@ public class VersionCommand<P extends AbstractBukkitPlugin> extends PluginComman
         }
 
         final List<String> buffer = new LinkedList<String>();
-        buffer.add(getMessager().getMessage(CommandMessages.VERSION_PLUGIN_VERSION, plugin.getDescription().getName(), plugin.getDescription().getVersion()));
-        buffer.add(getMessager().getMessage(CommandMessages.VERSION_BUKKIT_VERSION, plugin.getServer().getVersion()));
-        buffer.add(getMessager().getMessage(CommandMessages.VERSION_LANG_FILE, plugin.config().get(BaseConfig.LANGUAGE_FILE)));
-        buffer.add(getMessager().getMessage(CommandMessages.VERSION_DEBUG_MODE, plugin.config().get(BaseConfig.DEBUG_MODE)));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_PLUGIN_VERSION, getPlugin().getDescription().getName(), getPlugin().getDescription().getVersion()));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_BUKKIT_VERSION, getPlugin().getServer().getVersion()));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_LANG_FILE, getPlugin().config().get(BaseConfig.LANGUAGE_FILE)));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_DEBUG_MODE, getPlugin().config().get(BaseConfig.DEBUG_MODE)));
 
-        List<String> versionInfoDump = plugin.dumpVersionInfo();
+        List<String> versionInfoDump = getPlugin().dumpVersionInfo();
         if (versionInfoDump != null) {
             buffer.addAll(versionInfoDump);
         }
@@ -80,7 +80,7 @@ public class VersionCommand<P extends AbstractBukkitPlugin> extends PluginComman
             Logging.info(line);
         }
 
-        this.plugin.getServer().getScheduler().scheduleAsyncDelayedTask(this.plugin, new Runnable() {
+        getPlugin().getServer().getScheduler().scheduleAsyncDelayedTask(getPlugin(), new Runnable() {
             @Override
             public void run() {
                 if (args.size() == 1) {
