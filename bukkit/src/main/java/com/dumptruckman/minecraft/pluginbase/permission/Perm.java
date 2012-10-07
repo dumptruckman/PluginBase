@@ -45,7 +45,7 @@ public class Perm {
      * Permission for version command.
      */
     public static final Perm COMMAND_VERSION = new Builder("cmd.version").usePluginName().commandPermission()
-            .desc("Reloads the config file.").build();
+            .desc("Sends version information to the console.").build();
     /**
      * Permission for help command.
      */
