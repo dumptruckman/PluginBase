@@ -176,12 +176,6 @@ and adjust the build number accordingly -->
             <version>1.5-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sk89q</groupId>
-                    <artifactId>worldedit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- Bukkit Dependency -->
         <dependency>

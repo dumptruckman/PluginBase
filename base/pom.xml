@@ -159,7 +159,7 @@ and adjust the build number accordingly -->
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>
-            <version>5.3</version>
+            <version>5.4</version>
             <type>jar</type>
             <scope>compile</scope>
             <exclusions>

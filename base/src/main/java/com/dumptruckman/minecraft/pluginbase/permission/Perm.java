@@ -67,7 +67,7 @@ public abstract class Perm {
         this.parents = parents;
     }
 
-    protected final String getName() {
+    public final String getName() {
         return name;
     }
 
