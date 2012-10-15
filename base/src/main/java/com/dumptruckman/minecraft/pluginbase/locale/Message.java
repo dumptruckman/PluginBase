@@ -14,7 +14,7 @@ public class Message {
 
     public Message(String path, String def, String... extra) {
         this.path = path;
-        this.def = new ArrayList<String>();
+        this.def = new ArrayList<String>(extra.length + 1);
         this.def.add(def);
         this.def.addAll(Arrays.asList(extra));
         Messages.registerMessage(this);
