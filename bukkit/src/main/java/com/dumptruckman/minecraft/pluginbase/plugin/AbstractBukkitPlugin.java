@@ -9,10 +9,14 @@ import com.dumptruckman.minecraft.pluginbase.config.YamlSQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.database.SQLite;
+import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
+import com.dumptruckman.minecraft.pluginbase.entity.BukkitCommandSender;
+import com.dumptruckman.minecraft.pluginbase.entity.BukkitPlayer;
 import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
 import com.dumptruckman.minecraft.pluginbase.locale.SimpleMessager;
-import com.dumptruckman.minecraft.pluginbase.permission.Perm;
+import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
+import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.permission.PermHandler;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.ConfirmCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.DebugCommand;
@@ -24,6 +28,7 @@ import com.dumptruckman.minecraft.pluginbase.util.commandhandler.CommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -75,7 +80,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     @Override
     public final void onEnable() {
         preEnable();
-        Perm.registerPlugin(this);
+        PermFactory.registerPermissionFactory(this, BukkitPermFactory.class);
         CommandMessages.init();
         Logging.init(this);
         setupMetrics();
@@ -304,5 +309,18 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     @Override
     public Metrics getMetrics() {
         return metrics;
+    }
+
+    @Override
+    public BasePlayer wrapPlayer(Player player) {
+        return new BukkitPlayer(player);
+    }
+
+    @Override
+    public BasePlayer wrapSender(CommandSender sender) {
+        if (sender instanceof Player) {
+            return wrapPlayer((Player) sender);
+        }
+        return new BukkitCommandSender(sender);
     }
 }

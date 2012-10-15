@@ -1,4 +1,9 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.permission;
+
+import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -7,7 +12,8 @@ import java.util.Map;
 
 public abstract class PermFactory {
 
-    private static Constructor<PermFactory> factory;
+    private static Constructor<? extends PermFactory> factory;
+    protected static PluginBase plugin;
 
     public static PermFactory newPerm(String permName) {
         if (factory == null) {
@@ -28,19 +34,21 @@ public abstract class PermFactory {
                 if (all) {
                     parent(Perm.ALL);
                 }
-                return new Perm(this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName) {
-
+                return new Perm(plugin, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName) {
+                    @Override
+                    protected void verify(final String name) { }
                 };
             }
         };
     }
 
-    static void registerFactory(Class<PermFactory> clazz) {
+    public static void registerPermissionFactory(final PluginBase plugin, final Class<? extends PermFactory> clazz) {
         try {
             factory = clazz.getDeclaredConstructor(String.class);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("PermFactory must have constructor accepting single string!");
         }
+        PermFactory.plugin = plugin;
     }
 
     protected final String name;
@@ -51,45 +59,45 @@ public abstract class PermFactory {
     protected boolean baseName = false;
     protected boolean all = false;
 
-    protected PermFactory(String permName) {
+    protected PermFactory(final String permName) {
         this.name = permName;
     }
 
-    public final PermFactory desc(String description) {
+    public final PermFactory desc(final String description) {
         this.description = description;
         return this;
     }
 
-    public final PermFactory child(Perm perm) {
+    public final PermFactory child(final Perm perm) {
         return child(perm.getName());
     }
 
-    public final PermFactory child(String name) {
+    public final PermFactory child(final String name) {
         return child(name, true);
     }
 
-    public final PermFactory child(Perm perm, Boolean state) {
+    public final PermFactory child(final Perm perm, final boolean state) {
         return child(perm.getName(), state);
     }
 
-    public final PermFactory child(String name, Boolean state) {
+    public final PermFactory child(final String name, final boolean state) {
         children.put(name, state);
         return this;
     }
 
-    public final PermFactory parent(Perm perm) {
+    public final PermFactory parent(final Perm perm) {
         return parent(perm.getName());
     }
 
-    public final PermFactory parent(String name) {
+    public final PermFactory parent(final String name) {
         return parent(name, true);
     }
 
-    public final PermFactory parent(Perm perm, Boolean state) {
+    public final PermFactory parent(final Perm perm, final boolean state) {
         return parent(perm.getName(), state);
     }
 
-    public final PermFactory parent(String name, Boolean state) {
+    public final PermFactory parent(final String name, final boolean state) {
         parents.put(name, state);
         return this;
     }
@@ -103,7 +111,7 @@ public abstract class PermFactory {
         return parent(Perm.ALL_CMD);
     }
 
-    public final PermFactory def(PermDefault permissionDefault) {
+    public final PermFactory def(final PermDefault permissionDefault) {
         this.permissionDefault = permissionDefault;
         return this;
     }

@@ -1,10 +1,16 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.permission;
 
 import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
+import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 
 import java.util.Map;
 
 public abstract class Perm {
+
+    protected static final String SEPARATOR = ".";
 
     /**
      * ALL plugin permissions.
@@ -45,37 +51,40 @@ public abstract class Perm {
     protected final String name;
     protected final String description;
     protected final Map<String, Boolean> children;
-    protected final PermDefault permissionDefault;
+    protected final PermDefault permDefault;
     protected final Map<String, Boolean> parents;
-    protected final boolean baseName;
 
-    Perm(String name, String description, Map<String, Boolean> children, PermDefault permissionDefault, Map<String, Boolean> parents, boolean baseName) {
-        this.name = name;
+    Perm(final PluginBase plugin, final String name, final String description, final Map<String, Boolean> children,
+         final PermDefault permDefault, final Map<String, Boolean> parents, final boolean baseName) {
+        if (baseName && plugin != null) {
+            this.name = plugin.getPluginName().toLowerCase() + SEPARATOR + name.toLowerCase();
+        } else {
+            this.name = name.toLowerCase();
+        }
         this.description = description;
         this.children = children;
-        this.permissionDefault = permissionDefault;
+        this.permDefault = permDefault;
         this.parents = parents;
-        this.baseName = baseName;
     }
 
     protected final String getName() {
         return name;
     }
 
-    public final String getDescription() {
+    public String getDescription() {
         return this.description;
     }
 
-    public final Map<String, Boolean> getChildren() {
+    public Map<String, Boolean> getChildren() {
         return this.children;
     }
 
-    public final Map<String, Boolean> getParents() {
+    public Map<String, Boolean> getParents() {
         return this.parents;
     }
 
-    public final PermDefault getPermissionDefault() {
-        return this.permissionDefault;
+    public PermDefault getPermDefault() {
+        return this.permDefault;
     }
 
     /**
@@ -85,10 +94,15 @@ public abstract class Perm {
      * @return True if sender has the permission.
      */
     public final boolean hasPermission(final BasePlayer permissible) {
+        verify(getName());
         return permissible.hasPermission(getName());
     }
 
     public final boolean hasPermission(final BasePlayer permissible, final String specific) {
-        return permissible.hasPermission(getName() + "." + specific);
+        final String fullName = getName() + SEPARATOR + specific;
+        verify(fullName);
+        return permissible.hasPermission(fullName);
     }
+
+    protected abstract void verify(final String name);
 }

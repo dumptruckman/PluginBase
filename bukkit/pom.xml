@@ -144,6 +144,16 @@ and adjust the build number accordingly -->
                                     <shadedPattern>com.dumptruckman.minecraft.pluginbase.config</shadedPattern>
                                 </relocation>
                             </relocations>
+                            <filters>
+                                <filter>
+                                    <artifact>com.sk89q:worldedit</artifact>
+                                    <excludes>
+                                        <exclude>defaults</exclude>
+                                        <exclude>plugin.yml</exclude>
+                                        <exclude>spoutplugin.yml</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>
@@ -166,6 +176,12 @@ and adjust the build number accordingly -->
             <version>1.5-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sk89q</groupId>
+                    <artifactId>worldedit</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Bukkit Dependency -->
         <dependency>

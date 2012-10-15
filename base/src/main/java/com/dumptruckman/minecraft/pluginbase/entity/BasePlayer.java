@@ -29,6 +29,10 @@ public abstract class BasePlayer {
         perm.hasPermission(this);
     }
 
+    public void hasPerm(Perm perm, String specific) {
+        perm.hasPermission(this, specific);
+    }
+
     public void checkPermission(String permission) {
         if (!hasPermission(permission)) {
             //throw new WorldEditPermissionException();
