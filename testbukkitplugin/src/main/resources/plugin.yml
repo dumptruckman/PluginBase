@@ -1,0 +1,4 @@
+name: TestPluginBase
+main: com.dumptruckman.minecraft.pluginbase.TestPlugin
+version: maven-version-number
+author: dumptruckman
