@@ -7,9 +7,12 @@ import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandHandler;
+import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
 import org.mcstats.Metrics;
 
 import java.io.File;
+import java.util.List;
 
 public interface PluginBase<C extends BaseConfig> {
 
@@ -32,9 +35,7 @@ public interface PluginBase<C extends BaseConfig> {
      */
     void setServerFolder(File newServerFolder);
 
-    String getPluginName();
-    
-    String getPluginVersion();
+    PluginInfo getPluginInfo();
     
     File getDataFolder();
     
@@ -48,5 +49,11 @@ public interface PluginBase<C extends BaseConfig> {
 
     void reloadConfig();
 
-    public Messager getMessager();
+    Messager getMessager();
+
+    List<String> dumpVersionInfo();
+
+    ServerInterface getServerInterface();
+
+    CommandHandler getCommandHandler();
 }

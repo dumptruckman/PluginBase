@@ -31,8 +31,8 @@ public class Logging {
      * @param plugin The plugin.
      */
     public static void init(PluginBase plugin) {
-        NAME = plugin.getPluginName();
-        VERSION = plugin.getPluginVersion();
+        NAME = plugin.getPluginInfo().getName();
+        VERSION = plugin.getPluginInfo().getVersion();
         plugin.getDataFolder().mkdirs();
         debugLog = new DebugLog(NAME, plugin.getDataFolder() + File.separator + "debug.log");
     }

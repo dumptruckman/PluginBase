@@ -17,14 +17,13 @@ import com.dumptruckman.minecraft.pluginbase.locale.Messager;
 import com.dumptruckman.minecraft.pluginbase.locale.SimpleMessager;
 import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
-import com.dumptruckman.minecraft.pluginbase.permission.PermHandler;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.ConfirmCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.DebugCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.ReloadCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.VersionCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.BukkitCommandHandler;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionCommand;
+import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
+import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
-import com.dumptruckman.minecraft.pluginbase.util.commandhandler.CommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -34,8 +33,6 @@ import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,11 +43,19 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     private C config = null;
     private Messager messager = null;
     private File serverFolder = null;
-    private CommandHandler commandHandler = null;
+    private BukkitCommandHandler commandHandler = null;
     private SQLDatabase db = null;
     private Metrics metrics;
 
     protected SQLConfig sqlConfig = null;
+
+    private final PluginInfo pluginInfo;
+    private final ServerInterface serverInterface;
+
+    public AbstractBukkitPlugin() {
+        this.pluginInfo = new BukkitPluginInfo(this);
+        this.serverInterface = new BukkitServerInterface(getServer());
+    }
 
     public void preDisable() {
 
@@ -165,6 +170,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         }
         this.messager = null;
         getMessager();
+        this.commandHandler = new BukkitCommandHandler(this);
         
         Logging.setDebugMode(config().get(BaseConfig.DEBUG_MODE));
 
@@ -187,11 +193,11 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     private void _registerCommands() {
-        getCommandHandler().registerCommand(new DebugCommand<AbstractBukkitPlugin>(this));
-        getCommandHandler().registerCommand(new ReloadCommand<AbstractBukkitPlugin>(this));
-        getCommandHandler().registerCommand(new HelpCommand<AbstractBukkitPlugin>(this));
-        getCommandHandler().registerCommand(new VersionCommand<AbstractBukkitPlugin>(this));
-        getCommandHandler().registerCommand(new ConfirmCommand<AbstractBukkitPlugin>(this));
+        getCommandHandler().registerCommand(DebugCommand.class);
+        getCommandHandler().registerCommand(ReloadCommand.class);
+        getCommandHandler().registerCommand(VersionCommand.class);
+        //getCommandHandler().registerCommand(new HelpCommand<AbstractBukkitPlugin>(this));
+        //getCommandHandler().registerCommand(new ConfirmCommand<AbstractBukkitPlugin>(this));
     }
 
     /**
@@ -203,19 +209,17 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
             sender.sendMessage("This plugin is Disabled!");
             return true;
         }
-        List<String> allArgs = new ArrayList<String>(Arrays.asList(args));
-        allArgs.add(0, command.getName());
-        return this.getCommandHandler().locateAndRunCommand(sender, allArgs);
+        String[] allArgs = new String[args.length + 1];
+        allArgs[0] = command.getName();
+        System.arraycopy(args, 0, allArgs, 1, args.length);
+        return this.getCommandHandler().locateAndRunCommand(wrapSender(sender), allArgs);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public CommandHandler getCommandHandler() {
-        if (this.commandHandler == null) {
-            this.commandHandler = new CommandHandler(this, new PermHandler());
-        }
+    public BukkitCommandHandler getCommandHandler() {
         return this.commandHandler;
     }
 
@@ -244,14 +248,6 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
      * {@inheritDoc}
      */
     @Override
-    public void setMessager(Messager messager) {
-        this.messager = messager;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public File getServerFolder() {
         if (this.serverFolder == null) {
             this.serverFolder = new File(System.getProperty("user.dir"));
@@ -268,16 +264,6 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
             throw new IllegalArgumentException("That's not a folder!");
 
         this.serverFolder = newServerFolder;
-    }
-
-    @Override
-    public String getPluginName() {
-        return getDescription().getName();
-    }
-    
-    @Override
-    public String getPluginVersion() {
-        return getDescription().getVersion();
     }
 
     @Override
@@ -322,5 +308,15 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
             return wrapPlayer((Player) sender);
         }
         return new BukkitCommandSender(sender);
+    }
+
+    @Override
+    public PluginInfo getPluginInfo() {
+        return pluginInfo;
+    }
+
+    @Override
+    public ServerInterface getServerInterface() {
+        return serverInterface;
     }
 }

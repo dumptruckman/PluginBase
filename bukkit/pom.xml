@@ -94,8 +94,7 @@ and adjust the build number accordingly -->
                     <parallel>methods</parallel>
                     <threadCount>10</threadCount>
                     <excludes>
-                        <exclude>**/TestCommandSender.java</exclude>
-                        <exclude>**/TestInstanceCreator.java</exclude>
+                        <!--exclude>**/TestBasics.java</exclude-->
                     </excludes>
                 </configuration>
                 <dependencies>
@@ -132,6 +131,7 @@ and adjust the build number accordingly -->
                                     <include>com.dumptruckman.minecraft:Plugin</include>
                                     <include>com.feildmaster.lib:EnhancedConfiguration</include>
                                     <include>org.mcstats:metrics</include>
+                                    <include>com.sk89q:worldedit</include>
                                 </includes>
                             </artifactSet>
                             <relocations>
@@ -147,6 +147,11 @@ and adjust the build number accordingly -->
                             <filters>
                                 <filter>
                                     <artifact>com.sk89q:worldedit</artifact>
+                                    <includes>
+                                        <include>com/sk89q/bukkit/util/DynamicPluginCommand.**</include>
+                                        <include>com/sk89q/util/ReflectionUtil.**</include>
+                                        <include>com/sk89q/util/StringUtil.**</include>
+                                    </includes>
                                     <excludes>
                                         <exclude>defaults</exclude>
                                         <exclude>plugin.yml</exclude>
@@ -161,7 +166,6 @@ and adjust the build number accordingly -->
         </plugins>
     </build>
     <dependencies>
-        <!-- Start of ConfigurationLib Dependency -->
         <dependency>
             <groupId>com.feildmaster.lib</groupId>
             <artifactId>EnhancedConfiguration</artifactId>
@@ -169,7 +173,23 @@ and adjust the build number accordingly -->
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!-- Start of PluginBase Dependency -->
+        <dependency>
+            <groupId>com.sk89q</groupId>
+            <artifactId>worldedit</artifactId>
+            <version>5.4</version>
+            <type>jar</type>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.bukkit</groupId>
+                    <artifactId>bukkit</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.spout</groupId>
+                    <artifactId>spoutapi</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
             <artifactId>Plugin</artifactId>
@@ -177,7 +197,6 @@ and adjust the build number accordingly -->
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <!-- Bukkit Dependency -->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
