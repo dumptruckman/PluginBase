@@ -6,6 +6,7 @@ package com.dumptruckman.minecraft.pluginbase.plugin;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
+import com.dumptruckman.minecraft.pluginbase.locale.Messager;
 import org.mcstats.Metrics;
 
 import java.io.File;
@@ -44,4 +45,8 @@ public interface PluginBase<C extends BaseConfig> {
     SQLConfig sqlConfig();
 
     Metrics getMetrics();
+
+    void reloadConfig();
+
+    public Messager getMessager();
 }
