@@ -1,12 +1,13 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
+import com.sk89q.bukkit.util.DynamicPluginCommand;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 
-public class DynamicPluginCommand extends com.sk89q.bukkit.util.DynamicPluginCommand {
+class DefaultPluginCommand extends DynamicPluginCommand {
 
-    public DynamicPluginCommand(String[] aliases, String desc, String usage, CommandExecutor owner, Object registeredWith, Plugin plugin) {
+    public DefaultPluginCommand(String[] aliases, String desc, String usage, CommandExecutor owner, Object registeredWith, Plugin plugin) {
         super(aliases, desc, usage, owner, registeredWith, plugin);
     }
 

@@ -4,7 +4,6 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
 import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import org.bukkit.command.CommandSender;
 
@@ -31,7 +30,7 @@ public class ConfirmCommand<P extends AbstractBukkitPlugin> extends PluginComman
     public ConfirmCommand(P plugin) {
         super(plugin);
         this.setName(getMessager().getMessage(CommandMessages.CONFIRM_NAME));
-        this.setCommandUsage("/" + plugin.getCommandPrefixes().get(0) + " confirm");
+        this.setCommandUsage("/" + plugin.getCommandPrefix() + " confirm");
         this.setArgRange(0, 0);
         for (String key : staticKeys) {
             this.addKey(key);
@@ -40,12 +39,12 @@ public class ConfirmCommand<P extends AbstractBukkitPlugin> extends PluginComman
             this.addPrefixedKey(key);
         }
         this.addPrefixedKey(" confirm");
-        this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " confirm");
-        this.setPermission(Perm.COMMAND_CONFIRM.getPermission());
+        this.addCommandExample("/" + plugin.getCommandPrefix() + " confirm");
+        //this.setPerm(Perm.COMMAND_CONFIRM);
     }
 
     @Override
     public void runCommand(CommandSender sender, List<String> args) {
-        getPlugin().getCommandHandler().confirmQueuedCommand(sender);
+        //getPlugin().getCommandHandler().confirmQueuedCommand(sender);
     }
 }

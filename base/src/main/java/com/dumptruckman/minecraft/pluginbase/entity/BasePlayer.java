@@ -11,6 +11,8 @@ public abstract class BasePlayer {
 
     public abstract boolean hasPermission(String perm);
 
+    public abstract void sendMessage(String message);
+
     @Override
     public boolean equals(final Object other) {
         if (!(other instanceof BasePlayer)) {

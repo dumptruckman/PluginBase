@@ -7,13 +7,10 @@
 
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
-import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.util.commandhandler.Command;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
@@ -37,7 +34,7 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
     }
 
     public HelpCommand(P plugin) {
-        super(plugin);
+        super(plugin);/*
         this.setName(getMessager().getMessage(CommandMessages.HELP_NAME, plugin.getPluginName()));
         this.setCommandUsage(getMessager().getMessage(CommandMessages.HELP_USAGE, plugin.getCommandPrefixes().get(0)));
         this.setArgRange(0, 2);
@@ -51,7 +48,7 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
         this.addPrefixedKey(" search");
         this.addCommandExample("/" + plugin.getCommandPrefixes().get(0) + " help ?");
         this.setPermission(Perm.COMMAND_HELP.getPermission());
-        this.setItemsPerPage(7); // SUPPRESS CHECKSTYLE: MagicNumberCheck
+        this.setItemsPerPage(7); // SUPPRESS CHECKSTYLE: MagicNumberCheck*/
     }
 
     @Override
@@ -85,7 +82,7 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
     }
 
     @Override
-    public void runCommand(CommandSender sender, List<String> args) {
+    public void runCommand(CommandSender sender, List<String> args) {/*
         getMessager().normal(CommandMessages.HELP_TITLE, sender, plugin.getPluginName());
 
         FilterObject filterObject = this.getPageAndFilter(args);
@@ -116,6 +113,6 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
         getMessager().normal(CommandMessages.HELP_PAGES, sender, filterObject.getPage(), totalPages);
         getMessager().normal(CommandMessages.HELP_MORE_INFO, sender);
 
-        this.showPage(filterObject.getPage(), sender, availableCommands);
+        this.showPage(filterObject.getPage(), sender, availableCommands);*/
     }
 }

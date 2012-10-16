@@ -57,7 +57,7 @@ public abstract class Perm {
     Perm(final PluginBase plugin, final String name, final String description, final Map<String, Boolean> children,
          final PermDefault permDefault, final Map<String, Boolean> parents, final boolean baseName) {
         if (baseName && plugin != null) {
-            this.name = plugin.getPluginName().toLowerCase() + SEPARATOR + name.toLowerCase();
+            this.name = plugin.getPluginInfo().getName().toLowerCase() + SEPARATOR + name.toLowerCase();
         } else {
             this.name = name.toLowerCase();
         }

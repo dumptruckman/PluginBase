@@ -8,6 +8,7 @@
 package com.dumptruckman.minecraft.pluginbase.util;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPluginInfo;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -76,6 +77,8 @@ public class TestInstanceCreator {
             doReturn(pdf).when(plugin).getDescription();
             doReturn(true).when(plugin).isEnabled();
             plugin.setServerFolder(serverDirectory);
+
+            when(plugin.getPluginInfo()).thenReturn(new BukkitPluginInfo(plugin));
 
             // Add Core to the list of loaded plugins
             JavaPlugin[] plugins = new JavaPlugin[] { plugin };
