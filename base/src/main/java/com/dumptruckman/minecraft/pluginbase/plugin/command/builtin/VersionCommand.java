@@ -29,7 +29,7 @@ import java.util.Set;
  */
 @CommandInfo(
         primaryAlias = "version",
-        desc = "",
+        desc = "Prints useful version information to the console.",
         flags = "pb",
         usage = "[-p|-b]"
 )

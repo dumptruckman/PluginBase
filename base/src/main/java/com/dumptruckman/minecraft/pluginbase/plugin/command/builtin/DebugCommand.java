@@ -22,7 +22,7 @@ import java.util.List;
  */
 @CommandInfo(
         primaryAlias = "debug",
-        desc = "Turn debug mode on/off?",
+        desc = "Turns debug mode on/off",
         usage = "&6[1|2|3|off]",
         max = 1
 )
