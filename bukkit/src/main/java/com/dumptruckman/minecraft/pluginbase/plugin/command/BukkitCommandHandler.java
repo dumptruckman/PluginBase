@@ -12,10 +12,6 @@ import org.bukkit.command.SimpleCommandMap;
 
 public class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
 
-    static {
-        //Bukkit.getServer().getHelpMap().registerHelpTopicFactory(DynamicPluginCommand.class, new DynamicPluginCommandHelpTopic.Factory());
-    }
-
     private final CommandExecutor executor;
     private CommandMap fallbackCommands;
 
@@ -34,9 +30,9 @@ public class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
             return false;
         }
         DefaultPluginCommand cmd = new DefaultPluginCommand(command.getAliases(),
-                command.getDesc(), "/" + command.getAliases()[0] + " " + command.getUsage(), executor, command.getRegisteredWith(), plugin);
+                command.getDesc(), "/" + command.getName() + " " + command.getUsage(), executor, command.getRegisteredWith(), plugin);
         cmd.setPermissions(command.getPermissions());
-        commandMap.register(plugin.getDescription().getName(), cmd);
+        commandMap.register(command.getName(), plugin.getDescription().getName(), cmd);
         return true;
     }
 

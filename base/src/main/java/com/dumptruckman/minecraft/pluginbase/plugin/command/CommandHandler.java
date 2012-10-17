@@ -7,8 +7,10 @@ import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,6 +24,10 @@ public abstract class CommandHandler<P extends PluginBase> {
         this.commandMap = new HashMap<String, String>();
     }
 
+    //public boolean registerCommmands(String packageName) {
+
+    //}
+
     public boolean registerCommand(Class<? extends Command> commandClass) {
         final CommandInfo cmdInfo = commandClass.getAnnotation(CommandInfo.class);
         if (cmdInfo == null) {
@@ -33,40 +39,46 @@ public abstract class CommandHandler<P extends PluginBase> {
             return false;
         }
 
-        final String[] aliases;
+        final List<String> aliases;
         if (command instanceof BuiltInCommand) {
-            aliases = new String[cmdInfo.aliases().length + cmdInfo.prefixedAliases().length
+            aliases = new ArrayList<String>(cmdInfo.aliases().length + cmdInfo.prefixedAliases().length
                     + cmdInfo.directlyPrefixedAliases().length + ((BuiltInCommand) command).getStaticAliases().size()
-                    + 1];
+                    + 1);
         } else {
-            aliases = new String[cmdInfo.aliases().length + cmdInfo.prefixedAliases().length
-                    + cmdInfo.directlyPrefixedAliases().length + 1];
+            aliases = new ArrayList<String>(cmdInfo.aliases().length + cmdInfo.prefixedAliases().length
+                    + cmdInfo.directlyPrefixedAliases().length + 1);
         }
         if (cmdInfo.directlyPrefixPrimary()) {
-            aliases[0] = plugin.getCommandPrefix() + cmdInfo.primaryAlias();
+            aliases.add(plugin.getCommandPrefix() + cmdInfo.primaryAlias());
         } else if (cmdInfo.prefixPrimary())  {
-            aliases[0] = plugin.getCommandPrefix() + " " + cmdInfo.primaryAlias();
+            aliases.add(plugin.getCommandPrefix() + " " + cmdInfo.primaryAlias());
         } else {
-            aliases[0] = cmdInfo.primaryAlias();
+            aliases.add(cmdInfo.primaryAlias());
         }
-        if (commandMap.containsKey(aliases[0])) {
+        if (commandMap.containsKey(aliases.get(0))) {
             throw new IllegalArgumentException("Command with the same primary alias has already been registered!");
         }
-        System.arraycopy(cmdInfo.aliases(), 0, aliases, 1, cmdInfo.aliases().length);
-        int start = 1 + cmdInfo.aliases().length;
-        for (int i = 0; i < cmdInfo.prefixedAliases().length; i++) {
-            aliases[start + i] = plugin.getCommandPrefix() + " " + cmdInfo.prefixedAliases()[i];
+        for (final String alias : cmdInfo.aliases()) {
+            if (!alias.isEmpty()) {
+                aliases.add(alias);
+            }
         }
-        start = 1 + cmdInfo.aliases().length + cmdInfo.prefixedAliases().length;
-        for (int i = 0; i < cmdInfo.directlyPrefixedAliases().length; i++) {
-            aliases[start + i] = plugin.getCommandPrefix() + " " + cmdInfo.directlyPrefixedAliases()[i];
+        for (final String alias : cmdInfo.prefixedAliases()) {
+            if (!alias.isEmpty()) {
+                aliases.add(plugin.getCommandPrefix() + " " + alias);
+            }
+        }
+        for (final String alias : cmdInfo.directlyPrefixedAliases()) {
+            if (!alias.isEmpty()) {
+                aliases.add(plugin.getCommandPrefix() + alias);
+            }
         }
         if (command instanceof BuiltInCommand) {
             final BuiltInCommand builtInCommand = (BuiltInCommand) command;
-            start = 1 + cmdInfo.aliases().length + cmdInfo.prefixedAliases().length
-                    + cmdInfo.directlyPrefixedAliases().length;
-            for (int i = 0; i < builtInCommand.getStaticAliases().size(); i++) {
-                aliases[start + i] = builtInCommand.getStaticAliases().get(i);
+            for (final String alias : builtInCommand.getStaticAliases()) {
+                if (!alias.isEmpty()) {
+                    aliases.add(alias);
+                }
             }
         }
         final String[] permissions;
@@ -76,10 +88,10 @@ public abstract class CommandHandler<P extends PluginBase> {
         } else {
             permissions = new String[0];
         }
-        final com.sk89q.bukkit.util.CommandInfo bukkitCmdInfo = new com.sk89q.bukkit.util.CommandInfo(cmdInfo.usage(), cmdInfo.desc(), aliases, this, permissions);
+        final com.sk89q.bukkit.util.CommandInfo bukkitCmdInfo = new com.sk89q.bukkit.util.CommandInfo(cmdInfo.usage(), cmdInfo.desc(), aliases.toArray(new String[aliases.size()]), this, permissions);
         if (register(bukkitCmdInfo)) {
-            Logging.fine("Registered command '" + aliases[0] + "' to: " + commandClass);
-            commandMap.put(aliases[0], commandClass.getName());
+            Logging.fine("Registered command '" + aliases.get(0) + "' to: " + commandClass);
+            commandMap.put(aliases.get(0), commandClass.getName());
             return true;
         }
         Logging.severe("Failed to register: " + commandClass);
