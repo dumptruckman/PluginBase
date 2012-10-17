@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.sk89q.bukkit.util.FallbackRegistrationListener;
 import com.sk89q.util.ReflectionUtil;
 import org.bukkit.Bukkit;
@@ -45,8 +46,7 @@ public class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
             if (fallbackCommands != null) {
                 commandMap = fallbackCommands;
             } else {
-                Bukkit.getServer().getLogger().severe(plugin.getDescription().getName() +
-                        ": Could not retrieve server CommandMap, using fallback instead! Please report to http://redmine.sk89q.com");
+                Logging.warning("Could not retrieve server CommandMap, using fallback instead!");
                 fallbackCommands = commandMap = new SimpleCommandMap(Bukkit.getServer());
                 Bukkit.getServer().getPluginManager().registerEvents(new FallbackRegistrationListener(fallbackCommands), plugin);
             }

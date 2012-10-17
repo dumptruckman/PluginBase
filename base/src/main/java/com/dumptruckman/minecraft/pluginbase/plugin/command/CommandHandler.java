@@ -29,6 +29,7 @@ public abstract class CommandHandler<P extends PluginBase> {
         }
         final Command command = loadCommand(commandClass);
         if (command == null) {
+            Logging.warning("Could not register: " + commandClass);
             return false;
         }
 
@@ -80,6 +81,7 @@ public abstract class CommandHandler<P extends PluginBase> {
             commandMap.put(aliases[0], commandClass.getName());
             return true;
         }
+        Logging.warning("Failed to register: " + commandClass);
         return false;
     }
 

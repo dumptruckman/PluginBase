@@ -12,17 +12,22 @@ import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPluginInfo;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.mockito.Matchers;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
@@ -30,17 +35,27 @@ import org.powermock.core.MockGateway;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestInstanceCreator {
     private AbstractBukkitPlugin plugin;
     private Server mockServer;
     private CommandSender commandSender;
+
+    public Map<String, Player> players = new HashMap<String, Player>();
 
     public static final File pluginDirectory = new File("bin/test/server/plugins/plugintest");
     public static final File serverDirectory = new File("bin/test/server");
@@ -83,12 +98,6 @@ public class TestInstanceCreator {
             // Add Core to the list of loaded plugins
             JavaPlugin[] plugins = new JavaPlugin[] { plugin };
 
-            // Mock the Plugin Manager
-            PluginManager mockPluginManager = PowerMockito.mock(PluginManager.class);
-            when(mockPluginManager.getPlugins()).thenReturn(plugins);
-            when(mockPluginManager.getPlugin("PluginBase")).thenReturn(plugin);
-            when(mockPluginManager.getPermission(anyString())).thenReturn(null);
-
             // Make some fake folders to fool the fake MV into thinking these worlds exist
             File worldNormalFile = new File(plugin.getServerFolder(), "world");
             Util.log("Creating world-folder: " + worldNormalFile.getAbsolutePath());
@@ -106,6 +115,41 @@ public class TestInstanceCreator {
             Logger.getLogger("Minecraft").setParent(Util.logger);
             when(mockServer.getLogger()).thenReturn(Util.logger);
             when(mockServer.getWorldContainer()).thenReturn(worldsDirectory);
+            Answer<Player> playerAnswer = new Answer<Player>() {
+                public Player answer(InvocationOnMock invocation) throws Throwable {
+                    String arg;
+                    try {
+                        arg = (String) invocation.getArguments()[0];
+                    } catch (Exception e) {
+                        return null;
+                    }
+                    Player player = players.get(arg);
+                    if (player == null) {
+                        player = mock(Player.class);
+                        when(player.getName()).thenReturn(arg);
+                        players.put(arg, player);
+                    }
+                    return player;
+                }
+            };
+            when(mockServer.getPlayer(anyString())).thenAnswer(playerAnswer);
+            when(mockServer.getOfflinePlayer(anyString())).thenAnswer(playerAnswer);
+            when(mockServer.getOfflinePlayers()).thenAnswer(new Answer<OfflinePlayer[]>() {
+                public OfflinePlayer[] answer(InvocationOnMock invocation) throws Throwable {
+                    return players.values().toArray(new Player[players.values().size()]);
+                }
+            });
+            when(mockServer.getOnlinePlayers()).thenAnswer(new Answer<Player[]>() {
+                public Player[] answer(InvocationOnMock invocation) throws Throwable {
+                    return players.values().toArray(new Player[players.values().size()]);
+                }
+            });
+
+            // Mock the Plugin Manager
+            PluginManager mockPluginManager = Mockito.spy(new SimplePluginManager(mockServer, new SimpleCommandMap(mockServer)));
+            when(mockPluginManager.getPlugins()).thenReturn(plugins);
+            when(mockPluginManager.getPlugin("PluginBase")).thenReturn(plugin);
+            when(mockPluginManager.getPermission(anyString())).thenReturn(null);
 
             // Give the server some worlds
             when(mockServer.getWorld(anyString())).thenAnswer(new Answer<World>() {
@@ -210,7 +254,7 @@ public class TestInstanceCreator {
             // Init our command sender
             final Logger commandSenderLogger = Logger.getLogger("CommandSender");
             commandSenderLogger.setParent(Util.logger);
-            commandSender = mock(CommandSender.class);
+            commandSender = mock(Player.class);
             doAnswer(new Answer<Void>() {
                 public Void answer(InvocationOnMock invocation) throws Throwable {
                     commandSenderLogger.info(ChatColor.stripColor((String) invocation.getArguments()[0]));
