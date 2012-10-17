@@ -29,9 +29,8 @@ public class CommandMessages {
     // DebugCommand
     public final static Message DEBUG_HELP = new Message("cmd.debug.help", "Enables or disable debug mode."
             + "When enabled the console will be spammed with lots of information useful for helping developers debug.");
-    public final static Message DEBUG_USAGE = new Message("cmd.debug.usage", "/%1 debug &6[1|2|3|off]");
     public final static Message DEBUG_SET = new Message("cmd.debug.set", "Debug mode is &2%1");
-    public final static Message DEBUG_DISABLED = new Message("cmd.debug.set", "Debug mode is &cOFF");
+    public final static Message DEBUG_DISABLED = new Message("cmd.debug.off", "Debug mode is &cOFF");
 
     // ReloadCommand
     public final static Message VERSION_HELP = new Message("cmd.version.help",
@@ -39,7 +38,6 @@ public class CommandMessages {
             "Flags:",
             "  -p will output an http://pastie.org url containing the information.",
             "  -b will output an http://pastebin.com url containing the information.");
-    public final static Message VERSION_USAGE = new Message("cmd.version.usage", "/%1 version [-p|-b]");
     public final static Message VERSION_PLAYER = new Message("cmd.version.player",
             "Version info dumped to console. Please check your server logs.");
     public final static Message VERSION_PLUGIN_VERSION = new Message("cmd.version.info.plugin_version", "%1 Version: %2");

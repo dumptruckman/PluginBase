@@ -9,6 +9,7 @@ package com.dumptruckman.minecraft.pluginbase.util;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPluginInfo;
+import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -48,6 +49,7 @@ import static org.mockito.Mockito.anyLong;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 public class TestInstanceCreator {
@@ -224,6 +226,8 @@ public class TestInstanceCreator {
             Field serverfield = JavaPlugin.class.getDeclaredField("server");
             serverfield.setAccessible(true);
             serverfield.set(plugin, mockServer);
+
+            when(plugin.getServerInterface()).thenReturn(spy(new BukkitServerInterface(mockServer)));
 
             /*
             // Set worldManager

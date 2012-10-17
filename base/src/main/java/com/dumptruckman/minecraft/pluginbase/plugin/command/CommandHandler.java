@@ -29,7 +29,7 @@ public abstract class CommandHandler<P extends PluginBase> {
         }
         final Command command = loadCommand(commandClass);
         if (command == null) {
-            Logging.warning("Could not register: " + commandClass);
+            Logging.severe("Could not register: " + commandClass);
             return false;
         }
 
@@ -78,10 +78,11 @@ public abstract class CommandHandler<P extends PluginBase> {
         }
         final com.sk89q.bukkit.util.CommandInfo bukkitCmdInfo = new com.sk89q.bukkit.util.CommandInfo(cmdInfo.usage(), cmdInfo.desc(), aliases, this, permissions);
         if (register(bukkitCmdInfo)) {
+            Logging.fine("Registered command '" + aliases[0] + "' to: " + commandClass);
             commandMap.put(aliases[0], commandClass.getName());
             return true;
         }
-        Logging.warning("Failed to register: " + commandClass);
+        Logging.severe("Failed to register: " + commandClass);
         return false;
     }
 
@@ -101,6 +102,7 @@ public abstract class CommandHandler<P extends PluginBase> {
     public boolean locateAndRunCommand(BasePlayer player, String[] args) {
         final String className = commandMap.get(args[0]);
         if (className == null) {
+            Logging.severe("Could not locate registered command '" + args[0] + "'");
             return false;
         }
         try {
@@ -116,7 +118,8 @@ public abstract class CommandHandler<P extends PluginBase> {
                 flags.add(flag);
             }
             try {
-                command.runCommand(plugin, player, new CommandContext(args, flags));
+                command.runCommand(plugin, player, new CommandContext(args));
+                //command.runCommand(plugin, player, new CommandContext(args, flags));
                 return true;
             } catch (CommandException e) {
                 e.printStackTrace();

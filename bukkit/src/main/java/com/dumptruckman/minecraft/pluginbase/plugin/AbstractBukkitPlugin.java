@@ -92,6 +92,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
 
         reloadConfig();
 
+        this.commandHandler = new BukkitCommandHandler(this);
         // Register Commands
         _registerCommands();
 
@@ -168,9 +169,9 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        this.messager = null;
-        getMessager();
-        this.commandHandler = new BukkitCommandHandler(this);
+        this.messager = new SimpleMessager(this);
+        this.messager.setLocale(config().get(BaseConfig.LOCALE));
+        this.messager.setLanguage(config().get(BaseConfig.LANGUAGE_FILE));
         
         Logging.setDebugMode(config().get(BaseConfig.DEBUG_MODE));
 
@@ -236,11 +237,6 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
      */
     @Override
     public Messager getMessager() {
-        if (this.messager == null) {
-            this.messager = new SimpleMessager(this);
-            this.messager.setLocale(config().get(BaseConfig.LOCALE));
-            this.messager.setLanguage(config().get(BaseConfig.LANGUAGE_FILE));
-        }
         return this.messager;
     }
 
