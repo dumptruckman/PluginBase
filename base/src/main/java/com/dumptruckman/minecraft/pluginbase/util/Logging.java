@@ -20,9 +20,11 @@ public class Logging {
     private static String VERSION = "v.???";
     private static int DEBUG_LEVEL = 0;
     private static DebugLog debugLog = null;
+    private static PluginBase plugin;
     // END CHECKSTYLE-SUPPRESSION: Name
 
     private Logging() {
+        throw new AssertionError();
     }
 
     /**
@@ -34,17 +36,24 @@ public class Logging {
         NAME = plugin.getPluginInfo().getName();
         VERSION = plugin.getPluginInfo().getVersion();
         plugin.getDataFolder().mkdirs();
-        debugLog = new DebugLog(NAME, plugin.getDataFolder() + File.separator + "debug.log");
+        Logging.plugin = plugin;
     }
 
     public static void close() {
-        debugLog.close();
+        if (debugLog != null) {
+            debugLog.close();
+        }
     }
     
     /**
      * @param debugLevel 0 = off, 1-3 = debug level
      */
     public static void setDebugMode(int debugLevel) {
+        if (debugLevel > 0) {
+            debugLog = new DebugLog(NAME, plugin.getDataFolder() + File.separator + "debug.log");
+        } else {
+            close();
+        }
         Logging.DEBUG_LEVEL = debugLevel;
     }
     
