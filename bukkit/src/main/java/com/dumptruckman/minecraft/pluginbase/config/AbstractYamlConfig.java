@@ -64,7 +64,7 @@ public abstract class AbstractYamlConfig implements Config {
         // Check if the config file exists.  If not, create it.
         if (!configFile.exists()) {
             if (configFile.createNewFile()) {
-                Logging.fine("Created config file: " + configFile.getAbsolutePath());
+                Logging.fine("Created config file: %s", configFile.getAbsolutePath());
             }
         }
         // Load the configuration file into memory
@@ -160,7 +160,7 @@ public abstract class AbstractYamlConfig implements Config {
                     continue;
                 }
                 if (path instanceof MappedConfigEntry) {
-                    Logging.fine("Config: Defaulting map for '" + path.getName() + "'");
+                    Logging.fine("Config: Defaulting map for '%s'", path.getName());
                     if (path.getDefault() != null) {
                         getConfig().set(path.getName(), path.getDefault());
                     } else {
@@ -168,14 +168,14 @@ public abstract class AbstractYamlConfig implements Config {
                     }
                 } else if (path instanceof ListConfigEntry) {
                     ListConfigEntry listPath = (ListConfigEntry) path;
-                    Logging.fine("Config: Defaulting list for '" + path.getName() + "'");
+                    Logging.fine("Config: Defaulting list for '%s'", path.getName());
                     if (listPath.getDefault() != null) {
                         getConfig().set(path.getName(), listPath.getDefault());
                     } else {
                         getConfig().set(path.getName(), listPath.getNewTypeList());
                     }
                 } else if (path.getDefault() != null) {
-                    Logging.fine("Config: Defaulting '" + path.getName() + "' to " + path.getDefault());
+                    Logging.fine("Config: Defaulting '%s' to %s", path.getName(), path.getDefault());
                     getConfig().set(path.getName(), path.getDefault());
                 }
             }
@@ -218,7 +218,7 @@ public abstract class AbstractYamlConfig implements Config {
             return null;
         }
         if (!entry.getType().isInstance(obj)) {
-            Logging.fine("An invalid value of '" + obj + "' was detected at '" + entry.getName() + "' during a get call.  Attempting to deserialize and replace...");
+            Logging.fine("An invalid value of '%s' was detected at '%s' during a get call.  Attempting to deserialize and replace...", obj, entry.getName());
             if (entry.isValid(obj)) {
                 obj = entry.deserialize(obj);
             }
@@ -240,11 +240,11 @@ public abstract class AbstractYamlConfig implements Config {
         for (int i = 0; i < list.size(); i++) {
             Object o = list.get(i);
             if (!entry.getType().isInstance(o)) {
-                Logging.fine("An invalid value of '" + o + "' was detected at '" + entry.getName() + "[" + i + "]' during a get call.  Attempting to deserialize and replace...");
+                Logging.fine("An invalid value of '%s' was detected at '%s[%s]' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), i);
                 if (entry.isValid(o)) {
                     o = entry.deserialize(o);
                 } else {
-                    Logging.warning("Invalid value '" + obj + "' at '" + entry.getName() + "[" + i + "]'!");
+                    Logging.warning("Invalid value '%s' at '%s[%s]'!", obj, entry.getName(), i);
                     continue;
                 }
             }
@@ -270,11 +270,11 @@ public abstract class AbstractYamlConfig implements Config {
         for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
             Object o = mapEntry.getValue();
             if (!entry.getType().isInstance(o)) {
-                Logging.fine("An invalid value of '" + o + "' was detected at '" + entry.getName() + getConfig().options().pathSeparator() + mapEntry.getKey() + "' during a get call.  Attempting to deserialize and replace...");
+                        Logging.fine("An invalid value of '%s' was detected at '%s%s%s' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), getConfig().options().pathSeparator(), mapEntry.getKey());
                 if (entry.isValid(o)) {
                     o = entry.deserialize(o);
                 } else {
-                    Logging.warning("Invalid value '" + obj + "' at '" + entry.getName() + getConfig().options().pathSeparator() + mapEntry.getKey() + "'!");
+                    Logging.warning("Invalid value '%s' at '%s%s%s'!", obj, entry.getName() + getConfig().options().pathSeparator() + mapEntry.getKey());
                     continue;
                 }
             }
@@ -294,7 +294,7 @@ public abstract class AbstractYamlConfig implements Config {
             return null;
         }
         if (!entry.getType().isInstance(obj)) {
-            Logging.fine("An invalid value of '" + obj + "' was detected at '" + path + "' during a get call.  Attempting to deserialize and replace...");
+            Logging.fine("An invalid value of '%s' was detected at '%s' during a get call.  Attempting to deserialize and replace...", obj, path);
             if (entry.isValid(obj)) {
                 obj = entry.deserialize(obj);
             }
@@ -355,14 +355,14 @@ public abstract class AbstractYamlConfig implements Config {
                 if (entry instanceof MappedConfigEntry) {
                     Object o = getConfig().get(entry.getName());
                     if (o == null) {
-                        Logging.fine("Missing entry: " + entry.getName());
+                        Logging.fine("Missing entry: %s", entry.getName());
                         continue;
                     }
                     Map map;
                     if (o instanceof ConfigurationSection) {
                         map = ((ConfigurationSection) o).getValues(false);
                     } else if (!(o instanceof Map)) {
-                        Logging.fine("Missing entry: " + entry.getName());
+                        Logging.fine("Missing entry: %s", entry.getName());
                         continue;
                     } else {
                         map = (Map) o;
@@ -374,14 +374,14 @@ public abstract class AbstractYamlConfig implements Config {
                                 map.put(key, entry.serialize(entry.getType().cast(obj)));
                             }
                         } else {
-                            Logging.warning("Could not serialize: " + entry.getName());
+                            Logging.warning("Could not serialize: %s", entry.getName());
                         }
                     }
                     newConfig.set(entry.getName(), map);
                 } else if (entry instanceof ListConfigEntry) {
                     List list = getConfig().getList(entry.getName());
                     if (list == null) {
-                        Logging.fine("Missing entry: " + entry.getName());
+                        Logging.fine("Missing entry: %s", entry.getName());
                         continue;
                     }
                     List newList = new ArrayList(list.size());
@@ -391,21 +391,21 @@ public abstract class AbstractYamlConfig implements Config {
                                 newList.add(entry.serialize(entry.getType().cast(obj)));
                             }
                         } else {
-                            Logging.warning("Could not serialize: " + entry.getName());
+                            Logging.warning("Could not serialize: %s", entry.getName());
                         }
                     }
                     newConfig.set(entry.getName(), newList);
                 } else if (entry instanceof SimpleConfigEntry && !entry.getType().isAssignableFrom(Null.class)) {
                     Object obj = getConfig().get(entry.getName());
                     if (obj == null) {
-                        Logging.fine("Missing entry: " + entry.getName());
+                        Logging.fine("Missing entry: %s", entry.getName());
                         continue;
                     }
                     if (entry.getType().isInstance(obj)) {
                         Object res = entry.serialize(entry.getType().cast(obj));
                         newConfig.set(entry.getName(), res);
                     } else {
-                        Logging.warning("Could not serialize '" + entry.getName() + "' since value is '" + obj.getClass() + "' instead of '" + entry.getType() + "'");
+                        Logging.warning("Could not serialize '%s' since value is '%s' instead of '%s'", entry.getName(), obj.getClass(), entry.getType());
                     }
                 }
             }

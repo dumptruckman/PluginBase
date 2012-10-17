@@ -137,7 +137,7 @@ public class SimpleMessageProvider implements MessageProvider {
                 continue;
             }
             if (!Messages.messages.containsKey(key.toLowerCase())) {
-                Logging.finer("Removing unused language: " + key);
+                Logging.finer("Removing unused language: %s", key);
                 this.language.set(key, null);
             }
         }

@@ -90,7 +90,7 @@ public abstract class CommandHandler<P extends PluginBase> {
         }
         final com.sk89q.bukkit.util.CommandInfo bukkitCmdInfo = new com.sk89q.bukkit.util.CommandInfo(cmdInfo.usage(), cmdInfo.desc(), aliases.toArray(new String[aliases.size()]), this, permissions);
         if (register(bukkitCmdInfo)) {
-            Logging.fine("Registered command '" + aliases.get(0) + "' to: " + commandClass);
+            Logging.fine("Registered command '%s' to: %s", aliases.get(0), commandClass);
             commandMap.put(aliases.get(0), commandClass.getName());
             return true;
         }

@@ -76,7 +76,7 @@ public class DebugCommand extends BuiltInCommand {
             p.getMessager().normal(sender, CommandMessages.DEBUG_DISABLED, sender);
         } else {
             p.getMessager().normal(sender, CommandMessages.DEBUG_SET, p.config().get(BaseConfig.DEBUG_MODE).toString());
-            Logging.fine(p.getPluginInfo().getName() + " debug ENABLED");
+            Logging.fine("%s debug ENABLED", p.getPluginInfo().getName());
         }
     }
 }
