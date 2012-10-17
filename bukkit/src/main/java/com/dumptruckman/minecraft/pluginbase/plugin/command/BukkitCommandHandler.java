@@ -29,8 +29,8 @@ public class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
         if (command == null || commandMap == null) {
             return false;
         }
-        DefaultPluginCommand cmd = new DefaultPluginCommand(command.getAliases(),
-                command.getDesc(), "/" + command.getName() + " " + command.getUsage(), executor, command.getRegisteredWith(), plugin);
+        DynamicPluginCommand cmd = new DynamicPluginCommand(command.getAliases(), command.getDesc(),
+                "/" + command.getName() + " " + command.getUsage(), executor, command.getRegisteredWith(), plugin);
         cmd.setPermissions(command.getPermissions());
         commandMap.register(command.getName(), plugin.getDescription().getName(), cmd);
         return true;
