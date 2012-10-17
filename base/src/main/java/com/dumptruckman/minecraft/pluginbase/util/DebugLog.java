@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -37,8 +39,8 @@ import java.util.logging.Logger;
  */
 public class DebugLog {
 
-    private FileHandler fh;
-    private Logger log;
+    private final FileHandler fileHandler;
+    private final Logger log;
 
     /**
      * Creates a new debug logger.
@@ -46,22 +48,31 @@ public class DebugLog {
      * @param logger The name of the logger.
      * @param file   The file to log to.
      */
-    public DebugLog(String logger, String file) {
-        this.log = Logger.getLogger(logger);
-
+    public DebugLog(final String logger, final String file) {
+        log = Logger.getLogger(logger);
+        FileHandler fh = null;
         try {
-            this.fh = new FileHandler(file, true);
-            this.log.setUseParentHandlers(false);
-            for (Handler handler : this.log.getHandlers()) {
-                this.log.removeHandler(handler);
+            fh = new FileHandler(file, true);
+            log.setUseParentHandlers(false);
+            Set<Handler> toRemove = new HashSet<Handler>(log.getHandlers().length);
+            for (Handler handler : log.getHandlers()) {
+                toRemove.add(handler);
             }
-            this.log.addHandler(this.fh);
-            this.log.setLevel(Level.ALL);
-            this.fh.setFormatter(new LogFormatter());
+            for (Handler handler : toRemove) {
+                log.removeHandler(handler);
+            }
+            log.addHandler(fh);
+            log.setLevel(Level.ALL);
+            fh.setFormatter(new LogFormatter());
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        if (fh != null) {
+            fileHandler = fh;
+        } else {
+            fileHandler = fh;
         }
     }
 
@@ -72,19 +83,19 @@ public class DebugLog {
      * @param msg the message.
      */
     public void log(Level level, String msg) {
-        this.log.log(level, msg);
+        log.log(level, msg);
     }
 
     /**
      * Our log-{@link java.util.logging.Formatter}.
      */
-    private class LogFormatter extends Formatter {
+    private static class LogFormatter extends Formatter {
         private final SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         @Override
-        public String format(LogRecord record) {
-            StringBuilder builder = new StringBuilder();
-            Throwable ex = record.getThrown();
+        public String format(final LogRecord record) {
+            final StringBuilder builder = new StringBuilder();
+            final Throwable ex = record.getThrown();
 
             builder.append(this.date.format(record.getMillis()));
             builder.append(" [");
@@ -94,7 +105,7 @@ public class DebugLog {
             builder.append('\n');
 
             if (ex != null) {
-                StringWriter writer = new StringWriter();
+                final StringWriter writer = new StringWriter();
                 ex.printStackTrace(new PrintWriter(writer));
                 builder.append(writer);
             }
@@ -107,6 +118,7 @@ public class DebugLog {
      * Closes this {@link com.dumptruckman.minecraft.pluginbase.util.DebugLog}.
      */
     public void close() {
-        this.fh.close();
+        log.removeHandler(fileHandler);
+        fileHandler.close();
     }
 }
