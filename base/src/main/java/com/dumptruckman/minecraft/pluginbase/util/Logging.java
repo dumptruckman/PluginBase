@@ -14,51 +14,71 @@ import java.util.logging.Logger;
  */
 public class Logging {
 
-    // BEGIN CHECKSTYLE-SUPPRESSION: Name
-    private static Logger LOG = Logger.getLogger("Minecraft");
-    private static String NAME = "PluginBase";
-    private static String VERSION = "v.???";
-    private static int DEBUG_LEVEL = 0;
+    private static Logger log = Logger.getLogger("Minecraft");
+    private static String name = "PluginBase";
+    private static String version = "v.???";
+    private static String debug = "-Debug";
+    private static int debugLevel = 0;
     private static DebugLog debugLog = null;
     private static PluginBase plugin;
-    // END CHECKSTYLE-SUPPRESSION: Name
 
     private Logging() {
         throw new AssertionError();
     }
 
     /**
-     * Prepares the log for use.
+     * Prepares the log for use.  Debugging will default to disabled when initialized.
      *
-     * @param plugin The plugin.
+     * @param plugin The plugin using this static logger.
      */
-    public static void init(PluginBase plugin) {
-        NAME = plugin.getPluginInfo().getName();
-        VERSION = plugin.getPluginInfo().getVersion();
+    public static void init(final PluginBase plugin) {
+        name = plugin.getPluginInfo().getName();
+        version = plugin.getPluginInfo().getVersion();
         plugin.getDataFolder().mkdirs();
         Logging.plugin = plugin;
+        setDebugLevel(0);
     }
 
+    /**
+     * Closes the debug log if it is open.
+     */
     public static void close() {
         if (debugLog != null) {
             debugLog.close();
+            debugLog = null;
         }
     }
     
     /**
+     * Sets the debug logging level of this plugin.  Debug messages will print to the console and to a
+     * debug log file when enabled.
+     * debugLevel:
+     *   0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
+     *   1 - enables debug logging of {@link Level#FINE} or lower messages.
+     *   2 - enables debug logging of {@link Level#FINER} or lower messages.
+     *   3 - enables debug logging of {@link Level#FINEST} or lower messages.
+     *
      * @param debugLevel 0 = off, 1-3 = debug level
      */
-    public static void setDebugMode(int debugLevel) {
+    public static void setDebugLevel(final int debugLevel) {
+        if (debugLevel > 3 || debugLevel < 0) {
+            throw new IllegalArgumentException("debugLevel must be between 0 and 3!");
+        }
         if (debugLevel > 0) {
-            debugLog = new DebugLog(NAME, plugin.getDataFolder() + File.separator + "debug.log");
+            debugLog = new DebugLog(name, plugin.getDataFolder() + File.separator + "debug.log");
         } else {
             close();
         }
-        Logging.DEBUG_LEVEL = debugLevel;
+        Logging.debugLevel = debugLevel;
     }
-    
-    public static int getDebugMode() {
-        return Logging.DEBUG_LEVEL;
+
+    /**
+     * Returns the current debug logging level.
+     *
+     * @return A value 0-3 indicating the debug logging level.
+     */
+    public static int getDebugLevel() {
+        return debugLevel;
     }
 
     /**
@@ -68,11 +88,22 @@ public class Logging {
      * @param showVersion Whether to show version in log message
      * @return Modified message
      */
-    public static String getString(String message, boolean showVersion) {
-        String string = "[" + NAME;
-        if (showVersion) string += " " + VERSION;
-        string = string + "] " + message;
-        return string;
+    public static String getPrefixedMessage(final String message, final boolean showVersion) {
+        final StringBuilder builder = new StringBuilder("[").append(name);
+        if (showVersion) {
+            builder.append(" ").append(version);
+        }
+        builder.append("] ").append(message);
+        return builder.toString();
+    }
+
+    /**
+     * Sets the debug prefix for debug messages that follows the plugin name.  The default is "-Debug".
+     *
+     * @param debugPrefix the new debug prefix to use.
+     */
+    public static void setDebugPrefix(final String debugPrefix) {
+        Logging.debug = debugPrefix;
     }
 
     /**
@@ -81,8 +112,8 @@ public class Logging {
      * @param message     Log message
      * @return Modified message
      */
-    public static String getDebugString(String message) {
-        return "[" + NAME + "-Debug] " + message;
+    public static String getDebugString(final String message) {
+        return "[" + name + debug + "] " + message;
     }
 
     /**
@@ -90,8 +121,8 @@ public class Logging {
      *
      * @return Logger object
      */
-    public static Logger getLog() {
-        return LOG;
+    public static Logger getLogger() {
+        return log;
     }
 
     /**
@@ -101,37 +132,31 @@ public class Logging {
      * @param message     Log message
      * @param showVersion True adds version into message
      */
-    public static void log(Level level, String message, boolean showVersion) {
-        if (level == Level.FINE && Logging.DEBUG_LEVEL >= 1) {
-            debug(Level.INFO, message);
-        } else if (level == Level.FINER && Logging.DEBUG_LEVEL >= 2) {
-            debug(Level.INFO, message);
-        } else if (level == Level.FINEST && Logging.DEBUG_LEVEL >= 3) {
-            debug(Level.INFO, message);
+    public static void log(final Level level, String message, final boolean showVersion, final Object...args) {
+        if (level == Level.FINE && Logging.debugLevel >= 1) {
+            debug(Level.INFO, message, args);
+        } else if (level == Level.FINER && Logging.debugLevel >= 2) {
+            debug(Level.INFO, message, args);
+        } else if (level == Level.FINEST && Logging.debugLevel >= 3) {
+            debug(Level.INFO, message, args);
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
-            LOG.log(level, getString(message, showVersion));
+            message = String.format(message, args);
+            log.log(level, getPrefixedMessage(message, showVersion));
             if (debugLog != null) {
-                debugLog.log(level, getString(message, showVersion));
+                debugLog.log(level, getPrefixedMessage(message, showVersion));
             }
         }
     }
 
     /**
-     * Returns the Name and Version as a combined string.
+     * Directly outputs a message with the debug prefix to both the regular logger and the debug logger if one is set.
      *
-     * @return "$Name v$Version"
+     * @param message The message to log.
+     * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static String getNameVersion() {
-        return NAME + " " + VERSION;
-    }
-
-    /**
-     * Debug level logging.
-     *
-     * @param message Log message
-     */
-    private static void debug(Level level, String message) {
-        LOG.log(level, getDebugString(message));
+    private static void debug(final Level level, String message, final Object...args) {
+        message = String.format(message, args);
+        log.log(level, getDebugString(message));
         if (debugLog != null) {
             debugLog.log(level, getDebugString(message));
         }
@@ -140,126 +165,55 @@ public class Logging {
     /**
      * Info level logging.
      *
-     * @param message Log message
+     * @param message Message to log.
      */
-    public static void fine(String message) {
-        fine(message, false);
+    public static void fine(final String message, final Object...args) {
+        Logging.log(Level.FINE, message, false, args);
+    }
+
+    /**
+     * Finer debug level logging.  Use for somewhat frequent messages.
+     *
+     * @param message Message to log.
+     */
+    public static void finer(final String message, final Object...args) {
+        Logging.log(Level.FINER, message, false, args);
+    }
+
+    /**
+     * Finest debug level logging.  Use for extremely frequent messages.
+     *
+     * @param message Message to log.
+     */
+    public static void finest(final String message, final Object...args) {
+        Logging.log(Level.FINEST, message, false, args);
     }
 
     /**
      * Info level logging.
      *
-     * @param message     Log message
-     * @param showVersion True adds version into message
+     * @param message Message to log.
      */
-    public static void fine(String message, boolean showVersion) {
-        Logging.log(Level.FINE, message, showVersion);
-    }
-
-    /**
-     * Info level logging.
-     *
-     * @param message Log message
-     */
-    public static void finer(String message) {
-        finer(message, false);
-    }
-
-    /**
-     * Info level logging.
-     *
-     * @param message     Log message
-     * @param showVersion True adds version into message
-     */
-    public static void finer(String message, boolean showVersion) {
-        Logging.log(Level.FINER, message, showVersion);
-    }
-
-    /**
-     * Info level logging.
-     *
-     * @param message Log message
-     */
-    public static void finest(String message) {
-        finest(message, false);
-    }
-
-    /**
-     * Info level logging.
-     *
-     * @param message     Log message
-     * @param showVersion True adds version into message
-     */
-    public static void finest(String message, boolean showVersion) {
-        Logging.log(Level.FINEST, message, showVersion);
-    }
-
-    /**
-     * Info level logging.
-     *
-     * @param message Log message
-     */
-    public static void info(String message) {
-        info(message, false);
-    }
-
-    /**
-     * Info level logging.
-     *
-     * @param message     Log message
-     * @param showVersion True adds version into message
-     */
-    public static void info(String message, boolean showVersion) {
-        Logging.log(Level.INFO, message, showVersion);
-    }
-
-    /**
-     * Info level logging.  Only displays if debug mode is enabled.
-     *
-     * @param message Log message
-     */
-    /*public static void debug(String message) {
-        if (MultiverseInventories.getConfig().isDebugging()) {
-            LOG.info(getString(message, true));
-        }
-    }*/
-
-    /**
-     * Warning level logging.
-     *
-     * @param message Log message
-     */
-    public static void warning(String message) {
-        warning(message, false);
+    public static void info(final String message, final Object...args) {
+        Logging.log(Level.INFO, message, false, args);
     }
 
     /**
      * Warning level logging.
      *
-     * @param message     Log message
-     * @param showVersion True adds version into message
+     * @param message Message to log.
      */
-    public static void warning(String message, boolean showVersion) {
-        Logging.log(Level.WARNING, message, showVersion);
+    public static void warning(final String message, final Object...args) {
+        Logging.log(Level.WARNING, message, false, args);
     }
 
     /**
      * Severe level logging.
      *
-     * @param message Log message
+     * @param message Message to log.
      */
-    public static void severe(String message) {
-        severe(message, false);
-    }
-
-    /**
-     * Severe level logging.
-     *
-     * @param message     Log message
-     * @param showVersion True adds version into message
-     */
-    public static void severe(String message, boolean showVersion) {
-        Logging.log(Level.SEVERE, message, showVersion);
+    public static void severe(final String message, final Object...args) {
+        Logging.log(Level.SEVERE, message, false, args);
     }
 
 }

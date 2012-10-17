@@ -173,7 +173,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         this.messager.setLocale(config().get(BaseConfig.LOCALE));
         this.messager.setLanguage(config().get(BaseConfig.LANGUAGE_FILE));
         
-        Logging.setDebugMode(config().get(BaseConfig.DEBUG_MODE));
+        Logging.setDebugLevel(config().get(BaseConfig.DEBUG_MODE));
 
         // Do any import first run stuff here.
         if (config().get(BaseConfig.FIRST_RUN)) {

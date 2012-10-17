@@ -64,7 +64,7 @@ public class DebugCommand extends BuiltInCommand {
                 p.getMessager().bad(sender, Messages.INVALID_DEBUG);
             } else {
                 p.config().set(BaseConfig.DEBUG_MODE, debugLevel);
-                Logging.setDebugMode(p.config().get(BaseConfig.DEBUG_MODE));
+                Logging.setDebugLevel(p.config().get(BaseConfig.DEBUG_MODE));
                 p.config().save();
             }
         }
