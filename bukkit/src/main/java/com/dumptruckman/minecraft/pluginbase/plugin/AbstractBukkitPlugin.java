@@ -18,6 +18,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.SimpleMessager;
 import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.BukkitCommandHandler;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.PreProcessListener;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionCommand;
@@ -33,6 +34,7 @@ import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -95,6 +97,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         this.commandHandler = new BukkitCommandHandler(this);
         // Register Commands
         _registerCommands();
+        getServer().getPluginManager().registerEvents(new PreProcessListener(this), this);
 
         postEnable();
         startMetrics();
@@ -210,6 +213,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
             sender.sendMessage("This plugin is Disabled!");
             return true;
         }
+        System.out.println("Processing " + command.getName() + " with args " + Arrays.asList(args));
         String[] allArgs = new String[args.length + 1];
         allArgs[0] = command.getName();
         System.arraycopy(args, 0, allArgs, 1, args.length);

@@ -19,6 +19,8 @@ public abstract class CommandHandler<P extends PluginBase> {
     protected final P plugin;
     protected final Map<String, String> commandMap;
 
+    private final Map<String, CommandKey> commandKeys = new HashMap<String, CommandKey>();
+
     public CommandHandler(P plugin) {
         this.plugin = plugin;
         this.commandMap = new HashMap<String, String>();
@@ -91,6 +93,17 @@ public abstract class CommandHandler<P extends PluginBase> {
         final com.sk89q.bukkit.util.CommandInfo bukkitCmdInfo = new com.sk89q.bukkit.util.CommandInfo(cmdInfo.usage(), cmdInfo.desc(), aliases.toArray(new String[aliases.size()]), this, permissions);
         if (register(bukkitCmdInfo)) {
             Logging.fine("Registered command '%s' to: %s", aliases.get(0), commandClass);
+            String split[] = aliases.get(0).split(" ");
+            CommandKey key;
+            if (split.length == 1) {
+                key = newKey(split[0], true);
+            } else {
+                key = newKey(split[0], false);
+                for (int i = 1; i < split.length; i++) {
+                    key = key.newKey(split[i], (i == split.length - 1));
+                }
+            }
+            System.out.println("Registered command key: " + key.getName());
             commandMap.put(aliases.get(0), commandClass.getName());
             return true;
         }
@@ -141,5 +154,55 @@ public abstract class CommandHandler<P extends PluginBase> {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public String[] commandDetection(String[] split) {
+        CommandKey commandKey = getKey(split[0]);
+        CommandKey lastActualCommand = null;
+        if (commandKey == null) {
+            return split;
+        } else if (commandKey.isCommand()) {
+            lastActualCommand = commandKey;
+        }
+
+        int i;
+        int lastActualCommandIndex = 0;
+        for (i = 1; i < split.length; i++) {
+            commandKey = commandKey.getKey(split[i]);
+            if (commandKey != null) {
+                if (commandKey.isCommand()) {
+                    lastActualCommand = commandKey;
+                    lastActualCommandIndex = i;
+                }
+            } else {
+                break;
+            }
+        }
+        if (lastActualCommand != null) {
+            String[] newSplit = new String[split.length - lastActualCommandIndex];
+            newSplit[0] = lastActualCommand.getName();
+            if (newSplit.length > 1) {
+                System.arraycopy(split, lastActualCommandIndex + 1, newSplit, 1, split.length - lastActualCommandIndex + 1);
+            }
+            return newSplit;
+        }
+        return split;
+    }
+
+    protected CommandKey getKey(final String key) {
+        return commandKeys.get(key);
+    }
+
+    protected CommandKey newKey(final String key, final boolean command) {
+        if (commandKeys.containsKey(key)) {
+            if (command) {
+                commandKeys.put(key, new CommandKey(commandKeys.get(key)));
+            }
+            return commandKeys.get(key);
+        } else {
+            final CommandKey commandKey = new CommandKey(key, command);
+            commandKeys.put(key, commandKey);
+            return commandKey;
+        }
     }
 }
