@@ -74,7 +74,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     @Override
     public final void onDisable() {
         preDisable();
-        Logging.close();
+        Logging.shutdown();
     }
 
     public void preEnable() {
