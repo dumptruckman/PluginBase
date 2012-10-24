@@ -9,28 +9,33 @@ import com.dumptruckman.minecraft.pluginbase.config.YamlSQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.database.SQLite;
+import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
+import com.dumptruckman.minecraft.pluginbase.entity.BukkitCommandSender;
+import com.dumptruckman.minecraft.pluginbase.entity.BukkitPlayer;
+import com.dumptruckman.minecraft.pluginbase.exception.CommandUsageException;
 import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
 import com.dumptruckman.minecraft.pluginbase.locale.SimpleMessager;
-import com.dumptruckman.minecraft.pluginbase.permission.Perm;
-import com.dumptruckman.minecraft.pluginbase.permission.PermHandler;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.ConfirmCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.DebugCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.ReloadCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.VersionCommand;
+import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
+import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.BukkitCommandHandler;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.InfoCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionCommand;
+import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
+import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
-import com.dumptruckman.minecraft.pluginbase.util.commandhandler.CommandHandler;
+import com.sk89q.minecraft.util.commands.CommandException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -41,11 +46,18 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     private C config = null;
     private Messager messager = null;
     private File serverFolder = null;
-    private CommandHandler commandHandler = null;
+    private BukkitCommandHandler commandHandler = null;
     private SQLDatabase db = null;
     private Metrics metrics;
 
     protected SQLConfig sqlConfig = null;
+
+    private final PluginInfo pluginInfo;
+    private ServerInterface serverInterface;
+
+    public AbstractBukkitPlugin() {
+        this.pluginInfo = new BukkitPluginInfo(this);
+    }
 
     public void preDisable() {
 
@@ -62,7 +74,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     @Override
     public final void onDisable() {
         preDisable();
-        Logging.close();
+        Logging.shutdown();
     }
 
     public void preEnable() {
@@ -74,16 +86,19 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
      */
     @Override
     public final void onEnable() {
+        this.serverInterface = new BukkitServerInterface(getServer());
         preEnable();
-        Perm.registerPlugin(this);
+        PermFactory.registerPermissionFactory(this, BukkitPermFactory.class);
         CommandMessages.init();
         Logging.init(this);
         setupMetrics();
 
         reloadConfig();
 
+        this.commandHandler = new BukkitCommandHandler(this);
         // Register Commands
         _registerCommands();
+        //getServer().getPluginManager().registerEvents(new PreProcessListener(this), this);
 
         postEnable();
         startMetrics();
@@ -158,10 +173,11 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        this.messager = null;
-        getMessager();
+        this.messager = new SimpleMessager(this);
+        this.messager.setLocale(config().get(BaseConfig.LOCALE));
+        this.messager.setLanguage(config().get(BaseConfig.LANGUAGE_FILE));
         
-        Logging.setDebugMode(config().get(BaseConfig.DEBUG_MODE));
+        Logging.setDebugLevel(config().get(BaseConfig.DEBUG_MODE));
 
         // Do any import first run stuff here.
         if (config().get(BaseConfig.FIRST_RUN)) {
@@ -182,11 +198,12 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     private void _registerCommands() {
-        getCommandHandler().registerCommand(new DebugCommand<AbstractBukkitPlugin>(this));
-        getCommandHandler().registerCommand(new ReloadCommand<AbstractBukkitPlugin>(this));
-        getCommandHandler().registerCommand(new HelpCommand<AbstractBukkitPlugin>(this));
-        getCommandHandler().registerCommand(new VersionCommand<AbstractBukkitPlugin>(this));
-        getCommandHandler().registerCommand(new ConfirmCommand<AbstractBukkitPlugin>(this));
+        getCommandHandler().registerCommand(InfoCommand.class);
+        getCommandHandler().registerCommand(DebugCommand.class);
+        getCommandHandler().registerCommand(ReloadCommand.class);
+        getCommandHandler().registerCommand(VersionCommand.class);
+        //getCommandHandler().registerCommand(new HelpCommand<AbstractBukkitPlugin>(this));
+        //getCommandHandler().registerCommand(new ConfirmCommand<AbstractBukkitPlugin>(this));
     }
 
     /**
@@ -198,19 +215,26 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
             sender.sendMessage("This plugin is Disabled!");
             return true;
         }
-        List<String> allArgs = new ArrayList<String>(Arrays.asList(args));
-        allArgs.add(0, command.getName());
-        return this.getCommandHandler().locateAndRunCommand(sender, allArgs);
+        String[] allArgs = new String[args.length + 1];
+        allArgs[0] = command.getName();
+        System.arraycopy(args, 0, allArgs, 1, args.length);
+        final BasePlayer wrappedSender = wrapSender(sender);
+        try {
+            return getCommandHandler().locateAndRunCommand(wrappedSender, allArgs);
+        } catch (CommandException e) {
+            getMessager().sendMessage(wrappedSender, e.getMessage());
+            if (e instanceof CommandUsageException) {
+                getMessager().sendMessages(wrappedSender, ((CommandUsageException) e).getUsage());
+            }
+        }
+        return true;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public CommandHandler getCommandHandler() {
-        if (this.commandHandler == null) {
-            this.commandHandler = new CommandHandler(this, new PermHandler());
-        }
+    public BukkitCommandHandler getCommandHandler() {
         return this.commandHandler;
     }
 
@@ -227,20 +251,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
      */
     @Override
     public Messager getMessager() {
-        if (this.messager == null) {
-            this.messager = new SimpleMessager(this);
-            this.messager.setLocale(config().get(BaseConfig.LOCALE));
-            this.messager.setLanguage(config().get(BaseConfig.LANGUAGE_FILE));
-        }
         return this.messager;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setMessager(Messager messager) {
-        this.messager = messager;
     }
 
     /**
@@ -266,16 +277,6 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     @Override
-    public String getPluginName() {
-        return getDescription().getName();
-    }
-    
-    @Override
-    public String getPluginVersion() {
-        return getDescription().getVersion();
-    }
-
-    @Override
     public SQLDatabase getDB() {
         if (sqlConfig == null) {
             throw new IllegalStateException("SQL database not configured for this plugin!");
@@ -289,7 +290,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     @Override
-    public abstract List<String> getCommandPrefixes();
+    public abstract String getCommandPrefix();
 
     protected abstract C newConfigInstance() throws IOException;
 
@@ -304,5 +305,28 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     @Override
     public Metrics getMetrics() {
         return metrics;
+    }
+
+    @Override
+    public BasePlayer wrapPlayer(Player player) {
+        return new BukkitPlayer(player);
+    }
+
+    @Override
+    public BasePlayer wrapSender(CommandSender sender) {
+        if (sender instanceof Player) {
+            return wrapPlayer((Player) sender);
+        }
+        return new BukkitCommandSender(sender);
+    }
+
+    @Override
+    public PluginInfo getPluginInfo() {
+        return pluginInfo;
+    }
+
+    @Override
+    public ServerInterface getServerInterface() {
+        return serverInterface;
     }
 }

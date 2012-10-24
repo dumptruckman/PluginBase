@@ -3,9 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.locale;
 
+import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.util.ChatPaginator;
 
 import java.util.List;
@@ -19,7 +19,7 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
         super(plugin);
     }
 
-    private void send(Message message, String prefix, CommandSender sender, Object... args) {
+    private void send(BasePlayer sender, String prefix, Message message, Object... args) {
         List<String> messages = this.getMessages(message, args);
         if (!messages.isEmpty()) {
             if (prefix.isEmpty()) {
@@ -36,87 +36,87 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
      * {@inheritDoc}
      */
     @Override
-    public void bad(Message message, CommandSender sender, Object... args) {
-        send(message, ChatColor.RED.toString() + this.getMessage(Messages.GENERIC_ERROR), sender, args);
+    public void bad(BasePlayer sender, Message message, Object... args) {
+        send(sender, ChatColor.RED.toString() + this.getMessage(Messages.GENERIC_ERROR), message, args);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void normal(Message message, CommandSender sender, Object... args) {
-        send(message, "", sender, args);
+    public void normal(BasePlayer sender, Message message, Object... args) {
+        send(sender, "", message, args);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void good(Message message, CommandSender sender, Object... args) {
-        send(message, ChatColor.GREEN.toString() + this.getMessage(Messages.GENERIC_SUCCESS), sender, args);
+    public void good(BasePlayer sender, Message message, Object... args) {
+        send(sender, ChatColor.GREEN.toString() + this.getMessage(Messages.GENERIC_SUCCESS), message, args);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void info(Message message, CommandSender sender, Object... args) {
-        send(message, ChatColor.YELLOW.toString() + this.getMessage(Messages.GENERIC_INFO), sender, args);
+    public void info(BasePlayer sender, Message message, Object... args) {
+        send(sender, ChatColor.YELLOW.toString() + this.getMessage(Messages.GENERIC_INFO), message, args);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void help(Message message, CommandSender sender, Object... args) {
-        send(message, ChatColor.GRAY.toString() + this.getMessage(Messages.GENERIC_HELP), sender, args);
+    public void help(BasePlayer sender, Message message, Object... args) {
+        send(sender, ChatColor.GRAY.toString() + this.getMessage(Messages.GENERIC_HELP), message, args);
     }
 
     @Override
-    public void bad(BundledMessage message, CommandSender sender) {
-        bad(message.getMessage(), sender, message.getArgs());
+    public void bad(BasePlayer sender, BundledMessage message) {
+        bad(sender, message.getMessage(), message.getArgs());
     }
 
     @Override
-    public void normal(BundledMessage message, CommandSender sender) {
-        normal(message.getMessage(), sender, message.getArgs());
+    public void normal(BasePlayer sender, BundledMessage message) {
+        normal(sender, message.getMessage(), message.getArgs());
     }
 
     @Override
-    public void good(BundledMessage message, CommandSender sender) {
-        good(message.getMessage(), sender, message.getArgs());
+    public void good(BasePlayer sender, BundledMessage message) {
+        good(sender, message.getMessage(), message.getArgs());
     }
 
     @Override
-    public void info(BundledMessage message, CommandSender sender) {
-        info(message.getMessage(), sender, message.getArgs());
+    public void info(BasePlayer sender, BundledMessage message) {
+        info(sender, message.getMessage(), message.getArgs());
     }
 
     @Override
-    public void help(BundledMessage message, CommandSender sender) {
-        help(message.getMessage(), sender, message.getArgs());
+    public void help(BasePlayer sender, BundledMessage message) {
+        help(sender, message.getMessage(), message.getArgs());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void sendMessage(CommandSender player, String message) {
+    public void sendMessage(BasePlayer sender, String message) {
         String[] messages = ChatPaginator.wordWrap(message, ChatPaginator.GUARANTEED_NO_WRAP_CHAT_PAGE_WIDTH);
-        sendMessages(player, messages);
+        sendMessages(sender, messages);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void sendMessages(CommandSender player, List<String> messages) {
+    public void sendMessages(BasePlayer player, List<String> messages) {
         for (String s : messages) {
             player.sendMessage(s);
         }
     }
 
-    private void sendMessages(CommandSender player, String[] messages) {
+    private void sendMessages(BasePlayer player, String[] messages) {
         for (String s : messages) {
             player.sendMessage(s);
         }

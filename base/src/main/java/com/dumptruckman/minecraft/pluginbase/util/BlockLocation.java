@@ -65,7 +65,7 @@ public class BlockLocation {
     public static BlockLocation valueOf(String stringFormat) {
         String[] sections = stringFormat.split(DELIMITER, 4);
         if (sections.length != 4) {
-            Logging.finer("Unable to parse location: " + stringFormat);
+            Logging.finer("Unable to parse location: %s", stringFormat);
             return null;
         }
         try {
@@ -74,7 +74,7 @@ public class BlockLocation {
                     Integer.valueOf(sections[1]),
                     Integer.valueOf(sections[2]));
         } catch (Exception e) {
-            Logging.finer("Unable to parse location: " + stringFormat);
+            Logging.finer("Unable to parse location: %s", stringFormat);
             return null;
         }
     }

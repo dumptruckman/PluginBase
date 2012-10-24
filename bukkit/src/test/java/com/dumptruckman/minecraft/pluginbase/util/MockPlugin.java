@@ -5,7 +5,6 @@ import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,12 +17,12 @@ public class MockPlugin extends AbstractBukkitPlugin<MockConfig> {
     }
 
     public void postEnable() {
-        getCommandHandler().registerCommand(new MockQueuedCommand(this));
+        //getCommandHandler().registerCommand(new MockQueuedCommand(this));
     }
     
     @Override
-    public List<String> getCommandPrefixes() {
-        return Arrays.asList("pb");
+    public String getCommandPrefix() {
+        return "pb";
     }
 
     @Override
