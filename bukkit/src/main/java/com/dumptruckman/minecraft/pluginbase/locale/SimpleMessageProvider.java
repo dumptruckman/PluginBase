@@ -153,8 +153,20 @@ public class SimpleMessageProvider implements MessageProvider {
                 continue;
             }
             List<String> messageList = this.language.getStringList(messageEntry.getKey());
+            boolean changed = false;
             if (messageList == null || messageList.isEmpty()) {
                 messageList = messageEntry.getValue().getDefault();
+                changed = true;
+            }
+            for (int i = 0; i < messageList.size(); i++) {
+                final String message = messageList.get(i);
+                final String newMessage = message.replaceAll("%\\d", "%s");;
+                if (!newMessage.equals(message)) {
+                    messageList.set(i, newMessage);
+                    changed = true;
+                }
+            }
+            if (changed) {
                 this.language.set(messageEntry.getKey().toLowerCase(), messageList);
             }
             this.messages.put(messageEntry.getValue(), messageList);
