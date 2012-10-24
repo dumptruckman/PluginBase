@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
 import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
+import com.dumptruckman.minecraft.pluginbase.exception.CommandUsageException;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.BuiltInCommand;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
@@ -123,7 +124,7 @@ public abstract class CommandHandler<P extends PluginBase> {
         return null;
     }
 
-    public boolean locateAndRunCommand(BasePlayer player, String[] args) {
+    public boolean locateAndRunCommand(BasePlayer player, String[] args) throws CommandException {
         args = commandDetection(args);
         final String className = commandMap.get(args[0]);
         if (className == null) {
@@ -133,27 +134,85 @@ public abstract class CommandHandler<P extends PluginBase> {
         try {
             final Class<Command> commandClass = (Class<Command>) Class.forName(className);
             final Command command = loadCommand(commandClass);
+            if (command == null) {
+                Logging.severe("Could not load command for class: " + commandClass);
+                return false;
+            }
             final CommandInfo cmdInfo = commandClass.getAnnotation(CommandInfo.class);
             if (cmdInfo == null) {
                 Logging.severe("Missing CommandInfo for command: " + args[0]);
                 return false;
             }
-            final Set<Character> flags = new HashSet<Character>();
-            for (char flag : cmdInfo.flags().toCharArray()) {
-                flags.add(flag);
+            final Set<Character> valueFlags = new HashSet<Character>();
+
+            char[] flags = cmdInfo.flags().toCharArray();
+            final Set<Character> newFlags = new HashSet<Character>();
+            for (int i = 0; i < flags.length; ++i) {
+                if (flags.length > i + 1 && flags[i + 1] == ':') {
+                    valueFlags.add(flags[i]);
+                    ++i;
+                }
+                newFlags.add(flags[i]);
             }
-            try {
-                command.runCommand(plugin, player, new CommandContext(args));
-                //command.runCommand(plugin, player, new CommandContext(args, flags));
-                return true;
-            } catch (CommandException e) {
-                e.printStackTrace();
-                return false;
+            final CommandContext context = new CommandContext(args, valueFlags);
+            if (context.argsLength() < cmdInfo.min()) {
+                throw new CommandUsageException("Too few arguments.", getUsage(args, 0, command, cmdInfo));
             }
+            if (cmdInfo.max() != -1 && context.argsLength() > cmdInfo.max()) {
+                throw new CommandUsageException("Too many arguments.", getUsage(args, 0, command, cmdInfo));
+            }
+            if (!cmdInfo.anyFlags()) {
+                for (char flag : context.getFlags()) {
+                    if (!newFlags.contains(flag)) {
+                        throw new CommandUsageException("Unknown flag: " + flag, getUsage(args, 0, command, cmdInfo));
+                    }
+                }
+            }
+            command.runCommand(plugin, player, context);
+            return true;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    protected List<String> getUsage(final String[] args, final int level, final Command cmd, final CommandInfo cmdInfo) {
+        final List<String> commandUsage = new ArrayList<String>();
+        final StringBuilder command = new StringBuilder();
+        command.append('/');
+        for (int i = 0; i <= level; ++i) {
+            command.append(args[i]);
+            command.append(' ');
+        }
+        command.append(getArguments(cmdInfo));
+        commandUsage.add(command.toString());
+
+        final List<String> help = plugin.getMessager().getMessages(cmd.getHelp());
+        if (help.size() > 0) {
+            commandUsage.addAll(help);
+        }
+
+        return commandUsage;
+    }
+
+    protected CharSequence getArguments(final CommandInfo cmdInfo) {
+        final String flags = cmdInfo.flags();
+
+        final StringBuilder command2 = new StringBuilder();
+        if (flags.length() > 0) {
+            String flagString = flags.replaceAll(".:", "");
+            if (flagString.length() > 0) {
+                command2.append("[-");
+                for (int i = 0; i < flagString.length(); ++i) {
+                    command2.append(flagString.charAt(i));
+                }
+                command2.append("] ");
+            }
+        }
+
+        command2.append(cmdInfo.usage());
+
+        return command2;
     }
 
     public String[] commandDetection(String[] split) {

@@ -12,6 +12,7 @@ import com.dumptruckman.minecraft.pluginbase.database.SQLite;
 import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.entity.BukkitCommandSender;
 import com.dumptruckman.minecraft.pluginbase.entity.BukkitPlayer;
+import com.dumptruckman.minecraft.pluginbase.exception.CommandUsageException;
 import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.locale.Messager;
 import com.dumptruckman.minecraft.pluginbase.locale.SimpleMessager;
@@ -25,6 +26,7 @@ import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionComma
 import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
 import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import com.sk89q.minecraft.util.commands.CommandException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -216,7 +218,16 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         String[] allArgs = new String[args.length + 1];
         allArgs[0] = command.getName();
         System.arraycopy(args, 0, allArgs, 1, args.length);
-        return getCommandHandler().locateAndRunCommand(wrapSender(sender), allArgs);
+        final BasePlayer wrappedSender = wrapSender(sender);
+        try {
+            return getCommandHandler().locateAndRunCommand(wrappedSender, allArgs);
+        } catch (CommandException e) {
+            getMessager().sendMessage(wrappedSender, e.getMessage());
+            if (e instanceof CommandUsageException) {
+                getMessager().sendMessages(wrappedSender, ((CommandUsageException) e).getUsage());
+            }
+        }
+        return true;
     }
 
     /**

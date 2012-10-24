@@ -100,10 +100,9 @@ public class VersionCommand extends BuiltInCommand {
                         p.getServerInterface().scheduleSyncDelayedTask(p, new Runnable() {
                             @Override
                             public void run() {
-                                p.getMessager().normal(sender, CommandMessages.VERSION_INFO_DUMPED);
+                                p.getMessager().normal(sender, CommandMessages.VERSION_INFO_DUMPED, pasteUrl);
                             }
                         });
-                        Logging.info("Version info dumped here: " + pasteUrl);
                     }
                 }
             });
