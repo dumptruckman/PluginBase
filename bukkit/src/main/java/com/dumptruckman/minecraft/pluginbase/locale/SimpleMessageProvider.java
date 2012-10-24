@@ -4,8 +4,8 @@
 package com.dumptruckman.minecraft.pluginbase.locale;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-import com.dumptruckman.minecraft.pluginbase.util.Font;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -59,8 +60,8 @@ public class SimpleMessageProvider implements MessageProvider {
     }
 
     /**
-     * Formats a string by replacing ampersand with the Section symbol and %n with the corresponding args
-     * object where n = argument index + 1.
+     * Formats a string by replacing ampersand with the Section symbol and %s with the corresponding args
+     * object in a fashion similar to String.format().
      *
      * @param string String to format.
      * @param args   Arguments to pass in via %n.
@@ -68,20 +69,24 @@ public class SimpleMessageProvider implements MessageProvider {
      */
     public String format(String string, Object... args) {
         // Replaces & with the Section character
-        string = string.replaceAll("(?i)&([A-FKLMNOR0-9])", Font.SECTION_SYMBOL + "$1");
+        string = ChatColor.translateAlternateColorCodes('&', string);
         // If there are arguments, %n notations in the message will be
         // replaced
-        if (args != null) {
+        /*if (args != null) {
             for (int j = 0; j < args.length; j++) {
                 if (args[j] == null) {
                     args[j] = "NULL";
                 }
                 string = string.replace("%" + (j + 1), args[j].toString());
             }
-        }
+        }*/
         // Format for locale
         // TODO need a fix for this when language vars are not passed in as args.
-        // string = String.format(this.locale, string);
+        try {
+            string = String.format(locale, string, args);
+        } catch (IllegalFormatException e) {
+            Logging.warning("Language string format is incorrect: " + string);
+        }
         return string;
     }
 
