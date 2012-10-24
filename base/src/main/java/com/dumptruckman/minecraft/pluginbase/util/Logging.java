@@ -6,7 +6,9 @@ package com.dumptruckman.minecraft.pluginbase.util;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 
 import java.io.File;
+import java.util.IllegalFormatException;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 /**
@@ -14,62 +16,136 @@ import java.util.logging.Logger;
  */
 public class Logging {
 
-    private static Logger log = Logger.getLogger("Minecraft");
-    private static String name = "PluginBase";
-    private static String version = "v.???";
-    private static String debug = "-Debug";
-    private static int debugLevel = 0;
-    private static DebugLog debugLog = null;
-    private static PluginBase plugin;
+    static final String ORIGINAL_NAME = Logging.class.getSimpleName();
+    static final String ORIGINAL_VERSION = "v.???";
+    static final String ORIGINAL_DEBUG = "-Debug";
 
-    private Logging() {
+    static final InterceptedLogger LOG = new InterceptedLogger(Logger.getLogger("Minecraft"));
+
+    static String name = ORIGINAL_NAME;
+    static String version = ORIGINAL_VERSION;
+    static String debug = ORIGINAL_DEBUG;
+    static DebugLog debugLog = null;
+    static PluginBase plugin = null;
+
+    protected Logging() {
         throw new AssertionError();
     }
 
+    static class InterceptedLogger extends Logger {
+
+        final Logger logger;
+
+        InterceptedLogger(final Logger logger) {
+            super(logger.getName(), logger.getResourceBundleName());
+            this.logger = logger;
+        }
+
+        synchronized void _log(final Level level, final String message) {
+            final LogRecord record = new LogRecord(level, message);
+            record.setLoggerName(getName());
+            record.setResourceBundle(getResourceBundle());
+            _log(record);
+        }
+
+        synchronized void _log(final LogRecord record) {
+            logger.log(record);
+            if (debugLog != null) {
+                debugLog.log(record);
+            }
+        }
+
+        /**
+         * Log a message, with no arguments.  Similar to {@link Logger#log(LogRecord)} with the
+         * exception that all logging is handled by a single static {@link Logging} instance.
+         *
+         * @param record the LogRecord.
+         */
+        @Override
+        public synchronized void log(final LogRecord record) {
+            final Level level = record.getLevel();
+            final String message = record.getMessage();
+            final int debugLevel = getDebugLevel();
+            if ((level == Level.FINE && debugLevel >= 1)
+                    || (level == Level.FINER && debugLevel >= 2)
+                    || (level == Level.FINEST && debugLevel >= 3)) {
+                record.setLevel(Level.INFO);
+                record.setMessage(getDebugString(message));
+                LOG._log(record);
+            } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
+                record.setMessage(getPrefixedMessage(message, false));
+                LOG._log(record);
+            }
+        }
+    }
+
     /**
-     * Prepares the log for use.  Debugging will default to disabled when initialized.
+     * Prepares the log for use.  Debugging will default to disabled when initialized.  This should be called early on
+     * in plugin initialization, such as during onLoad() or onEnable().  If this {@link Logging} class has already
+     * been initialized, it will first be shut down before reinitializing.
      *
      * @param plugin The plugin using this static logger.
      */
-    public static void init(final PluginBase plugin) {
+    public static synchronized void init(final PluginBase plugin) {
+        if (Logging.plugin != null) {
+            shutdown();
+        }
         name = plugin.getPluginInfo().getName();
         version = plugin.getPluginInfo().getVersion();
-        plugin.getDataFolder().mkdirs();
-        Logging.plugin = plugin;
+        DebugLog.init(name, getDebugFileName(plugin));
         setDebugLevel(0);
+        Logging.plugin = plugin;
+    }
+
+    static synchronized String getDebugFileName(final PluginBase plugin) {
+        return plugin.getDataFolder() + File.separator + "debug.log";
+    }
+
+    /**
+     * Returns the {@link Logging} class to it's original state, releasing the plugin that initialized it.  The
+     * {@link Logging} class can be reinitialized once it has been shut down.  This should be called when the plugin
+     * is disabled so that a static reference to the plugin is not kept in cases of server reloads.
+     */
+    public synchronized static void shutdown() {
+        closeDebugLog();
+        DebugLog.shutdown();
+        plugin = null;
+        name = ORIGINAL_NAME;
+        version = ORIGINAL_VERSION;
+        debug = ORIGINAL_DEBUG;
     }
 
     /**
      * Closes the debug log if it is open.
      */
-    public static void close() {
+    static synchronized void closeDebugLog() {
         if (debugLog != null) {
             debugLog.close();
             debugLog = null;
         }
     }
-    
+
     /**
      * Sets the debug logging level of this plugin.  Debug messages will print to the console and to a
      * debug log file when enabled.
      * debugLevel:
      *   0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
-     *   1 - enables debug logging of {@link Level#FINE} or lower messages.
-     *   2 - enables debug logging of {@link Level#FINER} or lower messages.
-     *   3 - enables debug logging of {@link Level#FINEST} or lower messages.
+     *   1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
+     *   2 - enables debug logging of {@link java.util.logging.Level#FINER} or lower messages.
+     *   3 - enables debug logging of {@link java.util.logging.Level#FINEST} or lower messages.
      *
      * @param debugLevel 0 = off, 1-3 = debug level
      */
-    public static void setDebugLevel(final int debugLevel) {
+    public static synchronized void setDebugLevel(final int debugLevel) {
         if (debugLevel > 3 || debugLevel < 0) {
             throw new IllegalArgumentException("debugLevel must be between 0 and 3!");
         }
         if (debugLevel > 0) {
-            debugLog = new DebugLog(name, plugin.getDataFolder() + File.separator + "debug.log");
+            debugLog = DebugLog.getDebugLogger();
         } else {
-            close();
+            closeDebugLog();
         }
-        Logging.debugLevel = debugLevel;
+        DebugLog.setDebugLevel(debugLevel);
     }
 
     /**
@@ -77,8 +153,8 @@ public class Logging {
      *
      * @return A value 0-3 indicating the debug logging level.
      */
-    public static int getDebugLevel() {
-        return debugLevel;
+    public static synchronized int getDebugLevel() {
+        return DebugLog.getDebugLevel();
     }
 
     /**
@@ -88,7 +164,7 @@ public class Logging {
      * @param showVersion Whether to show version in log message
      * @return Modified message
      */
-    public static String getPrefixedMessage(final String message, final boolean showVersion) {
+    public static synchronized String getPrefixedMessage(final String message, final boolean showVersion) {
         final StringBuilder builder = new StringBuilder("[").append(name);
         if (showVersion) {
             builder.append(" ").append(version);
@@ -102,7 +178,7 @@ public class Logging {
      *
      * @param debugPrefix the new debug prefix to use.
      */
-    public static void setDebugPrefix(final String debugPrefix) {
+    public static synchronized void setDebugPrefix(final String debugPrefix) {
         Logging.debug = debugPrefix;
     }
 
@@ -112,40 +188,60 @@ public class Logging {
      * @param message     Log message
      * @return Modified message
      */
-    public static String getDebugString(final String message) {
+    public static synchronized String getDebugString(final String message) {
         return "[" + name + debug + "] " + message;
     }
 
     /**
-     * Returns the logger object.
+     * Returns the static Logger instance used by this class.
      *
-     * @return Logger object
+     * @return the static Logger instance used by this class.
      */
     public static Logger getLogger() {
-        return log;
+        return LOG;
     }
 
     /**
-     * Custom log method.
+     * Custom log method.  Always logs to a single static logger.  Applies String.format() to the message if it is a
+     * non-debug level logging and to debug level logging IF debug logging is enabled.  Optionally appends version to
+     * prefix.
      *
-     * @param level       Log level
-     * @param message     Log message
-     * @param showVersion True adds version into message
+     * @param showVersion True adds version into message prefix.
+     * @param level       One of the message level identifiers, e.g. SEVERE.
+     * @param message     The string message.
+     * @param args        Arguments for the String.format() that is applied to the message.
      */
-    public static void log(final Level level, String message, final boolean showVersion, final Object...args) {
-        if (level == Level.FINE && Logging.debugLevel >= 1) {
-            debug(Level.INFO, message, args);
-        } else if (level == Level.FINER && Logging.debugLevel >= 2) {
-            debug(Level.INFO, message, args);
-        } else if (level == Level.FINEST && Logging.debugLevel >= 3) {
+    public static synchronized void log(final boolean showVersion, final Level level, String message, final Object... args) {
+        final int debugLevel = getDebugLevel();
+        if ((level == Level.FINE && debugLevel >= 1)
+                || (level == Level.FINER && debugLevel >= 2)
+                || (level == Level.FINEST && debugLevel >= 3)) {
             debug(Level.INFO, message, args);
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
-            message = String.format(message, args);
-            log.log(level, getPrefixedMessage(message, showVersion));
-            if (debugLog != null) {
-                debugLog.log(level, getPrefixedMessage(message, showVersion));
-            }
+            LOG._log(level, getPrefixedMessage(format(message, args), showVersion));
         }
+    }
+
+    private static String format(final String message, final Object[] args) {
+        try {
+            return String.format(message, args);
+        } catch (IllegalFormatException e) {
+            getLogger().fine("Illegal format in the following message:");
+        }
+        return message;
+    }
+
+    /**
+     * Custom log method.  Always logs to a single static logger.  Applies String.format() to the message if it is a
+     * non-debug level logging and to debug level logging IF debug logging is enabled.  Does not append version to
+     * prefix.
+     *
+     * @param level       One of the message level identifiers, e.g. SEVERE.
+     * @param message     The string message.
+     * @param args        Arguments for the String.format() that is applied to the message.
+     */
+    public static void log(final Level level, String message, final Object... args) {
+        log(false, level, message, args);
     }
 
     /**
@@ -154,68 +250,71 @@ public class Logging {
      * @param message The message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    private static void debug(final Level level, String message, final Object...args) {
-        message = String.format(message, args);
-        log.log(level, getDebugString(message));
-        if (debugLog != null) {
-            debugLog.log(level, getDebugString(message));
-        }
+    static void debug(final Level level, String message, final Object...args) {
+        LOG._log(level, getDebugString(format(message, args)));
     }
 
     /**
-     * Info level logging.
+     * Fine debug level logging.  Use for infrequent messages.
      *
      * @param message Message to log.
+     * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void fine(final String message, final Object...args) {
-        Logging.log(Level.FINE, message, false, args);
+        Logging.log(false, Level.FINE, message, args);
     }
 
     /**
      * Finer debug level logging.  Use for somewhat frequent messages.
      *
      * @param message Message to log.
+     * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void finer(final String message, final Object...args) {
-        Logging.log(Level.FINER, message, false, args);
+        Logging.log(false, Level.FINER, message, args);
     }
 
     /**
      * Finest debug level logging.  Use for extremely frequent messages.
      *
      * @param message Message to log.
+     * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void finest(final String message, final Object...args) {
-        Logging.log(Level.FINEST, message, false, args);
+        Logging.log(false, Level.FINEST, message, args);
     }
 
     /**
      * Info level logging.
      *
      * @param message Message to log.
+     * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void info(final String message, final Object...args) {
-        Logging.log(Level.INFO, message, false, args);
+        Logging.log(false, Level.INFO, message, args);
     }
 
     /**
      * Warning level logging.
      *
      * @param message Message to log.
+     * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void warning(final String message, final Object...args) {
-        Logging.log(Level.WARNING, message, false, args);
+        Logging.log(false, Level.WARNING, message, args);
     }
 
     /**
      * Severe level logging.
      *
      * @param message Message to log.
+     * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void severe(final String message, final Object...args) {
-        Logging.log(Level.SEVERE, message, false, args);
+        Logging.log(false, Level.SEVERE, message, args);
     }
 
 }
+
 
 

@@ -39,8 +39,96 @@ import java.util.logging.Logger;
  */
 public class DebugLog {
 
-    private final FileHandler fileHandler;
-    private final Logger log;
+    static final int ORIGINAL_DEBUG_LEVEL = 0;
+
+    private static String loggerName = null;
+    private static String fileName = null;
+
+    static volatile int debugLevel = ORIGINAL_DEBUG_LEVEL;
+
+    /**
+     * Initializes the {@link DebugLog} the first time this is called with the information passed in.  The DebugLog must be
+     * initializes before use.
+     *
+     * @param loggerName The name of the logger to apply this DebugLog to.
+     * @param fileName The file name where a file copy of the log will be placed.
+     */
+    public static synchronized void init(final String loggerName, final String fileName) {
+        if (DebugLog.loggerName == null) {
+            DebugLog.loggerName = loggerName;
+            DebugLog.fileName = fileName;
+        }
+    }
+
+    /**
+     * Unitializes the {@link DebugLog} so that it may be reinitialized with new information.
+     */
+    public static synchronized void shutdown() {
+        loggerName = null;
+        fileName = null;
+        debugLevel = ORIGINAL_DEBUG_LEVEL;
+    }
+
+    /**
+     * Returns the logger name set for this {@link DebugLog}.
+     *
+     * @return the logger name set for this {@link DebugLog}.
+     */
+    public static synchronized String getLoggerName() {
+        return loggerName;
+    }
+
+    /**
+     * Returns the file name set for this {@link DebugLog}.
+     *
+     * @return the file name set for this {@link DebugLog}.
+     */
+    public static synchronized String getFileName() {
+        return fileName;
+    }
+
+    public static void setDebugLevel(final int debugLevel) {
+        DebugLog.debugLevel = debugLevel;
+    }
+
+    public static int getDebugLevel() {
+        return debugLevel;
+    }
+
+    private static DebugLog instance = null;
+
+    /**
+     * Retrieves the open instance of DebugLog if one has already open or will open one and return it if not.
+     *
+     * @return The static instance of DebugLog.
+     */
+    public static synchronized DebugLog getDebugLogger() {
+        if (instance == null) {
+            if (loggerName == null) {
+                throw new IllegalStateException("DebugLog has not been initialized!");
+            }
+            instance = new DebugLog(loggerName, fileName);
+        }
+        return instance;
+    }
+
+    /**
+     * Returns whether their is an open instance of this {@link DebugLog}.
+     *
+     * @return true if there is an open instance of this {@link DebugLog}.
+     */
+    public static synchronized boolean isClosed() {
+        return instance == null;
+    }
+
+    /**
+     * The FileHandler for file logging purposes.
+     */
+    protected final FileHandler fileHandler;
+    /**
+     * The Logger associated with this DebugLog.
+     */
+    protected final Logger log;
 
     /**
      * Creates a new debug logger.
@@ -48,7 +136,7 @@ public class DebugLog {
      * @param logger The name of the logger.
      * @param file   The file to log to.
      */
-    public DebugLog(final String logger, final String file) {
+    protected DebugLog(final String logger, final String file) {
         log = Logger.getLogger(logger);
         FileHandler fh = null;
         try {
@@ -76,14 +164,18 @@ public class DebugLog {
         }
     }
 
+    public void log(final LogRecord record) {
+        log.log(record);
+    }
+
     /**
      * Log a message at a certain level.
      *
      * @param level The log-{@link java.util.logging.Level}.
      * @param msg the message.
      */
-    public void log(Level level, String msg) {
-        log.log(level, msg);
+    public void log(final Level level, final String msg) {
+        log(new LogRecord(level, msg));
     }
 
     /**
@@ -115,10 +207,11 @@ public class DebugLog {
     }
 
     /**
-     * Closes this {@link com.dumptruckman.minecraft.pluginbase.util.DebugLog}.
+     * Closes this {@link DebugLog}.
      */
-    public void close() {
+    public synchronized void close() {
         log.removeHandler(fileHandler);
         fileHandler.close();
+        instance = null;
     }
 }
