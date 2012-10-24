@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.locale;
 
-import org.bukkit.command.CommandSender;
+import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
 
 import java.util.List;
 
@@ -15,87 +15,87 @@ public interface Messager extends MessageProvider {
     /**
      * Sends a message to the specified player with the generic ERROR prefix.
      *
-     * @param message The message to send.
      * @param sender  The entity to send the messages to.
+     * @param message The message to send.
      * @param args    arguments for String.format().
      */
-    void bad(Message message, CommandSender sender, Object... args);
+    void bad(BasePlayer sender, Message message, Object... args);
 
     /**
      * Sends a message to the specified player with the generic ERROR prefix.
      *
-     * @param message The message to send.
      * @param sender  The entity to send the messages to.
+     * @param message The message to send.
      */
-    void bad(BundledMessage message, CommandSender sender);
+    void bad(BasePlayer sender, BundledMessage message);
 
     /**
      * Sends a message to the specified player with NO special prefix.
      *
-     * @param message The message to send.
      * @param sender  The entity to send the messages to.
+     * @param message The message to send.
      * @param args    arguments for String.format().
      */
-    void normal(Message message, CommandSender sender, Object... args);
+    void normal(BasePlayer sender, Message message, Object... args);
 
     /**
      * Sends a message to the specified player with NO special prefix.
      *
-     * @param message The message to send.
      * @param sender  The entity to send the messages to.
+     * @param message The message to send.
      */
-    void normal(BundledMessage message, CommandSender sender);
+    void normal(BasePlayer sender, BundledMessage message);
 
     /**
      * Sends a message to the specified player with the generic SUCCESS prefix.
      *
-     * @param message The message to send.
      * @param sender  The entity to send the messages to.
+     * @param message The message to send.
      * @param args    arguments for String.format().
      */
-    void good(Message message, CommandSender sender, Object... args);
+    void good(BasePlayer sender, Message message, Object... args);
 
     /**
      * Sends a message to the specified player with the generic SUCCESS prefix.
      *
-     * @param message The message to send.
      * @param sender  The entity to send the messages to.
+     * @param message The message to send.
      */
-    void good(BundledMessage message, CommandSender sender);
+    void good(BasePlayer sender, BundledMessage message);
 
     /**
      * Sends a message to the specified player with the generic INFO prefix.
      *
-     * @param message The message to send.
      * @param sender  The entity to send the messages to.
+     * @param message The message to send.
      * @param args    arguments for String.format().
      */
-    void info(Message message, CommandSender sender, Object... args);
+    void info(BasePlayer sender, Message message, Object... args);
 
     /**
      * Sends a message to the specified player with the generic INFO prefix.
      *
-     * @param message The message to send.
      * @param sender  The entity to send the messages to.
+     * @param message The message to send.
      */
-    void info(BundledMessage message, CommandSender sender);
+    void info(BasePlayer sender, BundledMessage message);
 
     /**
      * Sends a message to the specified player with the generic HELP prefix.
      *
-     * @param message The message to send.
      * @param sender  The entity to send the messages to.
+     * @param message The message to send.
      * @param args    arguments for String.format().
      */
-    void help(Message message, CommandSender sender, Object... args);
+    void help(BasePlayer sender, Message message, Object... args);
 
     /**
      * Sends a message to the specified player with the generic HELP prefix.
      *
-     * @param message The message to send.
      * @param sender  The entity to send the messages to.
+     * @param message The message to send.
      */
-    void help(BundledMessage message, CommandSender sender);
+    void help(BasePlayer sender, BundledMessage message);
 
     /**
      * Sends a message to a player that automatically takes words that are too long and puts them on a new line.
@@ -103,7 +103,7 @@ public interface Messager extends MessageProvider {
      * @param player  Player to send message to.
      * @param message Message to send.
      */
-    void sendMessage(CommandSender player, String message);
+    void sendMessage(BasePlayer player, String message);
 
     /**
      * Sends a message to a player that automatically takes words that are too long and puts them on a new line.
@@ -111,6 +111,6 @@ public interface Messager extends MessageProvider {
      * @param player   Player to send message to.
      * @param messages Messages to send.
      */
-    void sendMessages(CommandSender player, List<String> messages);
+    void sendMessages(BasePlayer player, List<String> messages);
 }
 

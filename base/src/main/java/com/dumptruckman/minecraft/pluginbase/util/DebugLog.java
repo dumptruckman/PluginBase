@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011, The Multiverse Team All rights reserved.
+ * Copyright (c) 2012, The Multiverse Team All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
  * following conditions are met:
@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -37,8 +39,96 @@ import java.util.logging.Logger;
  */
 public class DebugLog {
 
-    private FileHandler fh;
-    private Logger log;
+    static final int ORIGINAL_DEBUG_LEVEL = 0;
+
+    private static String loggerName = null;
+    private static String fileName = null;
+
+    static volatile int debugLevel = ORIGINAL_DEBUG_LEVEL;
+
+    /**
+     * Initializes the {@link DebugLog} the first time this is called with the information passed in.  The DebugLog must be
+     * initializes before use.
+     *
+     * @param loggerName The name of the logger to apply this DebugLog to.
+     * @param fileName The file name where a file copy of the log will be placed.
+     */
+    public static synchronized void init(final String loggerName, final String fileName) {
+        if (DebugLog.loggerName == null) {
+            DebugLog.loggerName = loggerName;
+            DebugLog.fileName = fileName;
+        }
+    }
+
+    /**
+     * Unitializes the {@link DebugLog} so that it may be reinitialized with new information.
+     */
+    public static synchronized void shutdown() {
+        loggerName = null;
+        fileName = null;
+        debugLevel = ORIGINAL_DEBUG_LEVEL;
+    }
+
+    /**
+     * Returns the logger name set for this {@link DebugLog}.
+     *
+     * @return the logger name set for this {@link DebugLog}.
+     */
+    public static synchronized String getLoggerName() {
+        return loggerName;
+    }
+
+    /**
+     * Returns the file name set for this {@link DebugLog}.
+     *
+     * @return the file name set for this {@link DebugLog}.
+     */
+    public static synchronized String getFileName() {
+        return fileName;
+    }
+
+    public static void setDebugLevel(final int debugLevel) {
+        DebugLog.debugLevel = debugLevel;
+    }
+
+    public static int getDebugLevel() {
+        return debugLevel;
+    }
+
+    private static DebugLog instance = null;
+
+    /**
+     * Retrieves the open instance of DebugLog if one has already open or will open one and return it if not.
+     *
+     * @return The static instance of DebugLog.
+     */
+    public static synchronized DebugLog getDebugLogger() {
+        if (instance == null) {
+            if (loggerName == null) {
+                throw new IllegalStateException("DebugLog has not been initialized!");
+            }
+            instance = new DebugLog(loggerName, fileName);
+        }
+        return instance;
+    }
+
+    /**
+     * Returns whether their is an open instance of this {@link DebugLog}.
+     *
+     * @return true if there is an open instance of this {@link DebugLog}.
+     */
+    public static synchronized boolean isClosed() {
+        return instance == null;
+    }
+
+    /**
+     * The FileHandler for file logging purposes.
+     */
+    protected final FileHandler fileHandler;
+    /**
+     * The Logger associated with this DebugLog.
+     */
+    protected final Logger log;
 
     /**
      * Creates a new debug logger.
@@ -46,23 +136,36 @@ public class DebugLog {
      * @param logger The name of the logger.
      * @param file   The file to log to.
      */
-    public DebugLog(String logger, String file) {
-        this.log = Logger.getLogger(logger);
-
+    protected DebugLog(final String logger, final String file) {
+        log = Logger.getLogger(logger);
+        FileHandler fh = null;
         try {
-            this.fh = new FileHandler(file, true);
-            this.log.setUseParentHandlers(false);
-            for (Handler handler : this.log.getHandlers()) {
-                this.log.removeHandler(handler);
+            fh = new FileHandler(file, true);
+            log.setUseParentHandlers(false);
+            Set<Handler> toRemove = new HashSet<Handler>(log.getHandlers().length);
+            for (Handler handler : log.getHandlers()) {
+                toRemove.add(handler);
             }
-            this.log.addHandler(this.fh);
-            this.log.setLevel(Level.ALL);
-            this.fh.setFormatter(new LogFormatter());
+            for (Handler handler : toRemove) {
+                log.removeHandler(handler);
+            }
+            log.addHandler(fh);
+            log.setLevel(Level.ALL);
+            fh.setFormatter(new LogFormatter());
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (fh != null) {
+            fileHandler = fh;
+        } else {
+            fileHandler = fh;
+        }
+    }
+
+    public void log(final LogRecord record) {
+        log.log(record);
     }
 
     /**
@@ -71,20 +174,20 @@ public class DebugLog {
      * @param level The log-{@link java.util.logging.Level}.
      * @param msg the message.
      */
-    public void log(Level level, String msg) {
-        this.log.log(level, msg);
+    public void log(final Level level, final String msg) {
+        log(new LogRecord(level, msg));
     }
 
     /**
      * Our log-{@link java.util.logging.Formatter}.
      */
-    private class LogFormatter extends Formatter {
+    private static class LogFormatter extends Formatter {
         private final SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         @Override
-        public String format(LogRecord record) {
-            StringBuilder builder = new StringBuilder();
-            Throwable ex = record.getThrown();
+        public String format(final LogRecord record) {
+            final StringBuilder builder = new StringBuilder();
+            final Throwable ex = record.getThrown();
 
             builder.append(this.date.format(record.getMillis()));
             builder.append(" [");
@@ -94,7 +197,7 @@ public class DebugLog {
             builder.append('\n');
 
             if (ex != null) {
-                StringWriter writer = new StringWriter();
+                final StringWriter writer = new StringWriter();
                 ex.printStackTrace(new PrintWriter(writer));
                 builder.append(writer);
             }
@@ -104,9 +207,11 @@ public class DebugLog {
     }
 
     /**
-     * Closes this {@link com.dumptruckman.minecraft.pluginbase.util.DebugLog}.
+     * Closes this {@link DebugLog}.
      */
-    public void close() {
-        this.fh.close();
+    public synchronized void close() {
+        log.removeHandler(fileHandler);
+        fileHandler.close();
+        instance = null;
     }
 }

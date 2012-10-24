@@ -163,13 +163,13 @@ public class CommandHandler {
         this.queuedCommands.put(sender, new QueuedCommand(command, args, System.currentTimeMillis() + (confirmWait * 1000)));
 
         String commandName = command.getKeyStrings().get(0).toString();
-        String confirmCommand = plugin.getCommandPrefixes().get(0) + " confirm";
+        String confirmCommand = plugin.getCommandPrefix() + " confirm";
 
         if (confirmMessage == null) {
             confirmMessage = new BundledMessage(CommandMessages.CONFIRM_MESSAGE, commandName);
         }
-        plugin.getMessager().normal(confirmMessage, sender);
-        plugin.getMessager().normal(CommandMessages.CONFIRM_MESSAGE_2, sender, confirmCommand, confirmWait);
+        //plugin.getMessager().normal(sender, confirmMessage);
+        //plugin.getMessager().normal(CommandMessages.CONFIRM_MESSAGE_2, sender, confirmCommand, confirmWait);
     }
 
     public void queueCommand(CommandSender sender, QueuedPluginCommand command, List<String> args, BundledMessage confirmMessage) {
@@ -186,11 +186,11 @@ public class CommandHandler {
     public void confirmQueuedCommand(CommandSender sender) {
         QueuedCommand command = this.queuedCommands.get(sender);
         if (command == null) {
-            plugin.getMessager().normal(CommandMessages.QUEUED_NONE, sender);
+            //plugin.getMessager().normal(CommandMessages.QUEUED_NONE, sender);
             return;
         }
         if (System.currentTimeMillis() > command.getExpirationTime()) {
-            plugin.getMessager().bad(CommandMessages.QUEUED_EXPIRED, sender);
+            //plugin.getMessager().bad(CommandMessages.QUEUED_EXPIRED, sender);
             command.getCommand().onExpire(sender, command.getArgs());
             this.queuedCommands.remove(sender);
         } else {

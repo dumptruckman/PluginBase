@@ -33,9 +33,6 @@ public abstract class PluginCommand<P extends BukkitPlugin> extends Command<P> {
      * @param key
      */
     public final void addPrefixedKey(String key) {
-        for (String prefix : (List<String>) getPlugin().getCommandPrefixes()) {
-            this.addKey(prefix + key);
-        }
     }
 
     @Override
