@@ -32,6 +32,9 @@ public class CommandMessages {
     public final static Message DEBUG_SET = new Message("cmd.debug.set", "Debug mode is &2%1");
     public final static Message DEBUG_DISABLED = new Message("cmd.debug.off", "Debug mode is &cOFF");
 
+    // InfoCommand
+    public final static Message INFO_HELP = new Message("cmd.info.help", "Gives some basic information about this plugin.");
+
     // ReloadCommand
     public final static Message VERSION_HELP = new Message("cmd.version.help",
             "Displays version and other helpful information about the plugin.",

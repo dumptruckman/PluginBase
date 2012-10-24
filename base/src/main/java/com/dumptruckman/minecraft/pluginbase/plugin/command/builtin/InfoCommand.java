@@ -48,6 +48,6 @@ public class InfoCommand extends BuiltInCommand {
 
     @Override
     public void runCommand(PluginBase<BaseConfig> p, BasePlayer sender, CommandContext context) {
-        
+
     }
 }

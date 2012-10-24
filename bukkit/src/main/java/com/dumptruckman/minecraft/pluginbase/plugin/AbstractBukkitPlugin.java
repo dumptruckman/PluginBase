@@ -18,8 +18,8 @@ import com.dumptruckman.minecraft.pluginbase.locale.SimpleMessager;
 import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.BukkitCommandHandler;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.PreProcessListener;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.InfoCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionCommand;
 import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
@@ -34,7 +34,6 @@ import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -52,11 +51,10 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     protected SQLConfig sqlConfig = null;
 
     private final PluginInfo pluginInfo;
-    private final ServerInterface serverInterface;
+    private ServerInterface serverInterface;
 
     public AbstractBukkitPlugin() {
         this.pluginInfo = new BukkitPluginInfo(this);
-        this.serverInterface = new BukkitServerInterface(getServer());
     }
 
     public void preDisable() {
@@ -86,6 +84,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
      */
     @Override
     public final void onEnable() {
+        this.serverInterface = new BukkitServerInterface(getServer());
         preEnable();
         PermFactory.registerPermissionFactory(this, BukkitPermFactory.class);
         CommandMessages.init();
@@ -97,7 +96,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         this.commandHandler = new BukkitCommandHandler(this);
         // Register Commands
         _registerCommands();
-        getServer().getPluginManager().registerEvents(new PreProcessListener(this), this);
+        //getServer().getPluginManager().registerEvents(new PreProcessListener(this), this);
 
         postEnable();
         startMetrics();
@@ -197,6 +196,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     private void _registerCommands() {
+        getCommandHandler().registerCommand(InfoCommand.class);
         getCommandHandler().registerCommand(DebugCommand.class);
         getCommandHandler().registerCommand(ReloadCommand.class);
         getCommandHandler().registerCommand(VersionCommand.class);
@@ -213,11 +213,10 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
             sender.sendMessage("This plugin is Disabled!");
             return true;
         }
-        System.out.println("Processing " + command.getName() + " with args " + Arrays.asList(args));
         String[] allArgs = new String[args.length + 1];
         allArgs[0] = command.getName();
         System.arraycopy(args, 0, allArgs, 1, args.length);
-        return this.getCommandHandler().locateAndRunCommand(wrapSender(sender), allArgs);
+        return getCommandHandler().locateAndRunCommand(wrapSender(sender), allArgs);
     }
 
     /**

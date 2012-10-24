@@ -33,6 +33,11 @@ public abstract class Perm {
     public static final Perm COMMAND_DEBUG = PermFactory.newPerm("cmd.debug").usePluginName().commandPermission()
             .desc("Spams the console a bunch.").build();
     /**
+     * Permission for info command.
+     */
+    public static final Perm COMMAND_INFO = PermFactory.newPerm("cmd.info").usePluginName().commandPermission()
+            .desc("Gives some basic information about this plugin.").build();
+    /**
      * Permission for reload command.
      */
     public static final Perm COMMAND_RELOAD = PermFactory.newPerm("cmd.reload").usePluginName().commandPermission()

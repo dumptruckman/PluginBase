@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 /**
  * Enables debug-information.
@@ -128,7 +129,7 @@ public class VersionCommand extends BuiltInCommand {
         try {
             return SHORTENER.shorten(ps.postData(ps.encodeData(buffer.toString()), ps.getPostURL()));
         } catch (PasteFailedException e) {
-            System.out.print(e);
+            Logging.getLogger().log(Level.WARNING, "Error pasting version information: ", e);
             return "Error posting to service";
         }
     }

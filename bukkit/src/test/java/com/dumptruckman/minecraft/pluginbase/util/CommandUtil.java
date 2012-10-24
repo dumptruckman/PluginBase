@@ -20,7 +20,6 @@ public class CommandUtil {
             PlayerCommandPreprocessEvent event = new PlayerCommandPreprocessEvent((Player) sender, message);
             plugin.getServer().getPluginManager().callEvent(event);
             if (event.isCancelled()) {
-                System.out.println("Command: '" + message + "' cancelled");
                 return;
             }
         }

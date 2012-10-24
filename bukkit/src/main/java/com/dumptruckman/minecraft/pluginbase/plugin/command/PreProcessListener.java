@@ -19,10 +19,8 @@ public class PreProcessListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void playerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        System.out.println("preprocessing: " + event.getMessage());
         final String[] split = plugin.getCommandHandler().commandDetection(event.getMessage().substring(1).split(" "));
         final String newMessage = "/" + StringUtil.joinString(split, " ");
-        System.out.println("produced: " + newMessage);
         if (!newMessage.equals(event.getMessage())) {
             event.setMessage(newMessage);
             Bukkit.getPluginManager().callEvent(event);
@@ -37,10 +35,8 @@ public class PreProcessListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void playerCommandPreprocess(ServerCommandEvent event) {
-        System.out.println("processing: " + event.getCommand());
         final String[] split = plugin.getCommandHandler().commandDetection(event.getCommand().split(" "));
         final String newMessage = StringUtil.joinString(split, " ");
-        System.out.println("produced: " + newMessage);
         if (!newMessage.equals(event.getCommand())) {
             event.setCommand(newMessage);
             Bukkit.dispatchCommand(event.getSender(), event.getCommand());

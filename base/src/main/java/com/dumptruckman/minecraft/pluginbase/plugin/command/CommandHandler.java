@@ -103,7 +103,6 @@ public abstract class CommandHandler<P extends PluginBase> {
                     key = key.newKey(split[i], (i == split.length - 1));
                 }
             }
-            System.out.println("Registered command key: " + key.getName());
             commandMap.put(aliases.get(0), commandClass.getName());
             return true;
         }
@@ -125,6 +124,7 @@ public abstract class CommandHandler<P extends PluginBase> {
     }
 
     public boolean locateAndRunCommand(BasePlayer player, String[] args) {
+        args = commandDetection(args);
         final String className = commandMap.get(args[0]);
         if (className == null) {
             Logging.severe("Could not locate registered command '" + args[0] + "'");
@@ -181,8 +181,8 @@ public abstract class CommandHandler<P extends PluginBase> {
         if (lastActualCommand != null) {
             String[] newSplit = new String[split.length - lastActualCommandIndex];
             newSplit[0] = lastActualCommand.getName();
-            if (newSplit.length > 1) {
-                System.arraycopy(split, lastActualCommandIndex + 1, newSplit, 1, split.length - lastActualCommandIndex + 1);
+            if (newSplit.length > 1 && lastActualCommandIndex + 1 < split.length) {
+                System.arraycopy(split, lastActualCommandIndex + 1, newSplit, 1, split.length - lastActualCommandIndex - 1);
             }
             return newSplit;
         }
