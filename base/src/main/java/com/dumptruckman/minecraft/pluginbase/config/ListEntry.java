@@ -3,11 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.config;
 
-import java.util.Map;
+import java.util.List;
 
-public interface MappedConfigEntry<T> extends ConfigEntry<T> {
+public interface ListEntry<T> extends Entry<T> {
 
-    Map<String, T> getNewTypeMap();
+    List<T> getNewTypeList();
 
-    Map<String, T> getDefault();
+    List<T> getDefault();
 }

@@ -17,7 +17,7 @@ import java.util.List;
 public interface PluginBase<C extends BaseConfig> {
 
     /**
-     * @return the Config object which contains settings for this plugin.
+     * @return the Properties object which contains settings for this plugin.
      */
     C config();
 

@@ -10,14 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class DefaultMappedConfigEntry<T> extends DefaultConfigEntry<T> implements MappedConfigEntry<T> {
+class DefaultMappedEntry<T> extends DefaultEntry<T> implements MappedEntry<T> {
 
     private final Class<? extends Map> mapClass;
     private final Map<String, T> defMap;
 
-    public DefaultMappedConfigEntry(Class<T> type, String path, Map<String, T> def, List<String> comments,
-                                    EntrySerializer<T> serializer, EntryValidator validator, Message description,
-                                    boolean deprecated, boolean defaultIfMissing, Class<? extends Map> mapClass) {
+    public DefaultMappedEntry(Class<T> type, String path, Map<String, T> def, List<String> comments,
+                              EntrySerializer<T> serializer, EntryValidator validator, Message description,
+                              boolean deprecated, boolean defaultIfMissing, Class<? extends Map> mapClass) {
         super(type, path, comments, serializer, validator, description, deprecated, defaultIfMissing);
         this.mapClass = mapClass;
         this.defMap = def;

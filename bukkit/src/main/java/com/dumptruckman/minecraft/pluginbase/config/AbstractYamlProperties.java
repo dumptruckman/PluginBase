@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public abstract class AbstractYamlConfig implements Config {
+public abstract class AbstractYamlProperties implements Properties {
 
     private CommentedYamlConfiguration config;
     private final File configFile;
@@ -35,7 +35,7 @@ public abstract class AbstractYamlConfig implements Config {
     private final boolean doComments;
     private final boolean autoDefaults;
 
-    public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, boolean autoDefaults, File configFile, Class... configClasses) throws IOException {
+    public AbstractYamlProperties(BukkitPlugin plugin, boolean doComments, boolean autoDefaults, File configFile, Class... configClasses) throws IOException {
         if (plugin == null) {
             throw new IllegalArgumentException("plugin may not be null!");
         }
@@ -88,15 +88,15 @@ public abstract class AbstractYamlConfig implements Config {
     }
 
     @Override
-    public void reload() throws IOException {
+    public void reload() throws Exception {
         load();
     }
 
     private void deserializeAll() {
         Logging.finer("Beginning deserialization...");
-        for (ConfigEntry entry : entries.entries) {
+        for (Entry entry : entries.entries) {
             if (getConfig().get(entry.getName()) != null) {
-                if (entry instanceof MappedConfigEntry) {
+                if (entry instanceof MappedEntry) {
                     ConfigurationSection section = getConfig().getConfigurationSection(entry.getName());
                     if (section == null) {
                         getConfig().set(entry.getName(), entry.getDefault());
@@ -114,7 +114,7 @@ public abstract class AbstractYamlConfig implements Config {
                             }
                         }
                     }
-                } else if (entry instanceof ListConfigEntry) {
+                } else if (entry instanceof ListEntry) {
                     List list = getConfig().getList(entry.getName());
                     if (list == null) {
                         getConfig().set(entry.getName(), entry.getDefault());
@@ -131,7 +131,7 @@ public abstract class AbstractYamlConfig implements Config {
                         }
                         getConfig().set(entry.getName(), newList);
                     }
-                } else if (entry instanceof SimpleConfigEntry && !entry.getType().isAssignableFrom(Null.class)) {
+                } else if (entry instanceof SimpleEntry && !entry.getType().isAssignableFrom(Null.class)) {
                     Object obj = getConfig().get(entry.getName());
                     if (obj == null) {
                         getConfig().set(entry.getName(), entry.getDefault());
@@ -153,21 +153,21 @@ public abstract class AbstractYamlConfig implements Config {
      * Loads default settings for any missing config values.
      */
     private void setDefaults() {
-        for (ConfigEntry path : entries.entries) {
+        for (Entry path : entries.entries) {
             //config.addComment(path.getName(), path.getComments());
             if (getConfig().get(path.getName()) == null) {
                 if (path.isDeprecated()) {
                     continue;
                 }
-                if (path instanceof MappedConfigEntry) {
+                if (path instanceof MappedEntry) {
                     Logging.fine("Config: Defaulting map for '%s'", path.getName());
                     if (path.getDefault() != null) {
                         getConfig().set(path.getName(), path.getDefault());
                     } else {
-                        getConfig().set(path.getName(), ((MappedConfigEntry) path).getNewTypeMap());
+                        getConfig().set(path.getName(), ((MappedEntry) path).getNewTypeMap());
                     }
-                } else if (path instanceof ListConfigEntry) {
-                    ListConfigEntry listPath = (ListConfigEntry) path;
+                } else if (path instanceof ListEntry) {
+                    ListEntry listPath = (ListEntry) path;
                     Logging.fine("Config: Defaulting list for '%s'", path.getName());
                     if (listPath.getDefault() != null) {
                         getConfig().set(path.getName(), listPath.getDefault());
@@ -182,7 +182,7 @@ public abstract class AbstractYamlConfig implements Config {
         }
     }
 
-    private boolean isValid(ConfigEntry entry, Object o) {
+    private boolean isValid(Entry entry, Object o) {
         if (!entry.isValid(o)) {
             Logging.warning(entry.getName() + " contains an invalid value!");
             Logging.warning(plugin.getMessager().getMessage(entry.getInvalidMessage()));
@@ -194,11 +194,11 @@ public abstract class AbstractYamlConfig implements Config {
         return true;
     }
     
-    protected final boolean isInConfig(ConfigEntry entry) {
+    protected final boolean isInConfig(Entry entry) {
         return entries.entries.contains(entry);
     }
 
-    private Object getEntryValue(ConfigEntry entry) throws IllegalArgumentException {
+    private Object getEntryValue(Entry entry) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("entry not registered to this config!");
         }
@@ -212,7 +212,7 @@ public abstract class AbstractYamlConfig implements Config {
     }
 
     @Override
-    public <T> T get(SimpleConfigEntry<T> entry) throws IllegalArgumentException {
+    public <T> T get(SimpleEntry<T> entry) throws IllegalArgumentException {
         Object obj = getEntryValue(entry);
         if (obj == null) {
             return null;
@@ -227,7 +227,7 @@ public abstract class AbstractYamlConfig implements Config {
     }
 
     @Override
-    public <T> List<T> get(ListConfigEntry<T> entry) throws IllegalArgumentException {
+    public <T> List<T> get(ListEntry<T> entry) throws IllegalArgumentException {
         Object obj = getEntryValue(entry);
         if (obj == null) {
             return null;
@@ -254,7 +254,7 @@ public abstract class AbstractYamlConfig implements Config {
     }
 
     @Override
-    public <T> Map<String, T> get(MappedConfigEntry<T> entry) throws IllegalArgumentException {
+    public <T> Map<String, T> get(MappedEntry<T> entry) throws IllegalArgumentException {
         Object obj = getEntryValue(entry);
         if (obj == null) {
             return null;
@@ -284,7 +284,7 @@ public abstract class AbstractYamlConfig implements Config {
     }
 
     @Override
-    public <T> T get(MappedConfigEntry<T> entry, String key) throws IllegalArgumentException {
+    public <T> T get(MappedEntry<T> entry, String key) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("entry not registered to this config!");
         }
@@ -303,9 +303,9 @@ public abstract class AbstractYamlConfig implements Config {
     }
 
     @Override
-    public <T> boolean set(SimpleConfigEntry<T> entry, T value) throws IllegalArgumentException {
+    public <T> boolean set(SimpleEntry<T> entry, T value) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+            throw new IllegalArgumentException("Entry not registered to this config!");
         }
         if (value == null) {
             getConfig().set(entry.getName(), null);
@@ -319,27 +319,27 @@ public abstract class AbstractYamlConfig implements Config {
     }
 
     @Override
-    public <T> boolean set(ListConfigEntry<T> entry, List<T> newValue) throws IllegalArgumentException {
+    public <T> boolean set(ListEntry<T> entry, List<T> newValue) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+            throw new IllegalArgumentException("Entry not registered to this config!");
         }
         getConfig().set(entry.getName(), newValue);
         return true;
     }
 
     @Override
-    public <T> boolean set(MappedConfigEntry<T> entry, Map<String, T> newValue) throws IllegalArgumentException {
+    public <T> boolean set(MappedEntry<T> entry, Map<String, T> newValue) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+            throw new IllegalArgumentException("Entry not registered to this config!");
         }
         getConfig().set(entry.getName(), newValue);
         return true;
     }
 
     @Override
-    public <T> boolean set(MappedConfigEntry<T> entry, String key, T value) throws IllegalArgumentException {
+    public <T> boolean set(MappedEntry<T> entry, String key, T value) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("ConfigEntry not registered to this config!");
+            throw new IllegalArgumentException("Entry not registered to this config!");
         }
         getConfig().set(entry.getName() + getConfig().options().pathSeparator() + key, value);
         return true;
@@ -350,9 +350,9 @@ public abstract class AbstractYamlConfig implements Config {
     }
 
     private void serializeAll(FileConfiguration newConfig) {
-        for (ConfigEntry entry : entries.entries) {
+        for (Entry entry : entries.entries) {
             if (getConfig().get(entry.getName()) != null) {
-                if (entry instanceof MappedConfigEntry) {
+                if (entry instanceof MappedEntry) {
                     Object o = getConfig().get(entry.getName());
                     if (o == null) {
                         Logging.fine("Missing entry: %s", entry.getName());
@@ -378,7 +378,7 @@ public abstract class AbstractYamlConfig implements Config {
                         }
                     }
                     newConfig.set(entry.getName(), map);
-                } else if (entry instanceof ListConfigEntry) {
+                } else if (entry instanceof ListEntry) {
                     List list = getConfig().getList(entry.getName());
                     if (list == null) {
                         Logging.fine("Missing entry: %s", entry.getName());
@@ -395,7 +395,7 @@ public abstract class AbstractYamlConfig implements Config {
                         }
                     }
                     newConfig.set(entry.getName(), newList);
-                } else if (entry instanceof SimpleConfigEntry && !entry.getType().isAssignableFrom(Null.class)) {
+                } else if (entry instanceof SimpleEntry && !entry.getType().isAssignableFrom(Null.class)) {
                     Object obj = getConfig().get(entry.getName());
                     if (obj == null) {
                         Logging.fine("Missing entry: %s", entry.getName());
@@ -422,7 +422,7 @@ public abstract class AbstractYamlConfig implements Config {
         newConfig.getConfig().options().header(getHeader());
         serializeAll(newConfig.getConfig());
         if (doComments) {
-            for (ConfigEntry path : entries.entries) {
+            for (Entry path : entries.entries) {
                 newConfig.addComment(path.getName(), path.getComments());
             }
         }
@@ -435,7 +435,7 @@ public abstract class AbstractYamlConfig implements Config {
 
     private final class Entries {
 
-        private final Set<ConfigEntry> entries = new CopyOnWriteArraySet<ConfigEntry>();
+        private final Set<Entry> entries = new CopyOnWriteArraySet<Entry>();
         
         private Entries(Class... configClasses) {
             final Set<Class> classes = new LinkedHashSet<Class>(10);
@@ -454,9 +454,9 @@ public abstract class AbstractYamlConfig implements Config {
                     }
                     field.setAccessible(true);
                     try {
-                        if (ConfigEntry.class.isInstance(field.get(null))) {
+                        if (Entry.class.isInstance(field.get(null))) {
                             try {
-                                entries.add((ConfigEntry) field.get(null));
+                                entries.add((Entry) field.get(null));
                             } catch(IllegalAccessException e) {
                                 e.printStackTrace();
                             }

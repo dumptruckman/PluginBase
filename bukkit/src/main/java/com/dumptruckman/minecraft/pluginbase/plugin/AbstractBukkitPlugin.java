@@ -37,6 +37,7 @@ import org.mcstats.Metrics;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * An implemention of PluginBase made for Bukkit Plugin that automatically takes care of many of the setup steps
@@ -178,9 +179,9 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
                 this.config.reload();
             }
             Logging.fine("Loaded config file!");
-        } catch (IOException e) {  // Catch errors loading the config file and exit out if found.
+        } catch (Exception e) {  // Catch errors loading the config file and exit out if found.
             Logging.severe("Error loading config file!");
-            Logging.severe(e.getMessage());
+            Logging.getLogger().log(Level.SEVERE, "Exception: ", e);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -305,13 +306,13 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     /**
      * Implement this method with by returning a new instance of your Configuration object.
      *
-     * {@link com.dumptruckman.minecraft.pluginbase.config.AbstractYamlConfig} is given to make implementing your
+     * {@link com.dumptruckman.minecraft.pluginbase.config.AbstractYamlProperties} is given to make implementing your
      * config easy.
      *
      * @return A new config instance.
-     * @throws IOException If IO problems occur when creating a new config instance.
+     * @throws Exception If any problems occur when creating a new config instance.
      */
-    protected abstract C newConfigInstance() throws IOException;
+    protected abstract C newConfigInstance() throws Exception;
 
     /**
      * Implement this method to tell PluginBase whether to use a database configuration file or not.

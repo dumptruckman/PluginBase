@@ -4,13 +4,13 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.List;
 
-public class DefaultSimpleConfigEntry<T> extends DefaultConfigEntry<T> implements SimpleConfigEntry<T> {
+public class DefaultSimpleEntry<T> extends DefaultEntry<T> implements SimpleEntry<T> {
 
     private final T def;
 
-    public DefaultSimpleConfigEntry(Class<T> type, String path, T def, List<String> comments,
-            EntrySerializer<T> serializer, EntryValidator validator, Message description,
-            boolean deprecated, boolean defaultIfMissing) {
+    public DefaultSimpleEntry(Class<T> type, String path, T def, List<String> comments,
+                              EntrySerializer<T> serializer, EntryValidator validator, Message description,
+                              boolean deprecated, boolean defaultIfMissing) {
         super(type, path, comments, serializer, validator, description, deprecated, defaultIfMissing);
         this.def = def;
     }

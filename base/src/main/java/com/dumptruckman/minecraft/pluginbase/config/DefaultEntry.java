@@ -7,7 +7,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.List;
 
-abstract class DefaultConfigEntry<T> implements ConfigEntry<T> {
+abstract class DefaultEntry<T> implements Entry<T> {
 
     private final String path;
     private final List<String> comments;
@@ -18,9 +18,9 @@ abstract class DefaultConfigEntry<T> implements ConfigEntry<T> {
     private final boolean deprecated;
     private final boolean defaultIfMissing;
 
-    public DefaultConfigEntry(Class<T> type, String path, List<String> comments,
-            EntrySerializer<T> serializer, EntryValidator validator, Message description,
-            boolean deprecated, boolean defaultIfMissing) {
+    public DefaultEntry(Class<T> type, String path, List<String> comments,
+                        EntrySerializer<T> serializer, EntryValidator validator, Message description,
+                        boolean deprecated, boolean defaultIfMissing) {
         this.path = path;
         this.comments = comments;
         this.type = type;

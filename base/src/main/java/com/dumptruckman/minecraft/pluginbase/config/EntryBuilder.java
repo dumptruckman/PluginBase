@@ -84,23 +84,23 @@ public class EntryBuilder<T> {
         return this;
     }
 
-    public SimpleConfigEntry<T> build() {
-        return new DefaultSimpleConfigEntry<T>(type, path, def, comments, serializer, validator, description, deprecated, defaultIfMissing);
+    public SimpleEntry<T> build() {
+        return new DefaultSimpleEntry<T>(type, path, def, comments, serializer, validator, description, deprecated, defaultIfMissing);
     }
 
-    public MappedConfigEntry<T> buildMap() {
-        return new DefaultMappedConfigEntry<T>(type, path, defMap, comments, serializer, validator, description, deprecated, defaultIfMissing, HashMap.class);
+    public MappedEntry<T> buildMap() {
+        return new DefaultMappedEntry<T>(type, path, defMap, comments, serializer, validator, description, deprecated, defaultIfMissing, HashMap.class);
     }
 
-    public MappedConfigEntry<T> buildMap(Class<? extends Map> mapClass) {
-        return new DefaultMappedConfigEntry<T>(type, path, defMap, comments, serializer, validator, description, deprecated, defaultIfMissing, mapClass);
+    public MappedEntry<T> buildMap(Class<? extends Map> mapClass) {
+        return new DefaultMappedEntry<T>(type, path, defMap, comments, serializer, validator, description, deprecated, defaultIfMissing, mapClass);
     }
 
-    public ListConfigEntry<T> buildList() {
-        return new DefaultListConfigEntry<T>(type, path, defList, comments, serializer, validator, description, deprecated, defaultIfMissing, ArrayList.class);
+    public ListEntry<T> buildList() {
+        return new DefaultListEntry<T>(type, path, defList, comments, serializer, validator, description, deprecated, defaultIfMissing, ArrayList.class);
     }
 
-    public ListConfigEntry<T> buildList(Class<? extends List> listClass) {
-        return new DefaultListConfigEntry<T>(type, path, defList, comments, serializer, validator, description, deprecated, defaultIfMissing, listClass);
+    public ListEntry<T> buildList(Class<? extends List> listClass) {
+        return new DefaultListEntry<T>(type, path, defList, comments, serializer, validator, description, deprecated, defaultIfMissing, listClass);
     }
 }
