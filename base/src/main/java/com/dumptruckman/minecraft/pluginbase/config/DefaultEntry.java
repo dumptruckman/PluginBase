@@ -5,6 +5,7 @@ package com.dumptruckman.minecraft.pluginbase.config;
 
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
+import java.util.Collections;
 import java.util.List;
 
 abstract class DefaultEntry<T> implements Entry<T> {
@@ -17,12 +18,14 @@ abstract class DefaultEntry<T> implements Entry<T> {
     private final Message description;
     private final boolean deprecated;
     private final boolean defaultIfMissing;
+    private final List<String> aliases;
 
-    public DefaultEntry(Class<T> type, String path, List<String> comments,
+    public DefaultEntry(Class<T> type, String path, List<String> comments, List<String> aliases,
                         EntrySerializer<T> serializer, EntryValidator validator, Message description,
                         boolean deprecated, boolean defaultIfMissing) {
         this.path = path;
-        this.comments = comments;
+        this.comments = Collections.unmodifiableList(comments);
+        this.aliases = Collections.unmodifiableList(aliases);
         this.type = type;
         this.serializer = serializer;
         this.validator = validator;
@@ -46,6 +49,11 @@ abstract class DefaultEntry<T> implements Entry<T> {
      */
     public List<String> getComments() {
         return this.comments;
+    }
+
+    @Override
+    public List<String> getAliases() {
+        return this.aliases;
     }
 
     public boolean isValid(Object obj) {

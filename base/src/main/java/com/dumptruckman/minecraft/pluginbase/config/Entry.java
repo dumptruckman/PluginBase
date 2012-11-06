@@ -38,6 +38,16 @@ interface Entry<T> {
     List<String> getComments();
 
     /**
+     * Retrieves the aliases for this entry.
+     *
+     * Aliases are sometimes used when config entries are checked reflectively to offer an easy way to set entry
+     * values via command.
+     *
+     * @return The aliases for this entry.
+     */
+    List<String> getAliases();
+
+    /**
      * Verifies that the given object is a valid value for this entry.
      *
      * @param obj The object to verify.

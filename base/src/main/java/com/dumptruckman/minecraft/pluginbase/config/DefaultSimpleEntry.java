@@ -8,10 +8,10 @@ public class DefaultSimpleEntry<T> extends DefaultEntry<T> implements SimpleEntr
 
     private final T def;
 
-    public DefaultSimpleEntry(Class<T> type, String path, T def, List<String> comments,
+    public DefaultSimpleEntry(Class<T> type, String path, T def, List<String> comments, List<String> aliases,
                               EntrySerializer<T> serializer, EntryValidator validator, Message description,
                               boolean deprecated, boolean defaultIfMissing) {
-        super(type, path, comments, serializer, validator, description, deprecated, defaultIfMissing);
+        super(type, path, comments, aliases, serializer, validator, description, deprecated, defaultIfMissing);
         this.def = def;
     }
     /**

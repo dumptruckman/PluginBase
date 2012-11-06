@@ -7,8 +7,10 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class EntryBuilder<T> {
 
@@ -17,6 +19,7 @@ public class EntryBuilder<T> {
     private List<T> defList = null;
     private Map<String, T> defMap = null;
     private List<String> comments = new ArrayList<String>();
+    private Set<String> aliases = new LinkedHashSet<String>();
     private Class<T> type;
     private Message description = null;
     private EntrySerializer<T> serializer;
@@ -84,23 +87,28 @@ public class EntryBuilder<T> {
         return this;
     }
 
+    public EntryBuilder<T> alias(String alias) {
+        this.aliases.add(alias);
+        return this;
+    }
+
     public SimpleEntry<T> build() {
-        return new DefaultSimpleEntry<T>(type, path, def, comments, serializer, validator, description, deprecated, defaultIfMissing);
+        return new DefaultSimpleEntry<T>(type, path, def, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing);
     }
 
     public MappedEntry<T> buildMap() {
-        return new DefaultMappedEntry<T>(type, path, defMap, comments, serializer, validator, description, deprecated, defaultIfMissing, HashMap.class);
+        return new DefaultMappedEntry<T>(type, path, defMap, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, HashMap.class);
     }
 
     public MappedEntry<T> buildMap(Class<? extends Map> mapClass) {
-        return new DefaultMappedEntry<T>(type, path, defMap, comments, serializer, validator, description, deprecated, defaultIfMissing, mapClass);
+        return new DefaultMappedEntry<T>(type, path, defMap, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, mapClass);
     }
 
     public ListEntry<T> buildList() {
-        return new DefaultListEntry<T>(type, path, defList, comments, serializer, validator, description, deprecated, defaultIfMissing, ArrayList.class);
+        return new DefaultListEntry<T>(type, path, defList, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, ArrayList.class);
     }
 
     public ListEntry<T> buildList(Class<? extends List> listClass) {
-        return new DefaultListEntry<T>(type, path, defList, comments, serializer, validator, description, deprecated, defaultIfMissing, listClass);
+        return new DefaultListEntry<T>(type, path, defList, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, listClass);
     }
 }

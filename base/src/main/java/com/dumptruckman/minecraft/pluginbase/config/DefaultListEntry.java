@@ -14,10 +14,10 @@ class DefaultListEntry<T> extends DefaultEntry<T> implements ListEntry<T> {
     private final Class<? extends List> listClass;
     private final List<T> defList;
 
-    public DefaultListEntry(Class<T> type, String path, List<T> def, List<String> comments,
+    public DefaultListEntry(Class<T> type, String path, List<T> def, List<String> comments, List<String> aliases,
                             EntrySerializer<T> serializer, EntryValidator validator, Message description,
                             boolean deprecated, boolean defaultIfMissing, Class<? extends List> listClass) {
-        super(type, path, comments, serializer, validator, description, deprecated, defaultIfMissing);
+        super(type, path, comments, aliases, serializer, validator, description, deprecated, defaultIfMissing);
         this.listClass = listClass;
         this.defList = def;
     }
