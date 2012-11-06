@@ -7,7 +7,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.List;
 
-interface Entry<T> {
+interface Property<T> {
 
     /**
      * Retrieves the path for a config option.
@@ -82,7 +82,7 @@ interface Entry<T> {
 
     /**
      * Deserializes the given object from the form that is stored in the Configuration into a form that fits the type
-     * of this Properties Entry.
+     * of this Properties Property.
      *
      * @param o The value to deserialize.
      * @return The deserialized value.

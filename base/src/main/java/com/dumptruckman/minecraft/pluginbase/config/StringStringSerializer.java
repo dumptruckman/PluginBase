@@ -8,7 +8,7 @@ import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-class StringStringSerializer<T> implements EntrySerializer<T> {
+class StringStringSerializer<T> implements PropertySerializer<T> {
 
     private Constructor<T> constructor;
 

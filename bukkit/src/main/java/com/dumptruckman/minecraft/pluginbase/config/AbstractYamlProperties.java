@@ -94,54 +94,54 @@ public abstract class AbstractYamlProperties implements Properties {
 
     private void deserializeAll() {
         Logging.finer("Beginning deserialization...");
-        for (Entry entry : entries.entries) {
-            if (getConfig().get(entry.getName()) != null) {
-                if (entry instanceof MappedEntry) {
-                    ConfigurationSection section = getConfig().getConfigurationSection(entry.getName());
+        for (Property property : entries.properties) {
+            if (getConfig().get(property.getName()) != null) {
+                if (property instanceof MappedProperty) {
+                    ConfigurationSection section = getConfig().getConfigurationSection(property.getName());
                     if (section == null) {
-                        getConfig().set(entry.getName(), entry.getDefault());
+                        getConfig().set(property.getName(), property.getDefault());
                     } else {
                         for (String key : section.getKeys(false)) {
                             Object obj = section.get(key);
                             if (obj != null) {
-                                if (entry.isValid(obj)) {
-                                    Object res = entry.deserialize(obj);
+                                if (property.isValid(obj)) {
+                                    Object res = property.deserialize(obj);
                                     section.set(key, res);
                                 } else {
-                                    Logging.warning("Invalid value '" + obj + "' at '" + entry.getName() + getConfig().options().pathSeparator() + key + "'.  Value will be deleted!");
+                                    Logging.warning("Invalid value '" + obj + "' at '" + property.getName() + getConfig().options().pathSeparator() + key + "'.  Value will be deleted!");
                                     section.set(key, null);
                                 }
                             }
                         }
                     }
-                } else if (entry instanceof ListEntry) {
-                    List list = getConfig().getList(entry.getName());
+                } else if (property instanceof ListProperty) {
+                    List list = getConfig().getList(property.getName());
                     if (list == null) {
-                        getConfig().set(entry.getName(), entry.getDefault());
+                        getConfig().set(property.getName(), property.getDefault());
                     } else {
                         List newList = new ArrayList(list.size());
                         for (int i = 0; i < list.size(); i++) {
                             Object obj = list.get(i);
-                            if (entry.isValid(obj)) {
-                                Object res = entry.deserialize(obj);
+                            if (property.isValid(obj)) {
+                                Object res = property.deserialize(obj);
                                 newList.add(res);
                             } else {
-                                Logging.warning("Invalid value '" + obj + "' at '" + entry.getName() + "[" + i + "]'.  Value will be deleted!");
+                                Logging.warning("Invalid value '" + obj + "' at '" + property.getName() + "[" + i + "]'.  Value will be deleted!");
                             }
                         }
-                        getConfig().set(entry.getName(), newList);
+                        getConfig().set(property.getName(), newList);
                     }
-                } else if (entry instanceof SimpleEntry && !entry.getType().isAssignableFrom(Null.class)) {
-                    Object obj = getConfig().get(entry.getName());
+                } else if (property instanceof SimpleProperty && !property.getType().isAssignableFrom(Null.class)) {
+                    Object obj = getConfig().get(property.getName());
                     if (obj == null) {
-                        getConfig().set(entry.getName(), entry.getDefault());
+                        getConfig().set(property.getName(), property.getDefault());
                     } else {
-                        if (entry.isValid(obj)) {
-                            Object res = entry.deserialize(obj);
-                            getConfig().set(entry.getName(), res);
+                        if (property.isValid(obj)) {
+                            Object res = property.deserialize(obj);
+                            getConfig().set(property.getName(), res);
                         } else {
-                            Logging.warning("Invalid value '" + obj + "' at '" + entry.getName() + "'.  Value will be defaulted!");
-                            getConfig().set(entry.getName(), entry.getDefault());
+                            Logging.warning("Invalid value '" + obj + "' at '" + property.getName() + "'.  Value will be defaulted!");
+                            getConfig().set(property.getName(), property.getDefault());
                         }
                     }
                 }
@@ -153,21 +153,21 @@ public abstract class AbstractYamlProperties implements Properties {
      * Loads default settings for any missing config values.
      */
     private void setDefaults() {
-        for (Entry path : entries.entries) {
+        for (Property path : entries.properties) {
             //config.addComment(path.getName(), path.getComments());
             if (getConfig().get(path.getName()) == null) {
                 if (path.isDeprecated()) {
                     continue;
                 }
-                if (path instanceof MappedEntry) {
+                if (path instanceof MappedProperty) {
                     Logging.fine("Config: Defaulting map for '%s'", path.getName());
                     if (path.getDefault() != null) {
                         getConfig().set(path.getName(), path.getDefault());
                     } else {
-                        getConfig().set(path.getName(), ((MappedEntry) path).getNewTypeMap());
+                        getConfig().set(path.getName(), ((MappedProperty) path).getNewTypeMap());
                     }
-                } else if (path instanceof ListEntry) {
-                    ListEntry listPath = (ListEntry) path;
+                } else if (path instanceof ListProperty) {
+                    ListProperty listPath = (ListProperty) path;
                     Logging.fine("Config: Defaulting list for '%s'", path.getName());
                     if (listPath.getDefault() != null) {
                         getConfig().set(path.getName(), listPath.getDefault());
@@ -182,37 +182,37 @@ public abstract class AbstractYamlProperties implements Properties {
         }
     }
 
-    private boolean isValid(Entry entry, Object o) {
-        if (!entry.isValid(o)) {
-            Logging.warning(entry.getName() + " contains an invalid value!");
-            Logging.warning(plugin.getMessager().getMessage(entry.getInvalidMessage()));
-            Logging.warning("Setting to default of: " + entry.getDefault());
-            getConfig().set(entry.getName(), entry.getDefault());
+    private boolean isValid(Property property, Object o) {
+        if (!property.isValid(o)) {
+            Logging.warning(property.getName() + " contains an invalid value!");
+            Logging.warning(plugin.getMessager().getMessage(property.getInvalidMessage()));
+            Logging.warning("Setting to default of: " + property.getDefault());
+            getConfig().set(property.getName(), property.getDefault());
             save();
             return false;
         }
         return true;
     }
     
-    protected final boolean isInConfig(Entry entry) {
-        return entries.entries.contains(entry);
+    protected final boolean isInConfig(Property property) {
+        return entries.properties.contains(property);
     }
 
-    private Object getEntryValue(Entry entry) throws IllegalArgumentException {
-        if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("entry not registered to this config!");
+    private Object getEntryValue(Property property) throws IllegalArgumentException {
+        if (!isInConfig(property)) {
+            throw new IllegalArgumentException("property not registered to this config!");
         }
-        Object obj = getConfig().get(entry.getName());
+        Object obj = getConfig().get(property.getName());
         if (obj == null) {
-            if (entry.shouldDefaultIfMissing()) {
-                obj = entry.getDefault();
+            if (property.shouldDefaultIfMissing()) {
+                obj = property.getDefault();
             }
         }
         return obj;
     }
 
     @Override
-    public <T> T get(SimpleEntry<T> entry) throws IllegalArgumentException {
+    public <T> T get(SimpleProperty<T> entry) throws IllegalArgumentException {
         Object obj = getEntryValue(entry);
         if (obj == null) {
             return null;
@@ -227,7 +227,7 @@ public abstract class AbstractYamlProperties implements Properties {
     }
 
     @Override
-    public <T> List<T> get(ListEntry<T> entry) throws IllegalArgumentException {
+    public <T> List<T> get(ListProperty<T> entry) throws IllegalArgumentException {
         Object obj = getEntryValue(entry);
         if (obj == null) {
             return null;
@@ -254,7 +254,7 @@ public abstract class AbstractYamlProperties implements Properties {
     }
 
     @Override
-    public <T> Map<String, T> get(MappedEntry<T> entry) throws IllegalArgumentException {
+    public <T> Map<String, T> get(MappedProperty<T> entry) throws IllegalArgumentException {
         Object obj = getEntryValue(entry);
         if (obj == null) {
             return null;
@@ -284,7 +284,7 @@ public abstract class AbstractYamlProperties implements Properties {
     }
 
     @Override
-    public <T> T get(MappedEntry<T> entry, String key) throws IllegalArgumentException {
+    public <T> T get(MappedProperty<T> entry, String key) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("entry not registered to this config!");
         }
@@ -303,9 +303,9 @@ public abstract class AbstractYamlProperties implements Properties {
     }
 
     @Override
-    public <T> boolean set(SimpleEntry<T> entry, T value) throws IllegalArgumentException {
+    public <T> boolean set(SimpleProperty<T> entry, T value) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("Entry not registered to this config!");
+            throw new IllegalArgumentException("Property not registered to this config!");
         }
         if (value == null) {
             getConfig().set(entry.getName(), null);
@@ -319,27 +319,27 @@ public abstract class AbstractYamlProperties implements Properties {
     }
 
     @Override
-    public <T> boolean set(ListEntry<T> entry, List<T> newValue) throws IllegalArgumentException {
+    public <T> boolean set(ListProperty<T> entry, List<T> newValue) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("Entry not registered to this config!");
+            throw new IllegalArgumentException("Property not registered to this config!");
         }
         getConfig().set(entry.getName(), newValue);
         return true;
     }
 
     @Override
-    public <T> boolean set(MappedEntry<T> entry, Map<String, T> newValue) throws IllegalArgumentException {
+    public <T> boolean set(MappedProperty<T> entry, Map<String, T> newValue) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("Entry not registered to this config!");
+            throw new IllegalArgumentException("Property not registered to this config!");
         }
         getConfig().set(entry.getName(), newValue);
         return true;
     }
 
     @Override
-    public <T> boolean set(MappedEntry<T> entry, String key, T value) throws IllegalArgumentException {
+    public <T> boolean set(MappedProperty<T> entry, String key, T value) throws IllegalArgumentException {
         if (!isInConfig(entry)) {
-            throw new IllegalArgumentException("Entry not registered to this config!");
+            throw new IllegalArgumentException("Property not registered to this config!");
         }
         getConfig().set(entry.getName() + getConfig().options().pathSeparator() + key, value);
         return true;
@@ -350,62 +350,62 @@ public abstract class AbstractYamlProperties implements Properties {
     }
 
     private void serializeAll(FileConfiguration newConfig) {
-        for (Entry entry : entries.entries) {
-            if (getConfig().get(entry.getName()) != null) {
-                if (entry instanceof MappedEntry) {
-                    Object o = getConfig().get(entry.getName());
+        for (Property property : entries.properties) {
+            if (getConfig().get(property.getName()) != null) {
+                if (property instanceof MappedProperty) {
+                    Object o = getConfig().get(property.getName());
                     if (o == null) {
-                        Logging.fine("Missing entry: %s", entry.getName());
+                        Logging.fine("Missing property: %s", property.getName());
                         continue;
                     }
                     Map map;
                     if (o instanceof ConfigurationSection) {
                         map = ((ConfigurationSection) o).getValues(false);
                     } else if (!(o instanceof Map)) {
-                        Logging.fine("Missing entry: %s", entry.getName());
+                        Logging.fine("Missing property: %s", property.getName());
                         continue;
                     } else {
                         map = (Map) o;
                     }
                     for (Object key : map.keySet()) {
                         Object obj = map.get(key);
-                        if (entry.getType().isInstance(obj)) {
+                        if (property.getType().isInstance(obj)) {
                             if (obj != null) {
-                                map.put(key, entry.serialize(entry.getType().cast(obj)));
+                                map.put(key, property.serialize(property.getType().cast(obj)));
                             }
                         } else {
-                            Logging.warning("Could not serialize: %s", entry.getName());
+                            Logging.warning("Could not serialize: %s", property.getName());
                         }
                     }
-                    newConfig.set(entry.getName(), map);
-                } else if (entry instanceof ListEntry) {
-                    List list = getConfig().getList(entry.getName());
+                    newConfig.set(property.getName(), map);
+                } else if (property instanceof ListProperty) {
+                    List list = getConfig().getList(property.getName());
                     if (list == null) {
-                        Logging.fine("Missing entry: %s", entry.getName());
+                        Logging.fine("Missing property: %s", property.getName());
                         continue;
                     }
                     List newList = new ArrayList(list.size());
                     for (Object obj : list) {
-                        if (entry.getType().isInstance(obj)) {
+                        if (property.getType().isInstance(obj)) {
                             if (obj != null) {
-                                newList.add(entry.serialize(entry.getType().cast(obj)));
+                                newList.add(property.serialize(property.getType().cast(obj)));
                             }
                         } else {
-                            Logging.warning("Could not serialize: %s", entry.getName());
+                            Logging.warning("Could not serialize: %s", property.getName());
                         }
                     }
-                    newConfig.set(entry.getName(), newList);
-                } else if (entry instanceof SimpleEntry && !entry.getType().isAssignableFrom(Null.class)) {
-                    Object obj = getConfig().get(entry.getName());
+                    newConfig.set(property.getName(), newList);
+                } else if (property instanceof SimpleProperty && !property.getType().isAssignableFrom(Null.class)) {
+                    Object obj = getConfig().get(property.getName());
                     if (obj == null) {
-                        Logging.fine("Missing entry: %s", entry.getName());
+                        Logging.fine("Missing property: %s", property.getName());
                         continue;
                     }
-                    if (entry.getType().isInstance(obj)) {
-                        Object res = entry.serialize(entry.getType().cast(obj));
-                        newConfig.set(entry.getName(), res);
+                    if (property.getType().isInstance(obj)) {
+                        Object res = property.serialize(property.getType().cast(obj));
+                        newConfig.set(property.getName(), res);
                     } else {
-                        Logging.warning("Could not serialize '%s' since value is '%s' instead of '%s'", entry.getName(), obj.getClass(), entry.getType());
+                        Logging.warning("Could not serialize '%s' since value is '%s' instead of '%s'", property.getName(), obj.getClass(), property.getType());
                     }
                 }
             }
@@ -422,7 +422,7 @@ public abstract class AbstractYamlProperties implements Properties {
         newConfig.getConfig().options().header(getHeader());
         serializeAll(newConfig.getConfig());
         if (doComments) {
-            for (Entry path : entries.entries) {
+            for (Property path : entries.properties) {
                 newConfig.addComment(path.getName(), path.getComments());
             }
         }
@@ -435,7 +435,7 @@ public abstract class AbstractYamlProperties implements Properties {
 
     private final class Entries {
 
-        private final Set<Entry> entries = new CopyOnWriteArraySet<Entry>();
+        private final Set<Property> properties = new CopyOnWriteArraySet<Property>();
         
         private Entries(Class... configClasses) {
             final Set<Class> classes = new LinkedHashSet<Class>(10);
@@ -454,9 +454,9 @@ public abstract class AbstractYamlProperties implements Properties {
                     }
                     field.setAccessible(true);
                     try {
-                        if (Entry.class.isInstance(field.get(null))) {
+                        if (Property.class.isInstance(field.get(null))) {
                             try {
-                                entries.add((Entry) field.get(null));
+                                properties.add((Property) field.get(null));
                             } catch(IllegalAccessException e) {
                                 e.printStackTrace();
                             }

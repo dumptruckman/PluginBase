@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.config;
 
-class DefaultSerializer<T> implements EntrySerializer<T> {
+class DefaultSerializer<T> implements PropertySerializer<T> {
 
     private Class<T> type;
 

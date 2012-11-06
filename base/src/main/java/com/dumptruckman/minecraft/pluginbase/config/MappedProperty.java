@@ -5,7 +5,7 @@ package com.dumptruckman.minecraft.pluginbase.config;
 
 import java.util.Map;
 
-public interface MappedEntry<T> extends Entry<T> {
+public interface MappedProperty<T> extends Property<T> {
 
     Map<String, T> getNewTypeMap();
 

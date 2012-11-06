@@ -9,7 +9,7 @@ package com.dumptruckman.minecraft.pluginbase.config;
  *
  * @param <T> The type for the value of this entry.
  */
-public interface SimpleEntry<T> extends Entry<T> {
+public interface SimpleProperty<T> extends Property<T> {
 
     /**
      * Retrieves the default value for a config path.

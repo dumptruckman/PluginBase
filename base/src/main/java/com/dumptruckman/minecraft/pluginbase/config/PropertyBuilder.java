@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EntryBuilder<T> {
+public class PropertyBuilder<T> {
 
     private String path;
     private T def = null;
@@ -22,12 +22,12 @@ public class EntryBuilder<T> {
     private Set<String> aliases = new LinkedHashSet<String>();
     private Class<T> type;
     private Message description = null;
-    private EntrySerializer<T> serializer;
-    private EntryValidator validator;
+    private PropertySerializer<T> serializer;
+    private PropertyValidator validator;
     private boolean deprecated = false;
     private boolean defaultIfMissing = true;
 
-    public EntryBuilder(Class<T> type, String name) {
+    public PropertyBuilder(Class<T> type, String name) {
         this.path = name;
         this.type = type;
         if (type.equals(String.class)) {
@@ -42,73 +42,73 @@ public class EntryBuilder<T> {
         this.validator = new DefaultValidator();
     }
     
-    public EntryBuilder<T> def(T def) {
+    public PropertyBuilder<T> def(T def) {
         this.def = def;
         return this;
     }
 
-    public EntryBuilder<T> defList(List<T> def) {
+    public PropertyBuilder<T> defList(List<T> def) {
         this.defList = def;
         return this;
     }
 
-    public EntryBuilder<T> defMap(Map<String, T> def) {
+    public PropertyBuilder<T> defMap(Map<String, T> def) {
         this.defMap = def;
         return this;
     }
 
-    public EntryBuilder<T> comment(String comment) {
+    public PropertyBuilder<T> comment(String comment) {
         comments.add(comment);
         return this;
     }
 
-    public EntryBuilder<T> serializer(EntrySerializer<T> customSerializer) {
+    public PropertyBuilder<T> serializer(PropertySerializer<T> customSerializer) {
         serializer = customSerializer;
         return this;
     }
 
-    public EntryBuilder<T> validator(EntryValidator validator) {
+    public PropertyBuilder<T> validator(PropertyValidator validator) {
         this.validator = validator;
         return this;
     }
 
-    public EntryBuilder<T> description(Message message) {
+    public PropertyBuilder<T> description(Message message) {
         description = message;
         return this;
     }
 
-    public EntryBuilder<T> deprecated() {
+    public PropertyBuilder<T> deprecated() {
         deprecated = true;
         return this;
     }
 
-    public EntryBuilder<T> allowNull() {
+    public PropertyBuilder<T> allowNull() {
         defaultIfMissing = false;
         return this;
     }
 
-    public EntryBuilder<T> alias(String alias) {
+    public PropertyBuilder<T> alias(String alias) {
         this.aliases.add(alias);
         return this;
     }
 
-    public SimpleEntry<T> build() {
-        return new DefaultSimpleEntry<T>(type, path, def, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing);
+    public SimpleProperty<T> build() {
+        return new DefaultSimpleProperty<T>(type, path, def, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing);
     }
 
-    public MappedEntry<T> buildMap() {
-        return new DefaultMappedEntry<T>(type, path, defMap, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, HashMap.class);
+    public MappedProperty<T> buildMap() {
+        return new DefaultMappedProperty<T>(type, path, defMap, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, HashMap.class);
     }
 
-    public MappedEntry<T> buildMap(Class<? extends Map> mapClass) {
-        return new DefaultMappedEntry<T>(type, path, defMap, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, mapClass);
+    public MappedProperty<T> buildMap(Class<? extends Map> mapClass) {
+        return new DefaultMappedProperty<T>(type, path, defMap, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, mapClass);
     }
 
-    public ListEntry<T> buildList() {
-        return new DefaultListEntry<T>(type, path, defList, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, ArrayList.class);
+    public ListProperty<T> buildList() {
+        return new DefaultListProperty<T>(type, path, defList, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, ArrayList.class);
     }
 
-    public ListEntry<T> buildList(Class<? extends List> listClass) {
-        return new DefaultListEntry<T>(type, path, defList, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, listClass);
+    public ListProperty<T> buildList(Class<? extends List> listClass) {
+        return new DefaultListProperty<T>(type, path, defList, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, listClass);
     }
 }

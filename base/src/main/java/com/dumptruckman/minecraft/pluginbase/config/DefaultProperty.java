@@ -8,21 +8,21 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import java.util.Collections;
 import java.util.List;
 
-abstract class DefaultEntry<T> implements Entry<T> {
+abstract class DefaultProperty<T> implements Property<T> {
 
     private final String path;
     private final List<String> comments;
     private final Class<T> type;
-    private final EntrySerializer<T> serializer;
-    private final EntryValidator validator;
+    private final PropertySerializer<T> serializer;
+    private final PropertyValidator validator;
     private final Message description;
     private final boolean deprecated;
     private final boolean defaultIfMissing;
     private final List<String> aliases;
 
-    public DefaultEntry(Class<T> type, String path, List<String> comments, List<String> aliases,
-                        EntrySerializer<T> serializer, EntryValidator validator, Message description,
-                        boolean deprecated, boolean defaultIfMissing) {
+    public DefaultProperty(Class<T> type, String path, List<String> comments, List<String> aliases,
+                           PropertySerializer<T> serializer, PropertyValidator validator, Message description,
+                           boolean deprecated, boolean defaultIfMissing) {
         this.path = path;
         this.comments = Collections.unmodifiableList(comments);
         this.aliases = Collections.unmodifiableList(aliases);

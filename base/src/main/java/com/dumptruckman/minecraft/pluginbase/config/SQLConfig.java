@@ -10,15 +10,15 @@ import com.dumptruckman.minecraft.pluginbase.util.Null;
  */
 public interface SQLConfig extends Properties {
 
-    SimpleEntry<String> DB_TYPE = new EntryBuilder<String>(String.class, "database_type").def("SQLite")
+    SimpleProperty<String> DB_TYPE = new PropertyBuilder<String>(String.class, "database_type").def("SQLite")
             .comment("# What type of database to use.  Base options are SQLite and MySQL.").build();
 
-    SimpleEntry<Null> DB_SETTINGS = new EntryBuilder<Null>(Null.class, "settings")
+    SimpleProperty<Null> DB_SETTINGS = new PropertyBuilder<Null>(Null.class, "settings")
             .comment("# Settings for non-SQLite databases").build();
 
-    SimpleEntry<String> DB_HOST = new EntryBuilder<String>(String.class, "settings.host").def("localhost").build();
-    SimpleEntry<String> DB_PORT = new EntryBuilder<String>(String.class, "settings.port").def("3306").build();
-    SimpleEntry<String> DB_USER = new EntryBuilder<String>(String.class, "settings.user").def("minecraft").build();
-    SimpleEntry<String> DB_PASS = new EntryBuilder<String>(String.class, "settings.pass").def("").build();
-    SimpleEntry<String> DB_DATABASE = new EntryBuilder<String>(String.class, "settings.database").def("minecraft").build();
+    SimpleProperty<String> DB_HOST = new PropertyBuilder<String>(String.class, "settings.host").def("localhost").build();
+    SimpleProperty<String> DB_PORT = new PropertyBuilder<String>(String.class, "settings.port").def("3306").build();
+    SimpleProperty<String> DB_USER = new PropertyBuilder<String>(String.class, "settings.user").def("minecraft").build();
+    SimpleProperty<String> DB_PASS = new PropertyBuilder<String>(String.class, "settings.pass").def("").build();
+    SimpleProperty<String> DB_DATABASE = new PropertyBuilder<String>(String.class, "settings.database").def("minecraft").build();
 }

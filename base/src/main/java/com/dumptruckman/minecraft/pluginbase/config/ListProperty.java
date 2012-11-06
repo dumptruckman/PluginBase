@@ -3,9 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.config;
 
-public interface EntrySerializer<T> {
+import java.util.List;
 
-    T deserialize(Object o);
+public interface ListProperty<T> extends Property<T> {
 
-    Object serialize(T t);
+    List<T> getNewTypeList();
+
+    List<T> getDefault();
 }

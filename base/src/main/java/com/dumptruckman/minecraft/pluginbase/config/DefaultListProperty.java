@@ -9,14 +9,14 @@ import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import java.util.ArrayList;
 import java.util.List;
 
-class DefaultListEntry<T> extends DefaultEntry<T> implements ListEntry<T> {
+class DefaultListProperty<T> extends DefaultProperty<T> implements ListProperty<T> {
 
     private final Class<? extends List> listClass;
     private final List<T> defList;
 
-    public DefaultListEntry(Class<T> type, String path, List<T> def, List<String> comments, List<String> aliases,
-                            EntrySerializer<T> serializer, EntryValidator validator, Message description,
-                            boolean deprecated, boolean defaultIfMissing, Class<? extends List> listClass) {
+    public DefaultListProperty(Class<T> type, String path, List<T> def, List<String> comments, List<String> aliases,
+                               PropertySerializer<T> serializer, PropertyValidator validator, Message description,
+                               boolean deprecated, boolean defaultIfMissing, Class<? extends List> listClass) {
         super(type, path, comments, aliases, serializer, validator, description, deprecated, defaultIfMissing);
         this.listClass = listClass;
         this.defList = def;

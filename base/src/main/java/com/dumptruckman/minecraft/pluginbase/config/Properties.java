@@ -15,19 +15,19 @@ public interface Properties {
 
     void reload() throws Exception;
 
-    <T> T get(SimpleEntry<T> entry) throws IllegalArgumentException;
+    <T> T get(SimpleProperty<T> entry) throws IllegalArgumentException;
 
-    <T> List<T> get(ListEntry<T> entry) throws IllegalArgumentException;
+    <T> List<T> get(ListProperty<T> entry) throws IllegalArgumentException;
 
-    <T> Map<String, T> get(MappedEntry<T> entry) throws IllegalArgumentException;
+    <T> Map<String, T> get(MappedProperty<T> entry) throws IllegalArgumentException;
 
-    <T> T get(MappedEntry<T> entry, String key) throws IllegalArgumentException;
+    <T> T get(MappedProperty<T> entry, String key) throws IllegalArgumentException;
 
-    <T> boolean set(SimpleEntry<T> entry, T value) throws IllegalArgumentException;
+    <T> boolean set(SimpleProperty<T> entry, T value) throws IllegalArgumentException;
 
-    <T> boolean set(ListEntry<T> entry, List<T> value) throws IllegalArgumentException;
+    <T> boolean set(ListProperty<T> entry, List<T> value) throws IllegalArgumentException;
 
-    <T> boolean set(MappedEntry<T> entry, Map<String, T> value) throws IllegalArgumentException;
+    <T> boolean set(MappedProperty<T> entry, Map<String, T> value) throws IllegalArgumentException;
 
-    <T> boolean set(MappedEntry<T> entry, String key, T value) throws IllegalArgumentException;
+    <T> boolean set(MappedProperty<T> entry, String key, T value) throws IllegalArgumentException;
 }

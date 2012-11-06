@@ -6,7 +6,7 @@ package com.dumptruckman.minecraft.pluginbase.config;
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import com.dumptruckman.minecraft.pluginbase.locale.Messages;
 
-class DefaultValidator implements EntryValidator {
+class DefaultValidator implements PropertyValidator {
 
     public boolean isValid(Object obj) {
         return true;
