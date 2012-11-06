@@ -10,13 +10,12 @@ import java.util.List;
 
 public class MockPlugin extends AbstractBukkitPlugin<MockConfig> {
 
-    public void preEnable() {
+    public void onPluginLoad() {
         MockMessages.init();
         HelpCommand.addStaticPrefixedKey("");
-        initDatabase();
     }
 
-    public void postEnable() {
+    public void onPluginEnable() {
         //getCommandHandler().registerCommand(new MockQueuedCommand(this));
     }
     
@@ -34,5 +33,10 @@ public class MockPlugin extends AbstractBukkitPlugin<MockConfig> {
         List<String> versionInfo = new LinkedList<String>();
         versionInfo.add("Test");
         return versionInfo;
+    }
+
+    @Override
+    protected boolean useDatabase() {
+        return true;
     }
 }

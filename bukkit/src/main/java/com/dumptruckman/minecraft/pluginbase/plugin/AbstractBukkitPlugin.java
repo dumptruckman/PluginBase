@@ -39,68 +39,95 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Main plugin class for dumptruckman's Plugin Template.
+ * An implemention of PluginBase made for Bukkit Plugin that automatically takes care of many of the setup steps
+ * required in a plugin.
  */
 public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlugin implements BukkitPlugin<C> {
 
+    private final PluginInfo pluginInfo = new BukkitPluginInfo(this);
+
+    private ServerInterface serverInterface;
     private C config = null;
     private Messager messager = null;
     private File serverFolder = null;
     private BukkitCommandHandler commandHandler = null;
     private SQLDatabase db = null;
-    private Metrics metrics;
+    private Metrics metrics = null;
 
+    /**
+     * The configuration details for SQL database is contained here.  If not initialized, no SQL config file will
+     * be created.
+     */
     protected SQLConfig sqlConfig = null;
 
-    private final PluginInfo pluginInfo;
-    private ServerInterface serverInterface;
-
-    public AbstractBukkitPlugin() {
-        this.pluginInfo = new BukkitPluginInfo(this);
-    }
-
-    public void preDisable() {
-
+    static {
+        // Statically initializes the members of the command language class.
+        CommandMessages.init();
     }
 
     @Override
-    public void onLoad() {
+    public final void onLoad() {
+        // Setup the server interface.
+        this.serverInterface = new BukkitServerInterface(getServer());
+        // Initialize our logging.
+        Logging.init(this);
+        // Setup a permission factory for Bukkit permissions.
+        PermFactory.registerPermissionFactory(this, BukkitPermFactory.class);
+        // Loads the configuration.
+        setupConfig();
+        // Setup the plugin messager.
+        setupMessager();
 
+        // Call the method implementers should use in place of onLoad().
+        onPluginLoad();
     }
 
     /**
-     * {@inheritDoc}
+     * Override this method to perform actions that should be performed on the normal bukkit {@link #onLoad()}.
      */
+    protected void onPluginLoad() { }
+
     @Override
     public final void onDisable() {
-        preDisable();
+        // Call the method implementers should use in place of onDisable().
+        onPluginDisable();
+
+        // Shut down our logging.
         Logging.shutdown();
     }
 
-    public void preEnable() {
-
-    }
+    /**
+     * Override this method to perform actions that should be performed on the normal bukkit {@link #onDisable()}.
+     */
+    protected void onPluginDisable() { }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public final void onEnable() {
-        this.serverInterface = new BukkitServerInterface(getServer());
-        preEnable();
-        PermFactory.registerPermissionFactory(this, BukkitPermFactory.class);
-        CommandMessages.init();
-        Logging.init(this);
+        // Setup plugin metrics.
         setupMetrics();
+        // Sets up the plugin database if configured.
+        setupDB();
+        // Loads the configuration.
+        setupConfig();
+        // Setup the plugin messager.
+        setupMessager();
+        // Setup our base commands.
+        setupCommands();
 
-        reloadConfig();
+        // Do any important first run stuff here.
+        if (config().get(BaseConfig.FIRST_RUN)) {
+            firstRun();
+            config().set(BaseConfig.FIRST_RUN, false);
+            config().save();
+        }
 
-        this.commandHandler = new BukkitCommandHandler(this);
-        // Register Commands
-        _registerCommands();
-        //getServer().getPluginManager().registerEvents(new PreProcessListener(this), this);
+        // Call the method implements should use in place of onEnable().
+        onPluginEnable();
 
-        postEnable();
+        // Start plugin metrics.
         startMetrics();
     }
 
@@ -116,50 +143,34 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         getMetrics().start();
     }
 
-    public void postEnable() {
-        
-    }
-
-    public void firstRun() {
-        
-    }
-
-    public void preReload() {
-
-    }
-
-    /**
-     * Nulls the config object and reloads a new one.
-     */
-    public final void reloadConfig() {
-        preReload();
-
-        if (db != null) {
-            db.shutdown();
+    private void setupDB() {
+        if (this.db != null) {
+            this.db.shutdown();
         }
-        if (sqlConfig != null) {
+        if (useDatabase()) {
+            this.db = null;
             initDatabase();
-            if (sqlConfig.get(SQLConfig.DB_TYPE).equalsIgnoreCase("mysql")) {
+            if (this.sqlConfig.get(SQLConfig.DB_TYPE).equalsIgnoreCase("mysql")) {
                 try {
-                    db = new MySQL(sqlConfig.get(SQLConfig.DB_HOST),
-                            sqlConfig.get(SQLConfig.DB_PORT),
-                            sqlConfig.get(SQLConfig.DB_DATABASE),
-                            sqlConfig.get(SQLConfig.DB_USER),
-                            sqlConfig.get(SQLConfig.DB_PASS));
+                    this.db = new MySQL(this.sqlConfig.get(SQLConfig.DB_HOST),
+                            this.sqlConfig.get(SQLConfig.DB_PORT),
+                            this.sqlConfig.get(SQLConfig.DB_DATABASE),
+                            this.sqlConfig.get(SQLConfig.DB_USER),
+                            this.sqlConfig.get(SQLConfig.DB_PASS));
                 } catch (ClassNotFoundException e) {
                     Logging.severe("Your server does not support MySQL!");
                 }
             } else {
                 try {
-                    db = new SQLite(new File(getDataFolder(), "data"));
+                    this.db = new SQLite(new File(getDataFolder(), "data"));
                 } catch (ClassNotFoundException e) {
                     Logging.severe("Your server does not support SQLite!");
                 }
             }
         }
+    }
 
-
-        // Loads the configuration
+    private void setupConfig() {
         try {
             if (this.config == null) {
                 this.config = newConfigInstance();
@@ -173,31 +184,47 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+        Logging.setDebugLevel(config().get(BaseConfig.DEBUG_MODE));
+    }
+
+    private void setupMessager() {
         this.messager = new SimpleMessager(this);
         this.messager.setLocale(config().get(BaseConfig.LOCALE));
         this.messager.setLanguage(config().get(BaseConfig.LANGUAGE_FILE));
-        
-        Logging.setDebugLevel(config().get(BaseConfig.DEBUG_MODE));
-
-        // Do any import first run stuff here.
-        if (config().get(BaseConfig.FIRST_RUN)) {
-            Logging.info("First run!");
-            firstRun();
-            config().set(BaseConfig.FIRST_RUN, false);
-            config().save();
-        }
-        postReload();
     }
 
-    public void postReload() {
+    /**
+     * Override this method to perform actions that should be performed on the normal bukkit {@link #onEnable()}.
+     */
+    public void onPluginEnable() { }
 
+    /**
+     * If your plugin needs to do anything special for the first time it is run, you can override this convenience
+     * method.
+     */
+    public void firstRun() { }
+
+    /**
+     * Nulls the config object and reloads a new one.
+     */
+    public final void reloadConfig() {
+        setupDB();
+        setupConfig();
+        setupMessager();
     }
 
+    /**
+     * Override this method if you'd like to return any special information for your plugin when using the version
+     * command.
+     *
+     * @return A list of strings to appears in the version information.  If this is not overriden, null is returned.
+     */
     public List<String> dumpVersionInfo() {
         return null;
     }
 
-    private void _registerCommands() {
+    private void setupCommands() {
+        this.commandHandler = new BukkitCommandHandler(this);
         getCommandHandler().registerCommand(InfoCommand.class);
         getCommandHandler().registerCommand(DebugCommand.class);
         getCommandHandler().registerCommand(ReloadCommand.class);
@@ -206,9 +233,6 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         //getCommandHandler().registerCommand(new ConfirmCommand<AbstractBukkitPlugin>(this));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
         if (!isEnabled()) {
@@ -230,33 +254,21 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public BukkitCommandHandler getCommandHandler() {
         return this.commandHandler;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public C config() {
         return this.config;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public Messager getMessager() {
         return this.messager;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public File getServerFolder() {
         if (this.serverFolder == null) {
@@ -265,13 +277,11 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         return this.serverFolder;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setServerFolder(File newServerFolder) {
-        if (!newServerFolder.isDirectory())
+        if (!newServerFolder.isDirectory()) {
             throw new IllegalArgumentException("That's not a folder!");
+        }
 
         this.serverFolder = newServerFolder;
     }
@@ -292,9 +302,25 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     @Override
     public abstract String getCommandPrefix();
 
+    /**
+     * Implement this method with by returning a new instance of your Configuration object.
+     *
+     * {@link com.dumptruckman.minecraft.pluginbase.config.AbstractYamlConfig} is given to make implementing your
+     * config easy.
+     *
+     * @return A new config instance.
+     * @throws IOException If IO problems occur when creating a new config instance.
+     */
     protected abstract C newConfigInstance() throws IOException;
 
-    protected void initDatabase() {
+    /**
+     * Implement this method to tell PluginBase whether to use a database configuration file or not.
+     *
+     * @return True to automatically set up a database.
+     */
+    protected abstract boolean useDatabase();
+
+    private void initDatabase() {
         try {
             sqlConfig = new YamlSQLConfig(this, new File(getDataFolder(), "db_config.yml"));
         } catch (IOException e) {

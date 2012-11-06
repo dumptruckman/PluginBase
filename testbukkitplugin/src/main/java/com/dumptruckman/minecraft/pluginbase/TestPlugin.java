@@ -15,4 +15,9 @@ public class TestPlugin extends AbstractBukkitPlugin<TestConfig> {
     protected TestConfig newConfigInstance() throws IOException {
         return new Configg(this);
     }
+
+    @Override
+    protected boolean useDatabase() {
+        return false;
+    }
 }
