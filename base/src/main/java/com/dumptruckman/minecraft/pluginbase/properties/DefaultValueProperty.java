@@ -8,7 +8,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import java.util.Collections;
 import java.util.List;
 
-abstract class DefaultValueProperty<T> extends DefaultPropertyTraits<T> implements ValueProperty<T> {
+abstract class DefaultValueProperty<T> extends DefaultProperty<T> implements ValueProperty<T> {
 
     private final PropertySerializer<T> serializer;
     private final PropertyValidator validator;

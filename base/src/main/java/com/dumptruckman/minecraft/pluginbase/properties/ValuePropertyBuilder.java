@@ -8,7 +8,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-abstract class ValuePropertyBuilder<T> extends PropertyTraitsBuilder<T> {
+abstract class ValuePropertyBuilder<T> extends PropertyBuilder<T> {
 
     protected final boolean defaultIfMissing;
     protected final Set<String> aliases = new LinkedHashSet<String>();

@@ -2,7 +2,7 @@ package com.dumptruckman.minecraft.pluginbase.properties;
 
 import java.util.List;
 
-interface PropertyTraits<T> {
+interface Property<T> {
 
     /**
      * Retrieves the path for a config option.

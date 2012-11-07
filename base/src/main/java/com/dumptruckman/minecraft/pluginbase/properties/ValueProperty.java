@@ -7,7 +7,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.List;
 
-interface ValueProperty<T> extends PropertyTraits<T> {
+interface ValueProperty<T> extends Property<T> {
 
     /**
      * Retrieves the default value for a config path.
