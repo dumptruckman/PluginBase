@@ -6,30 +6,27 @@ package com.dumptruckman.minecraft.pluginbase.properties;
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-public class PropertyBuilder<T> {
+abstract class PropertyBuilder<T> {
 
-    private String path;
-    private T def = null;
-    private List<T> defList = null;
-    private Map<String, T> defMap = null;
-    private List<String> comments = new ArrayList<String>();
-    private Set<String> aliases = new LinkedHashSet<String>();
-    private Class<T> type;
-    private Message description = null;
-    private PropertySerializer<T> serializer;
-    private PropertyValidator validator;
-    private boolean deprecated = false;
-    private boolean defaultIfMissing = true;
+    protected final String path;
+    protected final Class<T> type;
+    protected final boolean defaultIfMissing;
 
-    public PropertyBuilder(Class<T> type, String name) {
+    protected PropertySerializer<T> serializer;
+    protected PropertyValidator validator;
+    protected List<String> comments = new ArrayList<String>();
+    protected Set<String> aliases = new LinkedHashSet<String>();
+    protected Message description = null;
+    protected boolean deprecated = false;
+
+    public PropertyBuilder(Class<T> type, String name, boolean allowNull) {
         this.path = name;
         this.type = type;
+        this.defaultIfMissing = !allowNull;
         if (type.equals(String.class)) {
             this.serializer = new StringStringSerializer<T>(type);
         } else {
@@ -40,21 +37,6 @@ public class PropertyBuilder<T> {
             }
         }
         this.validator = new DefaultValidator();
-    }
-    
-    public PropertyBuilder<T> def(T def) {
-        this.def = def;
-        return this;
-    }
-
-    public PropertyBuilder<T> defList(List<T> def) {
-        this.defList = def;
-        return this;
-    }
-
-    public PropertyBuilder<T> defMap(Map<String, T> def) {
-        this.defMap = def;
-        return this;
     }
 
     public PropertyBuilder<T> comment(String comment) {
@@ -82,33 +64,10 @@ public class PropertyBuilder<T> {
         return this;
     }
 
-    public PropertyBuilder<T> allowNull() {
-        defaultIfMissing = false;
-        return this;
-    }
-
     public PropertyBuilder<T> alias(String alias) {
         this.aliases.add(alias);
         return this;
     }
 
-    public SimpleProperty<T> build() {
-        return new DefaultSimpleProperty<T>(type, path, def, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing);
-    }
-
-    public MappedProperty<T> buildMap() {
-        return new DefaultMappedProperty<T>(type, path, defMap, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, HashMap.class);
-    }
-
-    public MappedProperty<T> buildMap(Class<? extends Map> mapClass) {
-        return new DefaultMappedProperty<T>(type, path, defMap, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, mapClass);
-    }
-
-    public ListProperty<T> buildList() {
-        return new DefaultListProperty<T>(type, path, defList, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, ArrayList.class);
-    }
-
-    public ListProperty<T> buildList(Class<? extends List> listClass) {
-        return new DefaultListProperty<T>(type, path, defList, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, listClass);
-    }
+    public abstract Property<T> build();
 }

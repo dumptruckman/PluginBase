@@ -3,25 +3,25 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.config;
 
+import com.dumptruckman.minecraft.pluginbase.properties.NullProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
-import com.dumptruckman.minecraft.pluginbase.properties.PropertyBuilder;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
-import com.dumptruckman.minecraft.pluginbase.util.Null;
 
 /**
  * Interface for interacting with the config of this plugin.
  */
 public interface SQLConfig extends Properties {
 
-    SimpleProperty<String> DB_TYPE = new PropertyBuilder<String>(String.class, "database_type").def("SQLite")
+    SimpleProperty<String> DB_TYPE = PropertyFactory.newProperty(String.class, "database_type", "SQLite")
             .comment("# What type of database to use.  Base options are SQLite and MySQL.").build();
 
-    SimpleProperty<Null> DB_SETTINGS = new PropertyBuilder<Null>(Null.class, "settings")
+    NullProperty DB_SETTINGS = PropertyFactory.newNullProperty("settings")
             .comment("# Settings for non-SQLite databases").build();
 
-    SimpleProperty<String> DB_HOST = new PropertyBuilder<String>(String.class, "settings.host").def("localhost").build();
-    SimpleProperty<String> DB_PORT = new PropertyBuilder<String>(String.class, "settings.port").def("3306").build();
-    SimpleProperty<String> DB_USER = new PropertyBuilder<String>(String.class, "settings.user").def("minecraft").build();
-    SimpleProperty<String> DB_PASS = new PropertyBuilder<String>(String.class, "settings.pass").def("").build();
-    SimpleProperty<String> DB_DATABASE = new PropertyBuilder<String>(String.class, "settings.database").def("minecraft").build();
+    SimpleProperty<String> DB_HOST = PropertyFactory.newProperty(String.class, "settings.host", "localhost").build();
+    SimpleProperty<String> DB_PORT = PropertyFactory.newProperty(String.class, "settings.port", "3306").build();
+    SimpleProperty<String> DB_USER = PropertyFactory.newProperty(String.class, "settings.user", "minecraft").build();
+    SimpleProperty<String> DB_PASS = PropertyFactory.newProperty(String.class, "settings.pass", "").build();
+    SimpleProperty<String> DB_DATABASE = PropertyFactory.newProperty(String.class, "settings.database", "minecraft").build();
 }
