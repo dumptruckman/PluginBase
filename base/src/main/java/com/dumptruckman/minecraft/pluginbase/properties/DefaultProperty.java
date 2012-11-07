@@ -8,11 +8,8 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import java.util.Collections;
 import java.util.List;
 
-abstract class DefaultProperty<T> implements Property<T> {
+abstract class DefaultProperty<T> extends DefaultPropertyTraits<T> implements Property<T> {
 
-    private final String path;
-    private final List<String> comments;
-    private final Class<T> type;
     private final PropertySerializer<T> serializer;
     private final PropertyValidator validator;
     private final Message description;
@@ -23,32 +20,13 @@ abstract class DefaultProperty<T> implements Property<T> {
     public DefaultProperty(Class<T> type, String path, List<String> comments, List<String> aliases,
                            PropertySerializer<T> serializer, PropertyValidator validator, Message description,
                            boolean deprecated, boolean defaultIfMissing) {
-        this.path = path;
-        this.comments = Collections.unmodifiableList(comments);
+        super(type, path, comments);
         this.aliases = Collections.unmodifiableList(aliases);
-        this.type = type;
         this.serializer = serializer;
         this.validator = validator;
         this.description = description;
         this.deprecated = deprecated;
         this.defaultIfMissing = defaultIfMissing;
-    }
-
-    public String getName() {
-        return this.path;
-    }
-
-    public Class<T> getType() {
-        return this.type;
-    }
-
-    /**
-     * Retrieves the comment for a config path.
-     *
-     * @return The comments for a config path.
-     */
-    public List<String> getComments() {
-        return this.comments;
     }
 
     @Override

@@ -7,21 +7,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.List;
 
-interface Property<T> {
-
-    /**
-     * Retrieves the path for a config option.
-     *
-     * @return The path for a config option.
-     */
-    String getName();
-
-    /**
-     * Retrieves the type of entry this is.
-     *
-     * @return the type of entry this is.
-     */
-    Class<T> getType();
+interface Property<T> extends PropertyTraits<T> {
 
     /**
      * Retrieves the default value for a config path.
@@ -29,13 +15,6 @@ interface Property<T> {
      * @return The default value for a config path.
      */
     Object getDefault();
-
-    /**
-     * Retrieves the comment for a config path.
-     *
-     * @return The comments for a config path.
-     */
-    List<String> getComments();
 
     /**
      * Retrieves the aliases for this entry.
