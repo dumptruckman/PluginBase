@@ -8,13 +8,6 @@ import java.util.Map;
 
 public interface Properties {
 
-    /**
-     * Convenience method for saving the config to disk.
-     */
-    void save();
-
-    void reload() throws Exception;
-
     <T> T get(SimpleProperty<T> entry) throws IllegalArgumentException;
 
     <T> List<T> get(ListProperty<T> entry) throws IllegalArgumentException;

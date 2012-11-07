@@ -26,7 +26,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public abstract class AbstractYamlProperties implements Properties {
+public abstract class AbstractYamlProperties implements FileProperties {
 
     private CommentedYamlConfiguration config;
     private final File configFile;
