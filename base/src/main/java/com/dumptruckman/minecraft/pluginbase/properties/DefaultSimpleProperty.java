@@ -4,7 +4,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.List;
 
-public class DefaultSimpleProperty<T> extends DefaultProperty<T> implements SimpleProperty<T> {
+public class DefaultSimpleProperty<T> extends DefaultValueProperty<T> implements SimpleProperty<T> {
 
     private final T def;
 

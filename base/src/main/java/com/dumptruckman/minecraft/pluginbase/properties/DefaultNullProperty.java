@@ -5,7 +5,7 @@ import com.dumptruckman.minecraft.pluginbase.util.Null;
 
 import java.util.List;
 
-public class DefaultNullProperty extends DefaultProperty<Null> implements NullProperty {
+class DefaultNullProperty extends DefaultValueProperty<Null> implements NullProperty {
 
     public DefaultNullProperty(String path, List<String> comments, List<String> aliases,
                                PropertySerializer<Null> serializer, PropertyValidator validator, Message description,

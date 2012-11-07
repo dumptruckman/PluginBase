@@ -8,6 +8,6 @@ import com.dumptruckman.minecraft.pluginbase.util.Null;
 /**
  * This represents a special type of property that has no value and only typically exists to add section comments.
  */
-public interface NullProperty extends Property<Null> {
+public interface NullProperty extends ValueProperty<Null> {
 
 }

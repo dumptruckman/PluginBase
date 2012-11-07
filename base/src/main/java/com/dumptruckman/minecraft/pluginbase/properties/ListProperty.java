@@ -5,7 +5,7 @@ package com.dumptruckman.minecraft.pluginbase.properties;
 
 import java.util.List;
 
-public interface ListProperty<T> extends Property<T> {
+public interface ListProperty<T> extends ValueProperty<T> {
 
     List<T> getNewTypeList();
 

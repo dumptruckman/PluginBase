@@ -8,7 +8,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import java.util.Collections;
 import java.util.List;
 
-abstract class DefaultProperty<T> extends DefaultPropertyTraits<T> implements Property<T> {
+abstract class DefaultValueProperty<T> extends DefaultPropertyTraits<T> implements ValueProperty<T> {
 
     private final PropertySerializer<T> serializer;
     private final PropertyValidator validator;
@@ -17,9 +17,9 @@ abstract class DefaultProperty<T> extends DefaultPropertyTraits<T> implements Pr
     private final boolean defaultIfMissing;
     private final List<String> aliases;
 
-    public DefaultProperty(Class<T> type, String path, List<String> comments, List<String> aliases,
-                           PropertySerializer<T> serializer, PropertyValidator validator, Message description,
-                           boolean deprecated, boolean defaultIfMissing) {
+    public DefaultValueProperty(Class<T> type, String path, List<String> comments, List<String> aliases,
+                                PropertySerializer<T> serializer, PropertyValidator validator, Message description,
+                                boolean deprecated, boolean defaultIfMissing) {
         super(type, path, comments);
         this.aliases = Collections.unmodifiableList(aliases);
         this.serializer = serializer;

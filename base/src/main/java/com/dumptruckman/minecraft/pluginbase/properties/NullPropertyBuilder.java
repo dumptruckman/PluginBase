@@ -8,7 +8,7 @@ import com.dumptruckman.minecraft.pluginbase.util.Null;
 
 import java.util.ArrayList;
 
-public class NullPropertyBuilder extends PropertyBuilder<Null> {
+public class NullPropertyBuilder extends ValuePropertyBuilder<Null> {
 
     NullPropertyBuilder(String name) {
         super(Null.class, name, true);

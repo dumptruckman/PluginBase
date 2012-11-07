@@ -8,7 +8,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListPropertyBuilder<T> extends PropertyBuilder<T> {
+public class ListPropertyBuilder<T> extends ValuePropertyBuilder<T> {
 
     private final List<T> def;
     private final Class<? extends List> listClass;

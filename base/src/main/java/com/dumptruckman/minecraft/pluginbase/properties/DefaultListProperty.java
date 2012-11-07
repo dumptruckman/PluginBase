@@ -9,7 +9,7 @@ import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import java.util.ArrayList;
 import java.util.List;
 
-class DefaultListProperty<T> extends DefaultProperty<T> implements ListProperty<T> {
+class DefaultListProperty<T> extends DefaultValueProperty<T> implements ListProperty<T> {
 
     private final Class<? extends List> listClass;
     private final List<T> defList;

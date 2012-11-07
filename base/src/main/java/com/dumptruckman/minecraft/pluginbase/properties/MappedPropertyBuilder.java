@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MappedPropertyBuilder<T> extends PropertyBuilder<T> {
+public class MappedPropertyBuilder<T> extends ValuePropertyBuilder<T> {
 
     private final Map<String, T> def;
     private final Class<? extends Map> mapClass;

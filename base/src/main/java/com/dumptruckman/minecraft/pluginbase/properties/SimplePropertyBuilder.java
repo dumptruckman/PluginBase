@@ -7,7 +7,7 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 
 import java.util.ArrayList;
 
-public class SimplePropertyBuilder<T> extends PropertyBuilder<T> {
+public class SimplePropertyBuilder<T> extends ValuePropertyBuilder<T> {
 
     private final T def;
 

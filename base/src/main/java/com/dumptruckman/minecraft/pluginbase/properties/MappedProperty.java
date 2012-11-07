@@ -5,7 +5,7 @@ package com.dumptruckman.minecraft.pluginbase.properties;
 
 import java.util.Map;
 
-public interface MappedProperty<T> extends Property<T> {
+public interface MappedProperty<T> extends ValueProperty<T> {
 
     Map<String, T> getNewTypeMap();
 

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class DefaultMappedProperty<T> extends DefaultProperty<T> implements MappedProperty<T> {
+class DefaultMappedProperty<T> extends DefaultValueProperty<T> implements MappedProperty<T> {
 
     private final Class<? extends Map> mapClass;
     private final Map<String, T> defMap;
