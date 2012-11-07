@@ -6,12 +6,9 @@ package com.dumptruckman.minecraft.pluginbase.properties;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.dumptruckman.minecraft.pluginbase.util.Null;
-import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.ConfigurationOptions;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -26,124 +23,190 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public abstract class AbstractYamlProperties implements FileProperties {
+public abstract class AbstractYamlProperties implements Properties {
 
-    private CommentedYamlConfiguration config;
-    private final File configFile;
-    private final BukkitPlugin plugin;
-    private final Entries entries;
-    private final boolean doComments;
-    private final boolean autoDefaults;
+    protected final BukkitPlugin plugin;
+    protected final CommentedYamlConfiguration config;
+    protected final Entries entries;
 
-    public AbstractYamlProperties(BukkitPlugin plugin, boolean doComments, boolean autoDefaults, File configFile, Class... configClasses) throws IOException {
+    private final Map<NestedProperty, NestedYamlProperties> nestMap = new HashMap<NestedProperty, NestedYamlProperties>();
+
+    public AbstractYamlProperties(final BukkitPlugin plugin,
+                                  final CommentedYamlConfiguration config,
+                                  final Class... configClasses) {
         if (plugin == null) {
             throw new IllegalArgumentException("plugin may not be null!");
         }
-        if (configFile == null) {
-            throw new IllegalArgumentException("configFile may not be null!");
-        }
-        if (configFile.isDirectory()) {
-            throw new IllegalArgumentException("configFile may NOT be directory!");
-        }
-        if (!configFile.getName().endsWith(".yml")) {
-            throw new IllegalArgumentException("configFile MUST be yaml!");
-        }
-        this.configFile = configFile;
-        this.doComments = doComments;
-        this.autoDefaults = autoDefaults;
-        this.entries = new Entries(configClasses);
         this.plugin = plugin;
-
-        // Make the data folders
-        if (configFile.getParent() != null) {
-            if (configFile.getParentFile().mkdirs()) {
-                Logging.fine("Created folder for config file.");
-            }
-        }
-
-        // Check if the config file exists.  If not, create it.
-        if (!configFile.exists()) {
-            if (configFile.createNewFile()) {
-                Logging.fine("Created config file: %s", configFile.getAbsolutePath());
-            }
-        }
-        // Load the configuration file into memory
-        config = new CommentedYamlConfiguration(configFile, doComments);
-        load();
-
-        // Saves the configuration from memory to file
-        save();
+        this.config = config;
+        this.entries = new Entries(configClasses);
     }
 
-    private void load() throws IOException {
-        config.load();
-        deserializeAll();
-
-        // Sets defaults config values
-        if (autoDefaults) {
-            this.setDefaults();
-        }
-
-        config.getConfig().options().header(getHeader());
+    protected ConfigurationSection getConfig() {
+        return this.config.getConfig();
     }
 
-    @Override
-    public void reload() throws Exception {
-        load();
+    protected ConfigurationOptions getConfigOptions() {
+        return this.config.getConfig().options();
     }
 
-    private void deserializeAll() {
-        Logging.finer("Beginning deserialization...");
+    protected String getName() {
+        return "";
+    }
+
+    protected void doComments(final CommentedYamlConfiguration config) {
         for (Property property : entries.properties) {
-            if (getConfig().get(property.getName()) != null) {
-                if (property instanceof MappedProperty) {
-                    ConfigurationSection section = getConfig().getConfigurationSection(property.getName());
-                    if (section == null) {
-                        getConfig().set(property.getName(), property.getDefault());
-                    } else {
-                        for (String key : section.getKeys(false)) {
-                            Object obj = section.get(key);
-                            if (obj != null) {
-                                if (property.isValid(obj)) {
-                                    Object res = property.deserialize(obj);
-                                    section.set(key, res);
-                                } else {
-                                    Logging.warning("Invalid value '" + obj + "' at '" + property.getName() + getConfig().options().pathSeparator() + key + "'.  Value will be deleted!");
-                                    section.set(key, null);
+            final String path;
+            if (!getName().isEmpty()) {
+                path = getName() + getConfigOptions().pathSeparator() + property.getName();
+            } else {
+                path = property.getName();
+            }
+            config.addComment(path, property.getComments());
+            if (property instanceof NestedProperty) {
+                NestedYamlProperties nestedProperties = this.nestMap.get(property);
+                if (nestedProperties != null) {
+                    nestedProperties.doComments(config);
+                }
+            }
+        }
+    }
+
+    protected void deserializeAll() {
+        for (final Property property : entries.properties) {
+            if (property instanceof ValueProperty) {
+                final ValueProperty valueProperty = (ValueProperty) property;
+                if (getConfig().get(valueProperty.getName()) != null) {
+                    if (valueProperty instanceof MappedProperty) {
+                        ConfigurationSection section = getConfig().getConfigurationSection(valueProperty.getName());
+                        if (section == null) {
+                            getConfig().set(valueProperty.getName(), valueProperty.getDefault());
+                        } else {
+                            for (String key : section.getKeys(false)) {
+                                Object obj = section.get(key);
+                                if (obj != null) {
+                                    if (valueProperty.isValid(obj)) {
+                                        Object res = valueProperty.deserialize(obj);
+                                        section.set(key, res);
+                                    } else {
+                                        Logging.warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + getConfigOptions().pathSeparator() + key + "'.  Value will be deleted!");
+                                        section.set(key, null);
+                                    }
                                 }
                             }
                         }
-                    }
-                } else if (property instanceof ListProperty) {
-                    List list = getConfig().getList(property.getName());
-                    if (list == null) {
-                        getConfig().set(property.getName(), property.getDefault());
-                    } else {
-                        List newList = new ArrayList(list.size());
-                        for (int i = 0; i < list.size(); i++) {
-                            Object obj = list.get(i);
-                            if (property.isValid(obj)) {
-                                Object res = property.deserialize(obj);
-                                newList.add(res);
+                    } else if (valueProperty instanceof ListProperty) {
+                        List list = getConfig().getList(valueProperty.getName());
+                        if (list == null) {
+                            getConfig().set(valueProperty.getName(), valueProperty.getDefault());
+                        } else {
+                            List newList = new ArrayList(list.size());
+                            for (int i = 0; i < list.size(); i++) {
+                                Object obj = list.get(i);
+                                if (valueProperty.isValid(obj)) {
+                                    Object res = valueProperty.deserialize(obj);
+                                    newList.add(res);
+                                } else {
+                                    Logging.warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + "[" + i + "]'.  Value will be deleted!");
+                                }
+                            }
+                            getConfig().set(valueProperty.getName(), newList);
+                        }
+                    } else if (valueProperty instanceof SimpleProperty && !valueProperty.getType().isAssignableFrom(Null.class)) {
+                        Object obj = getConfig().get(valueProperty.getName());
+                        if (obj == null) {
+                            getConfig().set(valueProperty.getName(), valueProperty.getDefault());
+                        } else {
+                            if (valueProperty.isValid(obj)) {
+                                Object res = valueProperty.deserialize(obj);
+                                getConfig().set(valueProperty.getName(), res);
                             } else {
-                                Logging.warning("Invalid value '" + obj + "' at '" + property.getName() + "[" + i + "]'.  Value will be deleted!");
+                                Logging.warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + "'.  Value will be defaulted!");
+                                getConfig().set(valueProperty.getName(), valueProperty.getDefault());
                             }
                         }
-                        getConfig().set(property.getName(), newList);
                     }
-                } else if (property instanceof SimpleProperty && !property.getType().isAssignableFrom(Null.class)) {
-                    Object obj = getConfig().get(property.getName());
-                    if (obj == null) {
-                        getConfig().set(property.getName(), property.getDefault());
-                    } else {
-                        if (property.isValid(obj)) {
-                            Object res = property.deserialize(obj);
-                            getConfig().set(property.getName(), res);
+                }
+            } else if (property instanceof NestedProperty) {
+                final NestedProperty nestedProperty = (NestedProperty) property;
+                final NestedYamlProperties nestedProperties = new NestedYamlProperties(plugin, config, this,
+                        nestedProperty.getName(), nestedProperty.getType());
+                nestedProperties.deserializeAll();
+                getConfig().set(nestedProperty.getName(), nestedProperties.getConfig());
+                this.nestMap.put(nestedProperty, nestedProperties);
+            }
+        }
+    }
+
+    protected void serializeAll(ConfigurationSection newConfig) {
+        for (final Property property : entries.properties) {
+            if (property instanceof ValueProperty) {
+                final ValueProperty valueProperty = (ValueProperty) property;
+                if (getConfig().get(valueProperty.getName()) != null) {
+                    if (valueProperty instanceof MappedProperty) {
+                        Object o = getConfig().get(valueProperty.getName());
+                        if (o == null) {
+                            Logging.fine("Missing property: %s", valueProperty.getName());
+                            continue;
+                        }
+                        Map map;
+                        if (o instanceof ConfigurationSection) {
+                            map = ((ConfigurationSection) o).getValues(false);
+                        } else if (!(o instanceof Map)) {
+                            Logging.fine("Missing property: %s", valueProperty.getName());
+                            continue;
                         } else {
-                            Logging.warning("Invalid value '" + obj + "' at '" + property.getName() + "'.  Value will be defaulted!");
-                            getConfig().set(property.getName(), property.getDefault());
+                            map = (Map) o;
+                        }
+                        for (Object key : map.keySet()) {
+                            Object obj = map.get(key);
+                            if (valueProperty.getType().isInstance(obj)) {
+                                if (obj != null) {
+                                    map.put(key, valueProperty.serialize(valueProperty.getType().cast(obj)));
+                                }
+                            } else {
+                                Logging.warning("Could not serialize: %s", valueProperty.getName());
+                            }
+                        }
+                        newConfig.set(valueProperty.getName(), map);
+                    } else if (valueProperty instanceof ListProperty) {
+                        List list = getConfig().getList(valueProperty.getName());
+                        if (list == null) {
+                            Logging.fine("Missing property: %s", valueProperty.getName());
+                            continue;
+                        }
+                        List newList = new ArrayList(list.size());
+                        for (Object obj : list) {
+                            if (valueProperty.getType().isInstance(obj)) {
+                                if (obj != null) {
+                                    newList.add(valueProperty.serialize(valueProperty.getType().cast(obj)));
+                                }
+                            } else {
+                                Logging.warning("Could not serialize: %s", valueProperty.getName());
+                            }
+                        }
+                        newConfig.set(valueProperty.getName(), newList);
+                    } else if (valueProperty instanceof SimpleProperty && !valueProperty.getType().isAssignableFrom(Null.class)) {
+                        Object obj = getConfig().get(valueProperty.getName());
+                        if (obj == null) {
+                            Logging.fine("Missing property: %s", valueProperty.getName());
+                            continue;
+                        }
+                        if (valueProperty.getType().isInstance(obj)) {
+                            Object res = valueProperty.serialize(valueProperty.getType().cast(obj));
+                            newConfig.set(valueProperty.getName(), res);
+                        } else {
+                            Logging.warning("Could not serialize '%s' since value is '%s' instead of '%s'", valueProperty.getName(), obj.getClass(), valueProperty.getType());
                         }
                     }
+                }
+            } else if (property instanceof NestedProperty) {
+                final NestedProperty nestedProperty = (NestedProperty) property;
+                final NestedYamlProperties nestedProperties = this.nestMap.get(nestedProperty);
+                if (nestedProperties != null) {
+                    nestedProperties.serializeAll(newConfig.createSection(nestedProperty.getName()));
+                } else {
+                    //TODO Warn
                 }
             }
         }
@@ -152,60 +215,58 @@ public abstract class AbstractYamlProperties implements FileProperties {
     /**
      * Loads default settings for any missing config values.
      */
-    private void setDefaults() {
+    protected void setDefaults() {
         for (Property path : entries.properties) {
-            //config.addComment(path.getName(), path.getComments());
-            if (getConfig().get(path.getName()) == null) {
-                if (path.isDeprecated()) {
-                    continue;
+            if (path instanceof ValueProperty) {
+                ValueProperty valueProperty = (ValueProperty) path;
+                if (getConfig().get(valueProperty.getName()) == null) {
+                    if (valueProperty.isDeprecated()) {
+                        continue;
+                    }
+                    if (valueProperty instanceof MappedProperty) {
+                        Logging.fine("Config: Defaulting map for '%s'", valueProperty.getName());
+                        if (valueProperty.getDefault() != null) {
+                            getConfig().set(valueProperty.getName(), valueProperty.getDefault());
+                        } else {
+                            getConfig().set(valueProperty.getName(), ((MappedProperty) valueProperty).getNewTypeMap());
+                        }
+                    } else if (valueProperty instanceof ListProperty) {
+                        ListProperty listPath = (ListProperty) valueProperty;
+                        Logging.fine("Config: Defaulting list for '%s'", valueProperty.getName());
+                        if (listPath.getDefault() != null) {
+                            getConfig().set(valueProperty.getName(), listPath.getDefault());
+                        } else {
+                            getConfig().set(valueProperty.getName(), listPath.getNewTypeList());
+                        }
+                    } else if (valueProperty.getDefault() != null) {
+                        Logging.fine("Config: Defaulting '%s' to %s", valueProperty.getName(), valueProperty.getDefault());
+                        getConfig().set(valueProperty.getName(), valueProperty.getDefault());
+                    }
                 }
-                if (path instanceof MappedProperty) {
-                    Logging.fine("Config: Defaulting map for '%s'", path.getName());
-                    if (path.getDefault() != null) {
-                        getConfig().set(path.getName(), path.getDefault());
-                    } else {
-                        getConfig().set(path.getName(), ((MappedProperty) path).getNewTypeMap());
-                    }
-                } else if (path instanceof ListProperty) {
-                    ListProperty listPath = (ListProperty) path;
-                    Logging.fine("Config: Defaulting list for '%s'", path.getName());
-                    if (listPath.getDefault() != null) {
-                        getConfig().set(path.getName(), listPath.getDefault());
-                    } else {
-                        getConfig().set(path.getName(), listPath.getNewTypeList());
-                    }
-                } else if (path.getDefault() != null) {
-                    Logging.fine("Config: Defaulting '%s' to %s", path.getName(), path.getDefault());
-                    getConfig().set(path.getName(), path.getDefault());
+            } else if (path instanceof NestedProperty) {
+                final NestedProperty nestedProperty = (NestedProperty) path;
+                final NestedYamlProperties nestedProperties = this.nestMap.get(nestedProperty);
+                if (nestedProperties != null) {
+                    nestedProperties.setDefaults();
+                } else {
+                    //TODO Warn
                 }
             }
         }
     }
 
-    private boolean isValid(Property property, Object o) {
-        if (!property.isValid(o)) {
-            Logging.warning(property.getName() + " contains an invalid value!");
-            Logging.warning(plugin.getMessager().getMessage(property.getInvalidMessage()));
-            Logging.warning("Setting to default of: " + property.getDefault());
-            getConfig().set(property.getName(), property.getDefault());
-            save();
-            return false;
-        }
-        return true;
-    }
-    
-    protected final boolean isInConfig(Property property) {
-        return entries.properties.contains(property);
+    protected final boolean isInConfig(ValueProperty valueProperty) {
+        return entries.properties.contains(valueProperty);
     }
 
-    private Object getEntryValue(Property property) throws IllegalArgumentException {
-        if (!isInConfig(property)) {
+    private Object getEntryValue(ValueProperty valueProperty) throws IllegalArgumentException {
+        if (!isInConfig(valueProperty)) {
             throw new IllegalArgumentException("property not registered to this config!");
         }
-        Object obj = getConfig().get(property.getName());
+        Object obj = getConfig().get(valueProperty.getName());
         if (obj == null) {
-            if (property.shouldDefaultIfMissing()) {
-                obj = property.getDefault();
+            if (valueProperty.shouldDefaultIfMissing()) {
+                obj = valueProperty.getDefault();
             }
         }
         return obj;
@@ -270,11 +331,11 @@ public abstract class AbstractYamlProperties implements FileProperties {
         for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
             Object o = mapEntry.getValue();
             if (!entry.getType().isInstance(o)) {
-                        Logging.fine("An invalid value of '%s' was detected at '%s%s%s' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), getConfig().options().pathSeparator(), mapEntry.getKey());
+                        Logging.fine("An invalid value of '%s' was detected at '%s%s%s' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), getConfigOptions().pathSeparator(), mapEntry.getKey());
                 if (entry.isValid(o)) {
                     o = entry.deserialize(o);
                 } else {
-                    Logging.warning("Invalid value '%s' at '%s%s%s'!", obj, entry.getName() + getConfig().options().pathSeparator() + mapEntry.getKey());
+                    Logging.warning("Invalid value '%s' at '%s%s%s'!", obj, entry.getName() + getConfigOptions().pathSeparator() + mapEntry.getKey());
                     continue;
                 }
             }
@@ -288,7 +349,7 @@ public abstract class AbstractYamlProperties implements FileProperties {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("entry not registered to this config!");
         }
-        final String path = entry.getName() + getConfig().options().pathSeparator() + key;
+        final String path = entry.getName() + getConfigOptions().pathSeparator() + key;
         Object obj = getConfig().get(path);
         if (obj == null) {
             return null;
@@ -341,101 +402,13 @@ public abstract class AbstractYamlProperties implements FileProperties {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
-        getConfig().set(entry.getName() + getConfig().options().pathSeparator() + key, value);
+        getConfig().set(entry.getName() + getConfigOptions().pathSeparator() + key, value);
         return true;
     }
 
-    protected Configuration getConfig() {
-        return this.config.getConfig();
-    }
+    protected static final class Entries {
 
-    private void serializeAll(FileConfiguration newConfig) {
-        for (Property property : entries.properties) {
-            if (getConfig().get(property.getName()) != null) {
-                if (property instanceof MappedProperty) {
-                    Object o = getConfig().get(property.getName());
-                    if (o == null) {
-                        Logging.fine("Missing property: %s", property.getName());
-                        continue;
-                    }
-                    Map map;
-                    if (o instanceof ConfigurationSection) {
-                        map = ((ConfigurationSection) o).getValues(false);
-                    } else if (!(o instanceof Map)) {
-                        Logging.fine("Missing property: %s", property.getName());
-                        continue;
-                    } else {
-                        map = (Map) o;
-                    }
-                    for (Object key : map.keySet()) {
-                        Object obj = map.get(key);
-                        if (property.getType().isInstance(obj)) {
-                            if (obj != null) {
-                                map.put(key, property.serialize(property.getType().cast(obj)));
-                            }
-                        } else {
-                            Logging.warning("Could not serialize: %s", property.getName());
-                        }
-                    }
-                    newConfig.set(property.getName(), map);
-                } else if (property instanceof ListProperty) {
-                    List list = getConfig().getList(property.getName());
-                    if (list == null) {
-                        Logging.fine("Missing property: %s", property.getName());
-                        continue;
-                    }
-                    List newList = new ArrayList(list.size());
-                    for (Object obj : list) {
-                        if (property.getType().isInstance(obj)) {
-                            if (obj != null) {
-                                newList.add(property.serialize(property.getType().cast(obj)));
-                            }
-                        } else {
-                            Logging.warning("Could not serialize: %s", property.getName());
-                        }
-                    }
-                    newConfig.set(property.getName(), newList);
-                } else if (property instanceof SimpleProperty && !property.getType().isAssignableFrom(Null.class)) {
-                    Object obj = getConfig().get(property.getName());
-                    if (obj == null) {
-                        Logging.fine("Missing property: %s", property.getName());
-                        continue;
-                    }
-                    if (property.getType().isInstance(obj)) {
-                        Object res = property.serialize(property.getType().cast(obj));
-                        newConfig.set(property.getName(), res);
-                    } else {
-                        Logging.warning("Could not serialize '%s' since value is '%s' instead of '%s'", property.getName(), obj.getClass(), property.getType());
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void save() {
-        CommentedYamlConfiguration newConfig = new CommentedYamlConfiguration(configFile, doComments);
-        newConfig.newConfig();
-        newConfig.getConfig().options().header(getHeader());
-        serializeAll(newConfig.getConfig());
-        if (doComments) {
-            for (Property path : entries.properties) {
-                newConfig.addComment(path.getName(), path.getComments());
-            }
-        }
-        newConfig.save();
-    }
-    
-    protected String getHeader() {
-        return "";
-    }
-
-    private final class Entries {
-
-        private final Set<Property> properties = new CopyOnWriteArraySet<Property>();
+        protected final Set<Property> properties = new CopyOnWriteArraySet<Property>();
         
         private Entries(Class... configClasses) {
             final Set<Class> classes = new LinkedHashSet<Class>(10);

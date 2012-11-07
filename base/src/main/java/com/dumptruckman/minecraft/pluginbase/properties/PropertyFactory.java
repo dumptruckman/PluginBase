@@ -44,4 +44,9 @@ public final class PropertyFactory {
                                                                  final Map<String, T> def) {
         return new MappedPropertyBuilder<T>(type, name, def);
     }
+
+    public static <T extends NestedProperties> NestedPropertyBuilder<T> newNestedProperty(final Class<T> type,
+                                                                                          final String name) {
+        return new NestedPropertyBuilder<T>(type, name);
+    }
 }

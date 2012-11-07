@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.feildmaster.lib.configuration.EnhancedConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -32,7 +33,9 @@ class CommentedYamlConfiguration {
     private final boolean doComments;
 
     public CommentedYamlConfiguration(File file, boolean doComments) {
-        super();
+        if (file == null) {
+            throw new IllegalArgumentException("configFile may not be null!");
+        }
         this.comments = new HashMap<String, String>();
         this.file = file;
         this.doComments = doComments;
@@ -40,10 +43,24 @@ class CommentedYamlConfiguration {
 
     /**
      * Loads this Configuration object into memory.
-     *
-     * @throws Exception If anything goes wrong while loading this Configuration object into memory.
      */
-    public void load() {
+    public final void load() throws IOException {
+        if (file.isDirectory()) {
+            throw new IllegalArgumentException("configFile may NOT be directory!");
+        }
+        // Make the data folders
+        if (file.getParent() != null) {
+            if (file.getParentFile().mkdirs()) {
+                Logging.fine("Created folder for config file.");
+            }
+        }
+
+        // Check if the config file exists.  If not, create it.
+        if (!file.exists()) {
+            if (file.createNewFile()) {
+                Logging.fine("Created config file: %s", file.getAbsolutePath());
+            }
+        }
         config = EnhancedConfiguration.loadConfiguration(file);
     }
 
