@@ -3,6 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.config;
 
+import com.dumptruckman.minecraft.pluginbase.properties.Properties;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyBuilder;
+import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 import com.dumptruckman.minecraft.pluginbase.util.Null;
 
 /**

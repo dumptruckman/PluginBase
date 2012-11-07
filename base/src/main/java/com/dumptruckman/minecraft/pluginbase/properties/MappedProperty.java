@@ -1,13 +1,13 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-package com.dumptruckman.minecraft.pluginbase.config;
+package com.dumptruckman.minecraft.pluginbase.properties;
 
-import java.util.List;
+import java.util.Map;
 
-public interface ListProperty<T> extends Property<T> {
+public interface MappedProperty<T> extends Property<T> {
 
-    List<T> getNewTypeList();
+    Map<String, T> getNewTypeMap();
 
-    List<T> getDefault();
+    Map<String, T> getDefault();
 }

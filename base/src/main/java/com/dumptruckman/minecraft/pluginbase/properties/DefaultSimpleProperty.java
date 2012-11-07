@@ -1,4 +1,4 @@
-package com.dumptruckman.minecraft.pluginbase.config;
+package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 

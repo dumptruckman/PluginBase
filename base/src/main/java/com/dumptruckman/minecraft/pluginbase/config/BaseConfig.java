@@ -6,6 +6,11 @@ package com.dumptruckman.minecraft.pluginbase.config;
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import com.dumptruckman.minecraft.pluginbase.locale.MessageProvider;
 import com.dumptruckman.minecraft.pluginbase.locale.Messages;
+import com.dumptruckman.minecraft.pluginbase.properties.Properties;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyBuilder;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertySerializer;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
+import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 
 import java.util.Locale;
 

@@ -306,7 +306,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     /**
      * Implement this method with by returning a new instance of your Configuration object.
      *
-     * {@link com.dumptruckman.minecraft.pluginbase.config.AbstractYamlProperties} is given to make implementing your
+     * {@link com.dumptruckman.minecraft.pluginbase.properties.AbstractYamlProperties} is given to make implementing your
      * config easy.
      *
      * @return A new config instance.

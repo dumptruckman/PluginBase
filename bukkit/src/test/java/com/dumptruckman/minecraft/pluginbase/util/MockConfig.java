@@ -1,12 +1,12 @@
 package com.dumptruckman.minecraft.pluginbase.util;
 
-import com.dumptruckman.minecraft.pluginbase.config.AbstractYamlProperties;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
-import com.dumptruckman.minecraft.pluginbase.config.ListProperty;
-import com.dumptruckman.minecraft.pluginbase.config.MappedProperty;
-import com.dumptruckman.minecraft.pluginbase.config.PropertyBuilder;
-import com.dumptruckman.minecraft.pluginbase.config.SimpleProperty;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.properties.AbstractYamlProperties;
+import com.dumptruckman.minecraft.pluginbase.properties.ListProperty;
+import com.dumptruckman.minecraft.pluginbase.properties.MappedProperty;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyBuilder;
+import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 
 import java.io.File;
 import java.io.IOException;

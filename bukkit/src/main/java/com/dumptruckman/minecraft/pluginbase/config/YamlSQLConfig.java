@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.config;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.properties.AbstractYamlProperties;
 
 import java.io.File;
 import java.io.IOException;
