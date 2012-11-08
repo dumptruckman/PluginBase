@@ -8,6 +8,10 @@ import java.util.Map;
 
 public interface Properties {
 
+    void flush();
+
+    void reload() throws Exception;
+
     <T> T get(SimpleProperty<T> entry) throws IllegalArgumentException;
 
     <T> List<T> get(ListProperty<T> entry) throws IllegalArgumentException;

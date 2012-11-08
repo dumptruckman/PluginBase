@@ -12,7 +12,7 @@ import java.io.IOException;
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public class YamlProperties extends AbstractYamlProperties implements FileProperties {
+public class YamlProperties extends AbstractYamlProperties implements Properties {
 
     private final File configFile;
     private final boolean doComments;
@@ -28,7 +28,7 @@ public class YamlProperties extends AbstractYamlProperties implements FileProper
         load();
 
         // Saves the configuration from memory to file
-        save();
+        flush();
     }
 
     private boolean isValid(ValueProperty valueProperty, Object o) {
@@ -37,7 +37,7 @@ public class YamlProperties extends AbstractYamlProperties implements FileProper
             Logging.warning(plugin.getMessager().getMessage(valueProperty.getInvalidMessage()));
             Logging.warning("Setting to default of: " + valueProperty.getDefault());
             getConfig().set(valueProperty.getName(), valueProperty.getDefault());
-            save();
+            flush();
             return false;
         }
         return true;
@@ -64,7 +64,7 @@ public class YamlProperties extends AbstractYamlProperties implements FileProper
      * {@inheritDoc}
      */
     @Override
-    public void save() {
+    public void flush() {
         CommentedYamlConfiguration newConfig = new CommentedYamlConfiguration(configFile, doComments);
         newConfig.newConfig();
         newConfig.getConfig().options().header(getHeader());

@@ -65,7 +65,7 @@ public class DebugCommand extends BuiltInCommand {
             } else {
                 p.config().set(BaseConfig.DEBUG_MODE, debugLevel);
                 Logging.setDebugLevel(p.config().get(BaseConfig.DEBUG_MODE));
-                p.config().save();
+                p.config().flush();
             }
         }
         displayDebugMode(p, sender);

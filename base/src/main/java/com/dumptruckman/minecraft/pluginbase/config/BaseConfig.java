@@ -6,7 +6,7 @@ package com.dumptruckman.minecraft.pluginbase.config;
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import com.dumptruckman.minecraft.pluginbase.locale.MessageProvider;
 import com.dumptruckman.minecraft.pluginbase.locale.Messages;
-import com.dumptruckman.minecraft.pluginbase.properties.FileProperties;
+import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertySerializer;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
@@ -17,7 +17,7 @@ import java.util.Locale;
 /**
  * Interface for interacting with the config of this plugin.
  */
-public interface BaseConfig extends FileProperties {
+public interface BaseConfig extends Properties {
 
     /**
      * Locale name config path, default and comments.

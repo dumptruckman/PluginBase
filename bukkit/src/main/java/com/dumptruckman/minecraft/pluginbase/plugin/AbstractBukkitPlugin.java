@@ -122,7 +122,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         if (config().get(BaseConfig.FIRST_RUN)) {
             firstRun();
             config().set(BaseConfig.FIRST_RUN, false);
-            config().save();
+            config().flush();
         }
 
         // Call the method implements should use in place of onEnable().

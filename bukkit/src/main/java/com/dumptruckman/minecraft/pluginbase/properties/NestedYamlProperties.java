@@ -55,4 +55,10 @@ class NestedYamlProperties extends AbstractYamlProperties implements NestedPrope
         super.setDefaults();
         parentSection.set(this.name, getConfig());
     }
+
+    @Override
+    public void flush() { }
+
+    @Override
+    public void reload() throws Exception { }
 }

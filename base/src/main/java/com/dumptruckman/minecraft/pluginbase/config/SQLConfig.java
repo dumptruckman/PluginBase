@@ -3,15 +3,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.config;
 
-import com.dumptruckman.minecraft.pluginbase.properties.FileProperties;
 import com.dumptruckman.minecraft.pluginbase.properties.NullProperty;
+import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 
 /**
  * Interface for interacting with the config of this plugin.
  */
-public interface SQLConfig extends FileProperties {
+public interface SQLConfig extends Properties {
 
     SimpleProperty<String> DB_TYPE = PropertyFactory.newProperty(String.class, "database_type", "SQLite")
             .comment("# What type of database to use.  Base options are SQLite and MySQL.").build();

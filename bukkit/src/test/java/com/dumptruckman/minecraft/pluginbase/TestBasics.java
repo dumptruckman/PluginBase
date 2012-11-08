@@ -106,7 +106,7 @@ public class TestBasics {
 
         Assert.assertEquals(Locale.CANADA, myPlugin.config().get(BaseConfig.LOCALE));
         
-        myPlugin.config().save();
+        myPlugin.config().flush();
         
         Assert.assertEquals(MockConfig.SPECIFIC_TEST.getNewTypeMap(), myPlugin.config().get(MockConfig.SPECIFIC_TEST));
         Map<String, Integer> testMap = myPlugin.config().get(MockConfig.SPECIFIC_TEST);
@@ -114,7 +114,7 @@ public class TestBasics {
         testMap.put("test1", 25);
         myPlugin.config().set(MockConfig.SPECIFIC_TEST, testMap);
         Assert.assertEquals(25, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST).get("test1"));
-        myPlugin.config().save();
+        myPlugin.config().flush();
         CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
         testMap = new HashMap<String, Integer>(1);
         testMap.put("test1", 25);
@@ -124,14 +124,14 @@ public class TestBasics {
         myPlugin.config().set(MockConfig.SPECIFIC_TEST, "test2", 50);
         Assert.assertEquals(50, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST).get("test2"));
         Assert.assertEquals(50, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST, "test2"));
-        myPlugin.config().save();
+        myPlugin.config().flush();
         CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
         Assert.assertEquals(50, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST).get("test2"));
         Assert.assertEquals(50, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST, "test2"));
 
         Assert.assertEquals(MockConfig.LIST_TEST.getNewTypeList(), myPlugin.config().get(MockConfig.LIST_TEST));
         myPlugin.config().set(MockConfig.LIST_TEST, Arrays.asList(25, 41));
-        myPlugin.config().save();
+        myPlugin.config().flush();
         CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
         List<Integer> checkList = myPlugin.config().get(MockConfig.LIST_TEST);
         assertTrue(checkList instanceof LinkedList);
@@ -144,7 +144,7 @@ public class TestBasics {
         assertTrue(myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
         myPlugin.config().get(MockConfig.NESTED_TEST).set(MockConfig.Nested.TEST, false);
         assertTrue(!myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
-        myPlugin.config().save();
+        myPlugin.config().flush();
         CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
         assertTrue(!myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
     }
