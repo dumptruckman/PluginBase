@@ -98,7 +98,7 @@ public class TestBasics {
 
         Assert.assertEquals(3, (int) myPlugin.config().get(BaseConfig.DEBUG_MODE));
         
-        myPlugin.getMessager().good(myPlugin.wrapSender(mockCommandSender), MockMessages.TEST_MESSAGE, "And a test arg");
+        myPlugin.getMessager().message(myPlugin.wrapSender(mockCommandSender), MockMessages.TEST_MESSAGE, "And a test arg");
 
         Assert.assertEquals(BaseConfig.LOCALE.serialize(BaseConfig.LOCALE.getDefault()).toString(), myPlugin.config().get(BaseConfig.LOCALE).toString());
         

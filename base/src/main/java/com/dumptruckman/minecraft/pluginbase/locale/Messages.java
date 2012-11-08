@@ -15,10 +15,6 @@ public class Messages {
     // BEGIN CHECKSTYLE-SUPPRESSION: Javadoc
     
     // Generic Messages
-    public final static Message GENERIC_ERROR = new Message("generic.error", "[Error]");
-    public final static Message GENERIC_SUCCESS = new Message("generic.success", "[Success]");
-    public final static Message GENERIC_INFO = new Message("generic.info", "[Info]");
-    public final static Message GENERIC_HELP = new Message("generic.help", "[Help]");
     public final static Message GENERIC_OFF = new Message("generic.off", "OFF");
     public final static Message BLANK = new Message(null, "");
 

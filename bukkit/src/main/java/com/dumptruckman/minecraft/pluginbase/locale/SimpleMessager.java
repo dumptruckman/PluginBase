@@ -5,7 +5,7 @@ package com.dumptruckman.minecraft.pluginbase.locale;
 
 import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-import org.bukkit.ChatColor;
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.util.ChatPaginator;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
                 messages.set(0, prefix + " " + messages.get(0));
             }
 
-            sendMessages(sender, messages);
+            message(sender, messages);
         }
     }
 
@@ -36,72 +36,20 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
      * {@inheritDoc}
      */
     @Override
-    public void bad(BasePlayer sender, Message message, Object... args) {
-        send(sender, ChatColor.RED.toString() + this.getMessage(Messages.GENERIC_ERROR), message, args);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void normal(BasePlayer sender, Message message, Object... args) {
+    public void message(BasePlayer sender, Message message, Object... args) {
         send(sender, "", message, args);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void good(BasePlayer sender, Message message, Object... args) {
-        send(sender, ChatColor.GREEN.toString() + this.getMessage(Messages.GENERIC_SUCCESS), message, args);
+    public void message(BasePlayer sender, BundledMessage message) {
+        message(sender, message.getMessage(), message.getArgs());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void info(BasePlayer sender, Message message, Object... args) {
-        send(sender, ChatColor.YELLOW.toString() + this.getMessage(Messages.GENERIC_INFO), message, args);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void help(BasePlayer sender, Message message, Object... args) {
-        send(sender, ChatColor.GRAY.toString() + this.getMessage(Messages.GENERIC_HELP), message, args);
-    }
-
-    @Override
-    public void bad(BasePlayer sender, BundledMessage message) {
-        bad(sender, message.getMessage(), message.getArgs());
-    }
-
-    @Override
-    public void normal(BasePlayer sender, BundledMessage message) {
-        normal(sender, message.getMessage(), message.getArgs());
-    }
-
-    @Override
-    public void good(BasePlayer sender, BundledMessage message) {
-        good(sender, message.getMessage(), message.getArgs());
-    }
-
-    @Override
-    public void info(BasePlayer sender, BundledMessage message) {
-        info(sender, message.getMessage(), message.getArgs());
-    }
-
-    @Override
-    public void help(BasePlayer sender, BundledMessage message) {
-        help(sender, message.getMessage(), message.getArgs());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void sendMessage(BasePlayer sender, String message) {
+    public void message(BasePlayer sender, String message) {
         String[] messages = ChatPaginator.wordWrap(message, ChatPaginator.GUARANTEED_NO_WRAP_CHAT_PAGE_WIDTH);
         sendMessages(sender, messages);
     }
@@ -110,7 +58,7 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
      * {@inheritDoc}
      */
     @Override
-    public void sendMessages(BasePlayer player, List<String> messages) {
+    public void message(BasePlayer player, List<String> messages) {
         for (String s : messages) {
             player.sendMessage(s);
         }
@@ -120,6 +68,14 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager, M
         for (String s : messages) {
             player.sendMessage(s);
         }
+    }
+
+    @Override
+    public void messageAndLog(BasePlayer sender, Message message, Object... args) {
+        if (sender.isPlayer()) {
+            message(sender, message, args);
+        }
+        Logging.info(getMessage(message, args));
     }
 }
 

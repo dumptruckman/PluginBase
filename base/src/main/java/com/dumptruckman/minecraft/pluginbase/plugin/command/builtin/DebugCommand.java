@@ -61,7 +61,7 @@ public class DebugCommand extends BuiltInCommand {
                 }
             }
             if (debugLevel > 3 || debugLevel < 0) {
-                p.getMessager().bad(sender, Messages.INVALID_DEBUG);
+                p.getMessager().message(sender, Messages.INVALID_DEBUG);
             } else {
                 p.config().set(BaseConfig.DEBUG_MODE, debugLevel);
                 Logging.setDebugLevel(p.config().get(BaseConfig.DEBUG_MODE));
@@ -74,9 +74,9 @@ public class DebugCommand extends BuiltInCommand {
 
     private void displayDebugMode(PluginBase<BaseConfig> p, BasePlayer sender) {
         if (p.config().get(BaseConfig.DEBUG_MODE) == 0) {
-            p.getMessager().normal(sender, CommandMessages.DEBUG_DISABLED, sender);
+            p.getMessager().message(sender, CommandMessages.DEBUG_DISABLED, sender);
         } else {
-            p.getMessager().normal(sender, CommandMessages.DEBUG_SET, p.config().get(BaseConfig.DEBUG_MODE).toString());
+            p.getMessager().message(sender, CommandMessages.DEBUG_SET, p.config().get(BaseConfig.DEBUG_MODE).toString());
             Logging.fine("%s debug ENABLED", p.getPluginInfo().getName());
         }
     }

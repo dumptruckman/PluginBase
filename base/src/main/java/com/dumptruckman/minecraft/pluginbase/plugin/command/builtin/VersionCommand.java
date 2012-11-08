@@ -63,7 +63,7 @@ public class VersionCommand extends BuiltInCommand {
     public boolean runCommand(final PluginBase<BaseConfig> p, final BasePlayer sender, final CommandContext context) {
         // Check if the command was sent from a Player.
         if (sender.isPlayer()) {
-            p.getMessager().normal(sender, CommandMessages.VERSION_PLAYER);
+            p.getMessager().message(sender, CommandMessages.VERSION_PLAYER);
         }
 
         final List<String> buffer = new LinkedList<String>();
@@ -100,7 +100,7 @@ public class VersionCommand extends BuiltInCommand {
                         p.getServerInterface().scheduleSyncDelayedTask(p, new Runnable() {
                             @Override
                             public void run() {
-                                p.getMessager().normal(sender, CommandMessages.VERSION_INFO_DUMPED, pasteUrl);
+                                p.getMessager().message(sender, CommandMessages.VERSION_INFO_DUMPED, pasteUrl);
                             }
                         });
                     }
