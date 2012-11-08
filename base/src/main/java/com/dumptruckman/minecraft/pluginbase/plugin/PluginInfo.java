@@ -4,5 +4,7 @@ public interface PluginInfo {
 
     String getName();
 
+    String getPermissionName();
+
     String getVersion();
 }

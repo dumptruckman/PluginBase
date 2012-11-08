@@ -45,7 +45,7 @@ import java.util.logging.Level;
  */
 public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlugin implements BukkitPlugin<C> {
 
-    private final PluginInfo pluginInfo = new BukkitPluginInfo(this);
+    private final BukkitPluginInfo pluginInfo = new BukkitPluginInfo(this);
 
     private ServerInterface serverInterface;
     private C config = null;
@@ -355,5 +355,9 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     @Override
     public ServerInterface getServerInterface() {
         return serverInterface;
+    }
+
+    protected void setPermissionName(final String name) {
+        this.pluginInfo.setPermissionName(name);
     }
 }
