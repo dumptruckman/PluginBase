@@ -12,5 +12,5 @@ public abstract class Command<P extends PluginBase> {
 
     public abstract Message getHelp();
 
-    public abstract void runCommand(P p, BasePlayer sender, CommandContext context);
+    public abstract boolean runCommand(P p, BasePlayer sender, CommandContext context);
 }

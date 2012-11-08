@@ -168,7 +168,9 @@ public abstract class CommandHandler<P extends PluginBase> {
                     }
                 }
             }
-            command.runCommand(plugin, player, context);
+            if (!command.runCommand(plugin, player, context)) {
+                throw new CommandUsageException("Usage error..", getUsage(args, 0, command, cmdInfo));
+            }
             return true;
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

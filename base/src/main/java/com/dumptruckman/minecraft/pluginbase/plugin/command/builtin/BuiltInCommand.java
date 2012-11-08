@@ -12,5 +12,5 @@ public abstract class BuiltInCommand extends Command<PluginBase<BaseConfig>> {
 
     public abstract List<String> getStaticAliases();
 
-    public abstract void runCommand(final PluginBase<BaseConfig> p, final BasePlayer sender, final CommandContext context);
+    public abstract boolean runCommand(final PluginBase<BaseConfig> p, final BasePlayer sender, final CommandContext context);
 }

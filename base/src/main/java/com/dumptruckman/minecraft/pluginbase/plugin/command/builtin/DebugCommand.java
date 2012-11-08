@@ -50,7 +50,7 @@ public class DebugCommand extends BuiltInCommand {
     }
 
     @Override
-    public void runCommand(PluginBase<BaseConfig> p, BasePlayer sender, CommandContext context) {
+    public boolean runCommand(PluginBase<BaseConfig> p, BasePlayer sender, CommandContext context) {
         if (context.argsLength() == 1) {
             int debugLevel = -1;
             try {
@@ -69,6 +69,7 @@ public class DebugCommand extends BuiltInCommand {
             }
         }
         displayDebugMode(p, sender);
+        return true;
     }
 
     private void displayDebugMode(PluginBase<BaseConfig> p, BasePlayer sender) {

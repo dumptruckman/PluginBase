@@ -247,7 +247,9 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         try {
             return getCommandHandler().locateAndRunCommand(wrappedSender, allArgs);
         } catch (CommandException e) {
-            getMessager().sendMessage(wrappedSender, e.getMessage());
+            if (e.getMessage() != null) {
+                getMessager().sendMessage(wrappedSender, e.getMessage());
+            }
             if (e instanceof CommandUsageException) {
                 getMessager().sendMessages(wrappedSender, ((CommandUsageException) e).getUsage());
             }

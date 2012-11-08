@@ -46,8 +46,9 @@ public class ReloadCommand extends BuiltInCommand {
     }
 
     @Override
-    public void runCommand(PluginBase p, BasePlayer sender, CommandContext context) {
+    public boolean runCommand(PluginBase p, BasePlayer sender, CommandContext context) {
         p.reloadConfig();
         p.getMessager().normal(sender, CommandMessages.RELOAD_COMPLETE);
+        return true;
     }
 }
