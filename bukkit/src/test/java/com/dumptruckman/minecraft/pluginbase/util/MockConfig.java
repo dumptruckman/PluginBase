@@ -39,7 +39,7 @@ public class MockConfig extends YamlProperties implements BaseConfig {
         return "# ===[ PluginBase Config ]===";
     }
 
-    private static interface Nested extends NestedProperties {
+    public static interface Nested extends NestedProperties {
 
         public static final NestedProperty<DoubleNested> NESTED_TEST = PropertyFactory.newNestedProperty(DoubleNested.class, "double_nested").comment("# TEADFA").build();
 

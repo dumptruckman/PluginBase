@@ -255,8 +255,8 @@ public abstract class AbstractYamlProperties implements Properties {
         }
     }
 
-    protected final boolean isInConfig(ValueProperty valueProperty) {
-        return entries.properties.contains(valueProperty);
+    protected final boolean isInConfig(Property property) {
+        return entries.properties.contains(property);
     }
 
     private Object getEntryValue(ValueProperty valueProperty) throws IllegalArgumentException {
@@ -361,6 +361,14 @@ public abstract class AbstractYamlProperties implements Properties {
             }
         }
         return entry.getType().cast(obj);
+    }
+
+    @Override
+    public NestedProperties get(NestedProperty entry) throws IllegalArgumentException {
+        if (!isInConfig(entry)) {
+            throw new IllegalArgumentException("entry not registered to this config!");
+        }
+        return this.nestMap.get(entry);
     }
 
     @Override

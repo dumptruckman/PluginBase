@@ -136,6 +136,17 @@ public class TestBasics {
         List<Integer> checkList = myPlugin.config().get(MockConfig.LIST_TEST);
         assertTrue(checkList instanceof LinkedList);
         assertTrue(checkList.contains(25) && checkList.contains(41));
+
+        assertTrue(myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
+        myPlugin.config().get(MockConfig.NESTED_TEST).set(MockConfig.Nested.TEST, false);
+        assertTrue(!myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
+        CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
+        assertTrue(myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
+        myPlugin.config().get(MockConfig.NESTED_TEST).set(MockConfig.Nested.TEST, false);
+        assertTrue(!myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
+        myPlugin.config().save();
+        CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
+        assertTrue(!myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
     }
 
 

@@ -16,6 +16,8 @@ public interface Properties {
 
     <T> T get(MappedProperty<T> entry, String key) throws IllegalArgumentException;
 
+    NestedProperties get(NestedProperty entry) throws IllegalArgumentException;
+
     <T> boolean set(SimpleProperty<T> entry, T value) throws IllegalArgumentException;
 
     <T> boolean set(ListProperty<T> entry, List<T> value) throws IllegalArgumentException;
