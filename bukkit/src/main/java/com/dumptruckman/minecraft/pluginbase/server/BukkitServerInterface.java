@@ -3,6 +3,8 @@ package com.dumptruckman.minecraft.pluginbase.server;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import org.bukkit.Server;
 
+import java.io.File;
+
 public class BukkitServerInterface implements ServerInterface<BukkitPlugin> {
 
     private final Server server;
@@ -19,6 +21,11 @@ public class BukkitServerInterface implements ServerInterface<BukkitPlugin> {
     @Override
     public String getVersion() {
         return server.getVersion();
+    }
+
+    @Override
+    public File getWorldContainer() {
+        return server.getWorldContainer();
     }
 
     @Override
