@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
+import com.dumptruckman.minecraft.logging.LoggablePlugin;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
@@ -14,7 +15,7 @@ import org.mcstats.Metrics;
 import java.io.File;
 import java.util.List;
 
-public interface PluginBase<C extends BaseConfig> {
+public interface PluginBase<C extends BaseConfig> extends LoggablePlugin {
 
     /**
      * @return the Properties object which contains settings for this plugin.

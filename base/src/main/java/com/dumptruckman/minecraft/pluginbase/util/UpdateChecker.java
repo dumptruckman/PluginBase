@@ -1,5 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.util;
 
+import com.dumptruckman.minecraft.logging.Logging;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

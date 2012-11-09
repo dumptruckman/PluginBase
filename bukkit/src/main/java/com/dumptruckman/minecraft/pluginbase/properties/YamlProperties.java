@@ -3,8 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+import com.dumptruckman.minecraft.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
 
 import java.io.File;
 import java.io.IOException;

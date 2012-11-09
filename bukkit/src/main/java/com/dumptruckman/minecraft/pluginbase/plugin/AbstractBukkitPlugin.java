@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
+import com.dumptruckman.minecraft.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.config.YamlSQLConfig;
@@ -25,7 +26,6 @@ import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadComman
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionCommand;
 import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
 import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.sk89q.minecraft.util.commands.CommandException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

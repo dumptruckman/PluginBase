@@ -133,6 +133,7 @@ and adjust the build number accordingly -->
                             <artifactSet>
                                 <includes>
                                     <include>com.sk89q:worldedit</include>
+                                    <include>com.dumptruckman.minecraft:Logging</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -156,6 +157,13 @@ and adjust the build number accordingly -->
         </plugins>
     </build>
     <dependencies>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft</groupId>
+            <artifactId>Logging</artifactId>
+            <version>1.5-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>

@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin.command.builtin;
 
+import com.dumptruckman.minecraft.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
@@ -10,7 +11,6 @@ import com.dumptruckman.minecraft.pluginbase.locale.Message;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.dumptruckman.minecraft.pluginbase.util.webpaste.BitlyURLShortener;
 import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteFailedException;
 import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteService;

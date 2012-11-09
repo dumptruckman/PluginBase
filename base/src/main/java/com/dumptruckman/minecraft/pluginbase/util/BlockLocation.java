@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.util;
 
+import com.dumptruckman.minecraft.logging.Logging;
+
 public class BlockLocation {
 
     private static final String DELIMITER = "_";

@@ -1,6 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import com.dumptruckman.minecraft.logging.Logging;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;

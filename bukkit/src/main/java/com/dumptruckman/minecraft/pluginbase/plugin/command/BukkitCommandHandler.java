@@ -1,7 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
+import com.dumptruckman.minecraft.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import com.sk89q.bukkit.util.FallbackRegistrationListener;
 import com.sk89q.util.ReflectionUtil;
 import org.bukkit.Bukkit;
