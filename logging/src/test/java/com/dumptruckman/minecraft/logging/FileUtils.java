@@ -4,7 +4,7 @@
  * For more information please check the README.md file included              *
  * with this project.                                                         *
  ******************************************************************************/
-package com.dumptruckman.minecraft.util;
+package com.dumptruckman.minecraft.logging;
 
 import java.io.File;
 

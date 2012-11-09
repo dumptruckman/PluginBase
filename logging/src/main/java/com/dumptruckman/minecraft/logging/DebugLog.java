@@ -19,7 +19,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.dumptruckman.minecraft.util;
+package com.dumptruckman.minecraft.logging;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -47,7 +47,7 @@ public class DebugLog {
     static volatile int debugLevel = ORIGINAL_DEBUG_LEVEL;
 
     /**
-     * Initializes the {@link com.dumptruckman.minecraft.util.DebugLog} the first time this is called with the information passed in.  The DebugLog must be
+     * Initializes the {@link com.dumptruckman.minecraft.logging.DebugLog} the first time this is called with the information passed in.  The DebugLog must be
      * initializes before use.
      *
      * @param loggerName The name of the logger to apply this DebugLog to.
@@ -61,7 +61,7 @@ public class DebugLog {
     }
 
     /**
-     * Unitializes the {@link com.dumptruckman.minecraft.util.DebugLog} so that it may be reinitialized with new information.
+     * Unitializes the {@link com.dumptruckman.minecraft.logging.DebugLog} so that it may be reinitialized with new information.
      */
     public static synchronized void shutdown() {
         loggerName = null;
@@ -70,18 +70,18 @@ public class DebugLog {
     }
 
     /**
-     * Returns the logger name set for this {@link com.dumptruckman.minecraft.util.DebugLog}.
+     * Returns the logger name set for this {@link com.dumptruckman.minecraft.logging.DebugLog}.
      *
-     * @return the logger name set for this {@link com.dumptruckman.minecraft.util.DebugLog}.
+     * @return the logger name set for this {@link com.dumptruckman.minecraft.logging.DebugLog}.
      */
     public static synchronized String getLoggerName() {
         return loggerName;
     }
 
     /**
-     * Returns the file name set for this {@link com.dumptruckman.minecraft.util.DebugLog}.
+     * Returns the file name set for this {@link com.dumptruckman.minecraft.logging.DebugLog}.
      *
-     * @return the file name set for this {@link com.dumptruckman.minecraft.util.DebugLog}.
+     * @return the file name set for this {@link com.dumptruckman.minecraft.logging.DebugLog}.
      */
     public static synchronized String getFileName() {
         return fileName;
@@ -113,9 +113,9 @@ public class DebugLog {
     }
 
     /**
-     * Returns whether their is an open instance of this {@link com.dumptruckman.minecraft.util.DebugLog}.
+     * Returns whether their is an open instance of this {@link com.dumptruckman.minecraft.logging.DebugLog}.
      *
-     * @return true if there is an open instance of this {@link com.dumptruckman.minecraft.util.DebugLog}.
+     * @return true if there is an open instance of this {@link com.dumptruckman.minecraft.logging.DebugLog}.
      */
     public static synchronized boolean isClosed() {
         return instance == null;
@@ -207,7 +207,7 @@ public class DebugLog {
     }
 
     /**
-     * Closes this {@link com.dumptruckman.minecraft.util.DebugLog}.
+     * Closes this {@link com.dumptruckman.minecraft.logging.DebugLog}.
      */
     public synchronized void close() {
         log.removeHandler(fileHandler);

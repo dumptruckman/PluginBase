@@ -1,6 +1,6 @@
-package com.dumptruckman.minecraft.util;
+package com.dumptruckman.minecraft.logging;
 
-import com.dumptruckman.minecraft.util.Logging.InterceptedLogger;
+import com.dumptruckman.minecraft.logging.Logging.InterceptedLogger;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.junit.After;
@@ -48,7 +48,7 @@ public class LoggingTest {
         plugin = mock(Plugin.class);
         when(plugin.getName()).thenReturn("Logging-Test");
         final PluginDescriptionFile pdf = PowerMockito.spy(new PluginDescriptionFile(NAME, VERSION,
-                "com.dumptruckman.minecraft.util.LoggingTest"));
+                "com.dumptruckman.minecraft.logging.LoggingTest"));
         when(plugin.getDescription()).thenReturn(pdf);
         FileUtils.deleteFolder(new File("bin"));
         final File testFolder = new File("bin/test/server/plugins/Logging-Test");

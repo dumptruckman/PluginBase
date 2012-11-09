@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-package com.dumptruckman.minecraft.util;
+package com.dumptruckman.minecraft.logging;
 
 import java.io.File;
 import java.util.IllegalFormatException;
@@ -55,7 +55,7 @@ public class Logging {
 
         /**
          * Log a message, with no arguments.  Similar to {@link java.util.logging.Logger#log(java.util.logging.LogRecord)} with the
-         * exception that all logging is handled by a single static {@link com.dumptruckman.minecraft.util.Logging} instance.
+         * exception that all logging is handled by a single static {@link com.dumptruckman.minecraft.logging.Logging} instance.
          *
          * @param record the LogRecord.
          */
@@ -84,7 +84,7 @@ public class Logging {
 
     /**
      * Prepares the log for use.  Debugging will default to disabled when initialized.  This should be called early on
-     * in plugin initialization, such as during onLoad() or onEnable().  If this {@link com.dumptruckman.minecraft.util.Logging} class has already
+     * in plugin initialization, such as during onLoad() or onEnable().  If this {@link com.dumptruckman.minecraft.logging.Logging} class has already
      * been initialized, it will first be shut down before reinitializing.
      *
      * @param plugin The plugin using this static logger.
@@ -104,8 +104,8 @@ public class Logging {
     }
 
     /**
-     * Returns the {@link com.dumptruckman.minecraft.util.Logging} class to it's original state, releasing the plugin that initialized it.  The
-     * {@link com.dumptruckman.minecraft.util.Logging} class can be reinitialized once it has been shut down.  This should be called when the plugin
+     * Returns the {@link com.dumptruckman.minecraft.logging.Logging} class to it's original state, releasing the plugin that initialized it.  The
+     * {@link com.dumptruckman.minecraft.logging.Logging} class can be reinitialized once it has been shut down.  This should be called when the plugin
      * is disabled so that a static reference to the plugin is not kept in cases of server reloads.
      */
     public synchronized static void shutdown() {

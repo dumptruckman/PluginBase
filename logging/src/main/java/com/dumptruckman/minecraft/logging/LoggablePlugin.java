@@ -1,4 +1,4 @@
-package com.dumptruckman.minecraft.util;
+package com.dumptruckman.minecraft.logging;
 
 import java.io.File;
 
