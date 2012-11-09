@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-abstract class AbstractProperties implements Properties {
+public abstract class AbstractProperties implements Properties {
 
     protected final Entries entries;
 
