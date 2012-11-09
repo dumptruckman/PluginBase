@@ -13,7 +13,7 @@ abstract class ValuePropertyBuilder<T> extends PropertyBuilder<T> {
     protected final boolean defaultIfMissing;
     protected final Set<String> aliases = new LinkedHashSet<String>();
 
-    protected PropertySerializer<T> serializer;
+    protected PropertySerializer<T> serializer = null;
     protected PropertyValidator validator;
     protected Message description = null;
     protected boolean deprecated = false;
@@ -21,15 +21,6 @@ abstract class ValuePropertyBuilder<T> extends PropertyBuilder<T> {
     public ValuePropertyBuilder(Class<T> type, String name, boolean allowNull) {
         super(type, name);
         this.defaultIfMissing = !allowNull;
-        if (type.equals(String.class)) {
-            this.serializer = new StringStringSerializer<T>(type);
-        } else {
-            try {
-                this.serializer = new DefaultStringSerializer<T>(type);
-            } catch (IllegalArgumentException e) {
-                this.serializer = new DefaultSerializer<T>(type);
-            }
-        }
         this.validator = new DefaultValidator();
     }
 

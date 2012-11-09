@@ -9,37 +9,50 @@ import com.dumptruckman.minecraft.pluginbase.util.Null;
 import org.bukkit.configuration.ConfigurationOptions;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public abstract class AbstractYamlProperties implements Properties {
+public abstract class AbstractYamlProperties extends AbstractProperties implements Properties {
 
     protected final BukkitPlugin plugin;
     protected final CommentedYamlConfiguration config;
-    protected final Entries entries;
 
     private final Map<NestedProperty, NestedYamlProperties> nestMap = new HashMap<NestedProperty, NestedYamlProperties>();
 
     public AbstractYamlProperties(final BukkitPlugin plugin,
                                   final CommentedYamlConfiguration config,
                                   final Class... configClasses) {
+        super(configClasses);
         if (plugin == null) {
             throw new IllegalArgumentException("plugin may not be null!");
         }
         this.plugin = plugin;
         this.config = config;
-        this.entries = new Entries(configClasses);
+
+        for (final Property property : entries.properties) {
+            if (property instanceof ValueProperty) {
+                final ValueProperty valueProperty = (ValueProperty) property;
+                final Class type = valueProperty.getType();
+                if (valueProperty.getDefaultSerializer() != null) {
+                    setPropertySerializer(type, valueProperty.getDefaultSerializer());
+                } else  if (!hasPropertySerializer(type)) {
+                    if (type.equals(String.class)) {
+                        setPropertySerializer(type, new StringStringSerializer(type));
+                    } else {
+                        try {
+                            setPropertySerializer(type, new DefaultStringSerializer(type));
+                        } catch (IllegalArgumentException e) {
+                            setPropertySerializer(type, new DefaultSerializer(type));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected ConfigurationSection getConfig() {
@@ -86,7 +99,7 @@ public abstract class AbstractYamlProperties implements Properties {
                                 Object obj = section.get(key);
                                 if (obj != null) {
                                     if (valueProperty.isValid(obj)) {
-                                        Object res = valueProperty.deserialize(obj);
+                                        Object res = getPropertySerializer(valueProperty.getType()).deserialize(obj);
                                         section.set(key, res);
                                     } else {
                                         Logging.warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + getConfigOptions().pathSeparator() + key + "'.  Value will be deleted!");
@@ -104,7 +117,7 @@ public abstract class AbstractYamlProperties implements Properties {
                             for (int i = 0; i < list.size(); i++) {
                                 Object obj = list.get(i);
                                 if (valueProperty.isValid(obj)) {
-                                    Object res = valueProperty.deserialize(obj);
+                                    Object res = getPropertySerializer(valueProperty.getType()).deserialize(obj);
                                     newList.add(res);
                                 } else {
                                     Logging.warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + "[" + i + "]'.  Value will be deleted!");
@@ -118,7 +131,7 @@ public abstract class AbstractYamlProperties implements Properties {
                             getConfig().set(valueProperty.getName(), valueProperty.getDefault());
                         } else {
                             if (valueProperty.isValid(obj)) {
-                                Object res = valueProperty.deserialize(obj);
+                                Object res = getPropertySerializer(valueProperty.getType()).deserialize(obj);
                                 getConfig().set(valueProperty.getName(), res);
                             } else {
                                 Logging.warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + "'.  Value will be defaulted!");
@@ -162,7 +175,7 @@ public abstract class AbstractYamlProperties implements Properties {
                             Object obj = map.get(key);
                             if (valueProperty.getType().isInstance(obj)) {
                                 if (obj != null) {
-                                    map.put(key, valueProperty.serialize(valueProperty.getType().cast(obj)));
+                                    map.put(key, getPropertySerializer(valueProperty.getType()).serialize(valueProperty.getType().cast(obj)));
                                 }
                             } else {
                                 Logging.warning("Could not serialize: %s", valueProperty.getName());
@@ -179,7 +192,7 @@ public abstract class AbstractYamlProperties implements Properties {
                         for (Object obj : list) {
                             if (valueProperty.getType().isInstance(obj)) {
                                 if (obj != null) {
-                                    newList.add(valueProperty.serialize(valueProperty.getType().cast(obj)));
+                                    newList.add(getPropertySerializer(valueProperty.getType()).serialize(valueProperty.getType().cast(obj)));
                                 }
                             } else {
                                 Logging.warning("Could not serialize: %s", valueProperty.getName());
@@ -193,7 +206,7 @@ public abstract class AbstractYamlProperties implements Properties {
                             continue;
                         }
                         if (valueProperty.getType().isInstance(obj)) {
-                            Object res = valueProperty.serialize(valueProperty.getType().cast(obj));
+                            Object res = getPropertySerializer(valueProperty.getType()).serialize(valueProperty.getType().cast(obj));
                             newConfig.set(valueProperty.getName(), res);
                         } else {
                             Logging.warning("Could not serialize '%s' since value is '%s' instead of '%s'", valueProperty.getName(), obj.getClass(), valueProperty.getType());
@@ -255,10 +268,6 @@ public abstract class AbstractYamlProperties implements Properties {
         }
     }
 
-    protected final boolean isInConfig(Property property) {
-        return entries.properties.contains(property);
-    }
-
     private Object getEntryValue(ValueProperty valueProperty) throws IllegalArgumentException {
         if (!isInConfig(valueProperty)) {
             throw new IllegalArgumentException("property not registered to this config!");
@@ -281,7 +290,7 @@ public abstract class AbstractYamlProperties implements Properties {
         if (!entry.getType().isInstance(obj)) {
             Logging.fine("An invalid value of '%s' was detected at '%s' during a get call.  Attempting to deserialize and replace...", obj, entry.getName());
             if (entry.isValid(obj)) {
-                obj = entry.deserialize(obj);
+                obj = getPropertySerializer(entry.getType()).deserialize(obj);
             }
         }
         return entry.getType().cast(obj);
@@ -303,7 +312,7 @@ public abstract class AbstractYamlProperties implements Properties {
             if (!entry.getType().isInstance(o)) {
                 Logging.fine("An invalid value of '%s' was detected at '%s[%s]' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), i);
                 if (entry.isValid(o)) {
-                    o = entry.deserialize(o);
+                    o = getPropertySerializer(entry.getType()).deserialize(o);
                 } else {
                     Logging.warning("Invalid value '%s' at '%s[%s]'!", obj, entry.getName(), i);
                     continue;
@@ -333,7 +342,7 @@ public abstract class AbstractYamlProperties implements Properties {
             if (!entry.getType().isInstance(o)) {
                         Logging.fine("An invalid value of '%s' was detected at '%s%s%s' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), getConfigOptions().pathSeparator(), mapEntry.getKey());
                 if (entry.isValid(o)) {
-                    o = entry.deserialize(o);
+                    o = getPropertySerializer(entry.getType()).deserialize(o);
                 } else {
                     Logging.warning("Invalid value '%s' at '%s%s%s'!", obj, entry.getName() + getConfigOptions().pathSeparator() + mapEntry.getKey());
                     continue;
@@ -357,7 +366,7 @@ public abstract class AbstractYamlProperties implements Properties {
         if (!entry.getType().isInstance(obj)) {
             Logging.fine("An invalid value of '%s' was detected at '%s' during a get call.  Attempting to deserialize and replace...", obj, path);
             if (entry.isValid(obj)) {
-                obj = entry.deserialize(obj);
+                obj = getPropertySerializer(entry.getType()).deserialize(obj);
             }
         }
         return entry.getType().cast(obj);
@@ -414,39 +423,5 @@ public abstract class AbstractYamlProperties implements Properties {
         return true;
     }
 
-    protected static final class Entries {
 
-        protected final Set<Property> properties = new CopyOnWriteArraySet<Property>();
-        
-        private Entries(Class... configClasses) {
-            final Set<Class> classes = new LinkedHashSet<Class>(10);
-            for (Class configClass : configClasses) {
-                classes.add(configClass);
-                classes.addAll(Arrays.asList(configClass.getInterfaces()));
-                if (configClass.getSuperclass() != null) {
-                    classes.add(configClass.getSuperclass());
-                }
-            }
-            for (Class clazz : classes) {
-                final Field[] fields = clazz.getDeclaredFields();
-                for (Field field : fields) {
-                    if (!Modifier.isStatic(field.getModifiers())) {
-                        continue;
-                    }
-                    field.setAccessible(true);
-                    try {
-                        if (Property.class.isInstance(field.get(null))) {
-                            try {
-                                properties.add((Property) field.get(null));
-                            } catch(IllegalAccessException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    } catch (IllegalArgumentException ignore) {
-                    } catch (IllegalAccessException ignore) {
-                    } catch (NullPointerException ignore) { }
-                }
-            }
-        }
-    }
 }

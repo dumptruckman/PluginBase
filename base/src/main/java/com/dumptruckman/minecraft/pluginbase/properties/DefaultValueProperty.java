@@ -58,14 +58,7 @@ abstract class DefaultValueProperty<T> extends DefaultProperty<T> implements Val
     }
 
     @Override
-    public Object serialize(T value) {
-        return serializer.serialize(value);
+    public PropertySerializer<T> getDefaultSerializer() {
+        return serializer;
     }
-
-    @Override
-    public T deserialize(Object o) {
-        return serializer.deserialize(o);
-    }
-
-
 }

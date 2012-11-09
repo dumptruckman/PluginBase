@@ -100,7 +100,7 @@ public class TestBasics {
         
         myPlugin.getMessager().message(myPlugin.wrapSender(mockCommandSender), MockMessages.TEST_MESSAGE, "And a test arg");
 
-        Assert.assertEquals(BaseConfig.LOCALE.serialize(BaseConfig.LOCALE.getDefault()).toString(), myPlugin.config().get(BaseConfig.LOCALE).toString());
+        Assert.assertEquals(BaseConfig.LOCALE.getDefaultSerializer().serialize(BaseConfig.LOCALE.getDefault()).toString(), myPlugin.config().get(BaseConfig.LOCALE).toString());
         
         myPlugin.config().set(BaseConfig.LOCALE, Locale.CANADA);
 

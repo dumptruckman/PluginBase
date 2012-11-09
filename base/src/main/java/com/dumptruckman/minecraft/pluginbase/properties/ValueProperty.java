@@ -52,21 +52,13 @@ interface ValueProperty<T> extends Property<T> {
     boolean shouldDefaultIfMissing();
 
     /**
-     * Serializes the given value into a form that is acceptable by the Configuration being used.
+     * Gets the default serializer for this property if there is one.
      *
-     * @param value The value to serialize.
-     * @return The serialized form of the value.
-     */
-    Object serialize(T value);
-
-    /**
-     * Deserializes the given object from the form that is stored in the Configuration into a form that fits the type
-     * of this Properties Property.
+     * This will be used to serialize/deserialize the property if not replaced by the {@link Properties} implementation.
      *
-     * @param o The value to deserialize.
-     * @return The deserialized value.
+     * @return The default serializer for this property or null if not specified.
      */
-    T deserialize(Object o);
+    PropertySerializer<T> getDefaultSerializer();
 
     /**
      * Retrieves the language to use when an invalid value is attempted to be used for this entry.
