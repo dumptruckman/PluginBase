@@ -214,6 +214,15 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         setupDB();
         setupConfig();
         setupMessager();
+        onReloadConfig();
+    }
+
+    /**
+     * This method will be called when {@link #reloadConfig()} is called and after the db, config and messager
+     * have been reloaded.
+     */
+    public void onReloadConfig() {
+
     }
 
     /**
