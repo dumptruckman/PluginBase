@@ -4,7 +4,9 @@
 package com.dumptruckman.minecraft.logging;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.IllegalFormatException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -12,75 +14,20 @@ import java.util.logging.Logger;
 /**
  * Static plugin logger.
  */
-public class Logging {
+public class Logging extends Logger {
 
-    static final String ORIGINAL_NAME = Logging.class.getSimpleName();
     static final String ORIGINAL_DEBUG = "-Debug";
     static final boolean SHOW_CONFIG = true;
 
-    static final InterceptedLogger LOG = new InterceptedLogger(Logger.getLogger("Minecraft"));
+    final Logger logger;
+    final String name;
+    final DebugLog debugLog;
+    final LoggablePlugin plugin;
 
-    static String name = ORIGINAL_NAME;
-    static String debug = ORIGINAL_DEBUG;
-    static DebugLog debugLog = null;
-    static LoggablePlugin plugin = null;
-    static volatile boolean showConfig = SHOW_CONFIG;
+    volatile String debugString = ORIGINAL_DEBUG;
+    volatile boolean showConfig = SHOW_CONFIG;
 
-    protected Logging() {
-        throw new AssertionError();
-    }
-
-    static class InterceptedLogger extends Logger {
-
-        final Logger logger;
-
-        InterceptedLogger(final Logger logger) {
-            super(logger.getName(), logger.getResourceBundleName());
-            this.logger = logger;
-        }
-
-        synchronized void _log(final Level level, final String message) {
-            final LogRecord record = new LogRecord(level, message);
-            record.setLoggerName(getName());
-            record.setResourceBundle(getResourceBundle());
-            _log(record);
-        }
-
-        synchronized void _log(final LogRecord record) {
-            logger.log(record);
-            if (debugLog != null) {
-                debugLog.log(record);
-            }
-        }
-
-        /**
-         * Log a message, with no arguments.  Similar to {@link java.util.logging.Logger#log(java.util.logging.LogRecord)} with the
-         * exception that all logging is handled by a single static {@link com.dumptruckman.minecraft.logging.Logging} instance.
-         *
-         * @param record the LogRecord.
-         */
-        @Override
-        public synchronized void log(final LogRecord record) {
-            final Level level = record.getLevel();
-            final String message = record.getMessage();
-            final int debugLevel = getDebugLevel();
-            if ((level == Level.FINE && debugLevel >= 1)
-                    || (level == Level.FINER && debugLevel >= 2)
-                    || (level == Level.FINEST && debugLevel >= 3)) {
-                record.setLevel(Level.INFO);
-                record.setMessage(getDebugString(message));
-                LOG._log(record);
-            } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
-                if (level != Level.CONFIG || showConfig) {
-                    if (level == Level.CONFIG) {
-                        record.setLevel(Level.INFO);
-                    }
-                    record.setMessage(getPrefixedMessage(message));
-                    LOG._log(record);
-                }
-            }
-        }
-    }
+    static final Map<String, Logging> initializedLoggers = new HashMap<String, Logging>();
 
     /**
      * Prepares the log for use.  Debugging will default to disabled when initialized.  This should be called early on
@@ -89,14 +36,74 @@ public class Logging {
      *
      * @param plugin The plugin using this static logger.
      */
-    public static synchronized void init(final LoggablePlugin plugin) {
-        if (Logging.plugin != null) {
-            shutdown();
+    public static synchronized Logging getLogger(final LoggablePlugin plugin, final LoggablePlugin pluginToShareDebugLogger) {
+        if (initializedLoggers.containsKey(plugin.getName())) {
+            return initializedLoggers.get(plugin.getName());
         }
-        name = plugin.getName();
-        DebugLog.init(name, getDebugFileName(plugin));
-        setDebugLevel(0);
-        Logging.plugin = plugin;
+        final DebugLog debugLog;
+        final Logger logger = Logger.getLogger(plugin.getName());
+        if (pluginToShareDebugLogger != null && initializedLoggers.containsKey(pluginToShareDebugLogger.getName())) {
+            debugLog = initializedLoggers.get(pluginToShareDebugLogger.getName()).debugLog;
+        } else {
+            debugLog = DebugLog.getDebugLog(logger, getDebugFileName(plugin));
+        }
+        final Logging logging = new Logging(plugin, logger, debugLog);
+        initializedLoggers.put(logging.getName(), logging);
+        return logging;
+    }
+
+    public static synchronized Logging getLogger(final LoggablePlugin plugin) {
+        return getLogger(plugin, null);
+    }
+
+    Logging(final LoggablePlugin plugin, final Logger logger, final DebugLog debugLog) {
+        super(logger.getName(), logger.getResourceBundleName());
+        this.logger = logger;
+        this.debugLog = debugLog;
+        this.plugin = plugin;
+        this.name = plugin.getName();
+    }
+
+    synchronized void _log(final Level level, final String message) {
+        final LogRecord record = new LogRecord(level, message);
+        record.setLoggerName(getName());
+        record.setResourceBundle(getResourceBundle());
+        _log(record);
+    }
+
+    synchronized void _log(final LogRecord record) {
+        logger.log(record);
+        if (debugLog != null) {
+            debugLog.log(record);
+        }
+    }
+
+    /**
+     * Log a message, with no arguments.  Similar to {@link java.util.logging.Logger#log(java.util.logging.LogRecord)} with the
+     * exception that all logging is handled by a single static {@link com.dumptruckman.minecraft.logging.Logging} instance.
+     *
+     * @param record the LogRecord.
+     */
+    @Override
+    public synchronized void log(final LogRecord record) {
+        final Level level = record.getLevel();
+        final String message = record.getMessage();
+        final int debugLevel = getDebugLevel();
+        if ((level == Level.FINE && debugLevel >= 1)
+                || (level == Level.FINER && debugLevel >= 2)
+                || (level == Level.FINEST && debugLevel >= 3)) {
+            record.setLevel(Level.INFO);
+            record.setMessage(getDebugString(message));
+            _log(record);
+        } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
+            if (level != Level.CONFIG || showConfig) {
+                if (level == Level.CONFIG) {
+                    record.setLevel(Level.INFO);
+                }
+                record.setMessage(getPrefixedMessage(message));
+                _log(record);
+            }
+        }
     }
 
     static synchronized String getDebugFileName(final LoggablePlugin plugin) {
@@ -108,23 +115,8 @@ public class Logging {
      * {@link com.dumptruckman.minecraft.logging.Logging} class can be reinitialized once it has been shut down.  This should be called when the plugin
      * is disabled so that a static reference to the plugin is not kept in cases of server reloads.
      */
-    public synchronized static void shutdown() {
-        closeDebugLog();
-        DebugLog.shutdown();
-        plugin = null;
-        name = ORIGINAL_NAME;
-        debug = ORIGINAL_DEBUG;
-        showConfig = SHOW_CONFIG;
-    }
-
-    /**
-     * Closes the debug log if it is open.
-     */
-    static synchronized void closeDebugLog() {
-        if (debugLog != null) {
-            debugLog.close();
-            debugLog = null;
-        }
+    public synchronized void shutdown() {
+        setDebugLevel(0);
     }
 
     /**
@@ -138,16 +130,16 @@ public class Logging {
      *
      * @param debugLevel 0 = off, 1-3 = debug level
      */
-    public static synchronized void setDebugLevel(final int debugLevel) {
+    public synchronized void setDebugLevel(final int debugLevel) {
         if (debugLevel > 3 || debugLevel < 0) {
             throw new IllegalArgumentException("debugLevel must be between 0 and 3!");
         }
         if (debugLevel > 0) {
-            debugLog = DebugLog.getDebugLogger();
+            debugLog.open();
         } else {
-            closeDebugLog();
+            debugLog.close();
         }
-        DebugLog.setDebugLevel(debugLevel);
+        debugLog.setDebugLevel(debugLevel);
     }
 
     /**
@@ -155,8 +147,8 @@ public class Logging {
      *
      * @return A value 0-3 indicating the debug logging level.
      */
-    public static synchronized int getDebugLevel() {
-        return DebugLog.getDebugLevel();
+    public synchronized int getDebugLevel() {
+        return debugLog.getDebugLevel();
     }
 
     /**
@@ -164,8 +156,8 @@ public class Logging {
      *
      * @param showConfig true to enable, false to disable.
      */
-    public static void setShowingConfig(final boolean showConfig) {
-        Logging.showConfig = showConfig;
+    public void setShowingConfig(final boolean showConfig) {
+        this.showConfig = showConfig;
     }
 
     /**
@@ -173,7 +165,7 @@ public class Logging {
      *
      * @return true if this Logging will show {@link java.util.logging.Level#CONFIG} messages.
      */
-    public static boolean isShowingConfig() {
+    public boolean isShowingConfig() {
         return showConfig;
     }
 
@@ -183,7 +175,7 @@ public class Logging {
      * @param message Log message
      * @return Modified message
      */
-    public static synchronized String getPrefixedMessage(final String message) {
+    public synchronized String getPrefixedMessage(final String message) {
         final StringBuilder builder = new StringBuilder("[").append(name);
         builder.append("] ").append(message);
         return builder.toString();
@@ -194,8 +186,8 @@ public class Logging {
      *
      * @param debugPrefix the new debug prefix to use.
      */
-    public static synchronized void setDebugPrefix(final String debugPrefix) {
-        Logging.debug = debugPrefix;
+    public synchronized void setDebugPrefix(final String debugPrefix) {
+        this.debugString = debugPrefix;
     }
 
     /**
@@ -204,17 +196,8 @@ public class Logging {
      * @param message     Log message
      * @return Modified message
      */
-    public static synchronized String getDebugString(final String message) {
-        return "[" + name + debug + "] " + message;
-    }
-
-    /**
-     * Returns the static Logger instance used by this class.
-     *
-     * @return the static Logger instance used by this class.
-     */
-    public static Logger getLogger() {
-        return LOG;
+    public synchronized String getDebugString(final String message) {
+        return "[" + name + debugString + "] " + message;
     }
 
     /**
@@ -226,7 +209,7 @@ public class Logging {
      * @param message     The string message.
      * @param args        Arguments for the String.format() that is applied to the message.
      */
-    public static synchronized void log(final Level level, String message, final Object... args) {
+    public synchronized void log(final Level level, String message, final Object... args) {
         final int debugLevel = getDebugLevel();
         if ((level == Level.FINE && debugLevel >= 1)
                 || (level == Level.FINER && debugLevel >= 2)
@@ -235,19 +218,19 @@ public class Logging {
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
             if (level != Level.CONFIG || showConfig) {
                 if (level == Level.CONFIG) {
-                    LOG._log(Level.INFO, getPrefixedMessage(format(message, args)));
+                    _log(Level.INFO, getPrefixedMessage(format(message, args)));
                 } else {
-                    LOG._log(level, getPrefixedMessage(format(message, args)));
+                    _log(level, getPrefixedMessage(format(message, args)));
                 }
             }
         }
     }
 
-    private static String format(final String message, final Object[] args) {
+    private String format(final String message, final Object[] args) {
         try {
             return String.format(message, args);
         } catch (IllegalFormatException e) {
-            getLogger().fine("Illegal format in the following message:");
+            getLogger("Minecraft").fine("Illegal format in the following message:");
         }
         return message;
     }
@@ -258,8 +241,8 @@ public class Logging {
      * @param message The message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    static void debug(final Level level, String message, final Object...args) {
-        LOG._log(level, getDebugString(format(message, args)));
+    void debug(final Level level, String message, final Object...args) {
+        _log(level, getDebugString(format(message, args)));
     }
 
     /**
@@ -268,8 +251,8 @@ public class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void fine(final String message, final Object...args) {
-        Logging.log(Level.FINE, message, args);
+    public void fine(final String message, final Object...args) {
+        log(Level.FINE, message, args);
     }
 
     /**
@@ -278,8 +261,8 @@ public class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void finer(final String message, final Object...args) {
-        Logging.log(Level.FINER, message, args);
+    public void finer(final String message, final Object...args) {
+        log(Level.FINER, message, args);
     }
 
     /**
@@ -288,8 +271,8 @@ public class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void finest(final String message, final Object...args) {
-        Logging.log(Level.FINEST, message, args);
+    public void finest(final String message, final Object...args) {
+        log(Level.FINEST, message, args);
     }
 
     /**
@@ -299,8 +282,8 @@ public class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void config(final String message, final Object...args) {
-        Logging.log(Level.CONFIG, message, args);
+    public void config(final String message, final Object...args) {
+        log(Level.CONFIG, message, args);
     }
 
     /**
@@ -309,8 +292,8 @@ public class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void info(final String message, final Object...args) {
-        Logging.log(Level.INFO, message, args);
+    public void info(final String message, final Object...args) {
+        log(Level.INFO, message, args);
     }
 
     /**
@@ -319,8 +302,8 @@ public class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void warning(final String message, final Object...args) {
-        Logging.log(Level.WARNING, message, args);
+    public void warning(final String message, final Object...args) {
+        log(Level.WARNING, message, args);
     }
 
     /**
@@ -329,8 +312,8 @@ public class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void severe(final String message, final Object...args) {
-        Logging.log(Level.SEVERE, message, args);
+    public void severe(final String message, final Object...args) {
+        log(Level.SEVERE, message, args);
     }
 
 }

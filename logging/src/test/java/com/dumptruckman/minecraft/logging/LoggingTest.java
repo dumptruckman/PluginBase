@@ -1,6 +1,5 @@
 package com.dumptruckman.minecraft.logging;
 
-import com.dumptruckman.minecraft.logging.Logging.InterceptedLogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,13 +13,10 @@ import java.util.LinkedHashSet;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertSame;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -35,6 +31,8 @@ public class LoggingTest {
     LoggablePlugin plugin;
     final TestHandler handler = new TestHandler();
 
+    Logging logging;
+
     @Before
     public void setUp() throws Exception {
         MockGateway.MOCK_STANDARD_METHODS = false;
@@ -44,104 +42,93 @@ public class LoggingTest {
         final File testFolder = new File("bin/test/server/plugins/Logging-Test");
         testFolder.mkdirs();
         when(plugin.getDataFolder()).thenReturn(testFolder);
-        Logging.init(plugin);
-        ((InterceptedLogger) Logging.getLogger()).logger.addHandler(handler);
+        logging = Logging.getLogger(plugin);
+        logging.addHandler(handler);
     }
 
     @After
     public void tearDown() throws Exception {
-        Logging.shutdown();
-        //FileUtils.deleteFolder(new File("bin"));
+        logging.shutdown();
+        Logging.initializedLoggers.clear();
     }
 
     @Test
     public void testInit() throws Exception {
-        assertEquals(Logging.name, plugin.getName());
-        assertEquals(DebugLog.debugLevel, DebugLog.ORIGINAL_DEBUG_LEVEL);
-        assertEquals(Logging.plugin, plugin);
+        assertEquals(logging.name, plugin.getName());
+        assertEquals(logging.debugLog.debugLevel, DebugLog.ORIGINAL_DEBUG_LEVEL);
+        assertEquals(logging.plugin, plugin);
+        assertNotNull(logging.debugLog);
     }
 
     @Test
     public void testShutdown() throws Exception {
-        Logging.shutdown();
-        assertEquals(Logging.name, Logging.ORIGINAL_NAME);
-        assertEquals(DebugLog.debugLevel, DebugLog.ORIGINAL_DEBUG_LEVEL);
-        assertEquals(Logging.debug, Logging.ORIGINAL_DEBUG);
-        assertNull(Logging.plugin);
+        logging.shutdown();
+        assertEquals(logging.debugLog.debugLevel, DebugLog.ORIGINAL_DEBUG_LEVEL);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetDebugLevelTooHigh() throws Exception {
-        Logging.setDebugLevel(4);
+        logging.setDebugLevel(4);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetDebugLevelTooLow() throws Exception {
-        Logging.setDebugLevel(-1);
+        logging.setDebugLevel(-1);
     }
 
     @Test
     public void testSetDebugLevel() throws Exception {
-        assertNull(Logging.debugLog);
-        assertTrue(DebugLog.isClosed());
-        Logging.setDebugLevel(1);
-        assertFalse(DebugLog.isClosed());
-        assertEquals(DebugLog.getLoggerName(), plugin.getName());
-        assertEquals(DebugLog.getFileName(), Logging.getDebugFileName(plugin));
-        assertNotNull(Logging.debugLog);
-        final DebugLog debugLog = Logging.debugLog;
-        assertSame(DebugLog.getDebugLogger(), debugLog);
-        Logging.setDebugLevel(2);
-        assertSame(debugLog, Logging.debugLog);
-        Logging.setDebugLevel(3);
-        assertSame(debugLog, Logging.debugLog);
-        Logging.setDebugLevel(0);
-        assertNull(Logging.debugLog);
-        assertTrue(DebugLog.isClosed());
+        assertTrue(logging.debugLog.isClosed());
+        logging.setDebugLevel(1);
+        assertFalse(logging.debugLog.isClosed());
+        assertEquals(logging.logger, logging.debugLog.getLogger());
+        assertEquals(logging.debugLog.getFileName(), Logging.getDebugFileName(plugin));
+        logging.setDebugLevel(0);
+        assertTrue(logging.debugLog.isClosed());
+        logging.setDebugLevel(1);
+        assertFalse(logging.debugLog.isClosed());
     }
 
     @Test
     public void testGetDebugLevel() throws Exception {
-        assertEquals(Logging.getDebugLevel(), 0);
+        assertEquals(logging.getDebugLevel(), 0);
         for (int i = 3; i >= 0; i--) {
-            Logging.setDebugLevel(i);
-            assertEquals(Logging.getDebugLevel(), i);
+            logging.setDebugLevel(i);
+            assertEquals(logging.getDebugLevel(), i);
         }
     }
 
     @Test
     public void testCloseDebugLog() throws Exception {
-        Logging.setDebugLevel(3);
-        assertFalse(DebugLog.isClosed());
-        Logging.closeDebugLog();
-        assertTrue(DebugLog.isClosed());
+        logging.setDebugLevel(3);
+        assertFalse(logging.debugLog.isClosed());
+        logging.shutdown();
+        assertTrue(logging.debugLog.isClosed());
     }
 
     @Test
     public void testGetPrefixedMessage() throws Exception {
-        assertEquals("[" + NAME + "] " + SIMPLE_MESSAGE, Logging.getPrefixedMessage(SIMPLE_MESSAGE));
+        assertEquals("[" + NAME + "] " + SIMPLE_MESSAGE, logging.getPrefixedMessage(SIMPLE_MESSAGE));
     }
 
     @Test
     public void testSetGetDebugPrefix() throws Exception {
         final String debugging = "-debugging";
-        assertEquals("[" + NAME + Logging.ORIGINAL_DEBUG + "] " + SIMPLE_MESSAGE, Logging.getDebugString(SIMPLE_MESSAGE));
-        Logging.setDebugPrefix(debugging);
-        assertEquals("[" + NAME + debugging + "] " + SIMPLE_MESSAGE, Logging.getDebugString(SIMPLE_MESSAGE));
-        Logging.init(plugin);
-        assertEquals("[" + NAME + Logging.ORIGINAL_DEBUG + "] " + SIMPLE_MESSAGE, Logging.getDebugString(SIMPLE_MESSAGE));
+        assertEquals("[" + NAME + Logging.ORIGINAL_DEBUG + "] " + SIMPLE_MESSAGE, logging.getDebugString(SIMPLE_MESSAGE));
+        logging.setDebugPrefix(debugging);
+        assertEquals("[" + NAME + debugging + "] " + SIMPLE_MESSAGE, logging.getDebugString(SIMPLE_MESSAGE));
     }
 
-    static class TestHandler extends Handler {
+    class TestHandler extends Handler {
 
-        static Level level;
-        static RecordTester tester;
+        Level level;
+        RecordTester tester;
 
         Collection<LogRecord> records = new LinkedHashSet<LogRecord>();
 
         @Override
         public void publish(LogRecord record) {
-            assertEquals(Logging.getLogger().getName(), record.getLoggerName());
+            assertEquals(logging.getName(), record.getLoggerName());
             assertEquals(level, record.getLevel());
             records.add(record);
             tester.test(record);
@@ -170,121 +157,90 @@ public class LoggingTest {
     }
 
     public void testLog() throws Exception {
-        Logging.setDebugLevel(3);
-        TestHandler.tester = new RecordTester() {
+        logging.setDebugLevel(3);
+        handler.tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
-                assertEquals(Logging.getPrefixedMessage(SIMPLE_MESSAGE), record.getMessage());
+                assertEquals(logging.getPrefixedMessage(SIMPLE_MESSAGE), record.getMessage());
             }
         };
-        TestHandler.level = Level.INFO;
-        Logging.log(Level.INFO, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, Logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        TestHandler.level = Level.WARNING;
-        Logging.log(Level.WARNING, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, Logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        TestHandler.level = Level.SEVERE;
-        Logging.log(Level.SEVERE, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, Logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        TestHandler.level = Level.INFO;
-        Logging.log(Level.CONFIG, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, Logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        handler.level = Level.INFO;
+        logging.log(Level.INFO, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        handler.level = Level.WARNING;
+        logging.log(Level.WARNING, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        handler.level = Level.SEVERE;
+        logging.log(Level.SEVERE, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        handler.level = Level.INFO;
+        logging.log(Level.CONFIG, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
         handler.flush();
 
-        TestHandler.tester = new RecordTester() {
+        handler.tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
-                assertEquals(Logging.getPrefixedMessage(SIMPLE_MESSAGE), record.getMessage());
+                assertEquals(logging.getPrefixedMessage(SIMPLE_MESSAGE), record.getMessage());
             }
         };
-        TestHandler.level = Level.INFO;
-        Logging.log(Level.INFO, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, Logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        TestHandler.level = Level.WARNING;
-        Logging.log(Level.WARNING, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, Logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        TestHandler.level = Level.SEVERE;
-        Logging.log(Level.SEVERE, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, Logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        TestHandler.level = Level.INFO;
-        Logging.log(Level.CONFIG, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, Logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        handler.level = Level.INFO;
+        logging.log(Level.INFO, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        handler.level = Level.WARNING;
+        logging.log(Level.WARNING, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        handler.level = Level.SEVERE;
+        logging.log(Level.SEVERE, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        handler.level = Level.INFO;
+        logging.log(Level.CONFIG, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
         handler.flush();
 
-        TestHandler.tester = new RecordTester() {
+        handler.tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
-                assertEquals(Logging.getDebugString(SIMPLE_MESSAGE), record.getMessage());
+                assertEquals(logging.getDebugString(SIMPLE_MESSAGE), record.getMessage());
             }
         };
-        TestHandler.level = Level.INFO;
-        Logging.log(Level.FINE, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(TestHandler.level, Logging.getDebugString(SIMPLE_MESSAGE)));
+        handler.level = Level.INFO;
+        logging.log(Level.FINE, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
-        Logging.log(Level.FINER, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(TestHandler.level, Logging.getDebugString(SIMPLE_MESSAGE)));
+        logging.log(Level.FINER, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
-        Logging.log(Level.FINEST, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(TestHandler.level, Logging.getDebugString(SIMPLE_MESSAGE)));
+        logging.log(Level.FINEST, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
-        Logging.log(Level.FINE, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(TestHandler.level, Logging.getDebugString(SIMPLE_MESSAGE)));
+        logging.log(Level.FINE, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
-        Logging.log(Level.FINER, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(TestHandler.level, Logging.getDebugString(SIMPLE_MESSAGE)));
+        logging.log(Level.FINER, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
-        Logging.log(Level.FINEST, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(TestHandler.level, Logging.getDebugString(SIMPLE_MESSAGE)));
+        logging.log(Level.FINEST, SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
 
         final Object o = new Object();
-        TestHandler.tester = new RecordTester() {
+        handler.tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
-                assertEquals(Logging.getPrefixedMessage(String.format(ARGS_MESSAGE, "poop", 2, o)), record.getMessage());
+                assertEquals(logging.getPrefixedMessage(String.format(ARGS_MESSAGE, "poop", 2, o)), record.getMessage());
             }
         };
-        TestHandler.level = Level.INFO;
-        Logging.log(Level.INFO, ARGS_MESSAGE, "poop", 2, o);
+        handler.level = Level.INFO;
+        logging.log(Level.INFO, ARGS_MESSAGE, "poop", 2, o);
 
-        TestHandler.tester = new RecordTester() {
+        handler.tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
-                assertEquals(Logging.getPrefixedMessage(String.format(ARGS_MESSAGE, "poop", 2, o)), record.getMessage());
+                assertEquals(logging.getPrefixedMessage(String.format(ARGS_MESSAGE, "poop", 2, o)), record.getMessage());
             }
         };
-        TestHandler.level = Level.INFO;
-        Logging.log(Level.INFO, ARGS_MESSAGE, "poop", 2);
-    }
-
-    @Test
-    public void testGetLogger() throws Exception {
-        Logging.setDebugLevel(3);
-        final Logger logger = Logging.getLogger();
-
-        TestHandler.tester = new RecordTester() {
-            @Override
-            public void test(LogRecord record) {
-                assertEquals(Logging.getPrefixedMessage(SIMPLE_MESSAGE), record.getMessage());
-            }
-        };
-        TestHandler.level = Level.INFO;
-        logger.log(Level.INFO, SIMPLE_MESSAGE);
-        TestHandler.level = Level.WARNING;
-        logger.log(Level.WARNING, SIMPLE_MESSAGE);
-        TestHandler.level = Level.SEVERE;
-        logger.log(Level.SEVERE, SIMPLE_MESSAGE);
-
-        TestHandler.tester = new RecordTester() {
-            @Override
-            public void test(LogRecord record) {
-                assertEquals(Logging.getDebugString(SIMPLE_MESSAGE), record.getMessage());
-            }
-        };
-        TestHandler.level = Level.INFO;
-        logger.log(Level.FINE, SIMPLE_MESSAGE);
-        logger.log(Level.FINER, SIMPLE_MESSAGE);
-        logger.log(Level.FINEST, SIMPLE_MESSAGE);
-
+        handler.level = Level.INFO;
+        logging.log(Level.INFO, ARGS_MESSAGE, "poop", 2);
     }
 }

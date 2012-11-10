@@ -37,45 +37,25 @@ import java.util.logging.Logger;
 /**
  * The Multiverse debug-logger.
  */
-public class DebugLog {
+class DebugLog {
 
     static final int ORIGINAL_DEBUG_LEVEL = 0;
 
-    private static String loggerName = null;
-    private static String fileName = null;
-
-    static volatile int debugLevel = ORIGINAL_DEBUG_LEVEL;
+    volatile int debugLevel = ORIGINAL_DEBUG_LEVEL;
 
     /**
      * Initializes the {@link com.dumptruckman.minecraft.logging.DebugLog} the first time this is called with the information passed in.  The DebugLog must be
      * initializes before use.
      *
-     * @param loggerName The name of the logger to apply this DebugLog to.
+     * @param logger The logger this debug logger should be linked to.
      * @param fileName The file name where a file copy of the log will be placed.
      */
-    public static synchronized void init(final String loggerName, final String fileName) {
-        if (DebugLog.loggerName == null) {
-            DebugLog.loggerName = loggerName;
-            DebugLog.fileName = fileName;
-        }
+    static DebugLog getDebugLog(final Logger logger, final String fileName) {
+        return new DebugLog(logger, fileName);
     }
 
-    /**
-     * Unitializes the {@link com.dumptruckman.minecraft.logging.DebugLog} so that it may be reinitialized with new information.
-     */
-    public static synchronized void shutdown() {
-        loggerName = null;
-        fileName = null;
-        debugLevel = ORIGINAL_DEBUG_LEVEL;
-    }
-
-    /**
-     * Returns the logger name set for this {@link com.dumptruckman.minecraft.logging.DebugLog}.
-     *
-     * @return the logger name set for this {@link com.dumptruckman.minecraft.logging.DebugLog}.
-     */
-    public static synchronized String getLoggerName() {
-        return loggerName;
+    Logger getLogger() {
+        return this.log;
     }
 
     /**
@@ -83,52 +63,28 @@ public class DebugLog {
      *
      * @return the file name set for this {@link com.dumptruckman.minecraft.logging.DebugLog}.
      */
-    public static synchronized String getFileName() {
+    public synchronized String getFileName() {
         return fileName;
     }
 
-    public static void setDebugLevel(final int debugLevel) {
-        DebugLog.debugLevel = debugLevel;
+    public void setDebugLevel(final int debugLevel) {
+        this.debugLevel = debugLevel;
     }
 
-    public static int getDebugLevel() {
+    public int getDebugLevel() {
         return debugLevel;
-    }
-
-    private static DebugLog instance = null;
-
-    /**
-     * Retrieves the open instance of DebugLog if one has already open or will open one and return it if not.
-     *
-     * @return The static instance of DebugLog.
-     */
-    public static synchronized DebugLog getDebugLogger() {
-        if (instance == null) {
-            if (loggerName == null) {
-                throw new IllegalStateException("DebugLog has not been initialized!");
-            }
-            instance = new DebugLog(loggerName, fileName);
-        }
-        return instance;
-    }
-
-    /**
-     * Returns whether their is an open instance of this {@link com.dumptruckman.minecraft.logging.DebugLog}.
-     *
-     * @return true if there is an open instance of this {@link com.dumptruckman.minecraft.logging.DebugLog}.
-     */
-    public static synchronized boolean isClosed() {
-        return instance == null;
     }
 
     /**
      * The FileHandler for file logging purposes.
      */
-    protected final FileHandler fileHandler;
+    protected FileHandler fileHandler = null;
     /**
      * The Logger associated with this DebugLog.
      */
     protected final Logger log;
+
+    private final String fileName;
 
     /**
      * Creates a new debug logger.
@@ -136,11 +92,14 @@ public class DebugLog {
      * @param logger The name of the logger.
      * @param file   The file to log to.
      */
-    protected DebugLog(final String logger, final String file) {
-        log = Logger.getLogger(logger);
-        FileHandler fh = null;
+    protected DebugLog(final Logger logger, final String file) {
+        this.log = logger;
+        this.fileName = file;
+    }
+
+    public final synchronized void open() {
         try {
-            fh = new FileHandler(file, true);
+            fileHandler = new FileHandler(fileName, true);
             log.setUseParentHandlers(false);
             Set<Handler> toRemove = new HashSet<Handler>(log.getHandlers().length);
             for (Handler handler : log.getHandlers()) {
@@ -149,23 +108,22 @@ public class DebugLog {
             for (Handler handler : toRemove) {
                 log.removeHandler(handler);
             }
-            log.addHandler(fh);
+            log.addHandler(fileHandler);
             log.setLevel(Level.ALL);
-            fh.setFormatter(new LogFormatter());
+            fileHandler.setFormatter(new LogFormatter());
         } catch (SecurityException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (fh != null) {
-            fileHandler = fh;
-        } else {
-            fileHandler = fh;
-        }
     }
 
     public void log(final LogRecord record) {
         log.log(record);
+    }
+
+    public boolean isClosed() {
+        return fileHandler == null;
     }
 
     /**
@@ -210,8 +168,10 @@ public class DebugLog {
      * Closes this {@link com.dumptruckman.minecraft.logging.DebugLog}.
      */
     public synchronized void close() {
-        log.removeHandler(fileHandler);
-        fileHandler.close();
-        instance = null;
+        if (fileHandler != null) {
+            log.removeHandler(fileHandler);
+            fileHandler.close();
+            fileHandler = null;
+        }
     }
 }
