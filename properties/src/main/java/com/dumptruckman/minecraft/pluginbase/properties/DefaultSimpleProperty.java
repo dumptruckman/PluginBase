@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
+
 import java.util.List;
 
 public class DefaultSimpleProperty<T> extends DefaultValueProperty<T> implements SimpleProperty<T> {
@@ -10,9 +12,9 @@ public class DefaultSimpleProperty<T> extends DefaultValueProperty<T> implements
     private final T def;
 
     public DefaultSimpleProperty(Class<T> type, String path, T def, List<String> comments, List<String> aliases,
-                                 PropertySerializer<T> serializer, PropertyValidator validator, //Message description,
+                                 PropertySerializer<T> serializer, PropertyValidator validator, Message description,
                                  boolean deprecated, boolean defaultIfMissing) {
-        super(type, path, comments, aliases, serializer, validator, deprecated, defaultIfMissing);
+        super(type, path, comments, aliases, serializer, validator, description, deprecated, defaultIfMissing);
         this.def = def;
     }
     /**

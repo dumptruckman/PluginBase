@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,11 +53,9 @@ public class ListPropertyBuilder<T> extends ValuePropertyBuilder<T> {
         return (ListPropertyBuilder<T>) super.validator(validator);
     }
 
-    /*
     public ListPropertyBuilder<T> description(Message message) {
         return (ListPropertyBuilder<T>) super.description(message);
     }
-    */
 
     public ListPropertyBuilder<T> deprecated() {
         return (ListPropertyBuilder<T>) super.deprecated();
@@ -66,6 +66,6 @@ public class ListPropertyBuilder<T> extends ValuePropertyBuilder<T> {
     }
 
     public ListProperty<T> build() {
-        return new DefaultListProperty<T>(type, path, def, comments, new ArrayList<String>(aliases), serializer, validator, deprecated, defaultIfMissing, listClass);
+        return new DefaultListProperty<T>(type, path, def, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, listClass);
     }
 }

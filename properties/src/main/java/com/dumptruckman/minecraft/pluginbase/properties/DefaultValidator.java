@@ -3,16 +3,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
+import com.dumptruckman.minecraft.pluginbase.messaging.Messages;
+
 class DefaultValidator implements PropertyValidator {
 
     public boolean isValid(Object obj) {
         return true;
     }
 
-    /*
     @Override
     public Message getInvalidMessage() {
         return Messages.BLANK;
     }
-    */
 }

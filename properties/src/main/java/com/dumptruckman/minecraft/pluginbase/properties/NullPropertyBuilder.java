@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
+
 import java.util.ArrayList;
 
 public class NullPropertyBuilder extends ValuePropertyBuilder<Null> {
@@ -15,11 +17,9 @@ public class NullPropertyBuilder extends ValuePropertyBuilder<Null> {
         return (NullPropertyBuilder) super.comment(comment);
     }
 
-    /*
     public NullPropertyBuilder description(Message message) {
         return (NullPropertyBuilder) super.description(message);
     }
-    */
 
     public NullPropertyBuilder deprecated() {
         return (NullPropertyBuilder) super.deprecated();
@@ -30,6 +30,6 @@ public class NullPropertyBuilder extends ValuePropertyBuilder<Null> {
     }
 
     public NullProperty build() {
-        return new DefaultNullProperty(path, comments, new ArrayList<String>(aliases), serializer, validator, deprecated, defaultIfMissing);
+        return new DefaultNullProperty(path, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing);
     }
 }

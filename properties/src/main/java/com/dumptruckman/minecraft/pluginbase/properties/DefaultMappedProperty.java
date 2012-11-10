@@ -4,6 +4,7 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 
 import java.util.HashMap;
 import java.util.List;
@@ -15,9 +16,9 @@ class DefaultMappedProperty<T> extends DefaultValueProperty<T> implements Mapped
     private final Map<String, T> defMap;
 
     public DefaultMappedProperty(Class<T> type, String path, Map<String, T> def, List<String> comments, List<String> aliases,
-                                 PropertySerializer<T> serializer, PropertyValidator validator, //Message description,
+                                 PropertySerializer<T> serializer, PropertyValidator validator, Message description,
                                  boolean deprecated, boolean defaultIfMissing, Class<? extends Map> mapClass) {
-        super(type, path, comments, aliases, serializer, validator, deprecated, defaultIfMissing);
+        super(type, path, comments, aliases, serializer, validator, description, deprecated, defaultIfMissing);
         this.mapClass = mapClass;
         this.defMap = def;
     }

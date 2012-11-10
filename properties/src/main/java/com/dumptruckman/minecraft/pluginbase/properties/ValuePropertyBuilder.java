@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -13,7 +15,7 @@ abstract class ValuePropertyBuilder<T> extends PropertyBuilder<T> {
 
     protected PropertySerializer<T> serializer = null;
     protected PropertyValidator validator;
-    //protected Message description = null;
+    protected Message description = null;
     protected boolean deprecated = false;
 
     public ValuePropertyBuilder(Class<T> type, String name, boolean allowNull) {
@@ -36,12 +38,10 @@ abstract class ValuePropertyBuilder<T> extends PropertyBuilder<T> {
         return this;
     }
 
-    /*
     public ValuePropertyBuilder<T> description(Message message) {
         description = message;
         return this;
     }
-    */
 
     public ValuePropertyBuilder<T> deprecated() {
         deprecated = true;
