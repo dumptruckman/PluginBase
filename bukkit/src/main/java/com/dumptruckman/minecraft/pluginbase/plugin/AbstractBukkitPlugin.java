@@ -19,6 +19,8 @@ import com.dumptruckman.minecraft.pluginbase.messaging.SimpleMessager;
 import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.BukkitCommandHandler;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.Command;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.InfoCommand;
@@ -28,7 +30,6 @@ import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
 import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
 import com.sk89q.minecraft.util.commands.CommandException;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -76,8 +77,6 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         PermFactory.registerPermissionFactory(this, BukkitPermFactory.class);
         // Loads the configuration.
         setupConfig();
-        // Setup the plugin messager.
-        setupMessager();
         // Setup the command handler.
         this.commandHandler = new BukkitCommandHandler(this);
 
@@ -115,10 +114,10 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         setupDB();
         // Loads the configuration.
         setupConfig();
-        // Setup the plugin messager.
-        setupMessager();
         // Setup our base commands.
         setupCommands();
+        // Setup the plugin messager.
+        setupMessager();
 
         // Do any important first run stuff here.
         if (config().get(BaseConfig.FIRST_RUN)) {
@@ -236,16 +235,30 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     private void setupCommands() {
-        getCommandHandler().registerCommand(InfoCommand.class);
-        getCommandHandler().registerCommand(DebugCommand.class);
-        getCommandHandler().registerCommand(ReloadCommand.class);
-        getCommandHandler().registerCommand(VersionCommand.class);
+        registerCommand(InfoCommand.class);
+        registerCommand(DebugCommand.class);
+        registerCommand(ReloadCommand.class);
+        registerCommand(VersionCommand.class);
         //getCommandHandler().registerCommand(new HelpCommand<AbstractBukkitPlugin>(this));
         //getCommandHandler().registerCommand(new ConfirmCommand<AbstractBukkitPlugin>(this));
+        registerCommands();
+    }
+
+    /**
+     * Called when commands should be registered.  Override this method in order to register commands at the
+     * most correct time.  Use {@link #registerCommand(Class)} to register your command classes.
+     */
+    protected void registerCommands() { }
+
+    protected final void registerCommand(Class<? extends Command> commandClass) {
+        if (commandClass.getAnnotation(CommandInfo.class) == null) {
+            throw new IllegalArgumentException("Command class must be annotated with " + CommandInfo.class);
+        }
+        getCommandHandler().registerCommand(commandClass);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String commandLabel, String[] args) {
+    public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String commandLabel, String[] args) {
         if (!isEnabled()) {
             sender.sendMessage("This plugin is Disabled!");
             return true;
