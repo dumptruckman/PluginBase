@@ -54,10 +54,6 @@ public interface MessageProvider {
      */
     List<String> getMessages(Message key, Object... args);
 
-    List<String> format(List<String> strings, Object... args);
-
-    String format(String string, Object... args);
-
     /**
      * Returns the Locale this MessageProvider is currently using.
      *

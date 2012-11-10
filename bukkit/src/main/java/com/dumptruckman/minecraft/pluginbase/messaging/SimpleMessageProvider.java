@@ -45,16 +45,16 @@ public class SimpleMessageProvider implements MessageProvider {
     }
 
     /**
-     * Formats a list of strings by passing each through {@link #format(String, Object...)}.
+     * Formats a list of strings by passing each through {@link #format(Locale, String, Object...)}.
      *
      * @param strings List of strings to format.
      * @param args    Arguments to pass in via %n.
      * @return List of formatted strings.
      */
-    public List<String> format(List<String> strings, Object... args) {
+    public static List<String> format(Locale locale, List<String> strings, Object... args) {
         List<String> formattedStrings = new ArrayList<String>();
         for (String string : strings) {
-            formattedStrings.add(format(string, args));
+            formattedStrings.add(format(locale, string, args));
         }
         return formattedStrings;
     }
@@ -67,7 +67,7 @@ public class SimpleMessageProvider implements MessageProvider {
      * @param args   Arguments to pass in via %n.
      * @return The formatted string.
      */
-    public String format(String string, Object... args) {
+    public static String format(Locale locale, String string, Object... args) {
         // Replaces & with the Section character
         string = ChatColor.translateAlternateColorCodes('&', string);
         // If there are arguments, %n notations in the message will be
@@ -99,7 +99,7 @@ public class SimpleMessageProvider implements MessageProvider {
         if (message.isEmpty()) {
             return "";
         }
-        return format(message.get(0), args);
+        return format(locale, message.get(0), args);
     }
 
     /**
@@ -107,7 +107,7 @@ public class SimpleMessageProvider implements MessageProvider {
      */
     @Override
     public List<String> getMessages(Message key, Object... args) {
-        return format(_getMessages(key), args);
+        return format(locale, _getMessages(key), args);
     }
 
     /**
