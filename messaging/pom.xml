@@ -115,7 +115,7 @@ and adjust the build number accordingly -->
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
             <artifactId>Logging</artifactId>
-            <version>1.5-SNAPSHOT</version>
+            <version>${project.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
