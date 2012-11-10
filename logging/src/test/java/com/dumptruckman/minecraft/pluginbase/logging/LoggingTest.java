@@ -43,7 +43,6 @@ public class LoggingTest {
         testFolder.mkdirs();
         when(plugin.getDataFolder()).thenReturn(testFolder);
         logging = PluginLogger.getLogger(plugin);
-        logging.addHandler(handler);
     }
 
     @After
@@ -132,6 +131,7 @@ public class LoggingTest {
             assertEquals(level, record.getLevel());
             records.add(record);
             tester.test(record);
+            System.out.println(record.getLevel() + " " + record.getMessage());
         }
 
         @Override
@@ -156,14 +156,17 @@ public class LoggingTest {
         public abstract void test(final LogRecord record);
     }
 
+    @Test
     public void testLog() throws Exception {
         logging.setDebugLevel(3);
+        logging.logger.addHandler(handler);
         handler.tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
                 assertEquals(logging.getPrefixedMessage(SIMPLE_MESSAGE), record.getMessage());
             }
         };
+
         handler.level = Level.INFO;
         logging.log(Level.INFO, SIMPLE_MESSAGE);
         assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
@@ -237,7 +240,7 @@ public class LoggingTest {
         handler.tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
-                assertEquals(logging.getPrefixedMessage(String.format(ARGS_MESSAGE, "poop", 2, o)), record.getMessage());
+                assertEquals(logging.getPrefixedMessage(ARGS_MESSAGE), record.getMessage());
             }
         };
         handler.level = Level.INFO;

@@ -72,10 +72,15 @@ public class PluginLogger extends Logger {
     }
 
     synchronized void _log(final LogRecord record) {
-        logger.log(record);
+        super.log(record);
         if (debugLog != null) {
             debugLog.log(record);
         }
+    }
+
+    @Override
+    public void log(final Level level, final String message) {
+        log(level, message, new Object[0]);
     }
 
     /**
@@ -210,6 +215,7 @@ public class PluginLogger extends Logger {
      * @param args        Arguments for the String.format() that is applied to the message.
      */
     public synchronized void log(final Level level, String message, final Object... args) {
+        System.out.println("I'm logging2");
         final int debugLevel = getDebugLevel();
         if ((level == Level.FINE && debugLevel >= 1)
                 || (level == Level.FINER && debugLevel >= 2)
@@ -230,7 +236,14 @@ public class PluginLogger extends Logger {
         try {
             return String.format(message, args);
         } catch (IllegalFormatException e) {
-            getLogger("Minecraft").fine("Illegal format in the following message:");
+            final StringBuilder builder = new StringBuilder();
+            for (final Object object : args) {
+                if (builder.length() != 0) {
+                    builder.append(", ");
+                }
+                builder.append(object);
+            }
+            System.out.println("Illegal format in the following message with args: " + builder.toString());
         }
         return message;
     }
