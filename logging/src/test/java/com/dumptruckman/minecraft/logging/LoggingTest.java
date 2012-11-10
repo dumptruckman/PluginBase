@@ -31,7 +31,7 @@ public class LoggingTest {
     LoggablePlugin plugin;
     final TestHandler handler = new TestHandler();
 
-    Logging logging;
+    PluginLogger logging;
 
     @Before
     public void setUp() throws Exception {
@@ -42,14 +42,14 @@ public class LoggingTest {
         final File testFolder = new File("bin/test/server/plugins/Logging-Test");
         testFolder.mkdirs();
         when(plugin.getDataFolder()).thenReturn(testFolder);
-        logging = Logging.getLogger(plugin);
+        logging = PluginLogger.getLogger(plugin);
         logging.addHandler(handler);
     }
 
     @After
     public void tearDown() throws Exception {
         logging.shutdown();
-        Logging.initializedLoggers.clear();
+        PluginLogger.initializedLoggers.clear();
     }
 
     @Test
@@ -82,7 +82,7 @@ public class LoggingTest {
         logging.setDebugLevel(1);
         assertFalse(logging.debugLog.isClosed());
         assertEquals(logging.logger, logging.debugLog.getLogger());
-        assertEquals(logging.debugLog.getFileName(), Logging.getDebugFileName(plugin));
+        assertEquals(logging.debugLog.getFileName(), PluginLogger.getDebugFileName(plugin));
         logging.setDebugLevel(0);
         assertTrue(logging.debugLog.isClosed());
         logging.setDebugLevel(1);
@@ -114,7 +114,7 @@ public class LoggingTest {
     @Test
     public void testSetGetDebugPrefix() throws Exception {
         final String debugging = "-debugging";
-        assertEquals("[" + NAME + Logging.ORIGINAL_DEBUG + "] " + SIMPLE_MESSAGE, logging.getDebugString(SIMPLE_MESSAGE));
+        assertEquals("[" + NAME + PluginLogger.ORIGINAL_DEBUG + "] " + SIMPLE_MESSAGE, logging.getDebugString(SIMPLE_MESSAGE));
         logging.setDebugPrefix(debugging);
         assertEquals("[" + NAME + debugging + "] " + SIMPLE_MESSAGE, logging.getDebugString(SIMPLE_MESSAGE));
     }
