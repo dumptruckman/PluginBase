@@ -4,7 +4,6 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
-import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import org.bukkit.configuration.ConfigurationOptions;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -18,19 +17,13 @@ import java.util.Map;
  */
 public abstract class AbstractYamlProperties extends AbstractProperties implements Properties {
 
-    protected final BukkitPlugin plugin;
     protected final CommentedYamlConfiguration config;
 
     private final Map<NestedProperty, NestedYamlProperties> nestMap = new HashMap<NestedProperty, NestedYamlProperties>();
 
-    public AbstractYamlProperties(final BukkitPlugin plugin,
-                                  final CommentedYamlConfiguration config,
+    public AbstractYamlProperties(final CommentedYamlConfiguration config,
                                   final Class... configClasses) {
         super(configClasses);
-        if (plugin == null) {
-            throw new IllegalArgumentException("plugin may not be null!");
-        }
-        this.plugin = plugin;
         this.config = config;
 
         for (final Property property : entries.properties) {
@@ -141,7 +134,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                 }
             } else if (property instanceof NestedProperty) {
                 final NestedProperty nestedProperty = (NestedProperty) property;
-                final NestedYamlProperties nestedProperties = new NestedYamlProperties(plugin, config, this,
+                final NestedYamlProperties nestedProperties = new NestedYamlProperties(config, this,
                         nestedProperty.getName(), nestedProperty.getType());
                 nestedProperties.deserializeAll();
                 getConfig().set(nestedProperty.getName(), nestedProperties.getConfig());

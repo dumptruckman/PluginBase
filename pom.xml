@@ -25,6 +25,7 @@
         <module>logging</module>
         <module>messaging</module>
         <module>properties</module>
+        <module>properties-bukkit</module>
         <module>base</module>
         <module>bukkit</module>
         <module>testbukkitplugin</module>

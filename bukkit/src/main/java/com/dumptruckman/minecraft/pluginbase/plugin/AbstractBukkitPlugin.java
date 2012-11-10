@@ -326,7 +326,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
 
     private void initDatabase() {
         try {
-            sqlConfig = new YamlSQLConfig(this, new File(getDataFolder(), "db_config.yml"));
+            sqlConfig = new YamlSQLConfig(new File(getDataFolder(), "db_config.yml"));
         } catch (IOException e) {
             Logging.severe("Could not create db_config.yml! " + e.getMessage());
         }

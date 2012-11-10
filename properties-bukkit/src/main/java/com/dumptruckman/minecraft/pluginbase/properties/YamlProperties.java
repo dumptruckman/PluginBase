@@ -4,7 +4,6 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
-import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,8 +17,8 @@ public class YamlProperties extends AbstractYamlProperties implements Properties
     private final boolean doComments;
     private final boolean autoDefaults;
 
-    public YamlProperties(BukkitPlugin plugin, boolean doComments, boolean autoDefaults, File configFile, Class... configClasses) throws IOException {
-        super(plugin, new CommentedYamlConfiguration(configFile, doComments), configClasses);
+    public YamlProperties(boolean doComments, boolean autoDefaults, File configFile, Class... configClasses) throws IOException {
+        super(new CommentedYamlConfiguration(configFile, doComments), configClasses);
         this.configFile = configFile;
         this.doComments = doComments;
         this.autoDefaults = autoDefaults;
@@ -34,7 +33,7 @@ public class YamlProperties extends AbstractYamlProperties implements Properties
     private boolean isValid(ValueProperty valueProperty, Object o) {
         if (!valueProperty.isValid(o)) {
             Logging.warning(valueProperty.getName() + " contains an invalid value!");
-            Logging.warning(plugin.getMessager().getMessage(valueProperty.getInvalidMessage()));
+            //Logging.warning(plugin.getMessager().getMessage(valueProperty.getInvalidMessage()));
             Logging.warning("Setting to default of: " + valueProperty.getDefault());
             getConfig().set(valueProperty.getName(), valueProperty.getDefault());
             flush();

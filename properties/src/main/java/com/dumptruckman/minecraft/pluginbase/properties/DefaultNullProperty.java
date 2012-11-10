@@ -3,16 +3,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
-import com.dumptruckman.minecraft.pluginbase.messaging.Message;
-
 import java.util.List;
 
 class DefaultNullProperty extends DefaultValueProperty<Null> implements NullProperty {
 
     public DefaultNullProperty(String path, List<String> comments, List<String> aliases,
-                               PropertySerializer<Null> serializer, PropertyValidator validator, Message description,
+                               PropertySerializer<Null> serializer, PropertyValidator validator, //Message description,
                                boolean deprecated, boolean defaultIfMissing) {
-        super(Null.class, path, comments, aliases, serializer, validator, description, deprecated, defaultIfMissing);
+        super(Null.class, path, comments, aliases, serializer, validator, deprecated, defaultIfMissing);
     }
 
     @Override

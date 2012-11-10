@@ -9,6 +9,6 @@ import java.io.IOException;
 public class Configg extends YamlProperties implements TestConfig {
 
     public Configg(BukkitPlugin plugin) throws IOException {
-        super(plugin, true, true, new File(plugin.getDataFolder(), "config.yml"), TestConfig.class);
+        super(true, true, new File(plugin.getDataFolder(), "config.yml"), TestConfig.class);
     }
 }

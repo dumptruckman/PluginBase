@@ -3,8 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
-import com.dumptruckman.minecraft.pluginbase.messaging.Message;
-
 import java.util.List;
 
 interface ValueProperty<T> extends Property<T> {
@@ -66,7 +64,7 @@ interface ValueProperty<T> extends Property<T> {
      *
      * @return the language to use when an invalid value is attempted to be used for this entry.
      */
-    Message getInvalidMessage();
+    //Message getInvalidMessage();
 
     /**
      * Retrieves the description of this entry in Message form.
@@ -74,5 +72,5 @@ interface ValueProperty<T> extends Property<T> {
      *
      * @return the description of this entry in Message form.
      */
-    Message getDescription();
+    //Message getDescription();
 }

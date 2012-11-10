@@ -4,7 +4,6 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
-import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,9 +14,9 @@ class DefaultListProperty<T> extends DefaultValueProperty<T> implements ListProp
     private final List<T> defList;
 
     public DefaultListProperty(Class<T> type, String path, List<T> def, List<String> comments, List<String> aliases,
-                               PropertySerializer<T> serializer, PropertyValidator validator, Message description,
+                               PropertySerializer<T> serializer, PropertyValidator validator, //Message description,
                                boolean deprecated, boolean defaultIfMissing, Class<? extends List> listClass) {
-        super(type, path, comments, aliases, serializer, validator, description, deprecated, defaultIfMissing);
+        super(type, path, comments, aliases, serializer, validator, deprecated, defaultIfMissing);
         this.listClass = listClass;
         this.defList = def;
     }

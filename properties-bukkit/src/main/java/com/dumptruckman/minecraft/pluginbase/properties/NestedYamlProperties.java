@@ -1,6 +1,5 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
-import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import org.bukkit.configuration.ConfigurationSection;
 
 class NestedYamlProperties extends AbstractYamlProperties implements NestedProperties {
@@ -10,10 +9,10 @@ class NestedYamlProperties extends AbstractYamlProperties implements NestedPrope
     private final ConfigurationSection thisSection;
     private final String fullName;
 
-    NestedYamlProperties(final BukkitPlugin plugin, final CommentedYamlConfiguration config,
+    NestedYamlProperties(final CommentedYamlConfiguration config,
                          final AbstractYamlProperties parent, final String name,
                          final Class... configClasses) {
-        super(plugin, config, configClasses);
+        super(config, configClasses);
         this.parentSection = parent.getConfig();
         this.name = name;
         ConfigurationSection section = this.parentSection.getConfigurationSection(this.name);

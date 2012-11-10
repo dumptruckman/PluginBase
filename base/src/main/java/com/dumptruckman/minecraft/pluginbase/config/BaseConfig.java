@@ -3,9 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.config;
 
-import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 import com.dumptruckman.minecraft.pluginbase.messaging.MessageProvider;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertySerializer;
@@ -65,14 +63,17 @@ public interface BaseConfig extends Properties {
                         if (value >= 0 && value <= 3) {
                             return true;
                         }
-                    } catch (NumberFormatException ignore) { }
+                    } catch (NumberFormatException ignore) {
+                    }
                     return false;
                 }
 
+                /*
                 @Override
                 public Message getInvalidMessage() {
                     return CommandMessages.INVALID_DEBUG;
                 }
+                */
             }).build();
 
     /**
