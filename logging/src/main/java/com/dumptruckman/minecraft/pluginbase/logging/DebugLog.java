@@ -82,7 +82,6 @@ class DebugLog {
     public final synchronized void open() {
         try {
             fileHandler = new FileHandler(fileName, true);
-            log.setUseParentHandlers(false);
             Set<Handler> toRemove = new HashSet<Handler>(log.getHandlers().length);
             for (Handler handler : log.getHandlers()) {
                 toRemove.add(handler);

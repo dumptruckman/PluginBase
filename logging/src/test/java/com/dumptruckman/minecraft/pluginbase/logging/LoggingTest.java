@@ -29,7 +29,8 @@ public class LoggingTest {
     static final String ARGS_MESSAGE = "This is a %s test with some %s%s";
 
     LoggablePlugin plugin;
-    final TestHandler handler = new TestHandler();
+    final TestHandler handler = new TestHandler(false);
+    final TestHandler parentHandler = new TestHandler(true);
 
     PluginLogger logging;
 
@@ -43,6 +44,7 @@ public class LoggingTest {
         testFolder.mkdirs();
         when(plugin.getDataFolder()).thenReturn(testFolder);
         logging = PluginLogger.getLogger(plugin);
+        Logging.init(plugin);
     }
 
     @After
@@ -118,10 +120,14 @@ public class LoggingTest {
         assertEquals("[" + NAME + debugging + "] " + SIMPLE_MESSAGE, logging.getDebugString(SIMPLE_MESSAGE));
     }
 
-    class TestHandler extends Handler {
+    static Level level;
+    static RecordTester tester;
 
-        Level level;
-        RecordTester tester;
+    class TestHandler extends Handler {
+        private boolean output;
+        TestHandler(boolean output) {
+            this.output = output;
+        }
 
         Collection<LogRecord> records = new LinkedHashSet<LogRecord>();
 
@@ -131,7 +137,9 @@ public class LoggingTest {
             assertEquals(level, record.getLevel());
             records.add(record);
             tester.test(record);
-            System.out.println(record.getLevel() + " " + record.getMessage());
+            if (output) {
+                //System.out.println(level + " " + record.getMessage());
+            }
         }
 
         @Override
@@ -159,91 +167,130 @@ public class LoggingTest {
     @Test
     public void testLog() throws Exception {
         logging.setDebugLevel(3);
+        logging.logger.getParent().addHandler(parentHandler);
         logging.logger.addHandler(handler);
-        handler.tester = new RecordTester() {
+        tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
                 assertEquals(logging.getPrefixedMessage(SIMPLE_MESSAGE), record.getMessage());
             }
         };
 
-        handler.level = Level.INFO;
+        level = Level.INFO;
         logging.log(Level.INFO, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        handler.level = Level.WARNING;
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        assertTrue(parentHandler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        level = Level.WARNING;
+        level = Level.WARNING;
         logging.log(Level.WARNING, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        handler.level = Level.SEVERE;
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        assertTrue(parentHandler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        level = Level.SEVERE;
+        level = Level.SEVERE;
         logging.log(Level.SEVERE, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        handler.level = Level.INFO;
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        assertTrue(parentHandler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        level = Level.INFO;
+        level = Level.INFO;
         logging.log(Level.CONFIG, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        assertTrue(parentHandler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
         handler.flush();
+        parentHandler.flush();
+        level = Level.INFO;
+        level = Level.INFO;
+        Logging.info(SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        assertTrue(parentHandler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        level = Level.WARNING;
+        level = Level.WARNING;
+        Logging.warning(SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        assertTrue(parentHandler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        level = Level.SEVERE;
+        level = Level.SEVERE;
+        Logging.severe(SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        assertTrue(parentHandler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        level = Level.INFO;
+        level = Level.INFO;
+        Logging.config(SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        assertTrue(parentHandler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        handler.flush();
+        parentHandler.flush();
 
-        handler.tester = new RecordTester() {
+        tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
                 assertEquals(logging.getPrefixedMessage(SIMPLE_MESSAGE), record.getMessage());
             }
         };
-        handler.level = Level.INFO;
+        level = Level.INFO;
         logging.log(Level.INFO, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        handler.level = Level.WARNING;
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        Logging.info(SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        level = Level.WARNING;
         logging.log(Level.WARNING, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        handler.level = Level.SEVERE;
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        Logging.warning(SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        level = Level.SEVERE;
         logging.log(Level.SEVERE, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
-        handler.level = Level.INFO;
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        Logging.severe(SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        level = Level.INFO;
         logging.log(Level.CONFIG, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
+        Logging.config(SIMPLE_MESSAGE);
+        assertTrue(handler.hasMessage(level, logging.getPrefixedMessage(SIMPLE_MESSAGE)));
         handler.flush();
 
-        handler.tester = new RecordTester() {
+        tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
                 assertEquals(logging.getDebugString(SIMPLE_MESSAGE), record.getMessage());
             }
         };
-        handler.level = Level.INFO;
+        level = Level.INFO;
         logging.log(Level.FINE, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
+        assertTrue(handler.hasMessage(level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
         logging.log(Level.FINER, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
+        assertTrue(handler.hasMessage(level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
         logging.log(Level.FINEST, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
+        assertTrue(handler.hasMessage(level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
         logging.log(Level.FINE, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
+        assertTrue(handler.hasMessage(level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
         logging.log(Level.FINER, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
+        assertTrue(handler.hasMessage(level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
         logging.log(Level.FINEST, SIMPLE_MESSAGE);
-        assertTrue(handler.hasMessage(handler.level, logging.getDebugString(SIMPLE_MESSAGE)));
+        assertTrue(handler.hasMessage(level, logging.getDebugString(SIMPLE_MESSAGE)));
         handler.flush();
 
         final Object o = new Object();
-        handler.tester = new RecordTester() {
+        tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
                 assertEquals(logging.getPrefixedMessage(String.format(ARGS_MESSAGE, "poop", 2, o)), record.getMessage());
             }
         };
-        handler.level = Level.INFO;
+        level = Level.INFO;
         logging.log(Level.INFO, ARGS_MESSAGE, "poop", 2, o);
 
-        handler.tester = new RecordTester() {
+        tester = new RecordTester() {
             @Override
             public void test(LogRecord record) {
                 assertEquals(logging.getPrefixedMessage(ARGS_MESSAGE), record.getMessage());
             }
         };
-        handler.level = Level.INFO;
+        level = Level.INFO;
         logging.log(Level.INFO, ARGS_MESSAGE, "poop", 2);
     }
 }

@@ -59,9 +59,7 @@ public class Logging {
      * @param args        Arguments for the String.format() that is applied to the message.
      */
     public static synchronized void log(final Level level, String message, final Object... args) {
-        if (pluginLogger != null) {
-            pluginLogger.log(level, message, args);
-        }
+        pluginLogger.log(level, message, args);
     }
 
     /**
@@ -71,7 +69,7 @@ public class Logging {
      * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void fine(final String message, final Object...args) {
-        log(Level.FINE, message, args);
+        pluginLogger.fine(message, args);
     }
 
     /**
@@ -81,7 +79,7 @@ public class Logging {
      * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void finer(final String message, final Object...args) {
-        log(Level.FINER, message, args);
+        pluginLogger.finer(message, args);
     }
 
     /**
@@ -91,7 +89,7 @@ public class Logging {
      * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void finest(final String message, final Object...args) {
-        log(Level.FINEST, message, args);
+        pluginLogger.finest(message, args);
     }
 
     /**
@@ -102,7 +100,7 @@ public class Logging {
      * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void config(final String message, final Object...args) {
-        log(Level.CONFIG, message, args);
+        pluginLogger.config(message, args);
     }
 
     /**
@@ -112,7 +110,7 @@ public class Logging {
      * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void info(final String message, final Object...args) {
-        log(Level.INFO, message, args);
+        pluginLogger.info(message, args);
     }
 
     /**
@@ -122,7 +120,7 @@ public class Logging {
      * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void warning(final String message, final Object...args) {
-        log(Level.WARNING, message, args);
+        pluginLogger.warning(message, args);
     }
 
     /**
@@ -132,7 +130,7 @@ public class Logging {
      * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void severe(final String message, final Object...args) {
-        log(Level.SEVERE, message, args);
+        pluginLogger.severe( message, args);
     }
 
 }
