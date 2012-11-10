@@ -154,7 +154,7 @@ public enum ChatColor {
      * Gets the color represented by the specified color code
      *
      * @param code Code to check
-     * @return Associative {@link ChatColor} with the given code, or null if it doesn't exist
+     * @return Associative {@link com.dumptruckman.minecraft.pluginbase.messaging.ChatColor} with the given code, or null if it doesn't exist
      */
     public static ChatColor getByChar(char code) {
         return BY_CHAR.get(code);
@@ -164,7 +164,7 @@ public enum ChatColor {
      * Gets the color represented by the specified color code
      *
      * @param code Code to check
-     * @return Associative {@link ChatColor} with the given code, or null if it doesn't exist
+     * @return Associative {@link com.dumptruckman.minecraft.pluginbase.messaging.ChatColor} with the given code, or null if it doesn't exist
      */
     public static ChatColor getByChar(String code) {
         return BY_CHAR.get(code.charAt(0));

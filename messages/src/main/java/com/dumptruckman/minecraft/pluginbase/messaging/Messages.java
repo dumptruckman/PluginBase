@@ -19,7 +19,7 @@ public class Messages {
 
     // END CHECKSTYLE-SUPPRESSION: Javadoc
 
-    public static void registerMessage(Message message) {
+    static void registerMessage(Message message) {
         messages.put(message.getPath(), message);
     }
 }

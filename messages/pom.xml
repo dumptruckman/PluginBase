@@ -6,7 +6,7 @@
         <artifactId>PluginBase</artifactId>
         <version>1.5-SNAPSHOT</version>
     </parent>
-    <artifactId>Messaging</artifactId>
+    <artifactId>Messages</artifactId>
 
     <repositories>
         <repository>
@@ -109,43 +109,9 @@ and adjust the build number accordingly -->
                     <configLocation>${project.basedir}/config/checks.xml</configLocation>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>com.dumptruckman.minecraft:Messages</include>
-                                </includes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <dependencies>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
-            <artifactId>Logging</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
-            <artifactId>Messages</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>
