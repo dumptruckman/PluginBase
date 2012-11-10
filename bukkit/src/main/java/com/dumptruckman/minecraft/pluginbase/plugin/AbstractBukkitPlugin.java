@@ -78,6 +78,8 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         setupConfig();
         // Setup the plugin messager.
         setupMessager();
+        // Setup the command handler.
+        this.commandHandler = new BukkitCommandHandler(this);
 
         // Call the method implementers should use in place of onLoad().
         onPluginLoad();
@@ -225,7 +227,6 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     private void setupCommands() {
-        this.commandHandler = new BukkitCommandHandler(this);
         getCommandHandler().registerCommand(InfoCommand.class);
         getCommandHandler().registerCommand(DebugCommand.class);
         getCommandHandler().registerCommand(ReloadCommand.class);
