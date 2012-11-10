@@ -215,7 +215,6 @@ public class PluginLogger extends Logger {
      * @param args        Arguments for the String.format() that is applied to the message.
      */
     public synchronized void log(final Level level, String message, final Object... args) {
-        System.out.println("I'm logging2");
         final int debugLevel = getDebugLevel();
         if ((level == Level.FINE && debugLevel >= 1)
                 || (level == Level.FINER && debugLevel >= 2)
