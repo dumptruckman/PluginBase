@@ -5,7 +5,6 @@ package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.util.Null;
 import org.bukkit.configuration.ConfigurationOptions;
 import org.bukkit.configuration.ConfigurationSection;
 

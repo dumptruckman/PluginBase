@@ -4,7 +4,6 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.locale.Message;
-import com.dumptruckman.minecraft.pluginbase.util.Null;
 
 import java.util.ArrayList;
 
