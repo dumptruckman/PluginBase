@@ -22,10 +22,12 @@
 
     <!-- Modules -->
     <modules>
+        <module>logging</module>
+        <module>messaging</module>
+        <module>properties</module>
         <module>base</module>
         <module>bukkit</module>
         <module>testbukkitplugin</module>
-        <module>logging</module>
     </modules>
 
     <distributionManagement>

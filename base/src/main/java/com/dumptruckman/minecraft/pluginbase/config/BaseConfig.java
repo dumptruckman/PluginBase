@@ -3,9 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.config;
 
-import com.dumptruckman.minecraft.pluginbase.locale.Message;
-import com.dumptruckman.minecraft.pluginbase.locale.MessageProvider;
-import com.dumptruckman.minecraft.pluginbase.locale.Messages;
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
+import com.dumptruckman.minecraft.pluginbase.messaging.MessageProvider;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertySerializer;
@@ -71,7 +71,7 @@ public interface BaseConfig extends Properties {
 
                 @Override
                 public Message getInvalidMessage() {
-                    return Messages.INVALID_DEBUG;
+                    return CommandMessages.INVALID_DEBUG;
                 }
             }).build();
 

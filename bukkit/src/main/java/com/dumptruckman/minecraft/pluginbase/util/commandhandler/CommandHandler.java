@@ -3,9 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.util.commandhandler;
 
-import com.dumptruckman.minecraft.pluginbase.locale.BundledMessage;
-import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
+import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.QueuedPluginCommand;
 import com.dumptruckman.minecraft.pluginbase.util.shellparser.ShellParser;
 import org.bukkit.command.CommandSender;

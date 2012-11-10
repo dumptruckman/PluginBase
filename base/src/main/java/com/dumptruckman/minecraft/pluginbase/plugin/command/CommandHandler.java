@@ -1,8 +1,8 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
-import com.dumptruckman.minecraft.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.exception.CommandUsageException;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.BuiltInCommand;
 import com.sk89q.minecraft.util.commands.CommandContext;

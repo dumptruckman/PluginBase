@@ -3,11 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
-import com.dumptruckman.minecraft.logging.LoggablePlugin;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
-import com.dumptruckman.minecraft.pluginbase.locale.Messager;
+import com.dumptruckman.minecraft.pluginbase.logging.LoggablePlugin;
+import com.dumptruckman.minecraft.pluginbase.messaging.Messager;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandHandler;
 import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
 import org.mcstats.Metrics;

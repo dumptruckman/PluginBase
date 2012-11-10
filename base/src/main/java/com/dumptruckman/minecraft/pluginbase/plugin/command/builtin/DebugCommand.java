@@ -3,15 +3,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin.command.builtin;
 
-import com.dumptruckman.minecraft.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
-import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.locale.Message;
-import com.dumptruckman.minecraft.pluginbase.locale.Messages;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
 import com.sk89q.minecraft.util.commands.CommandContext;
 
 import java.util.ArrayList;
@@ -61,7 +60,7 @@ public class DebugCommand extends BuiltInCommand {
                 }
             }
             if (debugLevel > 3 || debugLevel < 0) {
-                p.getMessager().message(sender, Messages.INVALID_DEBUG);
+                p.getMessager().message(sender, CommandMessages.INVALID_DEBUG);
             } else {
                 p.config().set(BaseConfig.DEBUG_MODE, debugLevel);
                 Logging.setDebugLevel(p.config().get(BaseConfig.DEBUG_MODE));

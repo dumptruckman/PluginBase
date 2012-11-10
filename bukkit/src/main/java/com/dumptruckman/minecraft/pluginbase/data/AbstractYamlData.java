@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.data;
 
-import com.dumptruckman.minecraft.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;

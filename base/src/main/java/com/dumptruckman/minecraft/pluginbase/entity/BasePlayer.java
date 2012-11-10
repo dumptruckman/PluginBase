@@ -3,9 +3,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.entity;
 
+import com.dumptruckman.minecraft.pluginbase.messaging.MessageReceiver;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 
-public abstract class BasePlayer {
+public abstract class BasePlayer implements MessageReceiver {
 
     public abstract String getName();
 

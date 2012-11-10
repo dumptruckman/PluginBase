@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
-import com.dumptruckman.minecraft.pluginbase.locale.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import org.bukkit.command.CommandSender;
 

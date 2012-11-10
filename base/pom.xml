@@ -95,8 +95,6 @@ and adjust the build number accordingly -->
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.11</version>
                 <configuration>
-                    <parallel>methods</parallel>
-                    <threadCount>10</threadCount>
                     <excludes>
                         <exclude>**/TestCommandSender.java</exclude>
                         <exclude>**/TestInstanceCreator.java</exclude>
@@ -125,6 +123,7 @@ and adjust the build number accordingly -->
                 <version>1.5</version>
                 <executions>
                     <execution>
+                        <id>worldedit-reqs</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
@@ -133,7 +132,6 @@ and adjust the build number accordingly -->
                             <artifactSet>
                                 <includes>
                                     <include>com.sk89q:worldedit</include>
-                                    <include>com.dumptruckman.minecraft:Logging</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -152,6 +150,22 @@ and adjust the build number accordingly -->
                             <minimizeJar>true</minimizeJar>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>pluginbase-reqs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <artifactSet>
+                                <includes>
+                                    <include>com.dumptruckman.minecraft:Logging</include>
+                                    <include>com.dumptruckman.minecraft:Messaging</include>
+                                    <include>com.dumptruckman.minecraft:Properties</include>
+                                </includes>
+                            </artifactSet>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>
@@ -160,6 +174,20 @@ and adjust the build number accordingly -->
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
             <artifactId>Logging</artifactId>
+            <version>1.5-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft</groupId>
+            <artifactId>Messaging</artifactId>
+            <version>1.5-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft</groupId>
+            <artifactId>Properties</artifactId>
             <version>1.5-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>

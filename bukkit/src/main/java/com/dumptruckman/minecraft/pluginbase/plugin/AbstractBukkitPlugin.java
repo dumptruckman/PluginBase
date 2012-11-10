@@ -3,7 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
-import com.dumptruckman.minecraft.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.config.YamlSQLConfig;
@@ -14,12 +13,13 @@ import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.entity.BukkitCommandSender;
 import com.dumptruckman.minecraft.pluginbase.entity.BukkitPlayer;
 import com.dumptruckman.minecraft.pluginbase.exception.CommandUsageException;
-import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.locale.Messager;
-import com.dumptruckman.minecraft.pluginbase.locale.SimpleMessager;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.messaging.Messager;
+import com.dumptruckman.minecraft.pluginbase.messaging.SimpleMessager;
 import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.BukkitCommandHandler;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.InfoCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadCommand;

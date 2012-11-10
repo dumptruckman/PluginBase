@@ -4,11 +4,11 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command.builtin;
 
 import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
-import com.dumptruckman.minecraft.pluginbase.locale.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.locale.Message;
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
 import com.sk89q.minecraft.util.commands.CommandContext;
 
 import java.util.ArrayList;

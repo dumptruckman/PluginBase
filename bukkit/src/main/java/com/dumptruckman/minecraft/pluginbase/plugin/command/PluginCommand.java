@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
-import com.dumptruckman.minecraft.pluginbase.locale.Messager;
+import com.dumptruckman.minecraft.pluginbase.messaging.Messager;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.util.commandhandler.Command;
 import org.bukkit.command.CommandSender;
