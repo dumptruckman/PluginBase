@@ -14,21 +14,21 @@ public interface Properties {
 
     <T> void addPropertyChangeListener(ValueProperty<T> property, PropertyChangeListener<T> listener);
 
-    <T> T get(SimpleProperty<T> entry) throws IllegalArgumentException;
+    <T> T get(SimpleProperty<T> entry);
 
-    <T> List<T> get(ListProperty<T> entry) throws IllegalArgumentException;
+    <T> List<T> get(ListProperty<T> entry);
 
-    <T> Map<String, T> get(MappedProperty<T> entry) throws IllegalArgumentException;
+    <T> Map<String, T> get(MappedProperty<T> entry);
 
-    <T> T get(MappedProperty<T> entry, String key) throws IllegalArgumentException;
+    <T> T get(MappedProperty<T> entry, String key);
 
-    NestedProperties get(NestedProperty entry) throws IllegalArgumentException;
+    NestedProperties get(NestedProperty entry);
 
-    <T> boolean set(SimpleProperty<T> entry, T value) throws IllegalArgumentException;
+    <T> boolean set(SimpleProperty<T> entry, T value) throws PropertyValueException;
 
-    <T> boolean set(ListProperty<T> entry, List<T> value) throws IllegalArgumentException;
+    <T> boolean set(ListProperty<T> entry, List<T> value) throws PropertyValueException;
 
-    <T> boolean set(MappedProperty<T> entry, Map<String, T> value) throws IllegalArgumentException;
+    <T> boolean set(MappedProperty<T> entry, Map<String, T> value) throws PropertyValueException;
 
-    <T> boolean set(MappedProperty<T> entry, String key, T value) throws IllegalArgumentException;
+    <T> boolean set(MappedProperty<T> entry, String key, T value) throws PropertyValueException;
 }

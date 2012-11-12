@@ -26,6 +26,7 @@ import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.InfoCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionCommand;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyValueException;
 import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
 import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
 import com.sk89q.minecraft.util.commands.CommandException;
@@ -122,7 +123,11 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         // Do any important first run stuff here.
         if (config().get(BaseConfig.FIRST_RUN)) {
             firstRun();
-            config().set(BaseConfig.FIRST_RUN, false);
+            try {
+                config().set(BaseConfig.FIRST_RUN, false);
+            } catch (PropertyValueException e) {
+                e.printStackTrace();
+            }
             config().flush();
         }
 

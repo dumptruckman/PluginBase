@@ -17,6 +17,9 @@ public class Messages {
     // Generic Messages
     public final static Message BLANK = new Message(null, "");
 
+    // Property Messages
+    public final static Message PROPERTY_CHANGED_DENIED = new Message("properties.change_denied", "The value '%s' was denied for property '%s'");
+
     // END CHECKSTYLE-SUPPRESSION: Javadoc
 
     static void registerMessage(Message message) {

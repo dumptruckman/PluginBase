@@ -4,6 +4,8 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messaging.Messages;
 import org.bukkit.configuration.ConfigurationOptions;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -274,7 +276,12 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
 
     @Override
     public <T> T get(SimpleProperty<T> entry) throws IllegalArgumentException {
-        Object obj = getEntryValue(entry);
+        Object obj = null;
+        try {
+            obj = getEntryValue(entry);
+        } catch (IllegalArgumentException e) {
+            throw (IllegalArgumentException) e.fillInStackTrace();
+        }
         if (obj == null) {
             return null;
         }
@@ -289,8 +296,13 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     @Override
-    public <T> List<T> get(ListProperty<T> entry) throws IllegalArgumentException {
-        Object obj = getEntryValue(entry);
+    public <T> List<T> get(ListProperty<T> entry) {
+        Object obj = null;
+        try {
+            obj = getEntryValue(entry);
+        } catch (IllegalArgumentException e) {
+            throw (IllegalArgumentException) e.fillInStackTrace();
+        }
         if (obj == null) {
             return null;
         }
@@ -316,8 +328,13 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     @Override
-    public <T> Map<String, T> get(MappedProperty<T> entry) throws IllegalArgumentException {
-        Object obj = getEntryValue(entry);
+    public <T> Map<String, T> get(MappedProperty<T> entry) {
+        Object obj = null;
+        try {
+            obj = getEntryValue(entry);
+        } catch (IllegalArgumentException e) {
+            throw (IllegalArgumentException) e.fillInStackTrace();
+        }
         if (obj == null) {
             return null;
         }
@@ -346,7 +363,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     @Override
-    public <T> T get(MappedProperty<T> entry, String key) throws IllegalArgumentException {
+    public <T> T get(MappedProperty<T> entry, String key) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("entry not registered to this config!");
         }
@@ -366,7 +383,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     @Override
-    public NestedProperties get(NestedProperty entry) throws IllegalArgumentException {
+    public NestedProperties get(NestedProperty entry) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("entry not registered to this config!");
         }
@@ -374,7 +391,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     @Override
-    public <T> boolean set(SimpleProperty<T> entry, T value) throws IllegalArgumentException {
+    public <T> boolean set(SimpleProperty<T> entry, T value) throws PropertyValueException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -385,7 +402,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                 listener.propertyChange(event);
             }
             if (event.getDenyChange()) {
-                return false;
+                throw new PropertyChangeDeniedException(new BundledMessage(Messages.PROPERTY_CHANGED_DENIED, value, entry.getName()), entry, value);
             }
         }
         if (value == null) {
@@ -393,14 +410,14 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
             return true;
         }
         if (!entry.isValid(value)) {
-            return false;
+            throw new IllegalPropertyValueException(new BundledMessage(entry.getInvalidMessage()), entry, value);
         }
         getConfig().set(entry.getName(), value);
         return true;
     }
 
     @Override
-    public <T> boolean set(ListProperty<T> entry, List<T> newValue) throws IllegalArgumentException {
+    public <T> boolean set(ListProperty<T> entry, List<T> newValue) throws PropertyValueException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -409,7 +426,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     @Override
-    public <T> boolean set(MappedProperty<T> entry, Map<String, T> newValue) throws IllegalArgumentException {
+    public <T> boolean set(MappedProperty<T> entry, Map<String, T> newValue) throws PropertyValueException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -418,7 +435,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     @Override
-    public <T> boolean set(MappedProperty<T> entry, String key, T value) throws IllegalArgumentException {
+    public <T> boolean set(MappedProperty<T> entry, String key, T value) throws PropertyValueException {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -429,11 +446,11 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                 listener.propertyChange(event);
             }
             if (event.getDenyChange()) {
-                return false;
+                throw new PropertyChangeDeniedException(new BundledMessage(Messages.PROPERTY_CHANGED_DENIED, value, entry.getName()), entry, value);
             }
         }
         if (!entry.isValid(value)) {
-            return false;
+            throw new IllegalPropertyValueException(new BundledMessage(entry.getInvalidMessage()), entry, value);
         }
         getConfig().set(entry.getName() + getConfigOptions().pathSeparator() + key, value);
         return true;

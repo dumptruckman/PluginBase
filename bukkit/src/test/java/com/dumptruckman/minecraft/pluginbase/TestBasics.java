@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyChangeEvent;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyChangeListener;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyValueException;
 import com.dumptruckman.minecraft.pluginbase.util.CommandUtil;
 import com.dumptruckman.minecraft.pluginbase.util.MockConfig;
 import com.dumptruckman.minecraft.pluginbase.util.MockMessages;
@@ -59,7 +60,7 @@ public class TestBasics {
     }
 
     @Test
-    public void testEnableDebugMode() {
+    public void testEnableDebugMode() throws Exception {
         // Pull a core instance from the server.
         Plugin plugin = mockServer.getPluginManager().getPlugin("PluginBase");
         MockPlugin myPlugin = (MockPlugin) plugin;
@@ -161,9 +162,9 @@ public class TestBasics {
             }
         });
 
-        myPlugin.config().set(MockConfig.DEBUG_MODE, 0);
+        try {
+            myPlugin.config().set(MockConfig.DEBUG_MODE, 0);
+        } catch (PropertyValueException ignore) { }
         assertEquals(3, (int) myPlugin.config().get(MockConfig.DEBUG_MODE));
     }
-
-
 }

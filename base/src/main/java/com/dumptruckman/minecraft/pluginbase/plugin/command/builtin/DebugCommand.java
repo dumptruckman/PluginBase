@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyValueException;
 import com.sk89q.minecraft.util.commands.CommandContext;
 
 import java.util.ArrayList;
@@ -62,9 +63,14 @@ public class DebugCommand extends BuiltInCommand {
             if (debugLevel > 3 || debugLevel < 0) {
                 p.getMessager().message(sender, CommandMessages.INVALID_DEBUG);
             } else {
-                p.config().set(BaseConfig.DEBUG_MODE, debugLevel);
-                Logging.setDebugLevel(p.config().get(BaseConfig.DEBUG_MODE));
-                p.config().flush();
+                try {
+                    p.config().set(BaseConfig.DEBUG_MODE, debugLevel);
+                    Logging.setDebugLevel(p.config().get(BaseConfig.DEBUG_MODE));
+                    p.config().flush();
+                } catch (PropertyValueException e) {
+                    p.getMessager().message(sender, e.getBundledMessage());
+                    return true;
+                }
             }
         }
         displayDebugMode(p, sender);
