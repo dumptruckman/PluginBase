@@ -3,7 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin.command.builtin;
 
-import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
@@ -47,7 +46,7 @@ public class InfoCommand extends BuiltInCommand {
     }
 
     @Override
-    public boolean runCommand(PluginBase<BaseConfig> p, BasePlayer sender, CommandContext context) {
+    public boolean runCommand(PluginBase p, BasePlayer sender, CommandContext context) {
 
         return true;
     }

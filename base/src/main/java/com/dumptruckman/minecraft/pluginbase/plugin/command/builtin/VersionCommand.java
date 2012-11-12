@@ -60,7 +60,7 @@ public class VersionCommand extends BuiltInCommand {
     }
 
     @Override
-    public boolean runCommand(final PluginBase<BaseConfig> p, final BasePlayer sender, final CommandContext context) {
+    public boolean runCommand(final PluginBase p, final BasePlayer sender, final CommandContext context) {
         // Check if the command was sent from a Player.
         if (sender.isPlayer()) {
             p.getMessager().message(sender, CommandMessages.VERSION_PLAYER);

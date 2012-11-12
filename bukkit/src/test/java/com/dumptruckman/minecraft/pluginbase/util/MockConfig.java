@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
-public class MockConfig extends YamlProperties implements BaseConfig {
+public class MockConfig extends YamlProperties {
     
     public static final SimpleProperty<Boolean> TEST = PropertyFactory.newProperty(Boolean.class, "test", true)
             .comment("# ===[ PluginBase Test ]===").build();
@@ -29,8 +29,8 @@ public class MockConfig extends YamlProperties implements BaseConfig {
 
     public static final NestedProperty<Nested> NESTED_TEST = PropertyFactory.newNestedProperty(Nested.class, "nested").comment("# ababadfga").build();
     
-    public MockConfig(boolean doComments, File configFile, Class<? extends MockConfig> configClass) throws IOException {
-        super(doComments, true, configFile, configClass);
+    public MockConfig(boolean doComments, File configFile) throws IOException {
+        super(doComments, true, configFile, MockConfig.class, BaseConfig.class);
     }
 
     @Override

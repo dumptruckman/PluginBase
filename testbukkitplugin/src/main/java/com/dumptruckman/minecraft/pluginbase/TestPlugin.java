@@ -2,9 +2,7 @@ package com.dumptruckman.minecraft.pluginbase;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 
-import java.io.IOException;
-
-public class TestPlugin extends AbstractBukkitPlugin<TestConfig> {
+public class TestPlugin extends AbstractBukkitPlugin {
 
     @Override
     public String getCommandPrefix() {
@@ -12,8 +10,8 @@ public class TestPlugin extends AbstractBukkitPlugin<TestConfig> {
     }
 
     @Override
-    protected TestConfig newConfigInstance() throws IOException {
-        return new Configg(this);
+    protected Class[] getConfigClasses() {
+        return new Class[0];
     }
 
     @Override

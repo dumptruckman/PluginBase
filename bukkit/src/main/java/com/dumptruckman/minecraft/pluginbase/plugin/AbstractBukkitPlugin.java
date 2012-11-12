@@ -5,7 +5,6 @@ package com.dumptruckman.minecraft.pluginbase.plugin;
 
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.SQLConfig;
-import com.dumptruckman.minecraft.pluginbase.config.YamlSQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.database.SQLite;
@@ -26,7 +25,9 @@ import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.InfoCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadCommand;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionCommand;
+import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyValueException;
+import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
 import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
 import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
 import com.sk89q.minecraft.util.commands.CommandException;
@@ -45,12 +46,12 @@ import java.util.logging.Level;
  * An implemention of PluginBase made for Bukkit Plugin that automatically takes care of many of the setup steps
  * required in a plugin.
  */
-public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlugin implements BukkitPlugin<C> {
+public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitPlugin {
 
     private final BukkitPluginInfo pluginInfo = new BukkitPluginInfo(this);
 
     private ServerInterface serverInterface;
-    private C config = null;
+    private Properties config = null;
     private Messager messager = null;
     private File serverFolder = null;
     private BukkitCommandHandler commandHandler = null;
@@ -61,7 +62,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
      * The configuration details for SQL database is contained here.  If not initialized, no SQL config file will
      * be created.
      */
-    protected SQLConfig sqlConfig = null;
+    protected Properties sqlConfig = null;
 
     static {
         // Statically initializes the members of the command language class.
@@ -177,10 +178,16 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
         }
     }
 
+    protected abstract Class[] getConfigClasses();
+
     private void setupConfig() {
         try {
             if (this.config == null) {
-                this.config = newConfigInstance();
+                Class[] configClasses = getConfigClasses();
+                Class[] classes = new Class[configClasses.length + 1];
+                classes[0] = BaseConfig.class;
+                System.arraycopy(configClasses, 0, classes, 1, configClasses.length);
+                this.config = new YamlProperties(true, true, new File(getDataFolder(), "config.yml"), classes);
             } else {
                 this.config.reload();
             }
@@ -291,7 +298,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     @Override
-    public C config() {
+    public Properties config() {
         return this.config;
     }
 
@@ -326,23 +333,12 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
     }
 
     @Override
-    public SQLConfig sqlConfig() {
+    public Properties sqlConfig() {
         return sqlConfig;
     }
 
     @Override
     public abstract String getCommandPrefix();
-
-    /**
-     * Implement this method with by returning a new instance of your Configuration object.
-     *
-     * {@link com.dumptruckman.minecraft.pluginbase.properties.AbstractYamlProperties} is given to make implementing your
-     * config easy.
-     *
-     * @return A new config instance.
-     * @throws Exception If any problems occur when creating a new config instance.
-     */
-    protected abstract C newConfigInstance() throws Exception;
 
     /**
      * Implement this method to tell PluginBase whether to use a database configuration file or not.
@@ -353,7 +349,7 @@ public abstract class AbstractBukkitPlugin<C extends BaseConfig> extends JavaPlu
 
     private void initDatabase() {
         try {
-            sqlConfig = new YamlSQLConfig(new File(getDataFolder(), "db_config.yml"));
+            sqlConfig = new YamlProperties(true, true, new File(getDataFolder(), "db_config.yml"), SQLConfig.class);
         } catch (IOException e) {
             Logging.severe("Could not create db_config.yml! " + e.getMessage());
         }

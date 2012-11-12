@@ -3,24 +3,23 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
-import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
-import com.dumptruckman.minecraft.pluginbase.config.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.logging.LoggablePlugin;
 import com.dumptruckman.minecraft.pluginbase.messaging.Messager;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandHandler;
+import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
 import org.mcstats.Metrics;
 
 import java.io.File;
 import java.util.List;
 
-public interface PluginBase<C extends BaseConfig> extends LoggablePlugin {
+public interface PluginBase extends LoggablePlugin {
 
     /**
      * @return the Properties object which contains settings for this plugin.
      */
-    C config();
+    Properties config();
 
     /**
      * Gets the server's root-folder as {@link java.io.File}.
@@ -44,7 +43,7 @@ public interface PluginBase<C extends BaseConfig> extends LoggablePlugin {
 
     SQLDatabase getDB();
 
-    SQLConfig sqlConfig();
+    Properties sqlConfig();
 
     Metrics getMetrics();
 

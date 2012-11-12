@@ -150,8 +150,8 @@ public class TestBasics {
         CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
         assertTrue(!myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
 
-        myPlugin.config().set(MockConfig.DEBUG_MODE, 3);
-        myPlugin.config().addPropertyChangeListener(MockConfig.DEBUG_MODE, new PropertyChangeListener<Integer>() {
+        myPlugin.config().set(BaseConfig.DEBUG_MODE, 3);
+        myPlugin.config().addPropertyChangeListener(BaseConfig.DEBUG_MODE, new PropertyChangeListener<Integer>() {
             @Override
             public void propertyChange(PropertyChangeEvent<Integer> event) {
                 assertEquals(3, (int) event.getOldValue());
@@ -163,8 +163,8 @@ public class TestBasics {
         });
 
         try {
-            myPlugin.config().set(MockConfig.DEBUG_MODE, 0);
+            myPlugin.config().set(BaseConfig.DEBUG_MODE, 0);
         } catch (PropertyValueException ignore) { }
-        assertEquals(3, (int) myPlugin.config().get(MockConfig.DEBUG_MODE));
+        assertEquals(3, (int) myPlugin.config().get(BaseConfig.DEBUG_MODE));
     }
 }
