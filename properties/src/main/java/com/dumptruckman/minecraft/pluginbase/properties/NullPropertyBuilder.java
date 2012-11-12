@@ -29,6 +29,16 @@ public class NullPropertyBuilder extends ValuePropertyBuilder<Null> {
         return (NullPropertyBuilder) super.alias(alias);
     }
 
+    @Override
+    public NullPropertyBuilder serializer(PropertySerializer<Null> customSerializer) {
+        return this;
+    }
+
+    @Override
+    public NullPropertyBuilder validator(PropertyValidator<Null> validator) {
+        return this;
+    }
+
     public NullProperty build() {
         return new DefaultNullProperty(path, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing);
     }

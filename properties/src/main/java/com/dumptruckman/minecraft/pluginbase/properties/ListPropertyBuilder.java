@@ -49,7 +49,7 @@ public class ListPropertyBuilder<T> extends ValuePropertyBuilder<T> {
         return (ListPropertyBuilder<T>) super.serializer(customSerializer);
     }
 
-    public ListPropertyBuilder<T> validator(PropertyValidator validator) {
+    public ListPropertyBuilder<T> validator(PropertyValidator<T> validator) {
         return (ListPropertyBuilder<T>) super.validator(validator);
     }
 

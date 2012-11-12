@@ -24,7 +24,7 @@ public class SimplePropertyBuilder<T> extends ValuePropertyBuilder<T> {
         return (SimplePropertyBuilder<T>) super.serializer(customSerializer);
     }
 
-    public SimplePropertyBuilder<T> validator(PropertyValidator validator) {
+    public SimplePropertyBuilder<T> validator(PropertyValidator<T> validator) {
         return (SimplePropertyBuilder<T>) super.validator(validator);
     }
 

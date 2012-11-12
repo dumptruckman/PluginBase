@@ -50,7 +50,7 @@ public class MappedPropertyBuilder<T> extends ValuePropertyBuilder<T> {
         return (MappedPropertyBuilder<T>) super.serializer(customSerializer);
     }
 
-    public MappedPropertyBuilder<T> validator(PropertyValidator validator) {
+    public MappedPropertyBuilder<T> validator(PropertyValidator<T> validator) {
         return (MappedPropertyBuilder<T>) super.validator(validator);
     }
 

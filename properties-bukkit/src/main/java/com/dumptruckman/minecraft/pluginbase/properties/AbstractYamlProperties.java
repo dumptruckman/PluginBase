@@ -105,7 +105,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                         if (list == null) {
                             getConfig().set(valueProperty.getName(), valueProperty.getDefault());
                         } else {
-                            List newList = new ArrayList(list.size());
+                            List newList = ((ListProperty) valueProperty).getNewTypeList();
                             for (int i = 0; i < list.size(); i++) {
                                 final Object res = getPropertySerializer(valueProperty.getType()).deserialize(list.get(i));
                                 if (valueProperty.isValid(res)) {
@@ -298,7 +298,6 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
             obj = new ArrayList<Object>();
         }
         List list = (List) obj;
-        List<T> resultList = entry.getNewTypeList();
         for (int i = 0; i < list.size(); i++) {
             Object o = list.get(i);
             if (!entry.getType().isInstance(o)) {
@@ -306,14 +305,14 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                 final Object res = getPropertySerializer(entry.getType()).deserialize(o);
                 if (entry.isValid((T) res)) {
                     o = res;
+                    list.set(i, entry.getType().cast(o));
                 } else {
                     Logging.warning("Invalid value '%s' at '%s[%s]'!", obj, entry.getName(), i);
                     continue;
                 }
             }
-            resultList.add(entry.getType().cast(o));
         }
-        return resultList;
+        return list;
     }
 
     @Override
@@ -329,7 +328,6 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
             obj = new HashMap<String, Object>();
         }
         Map<String, Object> map = (Map<String, Object>) obj;
-        Map<String, T> resultMap = entry.getNewTypeMap();
         for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
             Object o = mapEntry.getValue();
             if (!entry.getType().isInstance(o)) {
@@ -337,14 +335,14 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                 final Object res = getPropertySerializer(entry.getType()).deserialize(o);
                 if (entry.isValid((T) res)) {
                     o = res;
+                    map.put(mapEntry.getKey(), entry.getType().cast(o));
                 } else {
                     Logging.warning("Invalid value '%s' at '%s%s%s'!", obj, entry.getName() + getConfigOptions().pathSeparator() + mapEntry.getKey());
                     continue;
                 }
             }
-            resultMap.put(mapEntry.getKey(), entry.getType().cast(o));
         }
-        return resultMap;
+        return (Map<String, T>) map;
     }
 
     @Override
