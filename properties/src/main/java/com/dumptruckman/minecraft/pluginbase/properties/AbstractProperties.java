@@ -22,7 +22,10 @@ public abstract class AbstractProperties implements Properties {
 
     protected AbstractProperties(Class... classes) {
         this.entries = new Entries(classes);
+        registerSerializers();
     }
+
+    protected void registerSerializers() { }
 
     protected boolean hasPropertySerializer(final Class type) {
         return propertySerializerMap.containsKey(type);
