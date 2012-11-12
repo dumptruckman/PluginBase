@@ -12,7 +12,7 @@ public interface Properties {
 
     void reload() throws Exception;
 
-    //void registerPropertyChangeListener()
+    <T> void addPropertyChangeListener(ValueProperty<T> property, PropertyChangeListener<T> listener);
 
     <T> T get(SimpleProperty<T> entry) throws IllegalArgumentException;
 

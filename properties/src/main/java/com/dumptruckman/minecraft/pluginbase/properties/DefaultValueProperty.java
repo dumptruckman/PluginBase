@@ -11,14 +11,14 @@ import java.util.List;
 abstract class DefaultValueProperty<T> extends DefaultProperty<T> implements ValueProperty<T> {
 
     private final PropertySerializer<T> serializer;
-    private final PropertyValidator validator;
+    private final PropertyValidator<T> validator;
     private final Message description;
     private final boolean deprecated;
     private final boolean defaultIfMissing;
     private final List<String> aliases;
 
     public DefaultValueProperty(Class<T> type, String path, List<String> comments, List<String> aliases,
-                                PropertySerializer<T> serializer, PropertyValidator validator, Message description,
+                                PropertySerializer<T> serializer, PropertyValidator<T> validator, Message description,
                                 boolean deprecated, boolean defaultIfMissing) {
         super(type, path, comments);
         this.aliases = Collections.unmodifiableList(aliases);
@@ -34,7 +34,7 @@ abstract class DefaultValueProperty<T> extends DefaultProperty<T> implements Val
         return this.aliases;
     }
 
-    public boolean isValid(Object obj) {
+    public boolean isValid(T obj) {
         return validator.isValid(obj);
     }
 

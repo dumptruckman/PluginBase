@@ -9,6 +9,8 @@ package com.dumptruckman.minecraft.pluginbase;
 
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyChangeEvent;
+import com.dumptruckman.minecraft.pluginbase.properties.PropertyChangeListener;
 import com.dumptruckman.minecraft.pluginbase.util.CommandUtil;
 import com.dumptruckman.minecraft.pluginbase.util.MockConfig;
 import com.dumptruckman.minecraft.pluginbase.util.MockMessages;
@@ -34,8 +36,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ AbstractBukkitPlugin.class, SimplePluginManager.class})
@@ -147,6 +148,21 @@ public class TestBasics {
         myPlugin.config().flush();
         CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
         assertTrue(!myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
+
+        myPlugin.config().set(MockConfig.DEBUG_MODE, 3);
+        myPlugin.config().addPropertyChangeListener(MockConfig.DEBUG_MODE, new PropertyChangeListener<Integer>() {
+            @Override
+            public void propertyChange(PropertyChangeEvent<Integer> event) {
+                assertEquals(3, (int) event.getOldValue());
+                assertEquals(0, (int) event.getNewValue());
+                assertTrue(!event.getDenyChange());
+                event.setDenyChange(true);
+                assertTrue(event.getDenyChange());
+            }
+        });
+
+        myPlugin.config().set(MockConfig.DEBUG_MODE, 0);
+        assertEquals(3, (int) myPlugin.config().get(MockConfig.DEBUG_MODE));
     }
 
 

@@ -14,14 +14,14 @@ abstract class ValuePropertyBuilder<T> extends PropertyBuilder<T> {
     protected final Set<String> aliases = new LinkedHashSet<String>();
 
     protected PropertySerializer<T> serializer = null;
-    protected PropertyValidator validator;
+    protected PropertyValidator<T> validator;
     protected Message description = null;
     protected boolean deprecated = false;
 
     public ValuePropertyBuilder(Class<T> type, String name, boolean allowNull) {
         super(type, name);
         this.defaultIfMissing = !allowNull;
-        this.validator = new DefaultValidator();
+        this.validator = new DefaultValidator<T>();
     }
 
     public ValuePropertyBuilder<T> comment(String comment) {
@@ -33,7 +33,7 @@ abstract class ValuePropertyBuilder<T> extends PropertyBuilder<T> {
         return this;
     }
 
-    public ValuePropertyBuilder<T> validator(PropertyValidator validator) {
+    public ValuePropertyBuilder<T> validator(PropertyValidator<T> validator) {
         this.validator = validator;
         return this;
     }

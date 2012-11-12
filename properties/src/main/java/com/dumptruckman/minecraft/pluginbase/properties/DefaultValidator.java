@@ -6,9 +6,9 @@ package com.dumptruckman.minecraft.pluginbase.properties;
 import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 import com.dumptruckman.minecraft.pluginbase.messaging.Messages;
 
-class DefaultValidator implements PropertyValidator<Object> {
+class DefaultValidator<T> implements PropertyValidator<T> {
 
-    public boolean isValid(Object obj) {
+    public boolean isValid(T obj) {
         return true;
     }
 

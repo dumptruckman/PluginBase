@@ -32,7 +32,7 @@ interface ValueProperty<T> extends Property<T> {
      * @param obj The object to verify.
      * @return True if the object is a valid value for this entry.
      */
-    boolean isValid(Object obj);
+    boolean isValid(T obj);
 
     /**
      * Indicates whether ot not this entry is deprecated which will cause it to no longer default itself in the config
