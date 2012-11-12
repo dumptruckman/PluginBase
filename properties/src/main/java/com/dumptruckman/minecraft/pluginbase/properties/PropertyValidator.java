@@ -8,9 +8,9 @@ import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 /**
  * Used to validate the serialized value of an entry before attempting to deserialize it.
  */
-public interface PropertyValidator {
+public interface PropertyValidator<T> {
 
-    boolean isValid(Object obj);
+    boolean isValid(T obj);
 
     Message getInvalidMessage();
 }

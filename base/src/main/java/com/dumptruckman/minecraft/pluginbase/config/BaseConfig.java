@@ -57,17 +57,10 @@ public interface BaseConfig extends Properties {
      * Debug Mode config path, default and comments.
      */
     SimpleProperty<Integer> DEBUG_MODE = PropertyFactory.newProperty(Integer.class, "settings.debug_level", 0)
-            .comment("# 0 = off, 1-3 display debug info with increasing granularity.").validator(new PropertyValidator() {
+            .comment("# 0 = off, 1-3 display debug info with increasing granularity.").validator(new PropertyValidator<Integer>() {
                 @Override
-                public boolean isValid(Object obj) {
-                    try {
-                        int value = Integer.parseInt(obj.toString());
-                        if (value >= 0 && value <= 3) {
-                            return true;
-                        }
-                    } catch (NumberFormatException ignore) {
-                    }
-                    return false;
+                public boolean isValid(Integer obj) {
+                    return obj >= 0 && obj <= 3;
                 }
 
                 @Override

@@ -12,6 +12,8 @@ public interface Properties {
 
     void reload() throws Exception;
 
+    //void registerPropertyChangeListener()
+
     <T> T get(SimpleProperty<T> entry) throws IllegalArgumentException;
 
     <T> List<T> get(ListProperty<T> entry) throws IllegalArgumentException;
