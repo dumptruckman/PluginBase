@@ -14,7 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
-public class MockConfig extends YamlProperties {
+public class MockConfig extends YamlProperties implements BaseConfig {
     
     public static final SimpleProperty<Boolean> TEST = PropertyFactory.newProperty(Boolean.class, "test", true)
             .comment("# ===[ PluginBase Test ]===").build();

@@ -122,7 +122,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         setupMessager();
 
         // Do any important first run stuff here.
-        if (config().get(BaseConfig.FIRST_RUN)) {
+        if (config() != null && config().get(BaseConfig.FIRST_RUN)) {
             firstRun();
             try {
                 config().set(BaseConfig.FIRST_RUN, false);
@@ -178,16 +178,12 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         }
     }
 
-    protected abstract Class[] getConfigClasses();
+    protected abstract Properties getNewConfig() throws IOException;
 
     private void setupConfig() {
         try {
             if (this.config == null) {
-                Class[] configClasses = getConfigClasses();
-                Class[] classes = new Class[configClasses.length + 1];
-                classes[0] = BaseConfig.class;
-                System.arraycopy(configClasses, 0, classes, 1, configClasses.length);
-                this.config = new YamlProperties(true, true, new File(getDataFolder(), "config.yml"), classes);
+                this.config = getNewConfig();
             } else {
                 this.config.reload();
             }
@@ -198,13 +194,17 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-        Logging.setDebugLevel(config().get(BaseConfig.DEBUG_MODE));
+        if (config() != null) {
+            Logging.setDebugLevel(config().get(BaseConfig.DEBUG_MODE));
+        }
     }
 
     private void setupMessager() {
         this.messager = new SimpleMessager(this);
-        this.messager.setLocale(config().get(BaseConfig.LOCALE));
-        this.messager.setLanguage(config().get(BaseConfig.LANGUAGE_FILE));
+        if (config() != null) {
+            this.messager.setLocale(config().get(BaseConfig.LOCALE));
+            this.messager.setLanguage(config().get(BaseConfig.LANGUAGE_FILE));
+        }
     }
 
     /**
@@ -248,7 +248,9 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     private void setupCommands() {
         registerCommand(InfoCommand.class);
-        registerCommand(DebugCommand.class);
+        if (config() != null) {
+            registerCommand(DebugCommand.class);
+        }
         registerCommand(ReloadCommand.class);
         registerCommand(VersionCommand.class);
         //getCommandHandler().registerCommand(new HelpCommand<AbstractBukkitPlugin>(this));
