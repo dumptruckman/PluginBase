@@ -5,6 +5,7 @@ package com.dumptruckman.minecraft.pluginbase.properties;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Observer;
 
 public interface Properties {
 
@@ -33,4 +34,6 @@ public interface Properties {
     <T> void setPropertyValidator(final ValueProperty<T> property, final PropertyValidator<T> validator);
 
     <T> boolean isValid(final ValueProperty<T> property, final T value);
+
+    void addObserver(Observer observer);
 }
