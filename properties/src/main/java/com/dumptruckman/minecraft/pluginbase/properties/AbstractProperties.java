@@ -7,22 +7,19 @@ import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public abstract class AbstractProperties implements Properties {
+public abstract class AbstractProperties extends Observable implements Properties {
 
     protected final Entries entries;
 
     private final Map<Class, PropertySerializer> propertySerializerMap = new HashMap<Class, PropertySerializer>();
-    private final Map<ValueProperty, List<PropertyChangeListener>> propertyChangeListenerMap =
-            new HashMap<ValueProperty, List<PropertyChangeListener>>();
 
     protected AbstractProperties(Class... classes) {
         this.entries = new Entries(classes);
@@ -47,18 +44,9 @@ public abstract class AbstractProperties implements Properties {
         propertySerializerMap.put(type, serializer);
     }
 
-    @Override
-    public <T> void addPropertyChangeListener(ValueProperty<T> property, PropertyChangeListener<T> listener) {
-        List<PropertyChangeListener> listeners = propertyChangeListenerMap.get(property);
-        if (listeners == null) {
-            listeners = new ArrayList<PropertyChangeListener>();
-            propertyChangeListenerMap.put(property, listeners);
-        }
-        listeners.add(listener);
-    }
-
-    protected List<PropertyChangeListener> getPropertyChangeListeners(ValueProperty property) {
-        return propertyChangeListenerMap.get(property);
+    protected void changed(final ValueProperty property) {
+        setChanged();
+        notifyObservers(property);
     }
 
     protected final boolean isInConfig(Property property) {

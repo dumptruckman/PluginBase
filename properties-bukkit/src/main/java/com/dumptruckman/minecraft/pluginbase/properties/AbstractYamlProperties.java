@@ -5,7 +5,6 @@ package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
-import com.dumptruckman.minecraft.pluginbase.messaging.Messages;
 import org.bukkit.configuration.ConfigurationOptions;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -395,24 +394,16 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
-        final List<PropertyChangeListener> listeners = getPropertyChangeListeners(entry);
-        if (listeners != null && !listeners.isEmpty()) {
-            PropertyChangeEvent<T> event = new PropertyChangeEvent<T>(entry, get(entry), value);
-            for (PropertyChangeListener listener : listeners) {
-                listener.propertyChange(event);
-            }
-            if (event.getDenyChange()) {
-                throw new PropertyChangeDeniedException(new BundledMessage(Messages.PROPERTY_CHANGED_DENIED, value, entry.getName()), entry, value);
-            }
-        }
         if (value == null) {
             getConfig().set(entry.getName(), null);
+            changed(entry);
             return true;
         }
         if (!entry.isValid(value)) {
             throw new IllegalPropertyValueException(new BundledMessage(entry.getInvalidMessage()), entry, value);
         }
         getConfig().set(entry.getName(), value);
+        changed(entry);
         return true;
     }
 
@@ -422,6 +413,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
             throw new IllegalArgumentException("Property not registered to this config!");
         }
         getConfig().set(entry.getName(), newValue);
+        changed(entry);
         return true;
     }
 
@@ -431,6 +423,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
             throw new IllegalArgumentException("Property not registered to this config!");
         }
         getConfig().set(entry.getName(), newValue);
+        changed(entry);
         return true;
     }
 
@@ -439,20 +432,11 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
-        final List<PropertyChangeListener> listeners = getPropertyChangeListeners(entry);
-        if (listeners != null && !listeners.isEmpty()) {
-            PropertyChangeEvent<T> event = new PropertyChangeEvent<T>(entry, get(entry, key), value);
-            for (PropertyChangeListener listener : listeners) {
-                listener.propertyChange(event);
-            }
-            if (event.getDenyChange()) {
-                throw new PropertyChangeDeniedException(new BundledMessage(Messages.PROPERTY_CHANGED_DENIED, value, entry.getName()), entry, value);
-            }
-        }
         if (!entry.isValid(value)) {
             throw new IllegalPropertyValueException(new BundledMessage(entry.getInvalidMessage()), entry, value);
         }
         getConfig().set(entry.getName() + getConfigOptions().pathSeparator() + key, value);
+        changed(entry);
         return true;
     }
 

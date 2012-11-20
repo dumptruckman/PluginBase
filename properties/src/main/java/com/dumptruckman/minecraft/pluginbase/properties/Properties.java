@@ -12,8 +12,6 @@ public interface Properties {
 
     void reload() throws Exception;
 
-    <T> void addPropertyChangeListener(ValueProperty<T> property, PropertyChangeListener<T> listener);
-
     <T> T get(SimpleProperty<T> entry);
 
     <T> List<T> get(ListProperty<T> entry);
