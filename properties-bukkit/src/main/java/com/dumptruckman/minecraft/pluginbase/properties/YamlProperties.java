@@ -3,8 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -28,18 +26,6 @@ public class YamlProperties extends AbstractYamlProperties implements Properties
 
         // Saves the configuration from memory to file
         flush();
-    }
-
-    private boolean isValid(ValueProperty valueProperty, Object o) {
-        if (!valueProperty.isValid(o)) {
-            Logging.warning(valueProperty.getName() + " contains an invalid value!");
-            //Logging.warning(plugin.getMessager().getMessage(valueProperty.getInvalidMessage()));
-            Logging.warning("Setting to default of: " + valueProperty.getDefault());
-            getConfig().set(valueProperty.getName(), valueProperty.getDefault());
-            flush();
-            return false;
-        }
-        return true;
     }
 
     private void load() throws IOException {

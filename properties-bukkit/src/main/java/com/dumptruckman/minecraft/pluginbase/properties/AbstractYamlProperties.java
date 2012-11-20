@@ -91,7 +91,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                                 final Object obj = section.get(key);
                                 if (obj != null) {
                                     final Object res = getPropertySerializer(valueProperty.getType()).deserialize(obj);
-                                    if (valueProperty.isValid(res)) {
+                                    if (isValid(valueProperty, res)) {
                                         section.set(key, res);
                                     } else {
                                         Logging.warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + getConfigOptions().pathSeparator() + key + "'.  Value will be deleted!");
@@ -108,7 +108,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                             List newList = ((ListProperty) valueProperty).getNewTypeList();
                             for (int i = 0; i < list.size(); i++) {
                                 final Object res = getPropertySerializer(valueProperty.getType()).deserialize(list.get(i));
-                                if (valueProperty.isValid(res)) {
+                                if (isValid(valueProperty, res)) {
                                     newList.add(res);
                                 } else {
                                     Logging.warning("Invalid value '" + res + "' at '" + valueProperty.getName() + "[" + i + "]'.  Value will be deleted!");
@@ -122,7 +122,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                             getConfig().set(valueProperty.getName(), valueProperty.getDefault());
                         } else {
                             Object res = getPropertySerializer(valueProperty.getType()).deserialize(obj);
-                            if (valueProperty.isValid(res)) {
+                            if (isValid(valueProperty, res)) {
                                 getConfig().set(valueProperty.getName(), res);
                             } else {
                                 Logging.warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + "'.  Value will be defaulted!");
@@ -286,7 +286,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
         if (!entry.getType().isInstance(obj)) {
             Logging.fine("An invalid value of '%s' was detected at '%s' during a get call.  Attempting to deserialize and replace...", obj, entry.getName());
             final Object res = getPropertySerializer(entry.getType()).deserialize(obj);
-            if (entry.isValid((T) res)) {
+            if (isValid(entry, (T) res)) {
                 obj = res;
             }
         }
@@ -313,7 +313,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
             if (!entry.getType().isInstance(o)) {
                 Logging.fine("An invalid value of '%s' was detected at '%s[%s]' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), i);
                 final Object res = getPropertySerializer(entry.getType()).deserialize(o);
-                if (entry.isValid((T) res)) {
+                if (isValid(entry, (T) res)) {
                     o = res;
                     list.set(i, entry.getType().cast(o));
                 } else {
@@ -348,7 +348,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
             if (!entry.getType().isInstance(o)) {
                 Logging.fine("An invalid value of '%s' was detected at '%s%s%s' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), getConfigOptions().pathSeparator(), mapEntry.getKey());
                 final Object res = getPropertySerializer(entry.getType()).deserialize(o);
-                if (entry.isValid((T) res)) {
+                if (isValid(entry, (T) res)) {
                     o = res;
                     map.put(mapEntry.getKey(), entry.getType().cast(o));
                 } else {
@@ -373,7 +373,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
         if (!entry.getType().isInstance(obj)) {
             Logging.fine("An invalid value of '%s' was detected at '%s' during a get call.  Attempting to deserialize and replace...", obj, path);
             final Object res = getPropertySerializer(entry.getType()).deserialize(obj);
-            if (entry.isValid((T) res)) {
+            if (isValid(entry, (T) res)) {
                 obj = res;
             }
         }
@@ -398,7 +398,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
             changed(entry);
             return true;
         }
-        if (!entry.isValid(value)) {
+        if (!isValid(entry, value)) {
             return false;
         }
         getConfig().set(entry.getName(), value);
@@ -431,7 +431,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
-        if (!entry.isValid(value)) {
+        if (!isValid(entry, value)) {
             return false;
         }
         getConfig().set(entry.getName() + getConfigOptions().pathSeparator() + key, value);

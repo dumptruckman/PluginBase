@@ -20,6 +20,7 @@ public abstract class AbstractProperties extends Observable implements Propertie
     protected final Entries entries;
 
     private final Map<Class, PropertySerializer> propertySerializerMap = new HashMap<Class, PropertySerializer>();
+    private final Map<ValueProperty, PropertyValidator> propertyValidatorMap = new HashMap<ValueProperty, PropertyValidator>();
 
     protected AbstractProperties(Class... classes) {
         this.entries = new Entries(classes);
@@ -40,8 +41,19 @@ public abstract class AbstractProperties extends Observable implements Propertie
         return serializer;
     }
 
+    protected <T> boolean isValid(final ValueProperty<T> property, final T value) {
+        if (propertyValidatorMap.containsKey(property)) {
+            return propertyValidatorMap.get(property).isValid(value);
+        }
+        return property.isValid(value);
+    }
+
     protected <T> void setPropertySerializer(final Class<T> type, final PropertySerializer<T> serializer) {
         propertySerializerMap.put(type, serializer);
+    }
+
+    protected <T> void setPropertyValidator(final ValueProperty<T> property, final PropertyValidator<T> validator) {
+        propertyValidatorMap.put(property, validator);
     }
 
     protected void changed(final ValueProperty property) {
