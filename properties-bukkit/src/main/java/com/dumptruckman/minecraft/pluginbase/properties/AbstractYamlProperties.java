@@ -4,7 +4,6 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
-import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
 import org.bukkit.configuration.ConfigurationOptions;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -390,7 +389,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     @Override
-    public <T> boolean set(SimpleProperty<T> entry, T value) throws PropertyValueException {
+    public <T> boolean set(SimpleProperty<T> entry, T value) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -400,7 +399,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
             return true;
         }
         if (!entry.isValid(value)) {
-            throw new IllegalPropertyValueException(new BundledMessage(entry.getInvalidMessage()), entry, value);
+            return false;
         }
         getConfig().set(entry.getName(), value);
         changed(entry);
@@ -408,7 +407,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     @Override
-    public <T> boolean set(ListProperty<T> entry, List<T> newValue) throws PropertyValueException {
+    public <T> boolean set(ListProperty<T> entry, List<T> newValue) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -418,7 +417,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     @Override
-    public <T> boolean set(MappedProperty<T> entry, Map<String, T> newValue) throws PropertyValueException {
+    public <T> boolean set(MappedProperty<T> entry, Map<String, T> newValue) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -428,17 +427,16 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     @Override
-    public <T> boolean set(MappedProperty<T> entry, String key, T value) throws PropertyValueException {
+    public <T> boolean set(MappedProperty<T> entry, String key, T value) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
         if (!entry.isValid(value)) {
-            throw new IllegalPropertyValueException(new BundledMessage(entry.getInvalidMessage()), entry, value);
+            return false;
         }
         getConfig().set(entry.getName() + getConfigOptions().pathSeparator() + key, value);
         changed(entry);
         return true;
     }
-
 
 }

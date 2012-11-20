@@ -22,11 +22,11 @@ public interface Properties {
 
     NestedProperties get(NestedProperty entry);
 
-    <T> boolean set(SimpleProperty<T> entry, T value) throws PropertyValueException;
+    <T> boolean set(SimpleProperty<T> entry, T value);
 
-    <T> boolean set(ListProperty<T> entry, List<T> value) throws PropertyValueException;
+    <T> boolean set(ListProperty<T> entry, List<T> value);
 
-    <T> boolean set(MappedProperty<T> entry, Map<String, T> value) throws PropertyValueException;
+    <T> boolean set(MappedProperty<T> entry, Map<String, T> value);
 
-    <T> boolean set(MappedProperty<T> entry, String key, T value) throws PropertyValueException;
+    <T> boolean set(MappedProperty<T> entry, String key, T value);
 }
