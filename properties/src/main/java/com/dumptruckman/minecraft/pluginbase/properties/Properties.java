@@ -29,4 +29,8 @@ public interface Properties {
     <T> boolean set(MappedProperty<T> entry, Map<String, T> value);
 
     <T> boolean set(MappedProperty<T> entry, String key, T value);
+
+    <T> void setPropertyValidator(final ValueProperty<T> property, final PropertyValidator<T> validator);
+
+    <T> boolean isValid(final ValueProperty<T> property, final T value);
 }
