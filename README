@@ -1,3 +1,16 @@
+PluginBase is a multi-module library designed with the intent of producing high quality, feature
+rich Minecraft plugins with a minimal amount of time and effort.
+
+PLEASE NOTE:  If you use any part of this plugin I highly recommend using the maven-shade-plugin
+in order to RELOCATE your code to a new namespace.  MANY things change between release versions and
+even snapshot versions.  This can cause conflicts if multiple plugins use this library without
+relocation and are using different builds.
+
+See the README file located in each module for more information about the modules.
+
+
+The following license applies to all sub modules of PluginBase:
+
 Copyright (C) dumptruckman 2012
 
 This Source Code Form is subject to the terms of the Mozilla Public

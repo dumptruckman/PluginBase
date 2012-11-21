@@ -11,11 +11,38 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
+/**
+ * This is the primary class to use for logging purposes.  It allows you to obtain your own copy of PluginLogger
+ * via {@link #getLogger(LoggablePlugin)}.
+ *
+ * Features:
+ * - Thread safe logging.
+ * - Plugin name prepended to log messages.
+ * - Debug messages append plugin name with -Debug.  {@link #setDebugPrefix(String)}.
+ * - {@link Level#CONFIG} messages can be silenced via {@link #setShowingConfig(boolean)}.
+ * - {@link Level#FINE}, {@link Level#FINER}, {@link Level#FINEST} show as {@link Level#INFO} with
+ *   {@link #setDebugLevel(int)} while also being written to a debug.log file.
+ * - Allows you to share debug logs with another plugin.  (How Multiverse does it..)
+ * - Adds var-arg parameter logging methods for use with messages in the style of
+ * {@link String#format(String, Object...)}.
+ * - {@link Level#FINE} and finer message do not perform {@link String#format(String, Object...)} on messages that
+ * won't be logged.
+ *
+ * Tip: Create a static {@link Logging} class of your own in your own namespace to allow high flexibility in your
+ * plugin's logging. (No need to pass an object around everywhere!)
+ */
 public class PluginLogger extends Logger {
 
+    /**
+     * Original debug suffix.
+     */
     static final String ORIGINAL_DEBUG = "-Debug";
+    /**
+     * The default setting for whether or not to show {@link Level#CONFIG} messages.
+     */
     static final boolean SHOW_CONFIG = true;
 
+    // SUPPRESS-CHECKSTYLE:ACCESSOR
     final Logger logger;
     final String name;
     final DebugLog debugLog;
@@ -219,7 +246,7 @@ public class PluginLogger extends Logger {
         if ((level == Level.FINE && debugLevel >= 1)
                 || (level == Level.FINER && debugLevel >= 2)
                 || (level == Level.FINEST && debugLevel >= 3)) {
-            debug(Level.INFO, message, args);
+            debug(message, args);
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
             if (level != Level.CONFIG || showConfig) {
                 if (level == Level.CONFIG) {
@@ -253,8 +280,8 @@ public class PluginLogger extends Logger {
      * @param message The message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    void debug(final Level level, String message, final Object...args) {
-        _log(level, getDebugString(format(message, args)));
+    void debug(String message, final Object...args) {
+        _log(Level.INFO, getDebugString(format(message, args)));
     }
 
     /**

@@ -71,7 +71,6 @@
         <module name="TypeName"/>
         <module name="AvoidStarImport">
             <property name="severity" value="warning"/>
-            <property name="excludes" value="com.onarandombox.MultiverseCore.utils,com.onarandombox.MultiverseCore.configuration,com.onarandombox.MultiverseCore.commands,com.onarandombox.MultiverseCore.destination"/>
         </module>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
@@ -118,19 +117,15 @@
         <module name="RedundantThrows"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
-        <!-- Don't like errors for `final` missing
         <module name="DesignForExtension"/>
         <module name="FinalClass"/>
-        -->
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
         <module name="VisibilityModifier">
             <property name="protectedAllowed" value="true"/>
         </module>
         <module name="ArrayTypeStyle"/>
-        <!-- Don't like errors for `final` missing
         <module name="FinalParameters"/>
-        -->
         <module name="TodoComment">
             <property name="severity" value="info"/>
         </module>
@@ -138,6 +133,7 @@
         <module name="Indentation"/>
         <module name="MissingDeprecated"/>
         <module name="MissingOverride"/>
+
     </module>
 </module>
 
