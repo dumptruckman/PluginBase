@@ -33,7 +33,8 @@ public final class Logging {
     /** Single instance of LoggingPlugin for use as the default plugin for this static logging class. */
     static final LoggingPlugin DEFAULT_PLUGIN = new LoggingPlugin();
 
-    private static volatile PluginLogger pluginLogger = PluginLogger.getLogger(DEFAULT_PLUGIN);
+    /** The PluginLogger instance used for static logging.  Package-Private so PluginLogger may change this. */
+    static volatile PluginLogger pluginLogger = PluginLogger.getLogger(DEFAULT_PLUGIN);
 
     /**
      * Initializes this static logging class for the FIRST plugin to call this method.  Any subsequent calls will
