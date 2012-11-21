@@ -6,9 +6,11 @@ package com.dumptruckman.minecraft.pluginbase.logging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.HashSet;
@@ -25,6 +27,8 @@ import java.util.logging.Logger;
  */
 class DebugLog {
 
+    private static final DateFormat DEBUG_FILE_DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd-HH.mm.ss");
+
     /** Represents the original debug level. */
     static final int ORIGINAL_DEBUG_LEVEL = 0;
 
@@ -35,22 +39,22 @@ class DebugLog {
      * Returns a new DebugLog for use with a PluginLogger.
      *
      * @param logger The logger this debug logger should be linked to.
-     * @param fileName The file name where a file copy of the log will be placed.
+     * @param debugFolder The folder where debug logs will be stored.
      * @return A new debug log.
      */
     @NotNull
-    static DebugLog getDebugLog(@NotNull final Logger logger, @NotNull final String fileName) {
-        return new DebugLog(logger, fileName);
+    static DebugLog getDebugLog(@NotNull final Logger logger, @NotNull final File debugFolder) {
+        return new DebugLog(logger, debugFolder);
     }
 
     /**
-     * Returns the file name set for this {@link com.dumptruckman.minecraft.pluginbase.logging.DebugLog}.
+     * Returns the folder where debug logs go for this log.
      *
-     * @return the file name set for this {@link com.dumptruckman.minecraft.pluginbase.logging.DebugLog}.
+     * @return The folder where debug logs go for this log.
      */
     @NotNull
-    public synchronized String getFileName() {
-        return fileName;
+    public synchronized File getDebugFolder() {
+        return debugFolder;
     }
 
     /**
@@ -64,6 +68,11 @@ class DebugLog {
     public void setDebugLevel(final int debugLevel) {
         if (debugLevel < 0 || debugLevel > 3) {
             throw new IllegalArgumentException("Debug level must be between 0 and 3");
+        }
+        if (debugLevel > 0 && isClosed()) {
+            open();
+        } else if (debugLevel == 0) {
+            close();
         }
         this.debugLevel = debugLevel;
     }
@@ -84,25 +93,29 @@ class DebugLog {
     final Logger log;
 
     @NotNull
-    private final String fileName;
+    private final File debugFolder;
 
     /**
      * Creates a new debug logger.
      *
      * @param logger The name of the logger.
-     * @param file   The file to log to.
+     * @param debugFolder The folder where debug logs will be stored.
      */
-    private DebugLog(@NotNull final Logger logger, @NotNull final String file) {
+    private DebugLog(@NotNull final Logger logger, @NotNull final File debugFolder) {
         this.log = logger;
-        this.fileName = file;
+        this.debugFolder = debugFolder;
     }
 
     /**
      * Opens a new file handle for this debug logger so that messages will be logged in the file.
      */
-    public final synchronized void open() {
+    private synchronized void open() {
+        if (!isClosed()) {
+            close();
+        }
         try {
-            fileHandler = new FileHandler(fileName, true);
+            fileHandler = new FileHandler(debugFolder + File.separator
+                    + DEBUG_FILE_DATE_FORMAT.format(System.currentTimeMillis()) + ".log", true);
             final Set<Handler> toRemove = new HashSet<Handler>(log.getHandlers().length);
             Collections.addAll(toRemove, log.getHandlers());
             for (Handler handler : toRemove) {

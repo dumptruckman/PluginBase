@@ -80,7 +80,7 @@ public class LoggingTest {
         logging.setDebugLevel(1);
         assertFalse(logging.debugLog.isClosed());
         assertEquals(logging.logger, logging.debugLog.log);
-        assertEquals(logging.debugLog.getFileName(), PluginLogger.getDebugFileName(plugin));
+        assertEquals(logging.debugLog.getDebugFolder(), PluginLogger.getDebugFolder(plugin));
         logging.setDebugLevel(0);
         assertTrue(logging.debugLog.isClosed());
         logging.setDebugLevel(1);

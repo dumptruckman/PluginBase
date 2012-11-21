@@ -80,7 +80,7 @@ public class PluginLogger extends Logger {
         if (pluginToShareDebugLogger != null && INITIALIZED_LOGGERS.containsKey(pluginToShareDebugLogger.getName())) {
             debugLog = INITIALIZED_LOGGERS.get(pluginToShareDebugLogger.getName()).debugLog;
         } else {
-            debugLog = DebugLog.getDebugLog(logger, getDebugFileName(plugin));
+            debugLog = DebugLog.getDebugLog(logger, getDebugFolder(plugin));
         }
         final PluginLogger logging = new PluginLogger(plugin, logger, debugLog);
         INITIALIZED_LOGGERS.put(logging.getName(), logging);
@@ -154,14 +154,16 @@ public class PluginLogger extends Logger {
     }
 
     /**
-     * Returns the file name for the debug log.  Package-private for testing purposes.
+     * Returns the folder where we will store debug logs.  Package-private for testing purposes.
      *
      * @param plugin The loggable plugin to get the debug log file for.
      * @return The name of the debug log file.
      */
     @NotNull
-    static synchronized String getDebugFileName(@NotNull final LoggablePlugin plugin) {
-        return plugin.getDataFolder() + File.separator + "debug.log";
+    static synchronized File getDebugFolder(@NotNull final LoggablePlugin plugin) {
+        final File debugFolder = new File(plugin.getDataFolder(), "debug");
+        debugFolder.mkdirs();
+        return debugFolder;
     }
 
     /**
@@ -185,11 +187,6 @@ public class PluginLogger extends Logger {
     public final synchronized void setDebugLevel(final int debugLevel) {
         if (debugLevel > 3 || debugLevel < 0) {
             throw new IllegalArgumentException("debugLevel must be between 0 and 3!");
-        }
-        if (debugLevel > 0) {
-            debugLog.open();
-        } else {
-            debugLog.close();
         }
         debugLog.setDebugLevel(debugLevel);
     }
