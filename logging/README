@@ -1,0 +1,19 @@
+Features:
+- Thread safe logging.
+- Plugin name prepended to log messages.
+- Debug messages append plugin name with -Debug or custom string.
+- CONFIG messages can be silenced and print out as INFO when not.
+- FINE, FINER, and FINEST show as INFO when debugging enabled while also being written to a debug.log file.
+- Allows you to share debug logs with another plugin.  (How Multiverse does it..)
+- Adds var-arg parameter logging methods for use with messages in the style of String.format().
+- FINE, FINER, and FINEST messages do not perform String.format() on messages that won't be logged.
+
+This logging library will hopefully be one of the more stable modules of PluginBase codewise.  However, it is
+still recommended to make use of the maven shade plugin and relocate the code to your own namespace.
+
+
+Copyright (C) dumptruckman 2012
+
+This Source Code Form is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
