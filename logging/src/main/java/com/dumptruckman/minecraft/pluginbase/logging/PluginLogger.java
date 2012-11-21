@@ -42,43 +42,61 @@ public class PluginLogger extends Logger {
      */
     static final boolean SHOW_CONFIG = true;
 
-    // SUPPRESS-CHECKSTYLE:ACCESSOR
+    /** Logger everything is logged to. */
     final Logger logger;
-    final String name;
+    /** Name of the plugin using this logger for appending purposes. */
+    final String pluginName;
+    /** The debug log instance for this PluginLogger. */
     final DebugLog debugLog;
+    /** The loggable plugin we use for this Plugin Logger. */
     final LoggablePlugin plugin;
 
+    /** The debug string we append to plugin name for debug messages. */
     volatile String debugString = ORIGINAL_DEBUG;
+    /** Whether or not we will display CONFIG level messages. */
     volatile boolean showConfig = SHOW_CONFIG;
 
-    static final Map<String, PluginLogger> initializedLoggers = new HashMap<String, PluginLogger>();
+    /** A map containing all initialized PluginLoggers mapped to the name of the plugin that initialized them. */
+    static final Map<String, PluginLogger> INITIALIZED_LOGGERS = new HashMap<String, PluginLogger>();
 
     /**
      * Prepares the log for use.  Debugging will default to disabled when initialized.  This should be called early on
-     * in plugin initialization, such as during onLoad() or onEnable().  If this {@link com.dumptruckman.minecraft.pluginbase.logging.Logging} class has already
-     * been initialized, it will first be shut down before reinitializing.
+     * in plugin initialization, such as during onLoad() or onEnable().  If a logger has already been created for the
+     * plugin passed then that will be returned with no additional initialization steps.
      *
-     * @param plugin The plugin using this static logger.
+     * @param plugin The plugin using this logger.
+     * @param pluginToShareDebugLogger If you would like to use the same debug log file as another LoggablePlugin
+     *                                 specify that plugin here.  Otherwise specify null.
+     * @return A logger for your plugin.
      */
-    public static synchronized PluginLogger getLogger(final LoggablePlugin plugin, final LoggablePlugin pluginToShareDebugLogger) {
-        if (initializedLoggers.containsKey(plugin.getName())) {
-            return initializedLoggers.get(plugin.getName());
+    public static synchronized PluginLogger getLogger(final LoggablePlugin plugin,
+                                                      final LoggablePlugin pluginToShareDebugLogger) {
+        if (INITIALIZED_LOGGERS.containsKey(plugin.getName())) {
+            return INITIALIZED_LOGGERS.get(plugin.getName());
         }
         final DebugLog debugLog;
         final Logger logger = Logger.getLogger(plugin.getName());
-        if (pluginToShareDebugLogger != null && initializedLoggers.containsKey(pluginToShareDebugLogger.getName())) {
-            debugLog = initializedLoggers.get(pluginToShareDebugLogger.getName()).debugLog;
+        if (pluginToShareDebugLogger != null && INITIALIZED_LOGGERS.containsKey(pluginToShareDebugLogger.getName())) {
+            debugLog = INITIALIZED_LOGGERS.get(pluginToShareDebugLogger.getName()).debugLog;
         } else {
             debugLog = DebugLog.getDebugLog(logger, getDebugFileName(plugin));
         }
         final PluginLogger logging = new PluginLogger(plugin, logger, debugLog);
-        initializedLoggers.put(logging.getName(), logging);
+        INITIALIZED_LOGGERS.put(logging.getName(), logging);
         if (Logging.pluginLogger != null && Logging.pluginLogger.plugin == Logging.DEFAULT_PLUGIN) {
             Logging.pluginLogger = logging;
         }
         return logging;
     }
 
+    /**
+     * Prepares the log for use.  Debugging will default to disabled when initialized.  This should be called early on
+     * in plugin initialization, such as during onLoad() or onEnable().  If a logger has already been created for the
+     * plugin passed then that will be returned with no additional initialization steps.
+     *
+     * @param plugin The plugin using this logger.
+     * @return A logger for your plugin.
+     */
     public static synchronized PluginLogger getLogger(final LoggablePlugin plugin) {
         return getLogger(plugin, null);
     }
@@ -88,17 +106,17 @@ public class PluginLogger extends Logger {
         this.logger = logger;
         this.debugLog = debugLog;
         this.plugin = plugin;
-        this.name = plugin.getName();
+        this.pluginName = plugin.getName();
     }
 
-    synchronized void _log(final Level level, final String message) {
+    private synchronized void privateLog(final Level level, final String message) {
         final LogRecord record = new LogRecord(level, message);
         record.setLoggerName(getName());
         record.setResourceBundle(getResourceBundle());
-        _log(record);
+        privateLog(record);
     }
 
-    synchronized void _log(final LogRecord record) {
+    private synchronized void privateLog(final LogRecord record) {
         super.log(record);
         if (debugLog != null) {
             debugLog.log(record);
@@ -106,18 +124,12 @@ public class PluginLogger extends Logger {
     }
 
     @Override
-    public void log(final Level level, final String message) {
+    public final synchronized void log(final Level level, final String message) {
         log(level, message, new Object[0]);
     }
 
-    /**
-     * Log a message, with no arguments.  Similar to {@link java.util.logging.Logger#log(java.util.logging.LogRecord)} with the
-     * exception that all logging is handled by a single static {@link com.dumptruckman.minecraft.pluginbase.logging.Logging} instance.
-     *
-     * @param record the LogRecord.
-     */
     @Override
-    public synchronized void log(final LogRecord record) {
+    public final synchronized void log(final LogRecord record) {
         final Level level = record.getLevel();
         final String message = record.getMessage();
         final int debugLevel = getDebugLevel();
@@ -126,28 +138,32 @@ public class PluginLogger extends Logger {
                 || (level == Level.FINEST && debugLevel >= 3)) {
             record.setLevel(Level.INFO);
             record.setMessage(getDebugString(message));
-            _log(record);
+            privateLog(record);
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
             if (level != Level.CONFIG || showConfig) {
                 if (level == Level.CONFIG) {
                     record.setLevel(Level.INFO);
                 }
                 record.setMessage(getPrefixedMessage(message));
-                _log(record);
+                privateLog(record);
             }
         }
     }
 
+    /**
+     * Returns the file name for the debug log.  Package-private for testing purposes.
+     *
+     * @param plugin The loggable plugin to get the debug log file for.
+     * @return The name of the debug log file.
+     */
     static synchronized String getDebugFileName(final LoggablePlugin plugin) {
         return plugin.getDataFolder() + File.separator + "debug.log";
     }
 
     /**
-     * Returns the {@link com.dumptruckman.minecraft.pluginbase.logging.Logging} class to it's original state, releasing the plugin that initialized it.  The
-     * {@link com.dumptruckman.minecraft.pluginbase.logging.Logging} class can be reinitialized once it has been shut down.  This should be called when the plugin
-     * is disabled so that a static reference to the plugin is not kept in cases of server reloads.
+     * Performs any necessary shutdown steps to ensure this logger keeps no open file hooks.
      */
-    public synchronized void shutdown() {
+    public final synchronized void shutdown() {
         setDebugLevel(0);
     }
 
@@ -162,7 +178,7 @@ public class PluginLogger extends Logger {
      *
      * @param debugLevel 0 = off, 1-3 = debug level
      */
-    public synchronized void setDebugLevel(final int debugLevel) {
+    public final synchronized void setDebugLevel(final int debugLevel) {
         if (debugLevel > 3 || debugLevel < 0) {
             throw new IllegalArgumentException("debugLevel must be between 0 and 3!");
         }
@@ -179,7 +195,7 @@ public class PluginLogger extends Logger {
      *
      * @return A value 0-3 indicating the debug logging level.
      */
-    public synchronized int getDebugLevel() {
+    public final synchronized int getDebugLevel() {
         return debugLog.getDebugLevel();
     }
 
@@ -188,7 +204,7 @@ public class PluginLogger extends Logger {
      *
      * @param showConfig true to enable, false to disable.
      */
-    public void setShowingConfig(final boolean showConfig) {
+    public final void setShowingConfig(final boolean showConfig) {
         this.showConfig = showConfig;
     }
 
@@ -197,7 +213,7 @@ public class PluginLogger extends Logger {
      *
      * @return true if this Logging will show {@link java.util.logging.Level#CONFIG} messages.
      */
-    public boolean isShowingConfig() {
+    public final boolean isShowingConfig() {
         return showConfig;
     }
 
@@ -207,8 +223,8 @@ public class PluginLogger extends Logger {
      * @param message Log message
      * @return Modified message
      */
-    public synchronized String getPrefixedMessage(final String message) {
-        final StringBuilder builder = new StringBuilder("[").append(name);
+    public final synchronized String getPrefixedMessage(final String message) {
+        final StringBuilder builder = new StringBuilder("[").append(pluginName);
         builder.append("] ").append(message);
         return builder.toString();
     }
@@ -218,7 +234,7 @@ public class PluginLogger extends Logger {
      *
      * @param debugPrefix the new debug prefix to use.
      */
-    public synchronized void setDebugPrefix(final String debugPrefix) {
+    public final synchronized void setDebugPrefix(final String debugPrefix) {
         this.debugString = debugPrefix;
     }
 
@@ -228,8 +244,8 @@ public class PluginLogger extends Logger {
      * @param message     Log message
      * @return Modified message
      */
-    public synchronized String getDebugString(final String message) {
-        return "[" + name + debugString + "] " + message;
+    public final synchronized String getDebugString(final String message) {
+        return "[" + pluginName + debugString + "] " + message;
     }
 
     /**
@@ -241,7 +257,7 @@ public class PluginLogger extends Logger {
      * @param message     The string message.
      * @param args        Arguments for the String.format() that is applied to the message.
      */
-    public synchronized void log(final Level level, String message, final Object... args) {
+    public final synchronized void log(final Level level, final String message, final Object... args) {
         final int debugLevel = getDebugLevel();
         if ((level == Level.FINE && debugLevel >= 1)
                 || (level == Level.FINER && debugLevel >= 2)
@@ -250,9 +266,9 @@ public class PluginLogger extends Logger {
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
             if (level != Level.CONFIG || showConfig) {
                 if (level == Level.CONFIG) {
-                    _log(Level.INFO, getPrefixedMessage(format(message, args)));
+                    privateLog(Level.INFO, getPrefixedMessage(format(message, args)));
                 } else {
-                    _log(level, getPrefixedMessage(format(message, args)));
+                    privateLog(level, getPrefixedMessage(format(message, args)));
                 }
             }
         }
@@ -280,8 +296,8 @@ public class PluginLogger extends Logger {
      * @param message The message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    void debug(String message, final Object...args) {
-        _log(Level.INFO, getDebugString(format(message, args)));
+    private void debug(final String message, final Object...args) {
+        privateLog(Level.INFO, getDebugString(format(message, args)));
     }
 
     /**
@@ -290,7 +306,7 @@ public class PluginLogger extends Logger {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public void fine(final String message, final Object...args) {
+    public final void fine(final String message, final Object...args) {
         log(Level.FINE, message, args);
     }
 
@@ -300,7 +316,7 @@ public class PluginLogger extends Logger {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public void finer(final String message, final Object...args) {
+    public final void finer(final String message, final Object...args) {
         log(Level.FINER, message, args);
     }
 
@@ -310,7 +326,7 @@ public class PluginLogger extends Logger {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public void finest(final String message, final Object...args) {
+    public final void finest(final String message, final Object...args) {
         log(Level.FINEST, message, args);
     }
 
@@ -321,7 +337,7 @@ public class PluginLogger extends Logger {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public void config(final String message, final Object...args) {
+    public final void config(final String message, final Object...args) {
         log(Level.CONFIG, message, args);
     }
 
@@ -331,7 +347,7 @@ public class PluginLogger extends Logger {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public void info(final String message, final Object...args) {
+    public final void info(final String message, final Object...args) {
         log(Level.INFO, message, args);
     }
 
@@ -341,7 +357,7 @@ public class PluginLogger extends Logger {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public void warning(final String message, final Object...args) {
+    public final void warning(final String message, final Object...args) {
         log(Level.WARNING, message, args);
     }
 
@@ -351,7 +367,7 @@ public class PluginLogger extends Logger {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public void severe(final String message, final Object...args) {
+    public final void severe(final String message, final Object...args) {
         log(Level.SEVERE, message, args);
     }
 
