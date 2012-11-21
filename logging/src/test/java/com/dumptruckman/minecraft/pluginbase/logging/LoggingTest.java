@@ -14,10 +14,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -50,15 +47,15 @@ public class LoggingTest {
     @After
     public void tearDown() throws Exception {
         logging.shutdown();
-        PluginLogger.initializedLoggers.clear();
+        PluginLogger.INITIALIZED_LOGGERS.clear();
     }
 
     @Test
     public void testInit() throws Exception {
-        assertEquals(logging.name, plugin.getName());
+        assertNotNull(logging.debugLog);
+        assertEquals(logging.pluginName, plugin.getName());
         assertEquals(logging.debugLog.debugLevel, DebugLog.ORIGINAL_DEBUG_LEVEL);
         assertEquals(logging.plugin, plugin);
-        assertNotNull(logging.debugLog);
     }
 
     @Test
