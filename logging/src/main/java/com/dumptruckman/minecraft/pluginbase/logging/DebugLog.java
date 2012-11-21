@@ -17,27 +17,25 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 /**
- * The Multiverse debug-logger.
+ * Maintains a connection to a file debug log for writing debug messages to from PluginLogger.
  */
 class DebugLog {
 
+    /** Represents the original debug level. */
     static final int ORIGINAL_DEBUG_LEVEL = 0;
 
+    /** The debug level for this instance. */
     volatile int debugLevel = ORIGINAL_DEBUG_LEVEL;
 
     /**
-     * Initializes the {@link com.dumptruckman.minecraft.pluginbase.logging.DebugLog} the first time this is called with the information passed in.  The DebugLog must be
-     * initializes before use.
+     * Returns a new DebugLog for use with a PluginLogger.
      *
      * @param logger The logger this debug logger should be linked to.
      * @param fileName The file name where a file copy of the log will be placed.
+     * @return A new debug log.
      */
     static DebugLog getDebugLog(final Logger logger, final String fileName) {
         return new DebugLog(logger, fileName);
-    }
-
-    Logger getLogger() {
-        return this.log;
     }
 
     /**
@@ -49,21 +47,33 @@ class DebugLog {
         return fileName;
     }
 
+    /**
+     * Sets the debug level for this logger.
+     *
+     * PluginLogger stores its debug level in this debug logger so that plugins sharing the debug log can share a
+     * debug level setting.
+     *
+     * @param debugLevel The debug level to use.  Must be 0-3.
+     */
     public void setDebugLevel(final int debugLevel) {
+        if (debugLevel < 0 || debugLevel > 3) {
+            throw new IllegalArgumentException("Debug level must be between 0 and 3");
+        }
         this.debugLevel = debugLevel;
     }
 
+    /**
+     * Gets the debug level for this debug logger.
+     *
+     * @return The debug level for this debug logger.
+     */
     public int getDebugLevel() {
         return debugLevel;
     }
 
-    /**
-     * The FileHandler for file logging purposes.
-     */
+    /** The FileHandler for file logging purposes. */
     protected FileHandler fileHandler = null;
-    /**
-     * The Logger associated with this DebugLog.
-     */
+    /** The Logger associated with this DebugLog. */
     protected final Logger log;
 
     private final String fileName;
@@ -79,6 +89,9 @@ class DebugLog {
         this.fileName = file;
     }
 
+    /**
+     * Opens a new file handle for this debug logger so that messages will be logged in the file.
+     */
     public final synchronized void open() {
         try {
             fileHandler = new FileHandler(fileName, true);
@@ -99,10 +112,20 @@ class DebugLog {
         }
     }
 
+    /**
+     * Logs a log record to the debug file.
+     *
+     * @param record The log record to record to file.
+     */
     public void log(final LogRecord record) {
         log.log(record);
     }
 
+    /**
+     * Checks whether or not the debug file handle is open or close.
+     *
+     * @return True if there is no current file handle open.
+     */
     public boolean isClosed() {
         return fileHandler == null;
     }
