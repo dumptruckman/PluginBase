@@ -7,15 +7,18 @@ import java.io.File;
 import java.util.logging.Level;
 
 /**
- * Static plugin logger.
+ * Static plugin logger.  {@link #init(LoggablePlugin)} should be called before using other methods in this class.
  */
-public class Logging {
+public final class Logging {
 
     private Logging() {
         throw new AssertionError();
     }
 
-    static class LoggingPlugin implements LoggablePlugin {
+    /**
+     * The default "plugin" class to use for static logging.
+     */
+    private static class LoggingPlugin implements LoggablePlugin {
         @Override
         public String getName() {
             return LoggingPlugin.class.getSimpleName();
@@ -27,24 +30,50 @@ public class Logging {
         }
     }
 
-    final static LoggingPlugin DEFAULT_PLUGIN = new LoggingPlugin();
+    /** Single instance of LoggingPlugin for use as the default plugin for this static logging class. */
+    static final LoggingPlugin DEFAULT_PLUGIN = new LoggingPlugin();
 
-    static PluginLogger pluginLogger = PluginLogger.getLogger(DEFAULT_PLUGIN);
+    private static volatile PluginLogger pluginLogger = PluginLogger.getLogger(DEFAULT_PLUGIN);
 
+    /**
+     * Initializes this static logging class for the FIRST plugin to call this method.  Any subsequent calls will
+     * DO NOTHING.
+     *
+     * @param plugin The plugin that will use this static logging class.
+     */
     public static void init(final LoggablePlugin plugin) {
         if (pluginLogger.plugin == DEFAULT_PLUGIN) {
             pluginLogger = PluginLogger.getLogger(plugin);
         }
     }
 
+    /**
+     * Returns the single PluginLogger instance for this static logging class.
+     *
+     * @return the PluginLogger used for static logging by this class.
+     */
     public static PluginLogger getLogger() {
         return pluginLogger;
     }
 
-    public static void setDebugLevel(final int level) {
-        pluginLogger.setDebugLevel(level);
+    /**
+     * Sets the debug logging level of this plugin.  Debug messages will print to the console and to a
+     * debug log file when enabled.
+     * debugLevel:
+     *   0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
+     *   1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
+     *   2 - enables debug logging of {@link java.util.logging.Level#FINER} or lower messages.
+     *   3 - enables debug logging of {@link java.util.logging.Level#FINEST} or lower messages.
+     *
+     * @param debugLevel 0 = off, 1-3 = debug level
+     */
+    public static void setDebugLevel(final int debugLevel) {
+        pluginLogger.setDebugLevel(debugLevel);
     }
 
+    /**
+     * Performs any necessary shutdown steps to ensure this logger keeps no open file hooks.
+     */
     public static void shutdown() {
         pluginLogger.shutdown();
     }
@@ -58,7 +87,7 @@ public class Logging {
      * @param message     The string message.
      * @param args        Arguments for the String.format() that is applied to the message.
      */
-    public static synchronized void log(final Level level, String message, final Object... args) {
+    public static void log(final Level level, final String message, final Object... args) {
         pluginLogger.log(level, message, args);
     }
 
@@ -130,7 +159,7 @@ public class Logging {
      * @param args    Arguments for the String.format() that is applied to the message.
      */
     public static void severe(final String message, final Object...args) {
-        pluginLogger.severe( message, args);
+        pluginLogger.severe(message, args);
     }
 
 }
