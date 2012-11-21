@@ -3,6 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.logging;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -35,7 +38,8 @@ class DebugLog {
      * @param fileName The file name where a file copy of the log will be placed.
      * @return A new debug log.
      */
-    static DebugLog getDebugLog(final Logger logger, final String fileName) {
+    @NotNull
+    static DebugLog getDebugLog(@NotNull final Logger logger, @NotNull final String fileName) {
         return new DebugLog(logger, fileName);
     }
 
@@ -44,6 +48,7 @@ class DebugLog {
      *
      * @return the file name set for this {@link com.dumptruckman.minecraft.pluginbase.logging.DebugLog}.
      */
+    @NotNull
     public synchronized String getFileName() {
         return fileName;
     }
@@ -72,10 +77,13 @@ class DebugLog {
         return debugLevel;
     }
 
+    @Nullable
     private FileHandler fileHandler = null;
     /** The Logger associated with this DebugLog. */
+    @NotNull
     final Logger log;
 
+    @NotNull
     private final String fileName;
 
     /**
@@ -84,7 +92,7 @@ class DebugLog {
      * @param logger The name of the logger.
      * @param file   The file to log to.
      */
-    private DebugLog(final Logger logger, final String file) {
+    private DebugLog(@NotNull final Logger logger, @NotNull final String file) {
         this.log = logger;
         this.fileName = file;
     }
@@ -95,7 +103,7 @@ class DebugLog {
     public final synchronized void open() {
         try {
             fileHandler = new FileHandler(fileName, true);
-            Set<Handler> toRemove = new HashSet<Handler>(log.getHandlers().length);
+            final Set<Handler> toRemove = new HashSet<Handler>(log.getHandlers().length);
             Collections.addAll(toRemove, log.getHandlers());
             for (Handler handler : toRemove) {
                 log.removeHandler(handler);
@@ -115,7 +123,7 @@ class DebugLog {
      *
      * @param record The log record to record to file.
      */
-    public void log(final LogRecord record) {
+    public void log(@NotNull final LogRecord record) {
         log.log(record);
     }
 
@@ -134,7 +142,7 @@ class DebugLog {
      * @param level The log-{@link java.util.logging.Level}.
      * @param msg the message.
      */
-    public void log(final Level level, final String msg) {
+    public void log(@NotNull final Level level, @NotNull final String msg) {
         log(new LogRecord(level, msg));
     }
 
@@ -145,7 +153,8 @@ class DebugLog {
         private final SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         @Override
-        public String format(final LogRecord record) {
+        @NotNull
+        public String format(@NotNull final LogRecord record) {
             final StringBuilder builder = new StringBuilder();
             final Throwable ex = record.getThrown();
 

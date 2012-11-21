@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.logging;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 
 /**
@@ -16,6 +18,7 @@ public interface LoggablePlugin {
      *
      * @return The name of the plugin.
      */
+    @NotNull
     String getName();
 
     /**
@@ -23,5 +26,6 @@ public interface LoggablePlugin {
      *
      * @return Returns the folder where a plugin's data is stored.
      */
+    @NotNull
     File getDataFolder();
 }

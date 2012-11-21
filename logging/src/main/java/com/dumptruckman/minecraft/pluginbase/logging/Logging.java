@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.logging;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.logging.Level;
 
@@ -19,11 +21,13 @@ public final class Logging {
      * The default "plugin" class to use for static logging.
      */
     private static class LoggingPlugin implements LoggablePlugin {
+        @NotNull
         @Override
         public String getName() {
             return LoggingPlugin.class.getSimpleName();
         }
 
+        @NotNull
         @Override
         public File getDataFolder() {
             return new File(System.getProperty("user.dir"));
@@ -34,6 +38,7 @@ public final class Logging {
     static final LoggingPlugin DEFAULT_PLUGIN = new LoggingPlugin();
 
     /** The PluginLogger instance used for static logging.  Package-Private so PluginLogger may change this. */
+    @NotNull
     static volatile PluginLogger pluginLogger = PluginLogger.getLogger(DEFAULT_PLUGIN);
 
     /**
@@ -42,7 +47,7 @@ public final class Logging {
      *
      * @param plugin The plugin that will use this static logging class.
      */
-    public static void init(final LoggablePlugin plugin) {
+    public static void init(@NotNull final LoggablePlugin plugin) {
         if (pluginLogger.plugin == DEFAULT_PLUGIN) {
             pluginLogger = PluginLogger.getLogger(plugin);
         }
@@ -53,6 +58,7 @@ public final class Logging {
      *
      * @return the PluginLogger used for static logging by this class.
      */
+    @NotNull
     public static PluginLogger getLogger() {
         return pluginLogger;
     }
@@ -88,7 +94,7 @@ public final class Logging {
      * @param message     The string message.
      * @param args        Arguments for the String.format() that is applied to the message.
      */
-    public static void log(final Level level, final String message, final Object... args) {
+    public static void log(@NotNull final Level level, @NotNull final String message, @NotNull final Object... args) {
         pluginLogger.log(level, message, args);
     }
 
@@ -98,7 +104,7 @@ public final class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void fine(final String message, final Object...args) {
+    public static void fine(@NotNull final String message, @NotNull final Object...args) {
         pluginLogger.fine(message, args);
     }
 
@@ -108,7 +114,7 @@ public final class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void finer(final String message, final Object...args) {
+    public static void finer(@NotNull final String message, @NotNull final Object...args) {
         pluginLogger.finer(message, args);
     }
 
@@ -118,7 +124,7 @@ public final class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void finest(final String message, final Object...args) {
+    public static void finest(@NotNull final String message, @NotNull final Object...args) {
         pluginLogger.finest(message, args);
     }
 
@@ -129,7 +135,7 @@ public final class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void config(final String message, final Object...args) {
+    public static void config(@NotNull final String message, @NotNull final Object...args) {
         pluginLogger.config(message, args);
     }
 
@@ -139,7 +145,7 @@ public final class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void info(final String message, final Object...args) {
+    public static void info(@NotNull final String message, @NotNull final Object...args) {
         pluginLogger.info(message, args);
     }
 
@@ -149,7 +155,7 @@ public final class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void warning(final String message, final Object...args) {
+    public static void warning(@NotNull final String message, @NotNull final Object...args) {
         pluginLogger.warning(message, args);
     }
 
@@ -159,7 +165,7 @@ public final class Logging {
      * @param message Message to log.
      * @param args    Arguments for the String.format() that is applied to the message.
      */
-    public static void severe(final String message, final Object...args) {
+    public static void severe(@NotNull final String message, @NotNull final Object...args) {
         pluginLogger.severe(message, args);
     }
 
