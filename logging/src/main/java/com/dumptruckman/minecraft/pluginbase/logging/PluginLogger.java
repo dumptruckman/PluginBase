@@ -33,14 +33,9 @@ import java.util.logging.Logger;
  */
 public class PluginLogger extends Logger {
 
-    /**
-     * Original debug suffix.
-     */
+    /** The original debug suffix. */
     static final String ORIGINAL_DEBUG = "-Debug";
-    /**
-     * The default setting for whether or not to show {@link Level#CONFIG} messages.
-     */
-    static final boolean SHOW_CONFIG = true;
+    private static final boolean SHOW_CONFIG = true;
 
     /** Logger everything is logged to. */
     final Logger logger;
@@ -51,10 +46,8 @@ public class PluginLogger extends Logger {
     /** The loggable plugin we use for this Plugin Logger. */
     final LoggablePlugin plugin;
 
-    /** The debug string we append to plugin name for debug messages. */
-    volatile String debugString = ORIGINAL_DEBUG;
-    /** Whether or not we will display CONFIG level messages. */
-    volatile boolean showConfig = SHOW_CONFIG;
+    private volatile String debugString = ORIGINAL_DEBUG;
+    private volatile boolean showConfig = SHOW_CONFIG;
 
     /** A map containing all initialized PluginLoggers mapped to the name of the plugin that initialized them. */
     static final Map<String, PluginLogger> INITIALIZED_LOGGERS = new HashMap<String, PluginLogger>();
@@ -101,7 +94,7 @@ public class PluginLogger extends Logger {
         return getLogger(plugin, null);
     }
 
-    PluginLogger(final LoggablePlugin plugin, final Logger logger, final DebugLog debugLog) {
+    private PluginLogger(final LoggablePlugin plugin, final Logger logger, final DebugLog debugLog) {
         super(logger.getName(), logger.getResourceBundleName());
         this.logger = logger;
         this.debugLog = debugLog;

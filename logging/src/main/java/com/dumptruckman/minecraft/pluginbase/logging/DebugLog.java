@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.FileHandler;
@@ -71,10 +72,9 @@ class DebugLog {
         return debugLevel;
     }
 
-    /** The FileHandler for file logging purposes. */
-    protected FileHandler fileHandler = null;
+    private FileHandler fileHandler = null;
     /** The Logger associated with this DebugLog. */
-    protected final Logger log;
+    final Logger log;
 
     private final String fileName;
 
@@ -84,7 +84,7 @@ class DebugLog {
      * @param logger The name of the logger.
      * @param file   The file to log to.
      */
-    protected DebugLog(final Logger logger, final String file) {
+    private DebugLog(final Logger logger, final String file) {
         this.log = logger;
         this.fileName = file;
     }
@@ -96,9 +96,7 @@ class DebugLog {
         try {
             fileHandler = new FileHandler(fileName, true);
             Set<Handler> toRemove = new HashSet<Handler>(log.getHandlers().length);
-            for (Handler handler : log.getHandlers()) {
-                toRemove.add(handler);
-            }
+            Collections.addAll(toRemove, log.getHandlers());
             for (Handler handler : toRemove) {
                 log.removeHandler(handler);
             }
@@ -124,7 +122,7 @@ class DebugLog {
     /**
      * Checks whether or not the debug file handle is open or close.
      *
-     * @return True if there is no current file handle open.
+     * @return True if the
      */
     public boolean isClosed() {
         return fileHandler == null;
