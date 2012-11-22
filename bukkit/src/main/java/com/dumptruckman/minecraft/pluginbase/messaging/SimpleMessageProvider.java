@@ -38,7 +38,7 @@ public class SimpleMessageProvider implements MessageProvider {
     private List<String> _getMessages(Message key) {
         List<String> messageList = this.messages.get(key);
         if (messageList == null) {
-            Logging.warning("There is not language entry for " + key.getPath() + ".  Was it registered?");
+            Logging.warning("There is not language entry for " + key.getKey() + ".  Was it registered?");
             return new ArrayList<String>();
         }
         return messageList;
@@ -149,7 +149,7 @@ public class SimpleMessageProvider implements MessageProvider {
 
         // Get language from file, if any is missing, set it to default.
         for (Map.Entry<String, Message> messageEntry : Messages.messages.entrySet()) {
-            if (messageEntry.getValue().getPath() == null) {
+            if (messageEntry.getValue().getKey() == null) {
                 continue;
             }
             List<String> messageList = this.language.getStringList(messageEntry.getKey());

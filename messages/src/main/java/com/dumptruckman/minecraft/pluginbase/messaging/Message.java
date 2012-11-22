@@ -16,7 +16,7 @@ import java.util.List;
 public final class Message {
 
     private final List<String> def;
-    private final String path;
+    private final String key;
 
     /**
      * Creates a new localization message.
@@ -30,7 +30,7 @@ public final class Message {
      * @param extra Additional lines for the message.
      */
     public Message(final String key, final String def, final String... extra) {
-        this.path = key;
+        this.key = key;
         this.def = new ArrayList<String>(extra.length + 1);
         this.def.add(def);
         this.def.addAll(Arrays.asList(extra));
@@ -51,7 +51,7 @@ public final class Message {
      *
      * @return The localization key for the message.
      */
-    public String getPath() {
-        return path;
+    public String getKey() {
+        return key;
     }
 }
