@@ -1,7 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.util;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.HelpCommand;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
 
@@ -14,7 +13,7 @@ public class MockPlugin extends AbstractBukkitPlugin {
 
     public void onPluginLoad() {
         MockMessages.init();
-        HelpCommand.addStaticPrefixedKey("");
+        //HelpCommand.addStaticPrefixedKey("");
     }
 
     public void onPluginEnable() {

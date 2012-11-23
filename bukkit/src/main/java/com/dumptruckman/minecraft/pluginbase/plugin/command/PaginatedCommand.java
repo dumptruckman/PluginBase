@@ -8,7 +8,6 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.util.commandhandler.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -18,16 +17,16 @@ import java.util.List;
  * A generic paginated command.
  * @param <T> The type of items on the page.
  */
-abstract class PaginatedCommand<T, P extends AbstractBukkitPlugin> extends Command<P> {
+abstract class PaginatedCommand<T, P extends AbstractBukkitPlugin> {//extends Command<P> {
     private static final int DEFAULT_ITEMS_PER_PAGE = 9;
     /**
      * The number of items per page.
      */
     protected int itemsPerPage = DEFAULT_ITEMS_PER_PAGE;
 
-    public PaginatedCommand(P plugin) {
-        super(plugin);
-    }
+    //public PaginatedCommand(P plugin) {
+    //    super(plugin);
+    //}
 
     /**
      * Set the number of items per page.

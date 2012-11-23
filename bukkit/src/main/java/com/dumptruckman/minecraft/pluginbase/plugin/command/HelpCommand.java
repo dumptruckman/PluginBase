@@ -8,11 +8,8 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.util.commandhandler.Command;
 import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -53,7 +50,7 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
 
     @Override
     protected List<Command> getFilteredItems(List<Command> availableItems, String filter) {
-        List<Command> filtered = new ArrayList<Command>();
+        /*List<Command> filtered = new ArrayList<Command>();
 
         for (Command c : availableItems) {
             if (stitchThisString(c.getKeyStrings()).matches("(?i).*" + filter + ".*")) {
@@ -73,16 +70,18 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
                 }
             }
         }
-        return filtered;
+        return filtered;*/
+        return null;
     }
 
     @Override
     protected String getItemText(Command item) {
-        return ChatColor.AQUA + item.getCommandUsage();
+        return ChatColor.AQUA.toString();// + item.getCommandUsage();
     }
 
-    @Override
-    public void runCommand(CommandSender sender, List<String> args) {/*
+    //@Override
+    //public void runCommand(CommandSender sender, List<String> args) {
+    /*
         getMessager().normal(CommandMessages.HELP_TITLE, sender, plugin.getPluginName());
 
         FilterObject filterObject = this.getPageAndFilter(args);
@@ -114,5 +113,5 @@ public class HelpCommand<P extends AbstractBukkitPlugin> extends PaginatedPlugin
         getMessager().normal(CommandMessages.HELP_MORE_INFO, sender);
 
         this.showPage(filterObject.getPage(), sender, availableCommands);*/
-    }
+    //}
 }

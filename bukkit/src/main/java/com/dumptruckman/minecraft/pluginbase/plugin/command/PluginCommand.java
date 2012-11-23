@@ -5,10 +5,6 @@ package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
 import com.dumptruckman.minecraft.pluginbase.messaging.Messager;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.util.commandhandler.Command;
-import org.bukkit.command.CommandSender;
-
-import java.util.List;
 
 /**
  * A generic Multiverse-command.
@@ -16,7 +12,7 @@ import java.util.List;
 public abstract class PluginCommand<P extends BukkitPlugin> extends Command<P> {
 
     public PluginCommand(P plugin) {
-        super(plugin);
+        //super(plugin);
     }
 
     /**
@@ -24,7 +20,7 @@ public abstract class PluginCommand<P extends BukkitPlugin> extends Command<P> {
      * @return
      */
     protected Messager getMessager() {
-        return getPlugin().getMessager();
+        return null;//getPlugin().getMessager();
     }
 
     /**
@@ -35,6 +31,6 @@ public abstract class PluginCommand<P extends BukkitPlugin> extends Command<P> {
     public final void addPrefixedKey(String key) {
     }
 
-    @Override
-    public abstract void runCommand(CommandSender sender, List<String> args);
+    //@Override
+    //public abstract void runCommand(CommandSender sender, List<String> args);
 }

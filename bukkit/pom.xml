@@ -125,7 +125,6 @@ and adjust the build number accordingly -->
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>com.pneumaticraft.commandhandler:CommandHandler</include>
                                     <include>com.dumptruckman.minecraft:Plugin</include>
                                     <include>com.dumptruckman.minecraft:Properties-Bukkit</include>
                                     <include>com.feildmaster.lib:EnhancedConfiguration</include>
@@ -134,10 +133,6 @@ and adjust the build number accordingly -->
                                 </includes>
                             </artifactSet>
                             <relocations>
-                                <relocation>
-                                    <pattern>com.pneumaticraft.commandhandler</pattern>
-                                    <shadedPattern>com.dumptruckman.minecraft.pluginbase.commandhandler</shadedPattern>
-                                </relocation>
                                 <relocation>
                                     <pattern>com.feildmaster.lib.configuration</pattern>
                                     <shadedPattern>com.dumptruckman.minecraft.pluginbase.config</shadedPattern>

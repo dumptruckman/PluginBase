@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Enables debug-information.
  */
-public class ConfirmCommand<P extends AbstractBukkitPlugin> extends PluginCommand<P> {
+public abstract class ConfirmCommand<P extends AbstractBukkitPlugin> extends PluginCommand<P> {
 
     private static Set<String> staticKeys = new LinkedHashSet<String>();
     private static Set<String> staticPrefixedKeys = new LinkedHashSet<String>();
@@ -28,7 +28,7 @@ public class ConfirmCommand<P extends AbstractBukkitPlugin> extends PluginComman
 
     public ConfirmCommand(P plugin) {
         super(plugin);
-        this.setName(getMessager().getMessage(CommandMessages.CONFIRM_NAME));
+        /*this.setName(getMessager().getMessage(CommandMessages.CONFIRM_NAME));
         this.setCommandUsage("/" + plugin.getCommandPrefix() + " confirm");
         this.setArgRange(0, 0);
         for (String key : staticKeys) {
@@ -39,10 +39,10 @@ public class ConfirmCommand<P extends AbstractBukkitPlugin> extends PluginComman
         }
         this.addPrefixedKey(" confirm");
         this.addCommandExample("/" + plugin.getCommandPrefix() + " confirm");
-        //this.setPerm(Perm.COMMAND_CONFIRM);
+        //this.setPerm(Perm.COMMAND_CONFIRM);*/
     }
 
-    @Override
+    //@Override
     public void runCommand(CommandSender sender, List<String> args) {
         //getPlugin().getCommandHandler().confirmQueuedCommand(sender);
     }
