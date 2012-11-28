@@ -9,6 +9,7 @@ import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandPerms;
 import com.sk89q.minecraft.util.commands.CommandContext;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class ReloadCommand extends BuiltInCommand {
 
     @Override
     public Perm getPerm() {
-        return Perm.COMMAND_RELOAD;
+        return CommandPerms.COMMAND_RELOAD;
     }
 
     @Override

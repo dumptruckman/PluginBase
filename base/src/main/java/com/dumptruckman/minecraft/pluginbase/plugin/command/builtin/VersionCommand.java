@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandPerms;
 import com.dumptruckman.minecraft.pluginbase.util.webpaste.BitlyURLShortener;
 import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteFailedException;
 import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteService;
@@ -51,7 +52,7 @@ public class VersionCommand extends BuiltInCommand {
 
     @Override
     public Perm getPerm() {
-        return Perm.COMMAND_VERSION;
+        return CommandPerms.COMMAND_VERSION;
     }
 
     @Override
