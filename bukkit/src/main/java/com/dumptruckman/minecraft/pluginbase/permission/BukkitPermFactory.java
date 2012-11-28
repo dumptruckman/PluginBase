@@ -15,6 +15,6 @@ public class BukkitPermFactory extends PermFactory {
 
     @Override
     public Perm build() {
-        return new BukkitPerm(PermFactory.plugin, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName);
+        return new BukkitPerm(PermFactory.permInfo, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName);
     }
 }

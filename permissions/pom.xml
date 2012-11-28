@@ -6,20 +6,12 @@
         <artifactId>PluginBase</artifactId>
         <version>1.5-SNAPSHOT</version>
     </parent>
-    <artifactId>Plugin</artifactId>
+    <artifactId>Permissions</artifactId>
 
     <repositories>
         <repository>
             <id>onarandombox</id>
             <url>http://repo.onarandombox.com/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>mcstats</id>
-            <url>http://repo.mcstats.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
-            <id>sk89q-repo</id>
-            <url>http://maven.sk89q.com/repo/</url>
         </repository>
     </repositories>
 
@@ -91,15 +83,22 @@ and adjust the build number accordingly -->
                 </executions>
             </plugin>
             <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8.1</version>
+                <executions>
+                    <execution>
+                        <id>javadoc-jar</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.11</version>
-                <configuration>
-                    <excludes>
-                        <exclude>**/TestCommandSender.java</exclude>
-                        <exclude>**/TestInstanceCreator.java</exclude>
-                    </excludes>
-                </configuration>
                 <dependencies>
                     <dependency>
                         <groupId>org.apache.maven.surefire</groupId>
@@ -117,118 +116,15 @@ and adjust the build number accordingly -->
                     <configLocation>${project.basedir}/config/checks.xml</configLocation>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <id>worldedit-reqs</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>com.sk89q:worldedit</include>
-                                </includes>
-                            </artifactSet>
-                            <filters>
-                                <filter>
-                                    <artifact>com.sk89q:worldedit</artifact>
-                                    <includes>
-                                        <include>com/sk89q/**</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>defaults</exclude>
-                                        <exclude>plugin.yml</exclude>
-                                        <exclude>spoutplugin.yml</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <minimizeJar>true</minimizeJar>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>pluginbase-reqs</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>com.dumptruckman.minecraft:Logging</include>
-                                    <include>com.dumptruckman.minecraft:Messaging</include>
-                                    <include>com.dumptruckman.minecraft:Properties</include>
-                                    <include>com.dumptruckman.minecraft:Permissions</include>
-                                </includes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <dependencies>
         <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
-            <artifactId>Logging</artifactId>
-            <version>${project.version}</version>
+            <groupId>com.intellij</groupId>
+            <artifactId>annotations</artifactId>
+            <version>9.0.4</version>
             <type>jar</type>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
-            <artifactId>Permissions</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
-            <artifactId>Messaging</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
-            <artifactId>Properties</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldedit</artifactId>
-            <version>5.4</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.bukkit</groupId>
-                    <artifactId>bukkit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.spout</groupId>
-                    <artifactId>spoutapi</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.mcstats</groupId>
-            <artifactId>metrics</artifactId>
-            <version>1.1-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.bukkit</groupId>
-                    <artifactId>bukkit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- Start of Test Dependencies -->
         <dependency>

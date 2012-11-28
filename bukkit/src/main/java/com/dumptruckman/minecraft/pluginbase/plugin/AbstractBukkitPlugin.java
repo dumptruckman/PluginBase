@@ -75,7 +75,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         // Initialize our logging.
         Logging.init(this);
         // Setup a permission factory for Bukkit permissions.
-        PermFactory.registerPermissionFactory(this, BukkitPermFactory.class);
+        PermFactory.registerPermissionFactory(this.getPluginInfo(), BukkitPermFactory.class);
         // Loads the configuration.
         setupConfig();
         // Setup the command handler.

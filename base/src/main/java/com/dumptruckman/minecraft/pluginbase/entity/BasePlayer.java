@@ -5,8 +5,9 @@ package com.dumptruckman.minecraft.pluginbase.entity;
 
 import com.dumptruckman.minecraft.pluginbase.messaging.MessageReceiver;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
+import com.dumptruckman.minecraft.pluginbase.permission.Permissible;
 
-public abstract class BasePlayer implements MessageReceiver {
+public abstract class BasePlayer implements MessageReceiver, Permissible {
 
     public abstract String getName();
 

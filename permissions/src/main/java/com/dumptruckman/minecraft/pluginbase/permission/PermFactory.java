@@ -3,8 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.permission;
 
-import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -13,7 +11,7 @@ import java.util.Map;
 public abstract class PermFactory {
 
     private static Constructor<? extends PermFactory> factory;
-    protected static PluginBase plugin;
+    protected static PermInfo permInfo;
 
     public static PermFactory newPerm(String permName) {
         if (factory == null) {
@@ -34,7 +32,7 @@ public abstract class PermFactory {
                 if (all) {
                     parent(Perm.ALL);
                 }
-                return new Perm(plugin, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName) {
+                return new Perm(permInfo, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName) {
                     @Override
                     protected void verify(final String name) { }
                 };
@@ -42,13 +40,13 @@ public abstract class PermFactory {
         };
     }
 
-    public static void registerPermissionFactory(final PluginBase plugin, final Class<? extends PermFactory> clazz) {
+    public static void registerPermissionFactory(final PermInfo permInfo, final Class<? extends PermFactory> clazz) {
         try {
             factory = clazz.getDeclaredConstructor(String.class);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("PermFactory must have constructor accepting single string!");
         }
-        PermFactory.plugin = plugin;
+        PermFactory.permInfo = permInfo;
     }
 
     protected final String name;

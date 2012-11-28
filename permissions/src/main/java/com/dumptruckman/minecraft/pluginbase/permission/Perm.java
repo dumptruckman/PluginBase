@@ -3,9 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.permission;
 
-import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
-import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-
 import java.util.Map;
 
 public abstract class Perm {
@@ -59,10 +56,10 @@ public abstract class Perm {
     protected final PermDefault permDefault;
     protected final Map<String, Boolean> parents;
 
-    Perm(final PluginBase plugin, final String name, final String description, final Map<String, Boolean> children,
+    Perm(final PermInfo permInfo, final String name, final String description, final Map<String, Boolean> children,
          final PermDefault permDefault, final Map<String, Boolean> parents, final boolean baseName) {
-        if (baseName && plugin != null) {
-            this.name = plugin.getPluginInfo().getPermissionName().toLowerCase() + SEPARATOR + name.toLowerCase();
+        if (baseName && permInfo != null) {
+            this.name = permInfo.getPermissionName().toLowerCase() + SEPARATOR + name.toLowerCase();
         } else {
             this.name = name.toLowerCase();
         }
@@ -98,12 +95,12 @@ public abstract class Perm {
      * @param permissible Permissible to check permission for.
      * @return True if sender has the permission.
      */
-    public final boolean hasPermission(final BasePlayer permissible) {
+    public final boolean hasPermission(final Permissible permissible) {
         verify(getName());
         return permissible.hasPermission(getName());
     }
 
-    public final boolean hasPermission(final BasePlayer permissible, final String specific) {
+    public final boolean hasPermission(final Permissible permissible, final String specific) {
         final String fullName = getName() + SEPARATOR + specific;
         verify(fullName);
         return permissible.hasPermission(fullName);

@@ -3,7 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.permission;
 
-import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import org.bukkit.Bukkit;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -13,7 +12,7 @@ import java.util.Map;
 
 public class BukkitPerm extends Perm {
     
-    BukkitPerm(final PluginBase plugin, final String name, final String description, final Map<String, Boolean> children,
+    BukkitPerm(final PermInfo plugin, final String name, final String description, final Map<String, Boolean> children,
                        final PermDefault permDefault, final Map<String, Boolean> parents, final boolean baseName) {
         super(plugin, name, description, children, permDefault, parents, baseName);
         verify(getName());
