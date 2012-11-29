@@ -3,10 +3,29 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.permission;
 
+/**
+ * Use this to create new BukkitPerm objects.
+ *
+ * If you are attempting to abstract your code from Bukkit, you can use {@link PermFactory} instead.
+ * If you are solely using BukkitPermFactory then it would be wise to call {@link #setPluginName(String)} early on.
+ */
 public class BukkitPermFactory extends PermFactory {
 
-    public static void init(final PermInfo permInfo) {
-        registerPermissionFactory(permInfo, BukkitPermFactory.class);
+    /**
+     * Sets this BukkitPermFactory class to use your plugin's name.
+     *
+     * This name can be easily prepended to your permission's name with
+     * {@link com.dumptruckman.minecraft.pluginbase.permission.PermFactory#usePluginName()}.
+     *
+     * @param pluginName The name of your plugin, or a name of your choice.
+     */
+    public static void setPluginName(final String pluginName) {
+        registerPermissionFactory(new PermInfo() {
+            @Override
+            public String getPermissionName() {
+                return pluginName;
+            }
+        }, BukkitPermFactory.class);
     }
 
     /**

@@ -14,6 +14,7 @@ import java.util.Map;
  */
 public abstract class Perm {
 
+    /** Static initialization method. */
     static void init() { }
 
     /**

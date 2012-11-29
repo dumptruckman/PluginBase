@@ -10,6 +10,12 @@ import org.bukkit.plugin.PluginManager;
 
 import java.util.Map;
 
+/**
+ * Represents a permissions that a Minecraft player may have.
+ *
+ * These should generally be defined as constants.
+ * This class must be implemented for your specific Minecraft Server implementation.  See {@link #verify(String)}.
+ */
 public class BukkitPerm extends Perm {
     
     BukkitPerm(final PermInfo plugin, final String name, final String description, final Map<String, Boolean> children,
@@ -89,6 +95,4 @@ public class BukkitPerm extends Perm {
         verify(fullName);
         return permissible.hasPermission(fullName);
     }
-
-    static void init() { }
 }
