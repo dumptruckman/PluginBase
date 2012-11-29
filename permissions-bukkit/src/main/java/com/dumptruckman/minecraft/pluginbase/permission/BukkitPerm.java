@@ -55,5 +55,40 @@ public class BukkitPerm extends Perm {
         }
     }
 
+    /**
+     * Checks if the sender has the permission in question.
+     *
+     * This method will also take any steps necessary to initialize the permission in Minecraft if required.
+     *
+     * @param permissible Permissible to check permission for.
+     * @return True if sender has access to the permission.
+     */
+    public boolean hasPermission(final org.bukkit.permissions.Permissible permissible) {
+        //TODO Add concept of sub-node only permissions.  Should probably throw UOE on non-specific perm checks.
+        verify(getName());
+        return permissible.hasPermission(getName());
+    }
+
+    /**
+     * Checks if the sender has a specific sub-node of the permission in question.
+     *
+     * Sub-nodes are useful when you need permissions for non-constant things.
+     * For example, if you need to check if someone can access a specific world, you can have a
+     * permission like 'multiverse.access' and use this method to check the name of the world which would
+     * ultimately check if the player has access to 'multiverse.access.worldname'.
+     *
+     * This method will also take any steps necessary to initialize the specific permission in Minecraft if required.
+     *
+     * @param permissible Permissible to check permission for.
+     * @param specific The specific sub-node to check for.
+     * @return True if sender has access to the permission.
+     */
+    public final boolean hasPermission(final org.bukkit.permissions.Permissible permissible,
+                                       final String specific) {
+        final String fullName = getName() + SEPARATOR + specific;
+        verify(fullName);
+        return permissible.hasPermission(fullName);
+    }
+
     static void init() { }
 }

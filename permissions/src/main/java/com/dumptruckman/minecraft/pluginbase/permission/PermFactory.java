@@ -24,7 +24,7 @@ public abstract class PermFactory {
     /**
      * Creates a builder object for creating new {@link Perm}s.
      *
-     * @param permName The name of the permission, generally without upper level namespaces.
+     * @param permName The name of the permission, generally without top level namespaces.
      * @return A new PermFactory object used for building a new {@link Perm}.
      */
     public static PermFactory newPerm(final String permName) {
@@ -64,6 +64,7 @@ public abstract class PermFactory {
     public static void registerPermissionFactory(final PermInfo permInfo, final Class<? extends PermFactory> clazz) {
         try {
             factory = clazz.getDeclaredConstructor(String.class);
+            Perm.init();
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("PermFactory must have constructor accepting single string!");
         }
@@ -93,7 +94,7 @@ public abstract class PermFactory {
      * @param description The description.
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory desc(final String description) {
+    public PermFactory desc(final String description) {
         this.description = description;
         return this;
     }
@@ -104,7 +105,7 @@ public abstract class PermFactory {
      * @param perm The child permission to add.
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory child(final Perm perm) {
+    public PermFactory child(final Perm perm) {
         return child(perm.getName());
     }
 
@@ -114,7 +115,7 @@ public abstract class PermFactory {
      * @param name The child permission to add.
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory child(final String name) {
+    public PermFactory child(final String name) {
         return child(name, true);
     }
 
@@ -125,7 +126,7 @@ public abstract class PermFactory {
      * @param state The default value for the child.
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory child(final Perm perm, final boolean state) {
+    public PermFactory child(final Perm perm, final boolean state) {
         return child(perm.getName(), state);
     }
 
@@ -136,7 +137,7 @@ public abstract class PermFactory {
      * @param state The default value for the child.
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory child(final String name, final boolean state) {
+    public PermFactory child(final String name, final boolean state) {
         children.put(name, state);
         return this;
     }
@@ -147,7 +148,7 @@ public abstract class PermFactory {
      * @param perm The parent permission to add.
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory parent(final Perm perm) {
+    public PermFactory parent(final Perm perm) {
         return parent(perm.getName());
     }
 
@@ -157,7 +158,7 @@ public abstract class PermFactory {
      * @param name The parent permission to add.
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory parent(final String name) {
+    public PermFactory parent(final String name) {
         return parent(name, true);
     }
 
@@ -168,7 +169,7 @@ public abstract class PermFactory {
      * @param state The default state for this permission when given the parent.
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory parent(final Perm perm, final boolean state) {
+    public PermFactory parent(final Perm perm, final boolean state) {
         return parent(perm.getName(), state);
     }
 
@@ -179,7 +180,7 @@ public abstract class PermFactory {
      * @param state The default state for this permission when given the parent.
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory parent(final String name, final boolean state) {
+    public PermFactory parent(final String name, final boolean state) {
         parents.put(name, state);
         return this;
     }
@@ -189,7 +190,7 @@ public abstract class PermFactory {
      *
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory addToAll() {
+    public PermFactory addToAll() {
         return parent(Perm.ALL);
     }
 
@@ -198,7 +199,7 @@ public abstract class PermFactory {
      *
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory commandPermission() {
+    public PermFactory commandPermission() {
         return parent(Perm.ALL_CMD);
     }
 
@@ -210,7 +211,7 @@ public abstract class PermFactory {
      * @param permissionDefault The default for this permission.
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory def(final PermDefault permissionDefault) {
+    public PermFactory def(final PermDefault permissionDefault) {
         this.permissionDefault = permissionDefault;
         return this;
     }
@@ -221,7 +222,7 @@ public abstract class PermFactory {
      *
      * @return this PermFactory for method chaining.
      */
-    public final PermFactory usePluginName() {
+    public PermFactory usePluginName() {
         baseName = true;
         return this;
     }

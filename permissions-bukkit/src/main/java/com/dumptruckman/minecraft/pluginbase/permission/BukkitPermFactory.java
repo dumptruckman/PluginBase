@@ -5,8 +5,18 @@ package com.dumptruckman.minecraft.pluginbase.permission;
 
 public class BukkitPermFactory extends PermFactory {
 
-    static {
-        BukkitPerm.init();
+    public static void init(final PermInfo permInfo) {
+        registerPermissionFactory(permInfo, BukkitPermFactory.class);
+    }
+
+    /**
+     * Creates a builder object for creating new {@link BukkitPerm}s.
+     *
+     * @param permName The name of the permission, generally without top level namespaces.
+     * @return A new PermFactory object used for building a new {@link BukkitPerm}.
+     */
+    public static BukkitPermFactory newBukkitPerm(final String permName) {
+        return new BukkitPermFactory(permName);
     }
 
     BukkitPermFactory(final String name) {
@@ -14,7 +24,72 @@ public class BukkitPermFactory extends PermFactory {
     }
 
     @Override
-    public Perm build() {
+    public BukkitPermFactory desc(String description) {
+        return (BukkitPermFactory) super.desc(description);
+    }
+
+    @Override
+    public BukkitPermFactory child(Perm perm) {
+        return (BukkitPermFactory) super.child(perm);
+    }
+
+    @Override
+    public BukkitPermFactory child(String name) {
+        return (BukkitPermFactory) super.child(name);
+    }
+
+    @Override
+    public BukkitPermFactory child(Perm perm, boolean state) {
+        return (BukkitPermFactory) super.child(perm, state);
+    }
+
+    @Override
+    public BukkitPermFactory child(String name, boolean state) {
+        return (BukkitPermFactory) super.child(name, state);
+    }
+
+    @Override
+    public BukkitPermFactory parent(Perm perm) {
+        return (BukkitPermFactory) super.parent(perm);
+    }
+
+    @Override
+    public BukkitPermFactory parent(String name) {
+        return (BukkitPermFactory) super.parent(name);
+    }
+
+    @Override
+    public BukkitPermFactory parent(Perm perm, boolean state) {
+        return (BukkitPermFactory) super.parent(perm, state);
+    }
+
+    @Override
+    public BukkitPermFactory parent(String name, boolean state) {
+        return (BukkitPermFactory) super.parent(name, state);
+    }
+
+    @Override
+    public BukkitPermFactory addToAll() {
+        return (BukkitPermFactory) super.addToAll();
+    }
+
+    @Override
+    public BukkitPermFactory commandPermission() {
+        return (BukkitPermFactory) super.commandPermission();
+    }
+
+    @Override
+    public BukkitPermFactory def(PermDefault permissionDefault) {
+        return (BukkitPermFactory) super.def(permissionDefault);
+    }
+
+    @Override
+    public BukkitPermFactory usePluginName() {
+        return (BukkitPermFactory) super.usePluginName();
+    }
+
+    @Override
+    public BukkitPerm build() {
         return new BukkitPerm(PermFactory.permInfo, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName);
     }
 }

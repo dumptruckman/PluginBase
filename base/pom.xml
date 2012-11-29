@@ -162,7 +162,6 @@ and adjust the build number accordingly -->
                                     <include>com.dumptruckman.minecraft:Logging</include>
                                     <include>com.dumptruckman.minecraft:Messaging</include>
                                     <include>com.dumptruckman.minecraft:Properties</include>
-                                    <include>com.dumptruckman.minecraft:Permissions</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

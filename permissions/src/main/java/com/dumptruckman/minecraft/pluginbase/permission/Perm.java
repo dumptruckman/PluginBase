@@ -14,6 +14,8 @@ import java.util.Map;
  */
 public abstract class Perm {
 
+    static void init() { }
+
     /**
      * Character used to separate permission namespaces.
      */
@@ -47,7 +49,7 @@ public abstract class Perm {
     Perm(final PermInfo permInfo, final String name, final String description, final Map<String, Boolean> children,
          final PermDefault permDefault, final Map<String, Boolean> parents, final boolean baseName) {
         if (baseName && permInfo != null) {
-            this.name = permInfo.getPermissionName().toLowerCase() + SEPARATOR + name.toLowerCase();
+            this.name = (permInfo.getPermissionName() + SEPARATOR + name).toLowerCase();
         } else {
             this.name = name.toLowerCase();
         }
