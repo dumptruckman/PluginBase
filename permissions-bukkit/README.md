@@ -2,6 +2,8 @@ Permissions-Bukkit allows a Bukkit developer to easily manage all of their plugi
 
 It is highly recommended that you use the maven-shade-plugin to relocate this code if you intend to use it.  It will NOT play well with a copy employed by someone elses plugin.  Maven details will be at the bottom.
 
+This module is built on top of this non-bukkit dependent module: https://github.com/dumptruckman/PluginBase/tree/master/permissions
+
 Features
 --------
 * Easy and safe to use statically.
@@ -36,7 +38,7 @@ public class MyPerms {
             .def(PermDefault.FALSE) // Sets the default permission access
             .description("This is a sample permission.") // Adds a permission description
             .parent("mp.*") // This assumes tha parent is created eslewhere.  You can alternately pass in a BukkitPerm object.
-            .parent("noob", false) // Players will 'noob' permission will not have access to this permission by default
+            .parent("noob", false) // Players with 'noob' permission will not have access to this permission by default
             .child("some.child.perm") // Works similarly to parent but affects the default of the child
             .build(); // Finalizes the permission.
     // Note, those were all of the options except for parent and child methods with different signatures.
