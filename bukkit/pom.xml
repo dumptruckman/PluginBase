@@ -171,6 +171,7 @@ and adjust the build number accordingly -->
                         </goals>
                         <configuration>
                             <includeDependencySources>true</includeDependencySources>
+                            <includeTransitiveDependencySources>true</includeTransitiveDependencySources>
                             <dependencySourceIncludes>
                                 <dependencySourceInclude>com.dumptruckman.minecraft:*</dependencySourceInclude>
                             </dependencySourceIncludes>

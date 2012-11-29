@@ -2,8 +2,6 @@ Permissions-Bukkit allows a Bukkit developer to easily manage all of their plugi
 
 It is highly recommended that you use the maven-shade-plugin to relocate this code if you intend to use it.  It will NOT play well with a copy employed by someone elses plugin.  Maven details will be at the bottom.
 
-This module is built on top of this non-bukkit dependent module: https://github.com/dumptruckman/PluginBase/tree/master/permissions
-
 Features
 --------
 * Easy and safe to use statically.
@@ -12,6 +10,10 @@ Features
 * Automatically registers permissions with Bukkit. (Including dynamic permissions)
 * Automatically creates a `namespace.*` global permission.
 * Automatically creates a `namespace.cmd.*` global command permission.
+
+This module is built on top of this non-bukkit dependent module: https://github.com/dumptruckman/PluginBase/tree/master/permissions
+
+Javadoc available [here](http://ci.onarandombox.com/job/PluginBase/javadoc/com/dumptruckman/minecraft/pluginbase/permission/package-summary.html)
 
 Example Usage
 -------------
@@ -25,8 +27,11 @@ public class MyPlugin implements Listener {
     }
     @EventHandler
     public void playerInteract(final PlayerInteractEvent event) {
-        if (MyPerms.SAMPLE_PERM.hasPermission(event.getPlayer()) {
+        if (MyPerms.SAMPLE_PERM.hasPermission(event.getPlayer()) { // The resulting permission this checks is 'myplugin.sample'
             // do special stuff
+        }
+        if (MyPerms.SAMPLE_PERM.hasPermission(event.getPlayer(), "special")) { // The resulting permission this checks is 'myplugin.sample.special'
+            // do extra special stuff
         }
     }
 }
