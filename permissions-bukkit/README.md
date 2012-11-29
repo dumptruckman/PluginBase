@@ -1,5 +1,7 @@
 Permissions-Bukkit allows a Bukkit developer to easily manage all of their plugin's permissions.
 
+It is highly recommended that you use the maven-shade-plugin to relocate this code if you intend to use it.  It will NOT play well with a copy employed by someone elses plugin.  Maven details will be at the bottom.
+
 Features
 --------
 * Easy and safe to use statically.
@@ -41,6 +43,46 @@ public class MyPerms {
 }
 ```
 
+You can add this as a maven dependency with:
+``` xml
+<dependency>
+    <groupId>com.dumptruckman.minecraft</groupId>
+    <artifactId>Permissions-Bukkit</artifactId>
+    <version>1.5-SNAPSHOT</version>
+    <type>jar</type>
+    <scope>compile</scope>
+</dependency>
+```
+And then shade/relocate it into your plugin with:
+``` xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-shade-plugin</artifactId>
+    <version>1.5</version>
+    <executions>
+        <execution>
+            <id>permissions</id>
+            <phase>package</phase>
+            <goals>
+                <goal>shade</goal>
+            </goals>
+            <configuration>
+                <artifactSet>
+                    <includes>
+                        <include>com.dumptruckman.minecraft:Permissions-Bukkit</include>
+                    </includes>
+                </artifactSet>
+                <relocations>
+                    <relocation>
+                        <pattern>com.dumptruckman.minecraft.pluginbase</pattern>
+                        <shadedPattern>your.namespace.here.pluginbase</shadedPattern>
+                    </relocation>
+                </relocations>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+```
 
 Copyright (C) dumptruckman 2012
 
