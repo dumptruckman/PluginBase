@@ -37,7 +37,7 @@ public class MyPerms {
             .addToAll() // Adds the permission to 'myplugin.*'
             .def(PermDefault.FALSE) // Sets the default permission access
             .description("This is a sample permission.") // Adds a permission description
-            .parent("mp.*") // This assumes tha parent is created eslewhere.  You can alternately pass in a BukkitPerm object.
+            .parent("mp.*") // This assumes tha parent is created elsewhere.  You can alternately pass in a BukkitPerm object.
             .parent("noob", false) // Players with 'noob' permission will not have access to this permission by default
             .child("some.child.perm") // Works similarly to parent but affects the default of the child
             .build(); // Finalizes the permission.
