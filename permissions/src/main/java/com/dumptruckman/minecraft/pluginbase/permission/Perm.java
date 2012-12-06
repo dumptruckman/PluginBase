@@ -119,10 +119,32 @@ public abstract class Perm {
      *
      * This name represents the full namespace for the permission.  Example: pluginbase.cmd.info.
      *
+     * This method will also verify that the name given represents a valid permission.
+     *
      * @return The permission's fully realized name.
      */
     public final String getName() {
+        if (specificOnly) {
+            throw new UnsupportedOperationException("This Perm is only usable with an additional specific node!");
+        }
+        verify(name);
         return name;
+    }
+
+    /**
+     * Gets the permission's fully realized name with a specific sub node attachment.
+     *
+     * This name represents the full namespace for the permission.  Example: multiverse.access.hellworld
+     *
+     * This method will also verify that the name given represents a valid permission.
+     *
+     * @param specific  The specific sub-node to attach.
+     * @return The permission's fully realized name with a specific sub node attachment.
+     */
+    public final String getName(final String specific) {
+        final String fullName = name + SEPARATOR + specific;
+        verify(fullName);
+        return fullName;
     }
 
     /**
@@ -174,7 +196,6 @@ public abstract class Perm {
             throw new UnsupportedOperationException("This Perm is only usable with an additional specific node!");
         }
         //TODO Add concept of sub-node only permissions.  Should probably throw UOE on non-specific perm checks.
-        verify(getName());
         return permissible.hasPermission(getName());
     }
 
@@ -193,9 +214,7 @@ public abstract class Perm {
      * @return True if sender has access to the permission.
      */
     public final boolean hasPermission(final Permissible permissible, final String specific) {
-        final String fullName = getName() + SEPARATOR + specific;
-        verify(fullName);
-        return permissible.hasPermission(fullName);
+        return permissible.hasPermission(getName(specific));
     }
 
     /**

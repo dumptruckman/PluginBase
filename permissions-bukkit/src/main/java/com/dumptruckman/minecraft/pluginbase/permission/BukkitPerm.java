@@ -76,7 +76,6 @@ public class BukkitPerm extends Perm {
         if (specificOnly) {
             throw new UnsupportedOperationException("This BukkitPerm is only usable with an additional specific node!");
         }
-        verify(getName());
         return permissible.hasPermission(getName());
     }
 
@@ -96,8 +95,6 @@ public class BukkitPerm extends Perm {
      */
     public final boolean hasPermission(final org.bukkit.permissions.Permissible permissible,
                                        final String specific) {
-        final String fullName = getName() + SEPARATOR + specific;
-        verify(fullName);
-        return permissible.hasPermission(fullName);
+        return permissible.hasPermission(getName(specific));
     }
 }
