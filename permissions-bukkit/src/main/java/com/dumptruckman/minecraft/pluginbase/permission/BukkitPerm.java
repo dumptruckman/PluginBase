@@ -18,10 +18,13 @@ import java.util.Map;
  */
 public class BukkitPerm extends Perm {
     
-    BukkitPerm(final Class pluginClass, final String name, final String description, final Map<String, Boolean> children,
-                       final PermDefault permDefault, final Map<String, Boolean> parents, final boolean baseName) {
-        super(pluginClass, name, description, children, permDefault, parents, baseName);
-        verify(getName());
+    BukkitPerm(final Class pluginClass, final String name, final String description,
+               final Map<String, Boolean> children, final PermDefault permDefault, final Map<String, Boolean> parents,
+               final boolean baseName, final boolean specificOnly) {
+        super(pluginClass, name, description, children, permDefault, parents, baseName, specificOnly);
+        if (!specificOnly) {
+            verify(getName());
+        }
     }
 
     private Permission setupPermission(final String name) {
@@ -70,7 +73,9 @@ public class BukkitPerm extends Perm {
      * @return True if sender has access to the permission.
      */
     public boolean hasPermission(final org.bukkit.permissions.Permissible permissible) {
-        //TODO Add concept of sub-node only permissions.  Should probably throw UOE on non-specific perm checks.
+        if (specificOnly) {
+            throw new UnsupportedOperationException("This BukkitPerm is only usable with an additional specific node!");
+        }
         verify(getName());
         return permissible.hasPermission(getName());
     }

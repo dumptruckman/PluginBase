@@ -93,7 +93,12 @@ public class BukkitPermFactory extends PermFactory {
     }
 
     @Override
+    public BukkitPermFactory specificOnly() {
+        return (BukkitPermFactory) super.specificOnly();
+    }
+
+    @Override
     public BukkitPerm build() {
-        return new BukkitPerm(this.pluginClass, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName);
+        return new BukkitPerm(this.pluginClass, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName, this.specificOnly);
     }
 }

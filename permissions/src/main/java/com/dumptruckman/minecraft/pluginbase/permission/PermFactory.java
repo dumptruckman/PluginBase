@@ -72,7 +72,7 @@ public abstract class PermFactory {
             @Override
             public Perm build() {
                 return new Perm(pluginClass, this.name, this.description, this.children, this.permissionDefault,
-                        this.parents, this.baseName) {
+                        this.parents, this.baseName, this.specificOnly) {
                     @Override
                     protected void verify(final String name) { }
                 };
@@ -111,6 +111,8 @@ public abstract class PermFactory {
     protected Map<String, Boolean> parents = new HashMap<String, Boolean>();
     /** Whether or not to use the plugin name as a top level namespace. */
     protected boolean baseName = false;
+    /** Whether or not this permissions is allowed to be used without a specific node added. */
+    protected boolean specificOnly = false;
 
     protected PermFactory(final Class pluginClass, final String permName) {
         if (pluginClass == null) {
@@ -263,6 +265,20 @@ public abstract class PermFactory {
      */
     public PermFactory usePluginName() {
         baseName = true;
+        return this;
+    }
+
+    /**
+     * Indicates that the permissions is only to be used with the specific node method
+     * {@link Perm#hasPermission(Permissible, String)}.
+     *
+     * This means that the name of the permission defined will not be registered in the server implementation and that
+     * it only serves as a placeholder.
+     *
+     * @return this PermFactory for method chaining.
+     */
+    public PermFactory specificOnly() {
+        specificOnly = true;
         return this;
     }
 

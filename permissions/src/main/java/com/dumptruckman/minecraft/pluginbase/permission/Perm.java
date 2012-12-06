@@ -96,10 +96,12 @@ public abstract class Perm {
     protected final PermDefault permDefault;
     /** A map of all parent permissions and the default THIS permission will be set to if the player has the parent. */
     protected final Map<String, Boolean> parents;
+    /** Whether or not this permissions is allowed to be used without a specific node added. */
+    protected final boolean specificOnly;
 
     Perm(final Class declaringPluginClass, final String name, final String description,
          final Map<String, Boolean> children, final PermDefault permDefault, final Map<String, Boolean> parents,
-         final boolean baseName) {
+         final boolean baseName, final boolean specificOnly) {
         if (baseName) {
             this.name = (getBaseNameFromClass(declaringPluginClass) + SEPARATOR + name).toLowerCase();
         } else {
@@ -109,6 +111,7 @@ public abstract class Perm {
         this.children = Collections.unmodifiableMap(children);
         this.permDefault = permDefault;
         this.parents = Collections.unmodifiableMap(parents);
+        this.specificOnly = specificOnly;
     }
 
     /**
@@ -167,6 +170,9 @@ public abstract class Perm {
      * @return True if sender has access to the permission.
      */
     public final boolean hasPermission(final Permissible permissible) {
+        if (specificOnly) {
+            throw new UnsupportedOperationException("This Perm is only usable with an additional specific node!");
+        }
         //TODO Add concept of sub-node only permissions.  Should probably throw UOE on non-specific perm checks.
         verify(getName());
         return permissible.hasPermission(getName());
