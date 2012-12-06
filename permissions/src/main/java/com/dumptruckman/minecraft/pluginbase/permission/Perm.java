@@ -142,7 +142,7 @@ public abstract class Perm {
      * @return The permission's fully realized name with a specific sub node attachment.
      */
     public final String getName(final String specific) {
-        final String fullName = name + SEPARATOR + specific;
+        final String fullName = name + SEPARATOR + specific.toLowerCase();
         verify(fullName);
         return fullName;
     }
