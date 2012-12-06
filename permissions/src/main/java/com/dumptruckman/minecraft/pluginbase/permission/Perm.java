@@ -192,10 +192,6 @@ public abstract class Perm {
      * @return True if sender has access to the permission.
      */
     public final boolean hasPermission(final Permissible permissible) {
-        if (specificOnly) {
-            throw new UnsupportedOperationException("This Perm is only usable with an additional specific node!");
-        }
-        //TODO Add concept of sub-node only permissions.  Should probably throw UOE on non-specific perm checks.
         return permissible.hasPermission(getName());
     }
 

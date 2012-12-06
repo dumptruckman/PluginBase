@@ -65,6 +65,25 @@ public class BukkitPerm extends Perm {
     }
 
     /**
+     * Retrieves the Bukkit permission linked to this Perm object.
+     *
+     * @return the Bukkit permission linked to this Perm object.
+     */
+    public final Permission getPermission() {
+        return Bukkit.getPluginManager().getPermission(getName());
+    }
+
+    /**
+     * Retrieves the Bukkit permission linked to this Perm object for the specific sub node.
+     *
+     * @param specific The specific sub node to get permission for.
+     * @return the Bukkit permission linked to this Perm object for the specific sub node.
+     */
+    public final Permission getPermission(final String specific) {
+        return Bukkit.getPluginManager().getPermission(getName(specific));
+    }
+
+    /**
      * Checks if the sender has the permission in question.
      *
      * This method will also take any steps necessary to initialize the permission in Minecraft if required.
@@ -73,9 +92,6 @@ public class BukkitPerm extends Perm {
      * @return True if sender has access to the permission.
      */
     public boolean hasPermission(final org.bukkit.permissions.Permissible permissible) {
-        if (specificOnly) {
-            throw new UnsupportedOperationException("This BukkitPerm is only usable with an additional specific node!");
-        }
         return permissible.hasPermission(getName());
     }
 
