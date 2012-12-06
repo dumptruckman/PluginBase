@@ -16,4 +16,6 @@ public interface BukkitPlugin extends PluginBase, Plugin {
     BasePlayer wrapPlayer(Player player);
 
     BasePlayer wrapSender(CommandSender sender);
+
+    String getPermissionName();
 }

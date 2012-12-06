@@ -7,26 +7,8 @@ package com.dumptruckman.minecraft.pluginbase.permission;
  * Use this to create new BukkitPerm objects.
  *
  * If you are attempting to abstract your code from Bukkit, you can use {@link PermFactory} instead.
- * If you are solely using BukkitPermFactory then it would be wise to call {@link #setPluginName(String)} early on.
  */
 public class BukkitPermFactory extends PermFactory {
-
-    /**
-     * Sets this BukkitPermFactory class to use your plugin's name.
-     *
-     * This name can be easily prepended to your permission's name with
-     * {@link com.dumptruckman.minecraft.pluginbase.permission.PermFactory#usePluginName()}.
-     *
-     * @param pluginName The name of your plugin, or a name of your choice.
-     */
-    public static void setPluginName(final String pluginName) {
-        registerPermissionFactory(new PermInfo() {
-            @Override
-            public String getPermissionName() {
-                return pluginName;
-            }
-        }, BukkitPermFactory.class);
-    }
 
     /**
      * Creates a builder object for creating new {@link BukkitPerm}s.
@@ -34,12 +16,15 @@ public class BukkitPermFactory extends PermFactory {
      * @param permName The name of the permission, generally without top level namespaces.
      * @return A new PermFactory object used for building a new {@link BukkitPerm}.
      */
-    public static BukkitPermFactory newBukkitPerm(final String permName) {
-        return new BukkitPermFactory(permName);
+    public static BukkitPermFactory newBukkitPerm(final Class pluginClass, final String permName) {
+        if (!hasFactory()) {
+            registerPermissionFactory(BukkitPermFactory.class);
+        }
+        return new BukkitPermFactory(pluginClass, permName);
     }
 
-    BukkitPermFactory(final String name) {
-        super(name);
+    BukkitPermFactory(final Class pluginClass, final String name) {
+        super(pluginClass, name);
     }
 
     @Override
@@ -109,6 +94,6 @@ public class BukkitPermFactory extends PermFactory {
 
     @Override
     public BukkitPerm build() {
-        return new BukkitPerm(PermFactory.permInfo, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName);
+        return new BukkitPerm(this.pluginClass, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName);
     }
 }

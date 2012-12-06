@@ -68,6 +68,16 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         CommandMessages.init();
     }
 
+    /**
+     * Override this method if you wish for your permissions to start with something other than the plugin name
+     * when using the {@link com.dumptruckman.minecraft.pluginbase.permission.PermFactory#usePluginName()} method.
+     *
+     * @return The name to use as a base for permissions.
+     */
+    public String getPermissionName() {
+        return getPluginInfo().getName();
+    }
+
     @Override
     public final void onLoad() {
         // Setup the server interface.
@@ -75,7 +85,10 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         // Initialize our logging.
         Logging.init(this);
         // Setup a permission factory for Bukkit permissions.
-        PermFactory.registerPermissionFactory(this.getPluginInfo(), BukkitPermFactory.class);
+        PermFactory.registerPermissionFactory(BukkitPermFactory.class);
+        PermFactory.registerPermissionName(PluginBase.class, getPermissionName());
+        PermFactory.registerPermissionName(AbstractBukkitPlugin.class, getPermissionName());
+        PermFactory.registerPermissionName(getClass(), getPermissionName());
         // Loads the configuration.
         setupConfig();
         // Setup the command handler.
@@ -378,9 +391,5 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     @Override
     public ServerInterface getServerInterface() {
         return serverInterface;
-    }
-
-    protected void setPermissionName(final String name) {
-        this.pluginInfo.setPermissionName(name);
     }
 }

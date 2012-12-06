@@ -20,7 +20,7 @@ Example Usage
 ``` java
 public class MyPlugin implements Listener {
     public void onLoad() {
-        BukkitPermFactory.setPluginName("MyPlugin");
+        BukkitPermFactory.registerPermissionName(getClass(), "myplugin"); // Tells the lib what your top level permission namespace is.
     }
     public void onEnable() {
         Bukkit.getPluginManager().registerListeners(this, this);
@@ -37,7 +37,7 @@ public class MyPlugin implements Listener {
 }
 
 public class MyPerms {
-    public static final BukkitPerm SAMPLE_PERM = BukkitPermFactory.newBukkitPerm("sample") // The permission name is passed in here
+    public static final BukkitPerm SAMPLE_PERM = BukkitPermFactory.newBukkitPerm(MyPlugin.class, "sample") // The permission name is passed in here
             .usePluginName() // Tells it to be created using the 'myplugin.' as the prefix (lowercased from above name automatically)
             .addToAll() // Adds the permission to 'myplugin.*'
             .def(PermDefault.FALSE) // Sets the default permission access

@@ -3,7 +3,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.permission;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,15 +25,62 @@ public abstract class Perm {
      */
     protected static final char SEPARATOR = '.';
 
-    /**
-     * ALL plugin permissions.
-     */
-    public static final Perm ALL = PermFactory.newPerm("*").usePluginName().build();
+    private static final Map<String, Perm> ALL_PERM_MAP = new HashMap<String, Perm>();
+
+    private static final Map<String, Perm> ALL_CMD_PERM_MAP = new HashMap<String, Perm>();
 
     /**
-     * ALL command permissions.
+     * Retrieves the Perm that represents the top level all encompassing permission for your plugin.
+     *
+     * {@link com.dumptruckman.minecraft.pluginbase.permission.PermFactory#addToAll()} adds this as a parent to the new
+     * Perm.
+     *
+     * @param clazz Your plugin class.
+     * @return The "all" permission.
      */
-    public static final Perm ALL_CMD = PermFactory.newPerm("cmd" + SEPARATOR + "*").usePluginName().addToAll().build();
+    public static Perm getAllPerm(final Class clazz) {
+        return ALL_PERM_MAP.get(clazz.getName());
+    }
+
+    /**
+     * Retrieves the Perm that represents the top level all command encompassing permission for your plugin.
+     *
+     * {@link com.dumptruckman.minecraft.pluginbase.permission.PermFactory#commandPermission()} adds this as a parent
+     * to the new Perm.
+     *
+     * @param clazz Your plugin class.
+     * @return The "all" permission.
+     */
+    public static Perm getCommandPerm(final Class clazz) {
+        return ALL_CMD_PERM_MAP.get(clazz.getName());
+    }
+
+    static String getBaseNameFromClass(final Class clazz) {
+        final String possibleName = PermFactory.getPermissionName(clazz);
+        if (possibleName != null) {
+            return possibleName;
+        }
+        try {
+            final Method m = clazz.getDeclaredMethod("getPermissionName");
+            m.setAccessible(true);
+            try {
+                return (String) m.invoke(null);
+            } finally {
+                m.setAccessible(false);
+            }
+        } catch (NoSuchMethodException ignore) {
+        } catch (IllegalAccessException ignore) {
+        } catch (InvocationTargetException ignore) {
+        } catch (ClassCastException ignore) { }
+        return clazz.getSimpleName();
+    }
+
+    static void ensureParentPermsConfigured(final Class clazz) {
+        if (!ALL_PERM_MAP.containsKey(clazz.getName())) {
+            ALL_PERM_MAP.put(clazz.getName(), PermFactory.newUncheckedPerm(clazz, "*").usePluginName().build());
+            ALL_CMD_PERM_MAP.put(clazz.getName(), PermFactory.newUncheckedPerm(clazz, "cmd" + SEPARATOR + "*").usePluginName().addToAll().build());
+        }
+    }
 
     /**
      * The permission's fully realized name.
@@ -47,10 +97,11 @@ public abstract class Perm {
     /** A map of all parent permissions and the default THIS permission will be set to if the player has the parent. */
     protected final Map<String, Boolean> parents;
 
-    Perm(final PermInfo permInfo, final String name, final String description, final Map<String, Boolean> children,
-         final PermDefault permDefault, final Map<String, Boolean> parents, final boolean baseName) {
-        if (baseName && permInfo != null) {
-            this.name = (permInfo.getPermissionName() + SEPARATOR + name).toLowerCase();
+    Perm(final Class declaringPluginClass, final String name, final String description,
+         final Map<String, Boolean> children, final PermDefault permDefault, final Map<String, Boolean> parents,
+         final boolean baseName) {
+        if (baseName) {
+            this.name = (getBaseNameFromClass(declaringPluginClass) + SEPARATOR + name).toLowerCase();
         } else {
             this.name = name.toLowerCase();
         }

@@ -18,9 +18,9 @@ import java.util.Map;
  */
 public class BukkitPerm extends Perm {
     
-    BukkitPerm(final PermInfo plugin, final String name, final String description, final Map<String, Boolean> children,
+    BukkitPerm(final Class pluginClass, final String name, final String description, final Map<String, Boolean> children,
                        final PermDefault permDefault, final Map<String, Boolean> parents, final boolean baseName) {
-        super(plugin, name, description, children, permDefault, parents, baseName);
+        super(pluginClass, name, description, children, permDefault, parents, baseName);
         verify(getName());
     }
 

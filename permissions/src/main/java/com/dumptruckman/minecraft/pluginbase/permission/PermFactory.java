@@ -12,27 +12,55 @@ import java.util.Map;
  * Use this to create new Perm objects.
  *
  * This class will function without any initialization but should generally be registered with a Minecraft server
- * implementation specific implementation of itself via {@link #registerPermissionFactory(PermInfo, Class)}.
+ * implementation specific implementation of itself via {@link #registerPermissionFactory(Class)}.
  * This allows the PermFactory to create properly implemented permissions.
  */
 public abstract class PermFactory {
 
     private static Constructor<? extends PermFactory> factory;
     /** Represents the information for the plugin utilizing this PermFactory. */
-    protected static PermInfo permInfo;
+
+    static boolean hasFactory() {
+        return factory != null;
+    }
+
+    private static final Map<String, String> PERM_NAME_MAP = new HashMap<String, String>();
+
+    /**
+     * Registers a given base name to the given class.
+     *
+     * This affects what name is used as the top level namespace when using {@link #usePluginName()}
+     *
+     * @param pluginClass Your plugin class.
+     * @param permissionName The top level namespace for your plugin's permissions.
+     */
+    public static void registerPermissionName(final Class pluginClass, final String permissionName) {
+        PERM_NAME_MAP.put(pluginClass.getName(), permissionName);
+    }
+
+    static String getPermissionName(final Class pluginClass) {
+        return PERM_NAME_MAP.get(pluginClass.getName());
+    }
 
     /**
      * Creates a builder object for creating new {@link Perm}s.
      *
+     * @param pluginClass The Class for the Plugin declaring this permission.  This is used for setting top level
+     *                    permissions and a base permission name.
      * @param permName The name of the permission, generally without top level namespaces.
      * @return A new PermFactory object used for building a new {@link Perm}.
      */
-    public static PermFactory newPerm(final String permName) {
+    public static PermFactory newPerm(final Class pluginClass, final String permName) {
         if (factory == null) {
             throw new IllegalStateException("Must register a PermFactory class!");
         }
+        Perm.ensureParentPermsConfigured(pluginClass);
+        return newUncheckedPerm(pluginClass, permName);
+    }
+
+    static PermFactory newUncheckedPerm(final Class pluginClass, final String permName) {
         try {
-            factory.newInstance(permName);
+            factory.newInstance(pluginClass, permName);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -40,10 +68,10 @@ public abstract class PermFactory {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-        return new PermFactory(permName) {
+        return new PermFactory(pluginClass, permName) {
             @Override
             public Perm build() {
-                return new Perm(permInfo, this.name, this.description, this.children, this.permissionDefault,
+                return new Perm(pluginClass, this.name, this.description, this.children, this.permissionDefault,
                         this.parents, this.baseName) {
                     @Override
                     protected void verify(final String name) { }
@@ -56,21 +84,21 @@ public abstract class PermFactory {
      * Registers an implementation specific PermissionFactory.
      *
      * Call this before initializing any Perm objects!
-     * The given PermissionFactory class must have a constructor that accepts a single String object.
+     * The given PermissionFactory class must have a constructor that accepts only a Class object and String object,
+     * respectively.
      *
-     * @param permInfo Information for permissions specific to the plugin using this PermFactory.
      * @param clazz The implementation specific PermissionFactory class to use.
      */
-    public static void registerPermissionFactory(final PermInfo permInfo, final Class<? extends PermFactory> clazz) {
+    public static void registerPermissionFactory(final Class<? extends PermFactory> clazz) {
         try {
-            factory = clazz.getDeclaredConstructor(String.class);
+            factory = clazz.getDeclaredConstructor(Class.class, String.class);
             Perm.init();
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("PermFactory must have constructor accepting single string!");
         }
-        PermFactory.permInfo = permInfo;
     }
 
+    protected final Class pluginClass;
     /** The permission's name. */
     protected final String name;
     /** The permission's description. */
@@ -84,7 +112,14 @@ public abstract class PermFactory {
     /** Whether or not to use the plugin name as a top level namespace. */
     protected boolean baseName = false;
 
-    protected PermFactory(final String permName) {
+    protected PermFactory(final Class pluginClass, final String permName) {
+        if (pluginClass == null) {
+            throw new IllegalArgumentException("pluginClass may not be null!");
+        }
+        if (permName == null) {
+            throw new IllegalArgumentException("permName may not be null!");
+        }
+        this.pluginClass = pluginClass;
         this.name = permName;
     }
 
@@ -186,21 +221,21 @@ public abstract class PermFactory {
     }
 
     /**
-     * Adds this permission as a child to {@link Perm#ALL}.
+     * Adds this permission as a child to {@link Perm#getAllPerm(Class)}.
      *
      * @return this PermFactory for method chaining.
      */
     public PermFactory addToAll() {
-        return parent(Perm.ALL);
+        return parent(Perm.getAllPerm(pluginClass));
     }
 
     /**
-     * Adds this permission as a child to {@link Perm#ALL_CMD}.
+     * Adds this permission as a child to {@link Perm#getCommandPerm(Class)}.
      *
      * @return this PermFactory for method chaining.
      */
     public PermFactory commandPermission() {
-        return parent(Perm.ALL_CMD);
+        return parent(Perm.getCommandPerm(pluginClass));
     }
 
     /**
@@ -217,8 +252,12 @@ public abstract class PermFactory {
     }
 
     /**
-     * Calling this will cause the permission to be prefixed with a top level name space provided by the plugin that
-     * called {@link #registerPermissionFactory(PermInfo, Class)}.
+     * Calling this will cause the permission to be prefixed with a top level name space provided by the class object
+     * passed into the {@link #newPerm(Class, String)} method.
+     *
+     * The name is based on the name registered through {@link #registerPermissionName(Class, String)} or the
+     * static method 'String getPermissionName()' defined in the plugin class.  If neither of those methods result
+     * in a name, the simple class name will be used.
      *
      * @return this PermFactory for method chaining.
      */
