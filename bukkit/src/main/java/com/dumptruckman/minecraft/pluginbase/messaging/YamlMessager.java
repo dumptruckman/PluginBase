@@ -12,9 +12,9 @@ import java.util.List;
 /**
  * Implementation of a Messager and MessageProvider using YamlMessageProvider to implement the latter.
  */
-public class SimpleMessager extends YamlMessageProvider implements Messager, MessageProvider {
+public class YamlMessager extends YamlMessageProvider implements Messager, MessageProvider {
 
-    public SimpleMessager(PluginBase plugin) {
+    public YamlMessager(PluginBase plugin) {
         super(plugin);
     }
 
