@@ -11,17 +11,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.IllegalFormatException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementation of MessageProvider.
  */
-public class SimpleMessageProvider implements MessageProvider {
+public class YamlMessageProvider implements MessageProvider {
 
     private final HashMap<Message, List<String>> messages;
     private final PluginBase plugin;
@@ -30,7 +25,7 @@ public class SimpleMessageProvider implements MessageProvider {
     private String languageFileName = DEFAULT_LANGUAGE_FILE_NAME;
     private FileConfiguration language = null;
 
-    public SimpleMessageProvider(PluginBase plugin) {
+    public YamlMessageProvider(PluginBase plugin) {
         this.plugin = plugin;
         messages = new HashMap<Message, List<String>>();
     }

@@ -10,9 +10,9 @@ import org.bukkit.util.ChatPaginator;
 import java.util.List;
 
 /**
- * Implementation of a Messager and MessageProvider using SimpleMessageProvider to implement the latter.
+ * Implementation of a Messager and MessageProvider using YamlMessageProvider to implement the latter.
  */
-public class SimpleMessager extends SimpleMessageProvider implements Messager, MessageProvider {
+public class SimpleMessager extends YamlMessageProvider implements Messager, MessageProvider {
 
     public SimpleMessager(PluginBase plugin) {
         super(plugin);
