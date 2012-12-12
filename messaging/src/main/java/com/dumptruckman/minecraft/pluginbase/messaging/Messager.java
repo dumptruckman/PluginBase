@@ -10,6 +10,10 @@ import java.util.List;
  */
 public interface Messager extends MessageProvider {
 
+    Message SUCCESS = new Message("generic.success", "&a[SUCCESS]&f");
+
+    Message ERROR = new Message("generic.success", "&c[ERROR]&f");
+
     /**
      * Sends a message to the specified player with NO special prefix.
      *
@@ -42,6 +46,18 @@ public interface Messager extends MessageProvider {
      * @param messages Messages to send.
      */
     void message(MessageReceiver player, List<String> messages);
+
+    void messageSuccess(MessageReceiver sender, Message message, Object... args);
+
+    void messageSuccess(MessageReceiver sender, BundledMessage message);
+
+    void messageSuccess(MessageReceiver sender, String message);
+
+    void messageError(MessageReceiver sender, Message message, Object... args);
+
+    void messageError(MessageReceiver sender, BundledMessage message);
+
+    void messageError(MessageReceiver sender, String message);
 
     void messageAndLog(MessageReceiver sender, Message message, Object... args);
 }

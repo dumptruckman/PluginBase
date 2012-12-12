@@ -55,6 +55,36 @@ public class SimpleMessager extends SimpleMessageProvider implements Messager {
         }
     }
 
+    @Override
+    public void messageSuccess(MessageReceiver sender, Message message, Object... args) {
+        send(sender, getMessage(SUCCESS), message, args);
+    }
+
+    @Override
+    public void messageSuccess(MessageReceiver sender, BundledMessage message) {
+        send(sender, getMessage(SUCCESS), message.getMessage(), message.getArgs());
+    }
+
+    @Override
+    public void messageSuccess(MessageReceiver sender, String message) {
+        message(sender, getMessage(SUCCESS) + " " + message);
+    }
+
+    @Override
+    public void messageError(MessageReceiver sender, Message message, Object... args) {
+        send(sender, getMessage(ERROR), message, args);
+    }
+
+    @Override
+    public void messageError(MessageReceiver sender, BundledMessage message) {
+        send(sender, getMessage(ERROR), message.getMessage(), message.getArgs());
+    }
+
+    @Override
+    public void messageError(MessageReceiver sender, String message) {
+        message(sender, getMessage(ERROR) + " " + message);
+    }
+
     protected void sendMessages(@NotNull MessageReceiver player, @NotNull String[] messages) {
         for (String s : messages) {
             player.sendMessage(s);
