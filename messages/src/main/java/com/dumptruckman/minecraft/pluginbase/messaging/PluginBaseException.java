@@ -8,12 +8,12 @@ public class PluginBaseException extends Exception {
     private final BundledMessage languageMessage;
 
     public PluginBaseException(BundledMessage b) {
-        super(String.format(ChatColor.translateAlternateColorCodes('&', b.getMessage().getDefault().get(0)), b.getArgs()));
+        super(String.format(ChatColor.translateAlternateColorCodes('&', b.getMessage().getDefault()), b.getArgs()));
         this.languageMessage = b;
     }
 
     public PluginBaseException(BundledMessage b, Throwable throwable) {
-        super(String.format(ChatColor.translateAlternateColorCodes('&', b.getMessage().getDefault().get(0)), b.getArgs()), throwable);
+        super(String.format(ChatColor.translateAlternateColorCodes('&', b.getMessage().getDefault()), b.getArgs()), throwable);
         this.languageMessage = b;
     }
 

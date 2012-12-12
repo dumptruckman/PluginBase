@@ -21,6 +21,8 @@
  */
 package com.dumptruckman.minecraft.pluginbase.messaging;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -33,8 +35,10 @@ public interface MessageProvider {
     /**
      * The default locale.
      */
-    final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-    final String DEFAULT_LANGUAGE_FILE_NAME = "english.yml";
+    @NotNull
+    Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    @NotNull
+    String DEFAULT_LANGUAGE_FILE_NAME = "english.txt";
 
     /**
      * Returns a message (as {@link String}) for the specified key (as {@link Messages}).
@@ -43,7 +47,8 @@ public interface MessageProvider {
      * @param args Args for String.format()
      * @return The message
      */
-    String getMessage(Message key, Object... args);
+    @NotNull
+    String getMessage(@NotNull Message key, Object... args);
 
     /**
      * Returns a message (as {@link java.util.List}) of Strings for the specified key (as {@link Messages}).
@@ -52,13 +57,16 @@ public interface MessageProvider {
      * @param args Args for String.format()
      * @return The messages
      */
-    List<String> getMessages(Message key, Object... args);
+    @Deprecated
+    @NotNull
+    List<String> getMessages(@NotNull Message key, Object... args);
 
     /**
      * Returns the Locale this MessageProvider is currently using.
      *
      * @return The locale this MessageProvider is currently using.
      */
+    @NotNull
     Locale getLocale();
 
     /**
@@ -66,8 +74,13 @@ public interface MessageProvider {
      *
      * @param locale The new {@link java.util.Locale}.
      */
-    void setLocale(Locale locale);
-    
-    void setLanguage(String languageFileName);
+    void setLocale(@NotNull Locale locale);
+
+    @Deprecated
+    void setLanguage(@NotNull String languageFileName);
+
+    void loadLanguageFile(@NotNull String languageFileName);
+
+    void pruneLanguageFile();
 }
 

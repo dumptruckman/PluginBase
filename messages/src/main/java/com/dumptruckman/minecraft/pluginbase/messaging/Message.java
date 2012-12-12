@@ -3,9 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.messaging;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A localization key and its defaults.
@@ -15,7 +13,9 @@ import java.util.List;
  */
 public final class Message {
 
-    private final List<String> def;
+    @NotNull
+    private final String def;
+    @NotNull
     private final String key;
 
     /**
@@ -26,14 +26,11 @@ public final class Message {
      * generated.
      *
      * @param key The localization key for this message.
-     * @param def The main message line.  In some rare cases, this may be the only message used.
-     * @param extra Additional lines for the message.
+     * @param def The default message.
      */
-    public Message(final String key, final String def, final String... extra) {
+    public Message(@NotNull final String key, @NotNull final String def) {
         this.key = key;
-        this.def = new ArrayList<String>(extra.length + 1);
-        this.def.add(def);
-        this.def.addAll(Arrays.asList(extra));
+        this.def = def;
         Messages.registerMessage(this);
     }
 
@@ -42,7 +39,8 @@ public final class Message {
      *
      * @return The default non-localized messages.
      */
-    public List<String> getDefault() {
+    @NotNull
+    public String getDefault() {
         return def;
     }
 
@@ -51,6 +49,7 @@ public final class Message {
      *
      * @return The localization key for the message.
      */
+    @NotNull
     public String getKey() {
         return key;
     }

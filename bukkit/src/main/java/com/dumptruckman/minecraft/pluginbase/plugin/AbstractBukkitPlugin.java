@@ -13,8 +13,8 @@ import com.dumptruckman.minecraft.pluginbase.entity.BukkitCommandSender;
 import com.dumptruckman.minecraft.pluginbase.entity.BukkitPlayer;
 import com.dumptruckman.minecraft.pluginbase.exception.CommandUsageException;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.messaging.BukkitMessager;
 import com.dumptruckman.minecraft.pluginbase.messaging.Messager;
-import com.dumptruckman.minecraft.pluginbase.messaging.SimpleMessager;
 import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.BukkitCommandHandler;
@@ -107,6 +107,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     public final void onDisable() {
         // Call the method implementers should use in place of onDisable().
         onPluginDisable();
+        getMessager().pruneLanguageFile();
 
         // Shut down our logging.
         Logging.shutdown();
@@ -208,10 +209,10 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     }
 
     private void setupMessager() {
-        this.messager = new SimpleMessager(this);
+        this.messager = new BukkitMessager(getDataFolder());
         if (config() != null) {
             this.messager.setLocale(config().get(BaseConfig.LOCALE));
-            this.messager.setLanguage(config().get(BaseConfig.LANGUAGE_FILE));
+            this.messager.loadLanguageFile(config().get(BaseConfig.LANGUAGE_FILE));
         }
     }
 
@@ -230,6 +231,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      * Nulls the config object and reloads a new one.
      */
     public final void reloadConfig() {
+        getMessager().pruneLanguageFile();
         setupDB();
         setupConfig();
         setupMessager();

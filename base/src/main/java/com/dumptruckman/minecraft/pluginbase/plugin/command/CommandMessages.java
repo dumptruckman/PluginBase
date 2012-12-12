@@ -20,11 +20,11 @@ public class CommandMessages {
     // ConfirmCommand
     public final static Message CONFIRM_NAME = new Message("cmd.confirm.name", "Confirms a command that could destroy life, the universe and everything.");
     public final static Message CONFIRM_MESSAGE = new Message("cmd.confirm.confirm_message",
-            "The command &c%s&f has been halted due to the fact that it could break something!",
-            "If you still wish to execute &c%s&f");
+            "The command &c%s&f has been halted due to the fact that it could break something!"
+            + "\nIf you still wish to execute &c%s&f");
     public final static Message CONFIRM_MESSAGE_2 = new Message("cmd.confirm.confirm_message_2",
-            "please type: &a/%s",
-            "&a/%s&f will only be available for %s seconds.");
+            "please type: &a/%s"
+            + "\n&a/%s&f will only be available for %s seconds.");
     public final static Message QUEUED_EXPIRED = new Message("cmd.queued.expired",
             "This command has expired. Please type the original command again.");
     public final static Message QUEUED_NONE = new Message("cmd.queued.none",
@@ -43,10 +43,10 @@ public class CommandMessages {
 
     // ReloadCommand
     public final static Message VERSION_HELP = new Message("cmd.version.help",
-            "Displays version and other helpful information about the plugin.",
-            "Flags:",
-            "  -p will output an http://pastie.org url containing the information.",
-            "  -b will output an http://pastebin.com url containing the information.");
+            "Displays version and other helpful information about the plugin."
+            + "\nFlags:"
+            + "\n  -p will output an http://pastie.org url containing the information."
+            + "\n  -b will output an http://pastebin.com url containing the information.");
     public final static Message VERSION_PLAYER = new Message("cmd.version.player",
             "Version info dumped to console. Please check your server logs.");
     public final static Message VERSION_PLUGIN_VERSION = new Message("cmd.version.info.plugin_version", "%s Version: %s");
