@@ -14,7 +14,6 @@ import com.dumptruckman.minecraft.pluginbase.entity.BukkitPlayer;
 import com.dumptruckman.minecraft.pluginbase.exception.CommandUsageException;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messaging.BukkitMessager;
-import com.dumptruckman.minecraft.pluginbase.messaging.Messager;
 import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.BukkitCommandHandler;
@@ -51,7 +50,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     private ServerInterface serverInterface;
     private Properties config = null;
-    private Messager messager = null;
+    private BukkitMessager messager = null;
     private File serverFolder = null;
     private BukkitCommandHandler commandHandler = null;
     private SQLDatabase db = null;
@@ -315,7 +314,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     }
 
     @Override
-    public Messager getMessager() {
+    public BukkitMessager getMessager() {
         return this.messager;
     }
 
