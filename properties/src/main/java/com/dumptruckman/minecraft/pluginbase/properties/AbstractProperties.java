@@ -4,6 +4,7 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -11,11 +12,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Observable;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-public abstract class AbstractProperties extends Observable implements Properties {
+public abstract class AbstractProperties implements Properties {
 
     protected final Entries entries;
 
@@ -57,7 +57,6 @@ public abstract class AbstractProperties extends Observable implements Propertie
     }
 
     protected void changed(final ValueProperty property) {
-        setChanged();
         notifyObservers(property);
     }
 
@@ -98,6 +97,24 @@ public abstract class AbstractProperties extends Observable implements Propertie
                     } catch (NullPointerException ignore) { }
                 }
             }
+        }
+    }
+
+    private final CopyOnWriteArraySet<Observer> observers = new CopyOnWriteArraySet<Observer>();
+
+    @Override
+    public final boolean addObserver(@NotNull final Observer observer) {
+        return observers.add(observer);
+    }
+
+    @Override
+    public final boolean deleteObserver(@NotNull final Observer observer) {
+        return observers.remove(observer);
+    }
+
+    protected final void notifyObservers(@NotNull final ValueProperty property) {
+        for (final Observer observer : observers) {
+            observer.update(this, property);
         }
     }
 }

@@ -3,9 +3,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.Map;
-import java.util.Observer;
 
 public interface Properties {
 
@@ -35,5 +36,19 @@ public interface Properties {
 
     <T> boolean isValid(final ValueProperty<T> property, final T value);
 
-    void addObserver(Observer observer);
+    /**
+     * Adds an observer to this properties object.
+     *
+     * @param observer The observer that wishes to be notified of property changes in this object.
+     * @return True if the observer has not already been added.
+     */
+    boolean addObserver(@NotNull final Observer observer);
+
+    /**
+     * Removes an observer from this properties object.
+     *
+     * @param observer The observer that no longer wishes to be notified of property changes in this object.
+     * @return True if the observer existed and was removed.
+     */
+    boolean deleteObserver(@NotNull final Observer observer);
 }
