@@ -33,11 +33,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.logging.Level;
 
 /**
@@ -372,17 +375,29 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     }
 
     @Override
-    public BasePlayer wrapPlayer(Player player) {
-        return new BukkitPlayer(player);
+    public BasePlayer wrapPlayer(@NotNull final Player player) {
+        BasePlayer basePlayer = this.basePlayerMap.get(player);
+        if (basePlayer == null) {
+            basePlayer = new BukkitPlayer(player);
+            this.basePlayerMap.put(player, basePlayer);
+        }
+        return basePlayer;
     }
 
     @Override
-    public BasePlayer wrapSender(CommandSender sender) {
+    public BasePlayer wrapSender(@NotNull final CommandSender sender) {
         if (sender instanceof Player) {
             return wrapPlayer((Player) sender);
         }
-        return new BukkitCommandSender(sender);
+        BasePlayer basePlayer = this.basePlayerMap.get(sender);
+        if (basePlayer == null) {
+            basePlayer = new BukkitCommandSender(sender);
+            this.basePlayerMap.put(sender, basePlayer);
+        }
+        return basePlayer;
     }
+
+    private final Map<CommandSender, BasePlayer> basePlayerMap = new WeakHashMap<CommandSender, BasePlayer>();
 
     @Override
     public PluginInfo getPluginInfo() {
