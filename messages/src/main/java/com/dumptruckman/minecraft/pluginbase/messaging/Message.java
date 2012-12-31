@@ -4,6 +4,7 @@
 package com.dumptruckman.minecraft.pluginbase.messaging;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A localization key and its defaults.
@@ -15,7 +16,7 @@ public final class Message {
 
     @NotNull
     private final String def;
-    @NotNull
+    @Nullable
     private final String key;
 
     /**
@@ -30,6 +31,12 @@ public final class Message {
      */
     public Message(@NotNull final String key, @NotNull final String def) {
         this.key = key;
+        this.def = def;
+        Messages.registerMessage(this);
+    }
+
+    Message(@NotNull final String def) {
+        this.key = null;
         this.def = def;
         Messages.registerMessage(this);
     }
@@ -49,7 +56,7 @@ public final class Message {
      *
      * @return The localization key for the message.
      */
-    @NotNull
+    @Nullable
     public String getKey() {
         return key;
     }

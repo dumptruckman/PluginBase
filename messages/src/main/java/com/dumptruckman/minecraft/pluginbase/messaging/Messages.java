@@ -17,7 +17,7 @@ public class Messages {
 
     // BEGIN CHECKSTYLE-SUPPRESSION: Javadoc
     @NotNull
-    public final static Message BLANK = new Message(null, "");
+    public final static Message BLANK = new Message("");
     // END CHECKSTYLE-SUPPRESSION: Javadoc
 
     static void registerMessage(@NotNull Message message) {
