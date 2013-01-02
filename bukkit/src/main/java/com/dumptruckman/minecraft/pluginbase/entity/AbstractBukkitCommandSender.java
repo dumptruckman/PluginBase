@@ -1,6 +1,9 @@
 package com.dumptruckman.minecraft.pluginbase.entity;
 
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.minecraft.location.EntityCoordinates;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractBukkitCommandSender<S extends CommandSender> extends BasePlayer {
 
@@ -23,5 +26,10 @@ public abstract class AbstractBukkitCommandSender<S extends CommandSender> exten
     @Override
     public void sendMessage(String message) {
         sender.sendMessage(message);
+    }
+
+    @Override
+    public void teleport(@NotNull final EntityCoordinates location) {
+        Logging.finer("Cannot teleport %s", sender);
     }
 }
