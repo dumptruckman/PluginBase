@@ -9,8 +9,6 @@ import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.database.SQLite;
 import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
-import com.dumptruckman.minecraft.pluginbase.entity.BukkitCommandSender;
-import com.dumptruckman.minecraft.pluginbase.entity.BukkitPlayer;
 import com.dumptruckman.minecraft.pluginbase.exception.CommandUsageException;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messaging.BukkitMessager;
@@ -28,6 +26,7 @@ import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
 import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
 import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
+import com.dumptruckman.minecraft.pluginbase.util.BukkitTools;
 import com.sk89q.minecraft.util.commands.CommandException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -39,8 +38,6 @@ import org.mcstats.Metrics;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.logging.Level;
 
 /**
@@ -376,28 +373,15 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     @Override
     public BasePlayer wrapPlayer(@NotNull final Player player) {
-        BasePlayer basePlayer = this.basePlayerMap.get(player);
-        if (basePlayer == null) {
-            basePlayer = new BukkitPlayer(player);
-            this.basePlayerMap.put(player, basePlayer);
-        }
-        return basePlayer;
+        return BukkitTools.wrapPlayer(player);
     }
 
     @Override
     public BasePlayer wrapSender(@NotNull final CommandSender sender) {
-        if (sender instanceof Player) {
-            return wrapPlayer((Player) sender);
-        }
-        BasePlayer basePlayer = this.basePlayerMap.get(sender);
-        if (basePlayer == null) {
-            basePlayer = new BukkitCommandSender(sender);
-            this.basePlayerMap.put(sender, basePlayer);
-        }
-        return basePlayer;
+        return BukkitTools.wrapSender(sender);
     }
 
-    private final Map<CommandSender, BasePlayer> basePlayerMap = new WeakHashMap<CommandSender, BasePlayer>();
+
 
     @Override
     public PluginInfo getPluginInfo() {
