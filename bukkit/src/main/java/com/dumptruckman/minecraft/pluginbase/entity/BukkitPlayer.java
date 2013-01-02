@@ -21,13 +21,13 @@ public class BukkitPlayer extends AbstractBukkitCommandSender<Player> implements
     }
 
     @Override
-    public void teleport(@NotNull final EntityCoordinates location) {
+    public boolean teleport(@NotNull final EntityCoordinates location) {
         final World world = Bukkit.getWorld(location.getWorld());
         if (world == null) {
             Logging.finer("Could not teleport '%s' to target location '%s'.  The target world is not loaded.", getName(), location);
-            return;
+            return false;
         }
         final Location l = new Location(world, location.getX(), location.getY(), location.getZ());
-        sender.teleport(l);
+        return sender.teleport(l);
     }
 }
