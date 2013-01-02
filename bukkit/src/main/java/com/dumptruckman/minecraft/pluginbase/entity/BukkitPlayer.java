@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.entity;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.minecraft.Entity;
 import com.dumptruckman.minecraft.pluginbase.minecraft.location.EntityCoordinates;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -8,7 +9,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class BukkitPlayer extends AbstractBukkitCommandSender<Player> {
+public class BukkitPlayer extends AbstractBukkitCommandSender<Player> implements Entity {
 
     public BukkitPlayer(Player player) {
         super(player);

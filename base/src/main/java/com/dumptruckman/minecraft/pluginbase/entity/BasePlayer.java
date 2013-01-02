@@ -4,10 +4,8 @@
 package com.dumptruckman.minecraft.pluginbase.entity;
 
 import com.dumptruckman.minecraft.pluginbase.messaging.MessageReceiver;
-import com.dumptruckman.minecraft.pluginbase.minecraft.location.EntityCoordinates;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.Permissible;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class BasePlayer implements MessageReceiver, Permissible {
 
@@ -16,8 +14,6 @@ public abstract class BasePlayer implements MessageReceiver, Permissible {
     public abstract boolean hasPermission(String perm);
 
     public abstract void sendMessage(String message);
-
-    public abstract void teleport(@NotNull final EntityCoordinates location);
 
     @Override
     public boolean equals(final Object other) {
