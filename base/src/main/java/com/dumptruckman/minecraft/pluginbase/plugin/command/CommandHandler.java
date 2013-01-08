@@ -118,17 +118,19 @@ public abstract class CommandHandler<P extends PluginBase> {
 
     protected abstract boolean register(com.sk89q.bukkit.util.CommandInfo command);
 
-    protected Command loadCommand(final Class clazz) {
+    protected Command loadCommand(final Class<? extends Command> clazz) {
         try {
-            Constructor<Command> constructor = clazz.getDeclaredConstructor(PluginBase.class);
-            constructor.setAccessible(true);
-            try {
-                return constructor.newInstance(plugin);
-            } finally {
-                constructor.setAccessible(false);
+            for (final Constructor constructor : clazz.getDeclaredConstructors()) {
+                if (constructor.getParameterTypes().length == 1
+                        && PluginBase.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
+                    constructor.setAccessible(true);
+                    try {
+                        return (Command) constructor.newInstance(plugin);
+                    } finally {
+                        constructor.setAccessible(false);
+                    }
+                }
             }
-        } catch (final NoSuchMethodException e) {
-            e.printStackTrace();
         } catch (final IllegalAccessException e) {
             e.printStackTrace();
         } catch (final InstantiationException e) {
