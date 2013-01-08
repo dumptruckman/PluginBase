@@ -19,6 +19,7 @@ import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteServiceFactory;
 import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteServiceType;
 import com.dumptruckman.minecraft.pluginbase.util.webpaste.URLShortener;
 import com.sk89q.minecraft.util.commands.CommandContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -41,8 +42,12 @@ public class VersionCommand extends BuiltInCommand {
 
     private static final List<String> staticKeys = new ArrayList<String>();
 
-    public static void addStaticAlias(String key) {
+    public static void addStaticAlias(@NotNull final String key) {
         staticKeys.add(key);
+    }
+
+    protected VersionCommand(@NotNull final PluginBase plugin) {
+        super(plugin);
     }
 
     @Override
@@ -61,20 +66,20 @@ public class VersionCommand extends BuiltInCommand {
     }
 
     @Override
-    public boolean runCommand(final PluginBase p, final BasePlayer sender, final CommandContext context) {
+    public boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         // Check if the command was sent from a Player.
         if (sender.isPlayer()) {
-            p.getMessager().message(sender, CommandMessages.VERSION_PLAYER);
+            getMessager().message(sender, CommandMessages.VERSION_PLAYER);
         }
 
         final List<String> buffer = new LinkedList<String>();
-        buffer.add(p.getMessager().getMessage(CommandMessages.VERSION_PLUGIN_VERSION, p.getPluginInfo().getName(), p.getPluginInfo().getVersion()));
-        buffer.add(p.getMessager().getMessage(CommandMessages.VERSION_SERVER_NAME, p.getServerInterface().getName()));
-        buffer.add(p.getMessager().getMessage(CommandMessages.VERSION_SERVER_VERSION, p.getServerInterface().getVersion()));
-        buffer.add(p.getMessager().getMessage(CommandMessages.VERSION_LANG_FILE, p.config().get(BaseConfig.LANGUAGE_FILE)));
-        buffer.add(p.getMessager().getMessage(CommandMessages.VERSION_DEBUG_MODE, p.config().get(BaseConfig.DEBUG_MODE)));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_PLUGIN_VERSION, getPlugin().getPluginInfo().getName(), getPlugin().getPluginInfo().getVersion()));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_SERVER_NAME, getPlugin().getServerInterface().getName()));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_SERVER_VERSION, getPlugin().getServerInterface().getVersion()));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_LANG_FILE, getPlugin().config().get(BaseConfig.LANGUAGE_FILE)));
+        buffer.add(getMessager().getMessage(CommandMessages.VERSION_DEBUG_MODE, getPlugin().config().get(BaseConfig.DEBUG_MODE)));
 
-        List<String> versionInfoDump = p.dumpVersionInfo();
+        List<String> versionInfoDump = getPlugin().dumpVersionInfo();
         if (versionInfoDump != null) {
             buffer.addAll(versionInfoDump);
         }
@@ -86,7 +91,7 @@ public class VersionCommand extends BuiltInCommand {
 
         final Set<Character> flags = context.getFlags();
         if (!flags.isEmpty()) {
-            p.getServerInterface().scheduleAsyncDelayedTask(p, new Runnable() {
+            getPlugin().getServerInterface().scheduleAsyncDelayedTask(getPlugin(), new Runnable() {
                 @Override
                 public void run() {
                     for (Character flag : flags) {
@@ -98,10 +103,10 @@ public class VersionCommand extends BuiltInCommand {
                         } else {
                             continue;
                         }
-                        p.getServerInterface().scheduleSyncDelayedTask(p, new Runnable() {
+                        getPlugin().getServerInterface().scheduleSyncDelayedTask(getPlugin(), new Runnable() {
                             @Override
                             public void run() {
-                                p.getMessager().message(sender, CommandMessages.VERSION_INFO_DUMPED, pasteUrl);
+                                getMessager().message(sender, CommandMessages.VERSION_INFO_DUMPED, pasteUrl);
                             }
                         });
                     }

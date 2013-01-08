@@ -13,6 +13,7 @@ import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandPerms;
 import com.sk89q.minecraft.util.commands.CommandContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,10 @@ public class DebugCommand extends BuiltInCommand {
         staticKeys.add(key);
     }
 
+    protected DebugCommand(@NotNull final PluginBase plugin) {
+        super(plugin);
+    }
+
     @Override
     public List<String> getStaticAliases() {
         return staticKeys;
@@ -50,7 +55,7 @@ public class DebugCommand extends BuiltInCommand {
     }
 
     @Override
-    public boolean runCommand(PluginBase p, BasePlayer sender, CommandContext context) {
+    public boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         if (context.argsLength() == 1) {
             int debugLevel = -1;
             try {
@@ -61,14 +66,14 @@ public class DebugCommand extends BuiltInCommand {
                 }
             }
             if (debugLevel > 3 || debugLevel < 0) {
-                p.getMessager().message(sender, CommandMessages.INVALID_DEBUG);
+                getMessager().message(sender, CommandMessages.INVALID_DEBUG);
             } else {
-                p.config().set(BaseConfig.DEBUG_MODE, debugLevel);
-                Logging.setDebugLevel(p.config().get(BaseConfig.DEBUG_MODE));
-                p.config().flush();
+                getPlugin().config().set(BaseConfig.DEBUG_MODE, debugLevel);
+                Logging.setDebugLevel(getPlugin().config().get(BaseConfig.DEBUG_MODE));
+                getPlugin().config().flush();
             }
         }
-        displayDebugMode(p, sender);
+        displayDebugMode(getPlugin(), sender);
         return true;
     }
 

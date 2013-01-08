@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandPerms;
 import com.sk89q.minecraft.util.commands.CommandContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,10 @@ public class ReloadCommand extends BuiltInCommand {
         staticKeys.add(key);
     }
 
+    protected ReloadCommand(@NotNull final PluginBase plugin) {
+        super(plugin);
+    }
+
     @Override
     public List<String> getStaticAliases() {
         return staticKeys;
@@ -47,9 +52,9 @@ public class ReloadCommand extends BuiltInCommand {
     }
 
     @Override
-    public boolean runCommand(PluginBase p, BasePlayer sender, CommandContext context) {
-        p.reloadConfig();
-        p.getMessager().message(sender, CommandMessages.RELOAD_COMPLETE);
+    public boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
+        getPlugin().reloadConfig();
+        getMessager().message(sender, CommandMessages.RELOAD_COMPLETE);
         return true;
     }
 }

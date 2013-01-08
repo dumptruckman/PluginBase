@@ -7,7 +7,10 @@ import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.BuiltInCommand;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
+import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -17,21 +20,23 @@ import java.util.Set;
 
 public abstract class CommandHandler<P extends PluginBase> {
 
+    @NotNull
     protected final P plugin;
-    protected final Map<String, String> commandMap;
-
+    @NotNull
+    protected final Map<String, Command> commandMap;
+    @NotNull
     private final Map<String, CommandKey> commandKeys = new HashMap<String, CommandKey>();
 
-    public CommandHandler(P plugin) {
+    public CommandHandler(@NotNull final P plugin) {
         this.plugin = plugin;
-        this.commandMap = new HashMap<String, String>();
+        this.commandMap = new HashMap<String, Command>();
     }
 
     //public boolean registerCommmands(String packageName) {
 
     //}
 
-    public boolean registerCommand(Class<? extends Command> commandClass) {
+    public boolean registerCommand(@NotNull final Class<? extends Command> commandClass) {
         final CommandInfo cmdInfo = commandClass.getAnnotation(CommandInfo.class);
         if (cmdInfo == null) {
             throw new IllegalArgumentException("Command must be annotated with @CommandInfo");
@@ -104,7 +109,7 @@ public abstract class CommandHandler<P extends PluginBase> {
                     key = key.newKey(split[i], (i == split.length - 1));
                 }
             }
-            commandMap.put(aliases.get(0), commandClass.getName());
+            commandMap.put(aliases.get(0), command);
             return true;
         }
         Logging.severe("Failed to register: " + commandClass);
@@ -115,70 +120,69 @@ public abstract class CommandHandler<P extends PluginBase> {
 
     protected Command loadCommand(final Class clazz) {
         try {
-            return (Command) clazz.newInstance();
-        } catch (IllegalAccessException e) {
+            Constructor<Command> constructor = clazz.getDeclaredConstructor(PluginBase.class);
+            constructor.setAccessible(true);
+            try {
+                return constructor.newInstance(plugin);
+            } finally {
+                constructor.setAccessible(false);
+            }
+        } catch (final NoSuchMethodException e) {
             e.printStackTrace();
-        } catch (InstantiationException e) {
+        } catch (final IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (final InstantiationException e) {
+            e.printStackTrace();
+        } catch (final InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public boolean locateAndRunCommand(BasePlayer player, String[] args) throws CommandException {
+    public boolean locateAndRunCommand(@NotNull final BasePlayer player, @NotNull String[] args) throws CommandException {
         args = commandDetection(args);
-        final String className = commandMap.get(args[0]);
-        if (className == null) {
+        final Command command = commandMap.get(args[0]);
+        if (command == null) {
             Logging.severe("Could not locate registered command '" + args[0] + "'");
             return false;
         }
-        try {
-            final Class<Command> commandClass = (Class<Command>) Class.forName(className);
-            final Command command = loadCommand(commandClass);
-            if (command == null) {
-                Logging.severe("Could not load command for class: " + commandClass);
-                return false;
-            }
-            final CommandInfo cmdInfo = commandClass.getAnnotation(CommandInfo.class);
-            if (cmdInfo == null) {
-                Logging.severe("Missing CommandInfo for command: " + args[0]);
-                return false;
-            }
-            final Set<Character> valueFlags = new HashSet<Character>();
-
-            char[] flags = cmdInfo.flags().toCharArray();
-            final Set<Character> newFlags = new HashSet<Character>();
-            for (int i = 0; i < flags.length; ++i) {
-                if (flags.length > i + 1 && flags[i + 1] == ':') {
-                    valueFlags.add(flags[i]);
-                    ++i;
-                }
-                newFlags.add(flags[i]);
-            }
-            final CommandContext context = new CommandContext(args, valueFlags);
-            if (context.argsLength() < cmdInfo.min()) {
-                throw new CommandUsageException("Too few arguments.", getUsage(args, 0, command, cmdInfo));
-            }
-            if (cmdInfo.max() != -1 && context.argsLength() > cmdInfo.max()) {
-                throw new CommandUsageException("Too many arguments.", getUsage(args, 0, command, cmdInfo));
-            }
-            if (!cmdInfo.anyFlags()) {
-                for (char flag : context.getFlags()) {
-                    if (!newFlags.contains(flag)) {
-                        throw new CommandUsageException("Unknown flag: " + flag, getUsage(args, 0, command, cmdInfo));
-                    }
-                }
-            }
-            if (!command.runCommand(plugin, player, context)) {
-                throw new CommandUsageException("Usage error..", getUsage(args, 0, command, cmdInfo));
-            }
-            return true;
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        final CommandInfo cmdInfo = command.getClass().getAnnotation(CommandInfo.class);
+        if (cmdInfo == null) {
+            Logging.severe("Missing CommandInfo for command: " + args[0]);
+            return false;
         }
-        return false;
+        final Set<Character> valueFlags = new HashSet<Character>();
+
+        char[] flags = cmdInfo.flags().toCharArray();
+        final Set<Character> newFlags = new HashSet<Character>();
+        for (int i = 0; i < flags.length; ++i) {
+            if (flags.length > i + 1 && flags[i + 1] == ':') {
+                valueFlags.add(flags[i]);
+                ++i;
+            }
+            newFlags.add(flags[i]);
+        }
+        final CommandContext context = new CommandContext(args, valueFlags);
+        if (context.argsLength() < cmdInfo.min()) {
+            throw new CommandUsageException("Too few arguments.", getUsage(args, 0, command, cmdInfo));
+        }
+        if (cmdInfo.max() != -1 && context.argsLength() > cmdInfo.max()) {
+            throw new CommandUsageException("Too many arguments.", getUsage(args, 0, command, cmdInfo));
+        }
+        if (!cmdInfo.anyFlags()) {
+            for (char flag : context.getFlags()) {
+                if (!newFlags.contains(flag)) {
+                    throw new CommandUsageException("Unknown flag: " + flag, getUsage(args, 0, command, cmdInfo));
+                }
+            }
+        }
+        if (!command.runCommand(player, context)) {
+            throw new CommandUsageException("Usage error..", getUsage(args, 0, command, cmdInfo));
+        }
+        return true;
     }
 
-    protected List<String> getUsage(final String[] args, final int level, final Command cmd, final CommandInfo cmdInfo) {
+    protected List<String> getUsage(@NotNull final String[] args, final int level, final Command cmd, @NotNull final CommandInfo cmdInfo) {
         final List<String> commandUsage = new ArrayList<String>();
         final StringBuilder command = new StringBuilder();
         command.append('/');
@@ -189,15 +193,15 @@ public abstract class CommandHandler<P extends PluginBase> {
         command.append(getArguments(cmdInfo));
         commandUsage.add(command.toString());
 
-        final List<String> help = plugin.getMessager().getMessages(cmd.getHelp());
-        if (help.size() > 0) {
-            commandUsage.addAll(help);
+        final String help = plugin.getMessager().getMessage(cmd.getHelp());
+        if (!help.isEmpty()) {
+            commandUsage.add(help);
         }
 
         return commandUsage;
     }
 
-    protected CharSequence getArguments(final CommandInfo cmdInfo) {
+    protected CharSequence getArguments(@NotNull final CommandInfo cmdInfo) {
         final String flags = cmdInfo.flags();
 
         final StringBuilder command2 = new StringBuilder();
@@ -217,7 +221,7 @@ public abstract class CommandHandler<P extends PluginBase> {
         return command2;
     }
 
-    public String[] commandDetection(String[] split) {
+    public String[] commandDetection(@NotNull final String[] split) {
         CommandKey commandKey = getKey(split[0]);
         CommandKey lastActualCommand = null;
         if (commandKey == null) {
@@ -250,11 +254,11 @@ public abstract class CommandHandler<P extends PluginBase> {
         return split;
     }
 
-    protected CommandKey getKey(final String key) {
+    protected CommandKey getKey(@NotNull final String key) {
         return commandKeys.get(key);
     }
 
-    protected CommandKey newKey(final String key, final boolean command) {
+    protected CommandKey newKey(@NotNull final String key, final boolean command) {
         if (commandKeys.containsKey(key)) {
             if (command) {
                 commandKeys.put(key, new CommandKey(commandKeys.get(key)));

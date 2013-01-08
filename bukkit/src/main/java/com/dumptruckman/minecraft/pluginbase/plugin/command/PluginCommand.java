@@ -5,14 +5,15 @@ package com.dumptruckman.minecraft.pluginbase.plugin.command;
 
 import com.dumptruckman.minecraft.pluginbase.messaging.Messager;
 import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A generic Multiverse-command.
  */
 public abstract class PluginCommand<P extends BukkitPlugin> extends Command<P> {
 
-    public PluginCommand(P plugin) {
-        //super(plugin);
+    public PluginCommand(@NotNull final P plugin) {
+        super(plugin);
     }
 
     /**
