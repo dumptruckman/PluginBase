@@ -29,6 +29,8 @@
         <module>permissions-bukkit</module>
         <module>properties</module>
         <module>properties-bukkit</module>
+        <module>minecraftlink</module>
+        <module>commands</module>
         <module>base</module>
         <module>bukkit</module>
         <module>testbukkitplugin</module>

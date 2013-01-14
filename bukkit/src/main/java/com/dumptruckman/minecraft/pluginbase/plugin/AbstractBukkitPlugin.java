@@ -3,25 +3,25 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
+import com.dumptruckman.minecraft.pluginbase.command.BukkitCommandHandler;
+import com.dumptruckman.minecraft.pluginbase.command.Command;
+import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
+import com.dumptruckman.minecraft.pluginbase.command.CommandUsageException;
+import com.dumptruckman.minecraft.pluginbase.command.builtin.CommandMessages;
+import com.dumptruckman.minecraft.pluginbase.command.builtin.DebugCommand;
+import com.dumptruckman.minecraft.pluginbase.command.builtin.InfoCommand;
+import com.dumptruckman.minecraft.pluginbase.command.builtin.ReloadCommand;
+import com.dumptruckman.minecraft.pluginbase.command.builtin.VersionCommand;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.config.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.database.SQLite;
-import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
-import com.dumptruckman.minecraft.pluginbase.exception.CommandUsageException;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messaging.BukkitMessager;
+import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.BukkitCommandHandler;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.Command;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandInfo;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.InfoCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionCommand;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
 import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
@@ -64,7 +64,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     static {
         // Statically initializes the members of the command language class.
-        CommandMessages.init();
+        CommandMessages.class.getName();
     }
 
     /**

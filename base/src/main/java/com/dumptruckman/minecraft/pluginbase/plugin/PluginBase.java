@@ -3,10 +3,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
+import com.dumptruckman.minecraft.pluginbase.command.CommandHandler;
+import com.dumptruckman.minecraft.pluginbase.command.CommandProvider;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.logging.LoggablePlugin;
 import com.dumptruckman.minecraft.pluginbase.messaging.Messager;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandHandler;
+import com.dumptruckman.minecraft.pluginbase.messaging.Messaging;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
 import org.mcstats.Metrics;
@@ -14,7 +16,7 @@ import org.mcstats.Metrics;
 import java.io.File;
 import java.util.List;
 
-public interface PluginBase extends LoggablePlugin {
+public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
 
     /**
      * @return the Properties object which contains settings for this plugin.

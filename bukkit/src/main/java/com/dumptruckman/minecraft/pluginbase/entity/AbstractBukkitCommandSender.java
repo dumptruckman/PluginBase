@@ -1,5 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.entity;
 
+import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import org.bukkit.command.CommandSender;
 
 public abstract class AbstractBukkitCommandSender<S extends CommandSender> extends BasePlayer {

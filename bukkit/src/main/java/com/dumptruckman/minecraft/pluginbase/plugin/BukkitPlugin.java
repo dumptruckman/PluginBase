@@ -3,9 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
-import com.dumptruckman.minecraft.pluginbase.entity.BasePlayer;
+import com.dumptruckman.minecraft.pluginbase.command.BukkitCommandHandler;
 import com.dumptruckman.minecraft.pluginbase.messaging.BukkitMessager;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.BukkitCommandHandler;
+import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
