@@ -42,7 +42,7 @@ public final class Duration {
      * @return a new Duration based on the given number of seconds.
      */
     public static Duration fromSeconds(final long duration) {
-        return new Duration(duration);
+        return new Duration(duration * 1000);
     }
 
     private final long duration;
