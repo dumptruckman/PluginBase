@@ -285,7 +285,7 @@ public class TestInstanceCreator {
             serverfield.setAccessible(true);
             serverfield.set(plugin, mockServer);
 
-            when(plugin.getServerInterface()).thenReturn(spy(new BukkitServerInterface(mockServer)));
+            when(plugin.getServerInterface()).thenReturn(new BukkitServerInterface(mockServer));
 
             /*
             // Set worldManager

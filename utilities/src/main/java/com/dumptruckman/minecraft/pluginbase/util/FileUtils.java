@@ -7,9 +7,11 @@
 
 package com.dumptruckman.minecraft.pluginbase.util;
 
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * File-utilities.
@@ -31,15 +33,23 @@ public class FileUtils {
             boolean result = true;
             // If the file exists, and it has more than one file in it.
             if (file.isDirectory()) {
-                for (final File f : file.listFiles()) {
+                final File[] files = file.listFiles();
+                if (files == null) {
+                    Logging.finest("Error while retrieving file list for: %s", file);
+                    return false;
+                }
+                for (final File f : files) {
                     result = result && deleteFolder(f);
-                    if (!FileUtils.deleteFolder(f)) {
-                        return false;
-                    }
                 }
             }
-            return result && file.delete();
+            if (file.delete()) {
+                return result;
+            } else {
+                Logging.finest("Could not delete file: %s", file);
+                return false;
+            }
         } else {
+            Logging.finest("Oops, this file doesn't exist: %s", file);
             return false;
         }
     }
@@ -55,7 +65,12 @@ public class FileUtils {
             boolean result = true;
             // If the file exists, and it has more than one file in it.
             if (file.isDirectory()) {
-                for (final File f : file.listFiles()) {
+                final File[] files = file.listFiles();
+                if (files == null) {
+                    Logging.finest("Error while retrieving file list for: %s", file);
+                    return false;
+                }
+                for (final File f : files) {
                     result = result && deleteFolder(f);
                 }
             }
