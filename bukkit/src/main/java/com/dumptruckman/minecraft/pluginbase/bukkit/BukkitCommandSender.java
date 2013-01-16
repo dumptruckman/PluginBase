@@ -1,4 +1,4 @@
-package com.dumptruckman.minecraft.pluginbase.entity;
+package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import org.bukkit.command.CommandSender;
 

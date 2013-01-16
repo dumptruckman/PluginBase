@@ -1,4 +1,4 @@
-package com.dumptruckman.minecraft.pluginbase.entity;
+package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.minecraft.Entity;
