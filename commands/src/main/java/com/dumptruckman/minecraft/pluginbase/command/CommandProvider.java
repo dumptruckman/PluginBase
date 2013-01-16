@@ -1,8 +1,12 @@
 package com.dumptruckman.minecraft.pluginbase.command;
 
-public interface CommandProvider {
+import org.jetbrains.annotations.NotNull;
 
+public interface CommandProvider extends QueuedCommandProvider {
+
+    @NotNull
     String getCommandPrefix();
 
+    @NotNull
     CommandHandler getCommandHandler();
 }

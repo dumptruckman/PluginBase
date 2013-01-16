@@ -36,6 +36,9 @@ public class CommandMessages {
     public final static Message INVALID_DEBUG = new Message("debug.invalid",
             "&fInvalid debug level.  Please use number 0-3.  &b(3 being many many messages!)");
 
+    // Confirm Command
+    public final static Message CONFIRM_HELP = new Message("cmd.confirm.help", "Confirms the usage of a previously entered command, if required.");
+
     // InfoCommand
     public final static Message INFO_HELP = new Message("cmd.info.help", "Gives some basic information about this plugin.");
 

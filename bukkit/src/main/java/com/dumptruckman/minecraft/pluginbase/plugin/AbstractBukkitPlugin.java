@@ -7,7 +7,9 @@ import com.dumptruckman.minecraft.pluginbase.command.BukkitCommandHandler;
 import com.dumptruckman.minecraft.pluginbase.command.Command;
 import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.command.CommandUsageException;
+import com.dumptruckman.minecraft.pluginbase.command.QueuedCommand;
 import com.dumptruckman.minecraft.pluginbase.command.builtin.CommandMessages;
+import com.dumptruckman.minecraft.pluginbase.command.builtin.ConfirmCommand;
 import com.dumptruckman.minecraft.pluginbase.command.builtin.DebugCommand;
 import com.dumptruckman.minecraft.pluginbase.command.builtin.InfoCommand;
 import com.dumptruckman.minecraft.pluginbase.command.builtin.ReloadCommand;
@@ -20,12 +22,12 @@ import com.dumptruckman.minecraft.pluginbase.database.SQLite;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messaging.BukkitMessager;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
+import com.dumptruckman.minecraft.pluginbase.minecraft.server.BukkitServerInterface;
+import com.dumptruckman.minecraft.pluginbase.minecraft.server.ServerInterface;
 import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
-import com.dumptruckman.minecraft.pluginbase.server.BukkitServerInterface;
-import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
 import com.dumptruckman.minecraft.pluginbase.util.BukkitTools;
 import com.sk89q.minecraft.util.commands.CommandException;
 import org.bukkit.Bukkit;
@@ -48,7 +50,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     private final BukkitPluginInfo pluginInfo = new BukkitPluginInfo(this);
 
-    private ServerInterface serverInterface;
+    private ServerInterface<BukkitPlugin> serverInterface;
     private Properties config = null;
     private BukkitMessager messager = null;
     private File serverFolder = null;
@@ -262,8 +264,10 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         }
         registerCommand(ReloadCommand.class);
         registerCommand(VersionCommand.class);
+        if (useQueuedCommands()) {
+            registerCommand(ConfirmCommand.class);
+        }
         //getCommandHandler().registerCommand(new HelpCommand<AbstractBukkitPlugin>(this));
-        //getCommandHandler().registerCommand(new ConfirmCommand<AbstractBukkitPlugin>(this));
         registerCommands();
     }
 
@@ -348,6 +352,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         return sqlConfig;
     }
 
+    @NotNull
     @Override
     public abstract String getCommandPrefix();
 
@@ -381,15 +386,25 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         return BukkitTools.wrapSender(sender);
     }
 
-
-
+    @NotNull
     @Override
     public PluginInfo getPluginInfo() {
         return pluginInfo;
     }
 
+    @NotNull
     @Override
-    public ServerInterface getServerInterface() {
+    public ServerInterface<BukkitPlugin> getServerInterface() {
         return serverInterface;
+    }
+
+    @Override
+    public void scheduleQueuedCommandExpiration(@NotNull final QueuedCommand queuedCommand) {
+        getServerInterface().runTaskTimer(this, queuedCommand, 0L, queuedCommand.getExpirationDuration());
+    }
+
+    @Override
+    public boolean useQueuedCommands() {
+        return true;
     }
 }

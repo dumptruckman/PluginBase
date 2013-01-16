@@ -121,6 +121,13 @@ and adjust the build number accordingly -->
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
+            <artifactId>Utilities</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft</groupId>
             <artifactId>Messaging</artifactId>
             <version>${project.version}</version>
             <type>jar</type>

@@ -10,7 +10,7 @@ import com.dumptruckman.minecraft.pluginbase.logging.LoggablePlugin;
 import com.dumptruckman.minecraft.pluginbase.messaging.Messager;
 import com.dumptruckman.minecraft.pluginbase.messaging.Messaging;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
-import com.dumptruckman.minecraft.pluginbase.server.ServerInterface;
+import com.dumptruckman.minecraft.pluginbase.minecraft.server.ServerInterface;
 import org.mcstats.Metrics;
 
 import java.io.File;

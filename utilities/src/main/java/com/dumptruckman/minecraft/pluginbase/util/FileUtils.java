@@ -7,6 +7,8 @@
 
 package com.dumptruckman.minecraft.pluginbase.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 
 /**
@@ -24,18 +26,40 @@ public class FileUtils {
      * @param file The folder to delete.
      * @return true if the folder was successfully deleted.
      */
-    public static boolean deleteFolder(File file) {
+    public static boolean deleteFolder(@NotNull final File file) {
         if (file.exists()) {
+            boolean result = true;
             // If the file exists, and it has more than one file in it.
             if (file.isDirectory()) {
-                for (File f : file.listFiles()) {
+                for (final File f : file.listFiles()) {
+                    result = result && deleteFolder(f);
                     if (!FileUtils.deleteFolder(f)) {
                         return false;
                     }
                 }
             }
-            file.delete();
-            return !file.exists();
+            return result && file.delete();
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Used to delete the contents of a folder, without deleting the folder itself.
+     *
+     * @param file The folder whose contents to delete.
+     * @return true if the contents were successfully deleted
+     */
+    public static boolean deleteFolderContents(@NotNull final File file) {
+        if (file.exists()) {
+            boolean result = true;
+            // If the file exists, and it has more than one file in it.
+            if (file.isDirectory()) {
+                for (final File f : file.listFiles()) {
+                    result = result && deleteFolder(f);
+                }
+            }
+            return result;
         } else {
             return false;
         }

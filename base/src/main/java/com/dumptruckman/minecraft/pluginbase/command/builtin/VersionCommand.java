@@ -20,6 +20,7 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -87,9 +88,9 @@ public class VersionCommand extends BaseBuiltInCommand {
             Logging.info(line);
         }
 
-        final Set<Character> flags = context.getFlags();
+        final Set<Character> flags = new LinkedHashSet<Character>(context.getFlags());
         if (!flags.isEmpty()) {
-            getPlugin().getServerInterface().scheduleAsyncDelayedTask(getPlugin(), new Runnable() {
+            getPlugin().getServerInterface().runTaskAsynchronously(getPlugin(), new Runnable() {
                 @Override
                 public void run() {
                     for (Character flag : flags) {
@@ -101,7 +102,7 @@ public class VersionCommand extends BaseBuiltInCommand {
                         } else {
                             continue;
                         }
-                        getPlugin().getServerInterface().scheduleSyncDelayedTask(getPlugin(), new Runnable() {
+                        getPlugin().getServerInterface().runTask(getPlugin(), new Runnable() {
                             @Override
                             public void run() {
                                 getMessager().message(sender, CommandMessages.VERSION_INFO_DUMPED, pasteUrl);

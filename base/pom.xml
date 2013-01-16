@@ -160,6 +160,7 @@ and adjust the build number accordingly -->
                             <artifactSet>
                                 <includes>
                                     <include>com.dumptruckman.minecraft:Logging</include>
+                                    <include>com.dumptruckman.minecraft:Utilities</include>
                                     <include>com.dumptruckman.minecraft:Messaging</include>
                                     <include>com.dumptruckman.minecraft:Properties</include>
                                     <include>com.dumptruckman.minecraft:MinecraftLink</include>
@@ -176,6 +177,13 @@ and adjust the build number accordingly -->
         <dependency>
             <groupId>com.dumptruckman.minecraft</groupId>
             <artifactId>Logging</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft</groupId>
+            <artifactId>Utilities</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
             <scope>compile</scope>
