@@ -400,7 +400,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     @Override
     public void scheduleQueuedCommandExpiration(@NotNull final QueuedCommand queuedCommand) {
-        getServerInterface().runTaskTimer(this, queuedCommand, 0L, queuedCommand.getExpirationDuration());
+        getServerInterface().runTaskLater(this, queuedCommand, queuedCommand.getExpirationDuration());
     }
 
     @Override

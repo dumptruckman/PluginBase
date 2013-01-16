@@ -15,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -171,11 +172,13 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
 
     public boolean locateAndRunCommand(@NotNull final BasePlayer player, @NotNull String[] args) throws CommandException {
         args = commandDetection(args);
+        Logging.finest("'%s' is attempting to use command '%s'", player, Arrays.toString(args));
         if (this.plugin.useQueuedCommands()
                 && !this.commandMap.containsKey(this.plugin.getCommandPrefix() + "confirm")
                 && args.length == 2
                 && args[0].equalsIgnoreCase(this.plugin.getCommandPrefix())
                 && args[1].equalsIgnoreCase("confirm")) {
+            Logging.finer("No confirm command registered, using built in confirm...");
             if (!confirmCommand(player)) {
                 this.plugin.getMessager().message(player, NO_QUEUED_COMMANDS);
             }
@@ -226,6 +229,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         }
         if (command instanceof QueuedCommand) {
             final QueuedCommand queuedCommand = (QueuedCommand) command;
+            Logging.finer("Queueing command '%s' for '%s'", queuedCommand, player);
             queuedCommands.put(player, queuedCommand);
             final BundledMessage confirmMessage = queuedCommand.getConfirmMessage();
             if (confirmMessage != null) {
