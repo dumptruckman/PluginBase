@@ -14,7 +14,7 @@ import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 import java.util.Locale;
 
 /**
- * Interface for interacting with the config of this plugin.
+ * Contains all the basic config options available in a PluginBase plugin.
  */
 public interface BaseConfig {
 

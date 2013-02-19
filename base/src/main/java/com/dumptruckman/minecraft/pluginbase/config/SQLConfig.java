@@ -8,7 +8,7 @@ import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 
 /**
- * Interface for interacting with the config of this plugin.
+ * Contains all of the necessary sql config options for a PluginBase plugin that opts to use a sql database.
  */
 public interface SQLConfig {
 

@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Enables debug-information.
+ * This command is requires as it is the base command for the plugin.
+ * TODO: Decide what the hell it does.
  */
 @CommandInfo(
         primaryAlias = "",
@@ -24,31 +25,44 @@ import java.util.List;
 )
 public class InfoCommand extends BaseBuiltInCommand {
 
-    private static List<String> staticKeys = new ArrayList<String>();
+    private static final List<String> STATIC_KEYS = new ArrayList<String>();
 
-    public static void addStaticAlias(String key) {
-        staticKeys.add(key);
+    /**
+     * Adds an alias to this built in command.
+     *
+     * Allows adding aliases to a built in command which is not normally possible since you cannot
+     * add CommandInfo annotations to them.
+     *
+     * @param key The alias to add.
+     */
+    public static void addStaticAlias(@NotNull final String key) {
+        STATIC_KEYS.add(key);
     }
 
     protected InfoCommand(@NotNull final PluginBase plugin) {
         super(plugin);
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     @Override
     public List<String> getStaticAliases() {
-        return staticKeys;
+        return STATIC_KEYS;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
         return CommandPerms.COMMAND_INFO;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Message getHelp() {
         return CommandMessages.INFO_HELP;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         //TODO

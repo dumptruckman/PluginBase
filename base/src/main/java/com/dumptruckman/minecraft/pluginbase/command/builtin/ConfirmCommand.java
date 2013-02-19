@@ -5,8 +5,6 @@ package com.dumptruckman.minecraft.pluginbase.command.builtin;
 
 import com.dumptruckman.minecraft.pluginbase.command.CommandHandler;
 import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
-import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messaging.Message;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
@@ -28,31 +26,44 @@ import java.util.List;
 )
 public class ConfirmCommand extends BaseBuiltInCommand {
 
-    private static List<String> staticKeys = new ArrayList<String>();
+    private final static List<String> STATIC_KEYS = new ArrayList<String>();
 
-    public static void addStaticAlias(String key) {
-        staticKeys.add(key);
+    /**
+     * Adds an alias to this built in command.
+     *
+     * Allows adding aliases to a built in command which is not normally possible since you cannot
+     * add CommandInfo annotations to them.
+     *
+     * @param key The alias to add.
+     */
+    public static void addStaticAlias(@NotNull final String key) {
+        STATIC_KEYS.add(key);
     }
 
     protected ConfirmCommand(@NotNull final PluginBase plugin) {
         super(plugin);
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     @Override
     public List<String> getStaticAliases() {
-        return staticKeys;
+        return STATIC_KEYS;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
-        return null;
+        return CommandPerms.COMMAND_CONFIRM;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Message getHelp() {
         return CommandMessages.CONFIRM_HELP;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         if (!getPlugin().getCommandHandler().confirmCommand(sender)) {

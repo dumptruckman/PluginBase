@@ -4,6 +4,9 @@ import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 
+/**
+ * Contains permissions for built in commands.
+ */
 public class CommandPerms {
 
     /**

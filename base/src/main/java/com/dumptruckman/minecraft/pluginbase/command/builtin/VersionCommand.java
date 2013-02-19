@@ -27,7 +27,10 @@ import java.util.Set;
 import java.util.logging.Level;
 
 /**
- * Enables debug-information.
+ * Produces version information related to this plugin.
+ *
+ * Specific information for the plugin can be displayed and is determined by {@link com.dumptruckman.minecraft.pluginbase.plugin.PluginBase#dumpVersionInfo()}.
+ * Also has the option to output to pastebin or pastie.
  */
 @CommandInfo(
         primaryAlias = "version",
@@ -39,31 +42,44 @@ public class VersionCommand extends BaseBuiltInCommand {
 
     private static final URLShortener SHORTENER = new BitlyURLShortener();
 
-    private static final List<String> staticKeys = new ArrayList<String>();
+    private static final List<String> STATIC_KEYS = new ArrayList<String>();
 
+    /**
+     * Adds an alias to this built in command.
+     *
+     * Allows adding aliases to a built in command which is not normally possible since you cannot
+     * add CommandInfo annotations to them.
+     *
+     * @param key The alias to add.
+     */
     public static void addStaticAlias(@NotNull final String key) {
-        staticKeys.add(key);
+        STATIC_KEYS.add(key);
     }
 
     protected VersionCommand(@NotNull final PluginBase plugin) {
         super(plugin);
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     @Override
     public List<String> getStaticAliases() {
-        return staticKeys;
+        return STATIC_KEYS;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
         return CommandPerms.COMMAND_VERSION;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Message getHelp() {
         return CommandMessages.VERSION_HELP;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         // Check if the command was sent from a Player.
@@ -78,7 +94,7 @@ public class VersionCommand extends BaseBuiltInCommand {
         buffer.add(getMessager().getMessage(CommandMessages.VERSION_LANG_FILE, getPlugin().config().get(BaseConfig.LANGUAGE_FILE)));
         buffer.add(getMessager().getMessage(CommandMessages.VERSION_DEBUG_MODE, getPlugin().config().get(BaseConfig.DEBUG_MODE)));
 
-        List<String> versionInfoDump = getPlugin().dumpVersionInfo();
+        final List<String> versionInfoDump = getPlugin().dumpVersionInfo();
         if (versionInfoDump != null) {
             buffer.addAll(versionInfoDump);
         }

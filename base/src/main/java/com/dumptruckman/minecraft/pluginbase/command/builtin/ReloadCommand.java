@@ -15,7 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Enables debug-information.
+ * This command will typically perform a reload of the plugin's data though it's implementation
+ * is ultimately up to the plugin.
  */
 @CommandInfo(
         primaryAlias = "reload",
@@ -24,31 +25,44 @@ import java.util.List;
 )
 public class ReloadCommand extends BaseBuiltInCommand {
 
-    private static final List<String> staticKeys = new ArrayList<String>();
+    private static final List<String> STATIC_KEYS = new ArrayList<String>();
 
-    public static void addStaticAlias(String key) {
-        staticKeys.add(key);
+    /**
+     * Adds an alias to this built in command.
+     *
+     * Allows adding aliases to a built in command which is not normally possible since you cannot
+     * add CommandInfo annotations to them.
+     *
+     * @param key The alias to add.
+     */
+    public static void addStaticAlias(@NotNull final String key) {
+        STATIC_KEYS.add(key);
     }
 
     protected ReloadCommand(@NotNull final PluginBase plugin) {
         super(plugin);
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     @Override
     public List<String> getStaticAliases() {
-        return staticKeys;
+        return STATIC_KEYS;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
         return CommandPerms.COMMAND_RELOAD;
     }
 
+    /** {@inheritDoc} */
     @Override
     public Message getHelp() {
         return CommandMessages.RELOAD_HELP;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         getPlugin().reloadConfig();
