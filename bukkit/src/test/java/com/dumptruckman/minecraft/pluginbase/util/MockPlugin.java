@@ -3,6 +3,7 @@ package com.dumptruckman.minecraft.pluginbase.util;
 import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +20,8 @@ public class MockPlugin extends AbstractBukkitPlugin {
     public void onPluginEnable() {
         //getCommandHandler().registerCommand(new MockQueuedCommand(this));
     }
-    
+
+    @NotNull
     @Override
     public String getCommandPrefix() {
         return "pb";

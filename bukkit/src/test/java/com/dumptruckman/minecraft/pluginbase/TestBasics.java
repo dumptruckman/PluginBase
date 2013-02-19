@@ -70,7 +70,7 @@ public class TestBasics {
         assertTrue(plugin.isEnabled());
 
         // Make a fake server folder to fool MV into thinking a world folder exists.
-        File serverDirectory = new File(creator.getPlugin().getServerFolder(), "world");
+        File serverDirectory = new File(creator.getPlugin().getServerInterface().getWorldContainer(), "world");
         serverDirectory.mkdirs();
 
         // Assert debug mode is off
