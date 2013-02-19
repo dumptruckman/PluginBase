@@ -88,23 +88,12 @@ public class TestInstanceCreator {
                     "com.dumptruckman.minecraft.pluginbase.util.MockPlugin");
             doReturn(pdf).when(plugin).getDescription();
             doReturn(true).when(plugin).isEnabled();
-            plugin.setServerFolder(serverDirectory);
+            //plugin.setServerFolder(serverDirectory);
 
             when(plugin.getPluginInfo()).thenReturn(new BukkitPluginInfo(plugin));
 
             // Add Core to the list of loaded plugins
             JavaPlugin[] plugins = new JavaPlugin[] { plugin };
-
-            // Make some fake folders to fool the fake MV into thinking these worlds exist
-            File worldNormalFile = new File(plugin.getServerFolder(), "world");
-            Util.log("Creating world-folder: " + worldNormalFile.getAbsolutePath());
-            worldNormalFile.mkdirs();
-            File worldNetherFile = new File(plugin.getServerFolder(), "world_nether");
-            Util.log("Creating world-folder: " + worldNetherFile.getAbsolutePath());
-            worldNetherFile.mkdirs();
-            File worldSkylandsFile = new File(plugin.getServerFolder(), "world_the_end");
-            Util.log("Creating world-folder: " + worldSkylandsFile.getAbsolutePath());
-            worldSkylandsFile.mkdirs();
 
             // Initialize the Mock server.
             mockServer = mock(Server.class);
@@ -142,6 +131,19 @@ public class TestInstanceCreator {
                     return players.values().toArray(new Player[players.values().size()]);
                 }
             });
+
+            doReturn(new BukkitServerInterface(mockServer)).when(plugin).getServerInterface();
+
+            // Make some fake folders to fool the fake MV into thinking these worlds exist
+            File worldNormalFile = new File(plugin.getServerInterface().getWorldContainer(), "world");
+            Util.log("Creating world-folder: " + worldNormalFile.getAbsolutePath());
+            worldNormalFile.mkdirs();
+            File worldNetherFile = new File(plugin.getServerInterface().getWorldContainer(), "world_nether");
+            Util.log("Creating world-folder: " + worldNetherFile.getAbsolutePath());
+            worldNetherFile.mkdirs();
+            File worldSkylandsFile = new File(plugin.getServerInterface().getWorldContainer(), "world_the_end");
+            Util.log("Creating world-folder: " + worldSkylandsFile.getAbsolutePath());
+            worldSkylandsFile.mkdirs();
 
             // Mock the Plugin Manager
             PluginManager mockPluginManager = Mockito.spy(new SimplePluginManager(mockServer, new SimpleCommandMap(mockServer)));
@@ -284,8 +286,6 @@ public class TestInstanceCreator {
             Field serverfield = JavaPlugin.class.getDeclaredField("server");
             serverfield.setAccessible(true);
             serverfield.set(plugin, mockServer);
-
-            when(plugin.getServerInterface()).thenReturn(new BukkitServerInterface(mockServer));
 
             /*
             // Set worldManager
