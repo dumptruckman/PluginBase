@@ -1,13 +1,18 @@
 package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
-public class BukkitCommandSender extends AbstractBukkitCommandSender<CommandSender> {
+/**
+ * BasePlayer implementation for a Bukkit CommandSender that is NOT a player.
+ */
+class BukkitCommandSender extends AbstractBukkitCommandSender<CommandSender> {
 
-    public BukkitCommandSender(CommandSender sender) {
+    BukkitCommandSender(@NotNull final CommandSender sender) {
         super(sender);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isPlayer() {
         return false;

@@ -2,27 +2,50 @@ package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractBukkitCommandSender<S extends CommandSender> extends BasePlayer {
+/**
+ * An abstract implementation of BasePlayer for Bukkit.
+ *
+ * This will be implemented separately for each CommandSender type as required.
+ *
+ * @param <S> The implementation of CommandSender used.  Should be implemented as non-generic in the concrete
+ *           implementation of AbstractBukkitCommandSender.
+ */
+abstract class AbstractBukkitCommandSender<S extends CommandSender> extends BasePlayer {
 
-    protected final S sender;
+    @NotNull
+    private final S sender;
 
-    public AbstractBukkitCommandSender(S sender) {
+    AbstractBukkitCommandSender(@NotNull final S sender) {
         this.sender = sender;
     }
 
+    /**
+     * Gets the sender represented by this BasePlayer.
+     *
+     * @return the sender represented by this BasePlayer.
+     */
+    @NotNull
+    protected S getSender() {
+        return this.sender;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public String getName() {
-        return sender.getName();
+        return getSender().getName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean hasPermission(String perm) {
-        return sender.hasPermission(perm);
+        return getSender().hasPermission(perm);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void sendMessage(String message) {
-        sender.sendMessage(message);
+        getSender().sendMessage(message);
     }
 }

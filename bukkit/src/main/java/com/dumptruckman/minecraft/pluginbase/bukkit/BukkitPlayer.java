@@ -9,17 +9,22 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class BukkitPlayer extends AbstractBukkitCommandSender<Player> implements Entity {
+/**
+ * BasePlayer implementation for a Bukkit Player.
+ */
+class BukkitPlayer extends AbstractBukkitCommandSender<Player> implements Entity {
 
-    public BukkitPlayer(Player player) {
+    BukkitPlayer(@NotNull final Player player) {
         super(player);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean isPlayer() {
         return false;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean teleport(@NotNull final EntityCoordinates location) {
         final World world = Bukkit.getWorld(location.getWorld());
@@ -28,6 +33,6 @@ public class BukkitPlayer extends AbstractBukkitCommandSender<Player> implements
             return false;
         }
         final Location l = new Location(world, location.getX(), location.getY(), location.getZ());
-        return sender.teleport(l);
+        return getSender().teleport(l);
     }
 }

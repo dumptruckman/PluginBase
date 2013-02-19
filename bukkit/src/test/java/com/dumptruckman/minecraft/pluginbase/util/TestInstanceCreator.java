@@ -7,9 +7,8 @@
 
 package com.dumptruckman.minecraft.pluginbase.util;
 
-import com.dumptruckman.minecraft.pluginbase.minecraft.server.BukkitServerInterface;
-import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
-import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPluginInfo;
+import com.dumptruckman.minecraft.pluginbase.bukkit.AbstractBukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.bukkit.BukkitHelper;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -90,7 +89,7 @@ public class TestInstanceCreator {
             doReturn(true).when(plugin).isEnabled();
             //plugin.setServerFolder(serverDirectory);
 
-            when(plugin.getPluginInfo()).thenReturn(new BukkitPluginInfo(plugin));
+            when(plugin.getPluginInfo()).thenReturn(BukkitHelper.getPluginInfo(plugin));
 
             // Add Core to the list of loaded plugins
             JavaPlugin[] plugins = new JavaPlugin[] { plugin };
@@ -132,7 +131,7 @@ public class TestInstanceCreator {
                 }
             });
 
-            doReturn(new BukkitServerInterface(mockServer)).when(plugin).getServerInterface();
+            doReturn(BukkitHelper.getServerInterface(mockServer)).when(plugin).getServerInterface();
 
             // Make some fake folders to fool the fake MV into thinking these worlds exist
             File worldNormalFile = new File(plugin.getServerInterface().getWorldContainer(), "world");

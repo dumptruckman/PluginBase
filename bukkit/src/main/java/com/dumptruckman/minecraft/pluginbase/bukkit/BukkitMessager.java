@@ -1,9 +1,13 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-package com.dumptruckman.minecraft.pluginbase.messaging;
+package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messaging.Message;
+import com.dumptruckman.minecraft.pluginbase.messaging.MessageReceiver;
+import com.dumptruckman.minecraft.pluginbase.messaging.SimpleMessager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.util.ChatPaginator;
@@ -14,21 +18,22 @@ import java.io.File;
 import java.util.List;
 
 /**
- * A Bukkit specific implementation of {@link Messager}.
+ * A Bukkit specific implementation of {@link com.dumptruckman.minecraft.pluginbase.messaging.Messager}.
  *
  * Provides word wrapping on messages too long to fit on one line.
+ *
+ * Please refer to {@link com.dumptruckman.minecraft.pluginbase.messaging.Messager} for javadoc for the methods in this class.  This class merely adds
+ * convenience methods for Bukkit CommandSenders.
  */
 public class BukkitMessager extends SimpleMessager {
 
-    public BukkitMessager(@NotNull File dataFolder) {
+    BukkitMessager(@NotNull final File dataFolder) {
         super(dataFolder);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
-    public void message(@NotNull MessageReceiver sender, @NotNull String message) {
+    public void message(@NotNull final MessageReceiver sender, @NotNull final String message) {
         sendMessages(sender, ChatPaginator.wordWrap(message, ChatPaginator.GUARANTEED_NO_WRAP_CHAT_PAGE_WIDTH));
     }
 
@@ -43,53 +48,53 @@ public class BukkitMessager extends SimpleMessager {
         message(sender, string);
     }
 
-    public void message(@NotNull CommandSender sender, @NotNull String message) {
+    public void message(@NotNull final CommandSender sender, @NotNull final String message) {
         sendMessages(sender, ChatPaginator.wordWrap(message, ChatPaginator.GUARANTEED_NO_WRAP_CHAT_PAGE_WIDTH));
     }
 
-    public void message(@NotNull CommandSender sender, @NotNull Message message, Object... args) {
+    public void message(@NotNull final CommandSender sender, @NotNull final Message message, @NotNull final Object... args) {
         send(sender, "", message, args);
     }
 
-    public void message(@NotNull CommandSender sender, @NotNull BundledMessage message) {
+    public void message(@NotNull final CommandSender sender, @NotNull final BundledMessage message) {
         message(sender, message.getMessage(), message.getArgs());
     }
 
-    public void message(@NotNull CommandSender player, @NotNull List<String> messages) {
+    public void message(@NotNull final CommandSender player, @NotNull final List<String> messages) {
         for (String s : messages) {
             player.sendMessage(s);
         }
     }
 
-    public void messageSuccess(CommandSender sender, Message message, Object... args) {
+    public void messageSuccess(@NotNull final CommandSender sender, @NotNull final Message message, @NotNull final Object... args) {
         send(sender, getMessage(SUCCESS), message, args);
     }
 
-    public void messageSuccess(CommandSender sender, BundledMessage message) {
+    public void messageSuccess(@NotNull final CommandSender sender, @NotNull final BundledMessage message) {
         send(sender, getMessage(SUCCESS), message.getMessage(), message.getArgs());
     }
 
-    public void messageSuccess(CommandSender sender, String message) {
+    public void messageSuccess(@NotNull final CommandSender sender, @NotNull final String message) {
         message(sender, getMessage(SUCCESS) + " " + message);
     }
 
-    public void messageError(CommandSender sender, Message message, Object... args) {
+    public void messageError(@NotNull final CommandSender sender, @NotNull final Message message, @NotNull final Object... args) {
         send(sender, getMessage(ERROR), message, args);
     }
 
-    public void messageError(CommandSender sender, BundledMessage message) {
+    public void messageError(@NotNull final CommandSender sender, @NotNull final BundledMessage message) {
         send(sender, getMessage(ERROR), message.getMessage(), message.getArgs());
     }
 
-    public void messageError(CommandSender sender, String message) {
+    public void messageError(@NotNull final CommandSender sender, @NotNull final String message) {
         message(sender, getMessage(ERROR) + " " + message);
     }
 
-    protected void sendMessages(@NotNull CommandSender player, @NotNull String[] messages) {
+    protected void sendMessages(@NotNull final CommandSender player, @NotNull final String[] messages) {
         player.sendMessage(messages);
     }
 
-    public void messageAndLog(@NotNull CommandSender sender, @NotNull Message message, @NotNull Object... args) {
+    public void messageAndLog(@NotNull final CommandSender sender, @NotNull final Message message, @NotNull final Object... args) {
         if (!(sender instanceof ConsoleCommandSender)) {
             message(sender, message, args);
         }

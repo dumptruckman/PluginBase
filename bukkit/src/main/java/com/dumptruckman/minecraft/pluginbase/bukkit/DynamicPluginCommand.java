@@ -1,4 +1,4 @@
-package com.dumptruckman.minecraft.pluginbase.command;
+package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.sk89q.util.StringUtil;
 import org.bukkit.command.CommandExecutor;

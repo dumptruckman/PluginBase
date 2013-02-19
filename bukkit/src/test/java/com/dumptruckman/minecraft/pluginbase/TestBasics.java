@@ -7,8 +7,8 @@
 
 package com.dumptruckman.minecraft.pluginbase;
 
+import com.dumptruckman.minecraft.pluginbase.bukkit.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
-import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.util.CommandUtil;
 import com.dumptruckman.minecraft.pluginbase.util.MockConfig;
 import com.dumptruckman.minecraft.pluginbase.util.MockMessages;

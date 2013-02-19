@@ -1,10 +1,10 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-package com.dumptruckman.minecraft.pluginbase.plugin;
+package com.dumptruckman.minecraft.pluginbase.bukkit;
 
-import com.dumptruckman.minecraft.pluginbase.command.BukkitCommandHandler;
 import com.dumptruckman.minecraft.pluginbase.command.Command;
+import com.dumptruckman.minecraft.pluginbase.command.CommandHandler;
 import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.command.CommandUsageException;
 import com.dumptruckman.minecraft.pluginbase.command.QueuedCommand;
@@ -20,21 +20,21 @@ import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.database.SQLite;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
-import com.dumptruckman.minecraft.pluginbase.messaging.BukkitMessager;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
-import com.dumptruckman.minecraft.pluginbase.minecraft.server.BukkitServerInterface;
 import com.dumptruckman.minecraft.pluginbase.minecraft.server.ServerInterface;
 import com.dumptruckman.minecraft.pluginbase.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
+import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
+import com.dumptruckman.minecraft.pluginbase.plugin.PluginInfo;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
-import com.dumptruckman.minecraft.pluginbase.util.BukkitTools;
 import com.sk89q.minecraft.util.commands.CommandException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.mcstats.Metrics;
 
 import java.io.File;
@@ -53,16 +53,10 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private ServerInterface<BukkitPlugin> serverInterface;
     private Properties config = null;
     private BukkitMessager messager = null;
-    private File serverFolder = null;
-    private BukkitCommandHandler commandHandler = null;
+    private CommandHandler commandHandler = null;
     private SQLDatabase db = null;
+    private Properties sqlConfig = null;
     private Metrics metrics = null;
-
-    /**
-     * The configuration details for SQL database is contained here.  If not initialized, no SQL config file will
-     * be created.
-     */
-    protected Properties sqlConfig = null;
 
     static {
         // Statically initializes the members of the command language class.
@@ -75,10 +69,13 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      *
      * @return The name to use as a base for permissions.
      */
+    @Override
+    @NotNull
     public String getPermissionName() {
-        return getPluginInfo().getName();
+        return getPluginInfo().getName().toLowerCase();
     }
 
+    /** {@inheritDoc} */
     @Override
     public final void onLoad() {
         // Setup the server interface.
@@ -104,6 +101,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      */
     protected void onPluginLoad() { }
 
+    /** {@inheritDoc} */
     @Override
     public final void onDisable() {
         // Call the method implementers should use in place of onDisable().
@@ -119,9 +117,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      */
     protected void onPluginDisable() { }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public final void onEnable() {
         // Setup plugin metrics.
@@ -154,6 +150,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
             metrics = new Metrics(this);
         } catch (IOException e) {
             Logging.warning("Error while enabling plugin metrics: " + e.getMessage());
+            metrics = null;
         }
     }
 
@@ -168,13 +165,13 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         if (useDatabase()) {
             this.db = null;
             initDatabase();
-            if (this.sqlConfig.get(SQLConfig.DB_TYPE).equalsIgnoreCase("mysql")) {
+            if (sqlConfig().get(SQLConfig.DB_TYPE).equalsIgnoreCase("mysql")) {
                 try {
-                    this.db = new MySQL(this.sqlConfig.get(SQLConfig.DB_HOST),
-                            this.sqlConfig.get(SQLConfig.DB_PORT),
-                            this.sqlConfig.get(SQLConfig.DB_DATABASE),
-                            this.sqlConfig.get(SQLConfig.DB_USER),
-                            this.sqlConfig.get(SQLConfig.DB_PASS));
+                    this.db = new MySQL(sqlConfig().get(SQLConfig.DB_HOST),
+                            sqlConfig().get(SQLConfig.DB_PORT),
+                            sqlConfig().get(SQLConfig.DB_DATABASE),
+                            sqlConfig().get(SQLConfig.DB_USER),
+                            sqlConfig().get(SQLConfig.DB_PASS));
                 } catch (ClassNotFoundException e) {
                     Logging.severe("Your server does not support MySQL!");
                 }
@@ -188,6 +185,14 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         }
     }
 
+    /**
+     * This method should be implemented to return the specific config file you would like to use as well as the
+     * classes it will utilize.
+     *
+     * @return a new config instance.
+     * @throws IOException in case anything goes wrong during config initialization/loading.
+     */
+    @NotNull
     protected abstract Properties getNewConfig() throws IOException;
 
     private void setupConfig() {
@@ -243,9 +248,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      * This method will be called when {@link #reloadConfig()} is called and after the db, config and messager
      * have been reloaded.
      */
-    protected void onReloadConfig() {
-
-    }
+    protected void onReloadConfig() { }
 
     /**
      * Override this method if you'd like to return any special information for your plugin when using the version
@@ -253,6 +256,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      *
      * @return A list of strings to appears in the version information.  If this is not overriden, null is returned.
      */
+    @Nullable
     public List<String> dumpVersionInfo() {
         return null;
     }
@@ -284,6 +288,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         getCommandHandler().registerCommand(commandClass);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String commandLabel, String[] args) {
         if (!isEnabled()) {
@@ -307,51 +312,42 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         return true;
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     @Override
-    public BukkitCommandHandler getCommandHandler() {
+    public CommandHandler getCommandHandler() {
         return this.commandHandler;
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     @Override
     public Properties config() {
         return this.config;
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     @Override
     public BukkitMessager getMessager() {
         return this.messager;
     }
 
-    @Override
-    public File getServerFolder() {
-        if (this.serverFolder == null) {
-            this.serverFolder = new File(System.getProperty("user.dir"));
-        }
-        return this.serverFolder;
-    }
-
-    @Override
-    public void setServerFolder(File newServerFolder) {
-        if (!newServerFolder.isDirectory()) {
-            throw new IllegalArgumentException("That's not a folder!");
-        }
-
-        this.serverFolder = newServerFolder;
-    }
-
+    /** {@inheritDoc} */
+    @Nullable
     @Override
     public SQLDatabase getDB() {
-        if (sqlConfig == null) {
-            throw new IllegalStateException("SQL database not configured for this plugin!");
-        }
         return db;
     }
 
+    /** {@inheritDoc} */
+    @Nullable
     @Override
     public Properties sqlConfig() {
         return sqlConfig;
     }
 
+    /** {@inheritDoc} */
     @NotNull
     @Override
     public abstract String getCommandPrefix();
@@ -371,38 +367,48 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         }
     }
 
+    /** {@inheritDoc} */
+    @Nullable
     @Override
     public Metrics getMetrics() {
         return metrics;
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     @Override
     public BasePlayer wrapPlayer(@NotNull final Player player) {
         return BukkitTools.wrapPlayer(player);
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     @Override
     public BasePlayer wrapSender(@NotNull final CommandSender sender) {
         return BukkitTools.wrapSender(sender);
     }
 
+    /** {@inheritDoc} */
     @NotNull
     @Override
     public PluginInfo getPluginInfo() {
         return pluginInfo;
     }
 
+    /** {@inheritDoc} */
     @NotNull
     @Override
     public ServerInterface<BukkitPlugin> getServerInterface() {
         return serverInterface;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void scheduleQueuedCommandExpiration(@NotNull final QueuedCommand queuedCommand) {
         getServerInterface().runTaskLater(this, queuedCommand, queuedCommand.getExpirationDuration());
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean useQueuedCommands() {
         return true;

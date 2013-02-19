@@ -1,7 +1,7 @@
-package com.dumptruckman.minecraft.pluginbase.command;
+package com.dumptruckman.minecraft.pluginbase.bukkit;
 
+import com.dumptruckman.minecraft.pluginbase.command.CommandHandler;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
-import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import com.sk89q.bukkit.util.FallbackRegistrationListener;
 import com.sk89q.util.ReflectionUtil;
 import org.bukkit.Bukkit;
@@ -10,7 +10,7 @@ import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 
-public class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
+class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
 
     private final CommandExecutor executor;
     private CommandMap fallbackCommands;

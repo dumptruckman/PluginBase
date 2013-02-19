@@ -1,5 +1,6 @@
-package com.dumptruckman.minecraft.pluginbase.command;
+package com.dumptruckman.minecraft.pluginbase.bukkit;
 
+import com.dumptruckman.minecraft.pluginbase.command.CommandProvider;
 import com.sk89q.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -9,11 +10,12 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class PreProcessListener implements Listener {
+// Unused currently... Need to determine if needed.
+class PreProcessListener implements Listener {
 
     private final CommandProvider plugin;
 
-    public PreProcessListener(@NotNull final CommandProvider plugin) {
+    PreProcessListener(@NotNull final CommandProvider plugin) {
         this.plugin = plugin;
     }
 

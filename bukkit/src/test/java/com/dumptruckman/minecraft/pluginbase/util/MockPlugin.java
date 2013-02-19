@@ -1,9 +1,10 @@
 package com.dumptruckman.minecraft.pluginbase.util;
 
-import com.dumptruckman.minecraft.pluginbase.plugin.AbstractBukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.bukkit.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,11 +13,13 @@ import java.util.List;
 
 public class MockPlugin extends AbstractBukkitPlugin {
 
+    @Override
     public void onPluginLoad() {
         MockMessages.init();
         //HelpCommand.addStaticPrefixedKey("");
     }
 
+    @Override
     public void onPluginEnable() {
         //getCommandHandler().registerCommand(new MockQueuedCommand(this));
     }
@@ -27,12 +30,16 @@ public class MockPlugin extends AbstractBukkitPlugin {
         return "pb";
     }
 
+    @Nullable
+    @Override
     public List<String> dumpVersionInfo() {
         List<String> versionInfo = new LinkedList<String>();
         versionInfo.add("Test");
         return versionInfo;
     }
 
+    @NotNull
+    @Override
     protected Properties getNewConfig() throws IOException {
         return new YamlProperties(true, true, new File(getDataFolder(), "config.yml"), MockConfig.class);
     }
