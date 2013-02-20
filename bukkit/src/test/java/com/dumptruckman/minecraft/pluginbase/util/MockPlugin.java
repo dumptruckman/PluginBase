@@ -1,8 +1,8 @@
 package com.dumptruckman.minecraft.pluginbase.util;
 
 import com.dumptruckman.minecraft.pluginbase.bukkit.AbstractBukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.bukkit.properties.YamlProperties;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
-import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

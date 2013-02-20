@@ -3,53 +3,65 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+import com.dumptruckman.minecraft.pluginbase.properties.builders.ListPropertyBuilder;
+import com.dumptruckman.minecraft.pluginbase.properties.builders.MappedPropertyBuilder;
+import com.dumptruckman.minecraft.pluginbase.properties.builders.NestedPropertyBuilder;
+import com.dumptruckman.minecraft.pluginbase.properties.builders.NullPropertyBuilder;
+import com.dumptruckman.minecraft.pluginbase.properties.builders.PropertyBuilder;
+import com.dumptruckman.minecraft.pluginbase.properties.builders.SimplePropertyBuilder;
+
 import java.util.List;
 import java.util.Map;
 
-public final class PropertyFactory {
+public final class PropertyFactory extends PropertyBuilder {
 
     private PropertyFactory() {
         throw new AssertionError();
     }
 
     public static NullPropertyBuilder newNullProperty(final String name) {
-        return new NullPropertyBuilder(name);
+        return newNullPropertyBuilder(name);
     }
 
     public static <T> SimplePropertyBuilder<T> newProperty(final Class<T> type, final String name, final T def) {
-        return new SimplePropertyBuilder<T>(type, name, def);
+        return newSimplePropertyBuilder(type, name, def);
     }
 
     public static <T> ListPropertyBuilder<T> newListProperty(final Class<T> type, final String name) {
-        return new ListPropertyBuilder<T>(type, name);
+        return newListPropertyBuilder(type, name);
     }
 
     public static <T> ListPropertyBuilder<T> newListProperty(final Class<T> type, final String name,
                                                              final List<T> def) {
-        return new ListPropertyBuilder<T>(type, name, def);
+        return newListPropertyBuilder(type, name, def);
     }
 
     public static <T> ListPropertyBuilder<T> newListProperty(final Class<T> type, final String name,
                                                              final Class<? extends List> listType) {
-        return new ListPropertyBuilder<T>(type, name, listType);
+        return newListPropertyBuilder(type, name, listType);
     }
 
     public static <T> MappedPropertyBuilder<T> newMappedProperty(final Class<T> type, final String name) {
-        return new MappedPropertyBuilder<T>(type, name);
+        return newMappedPropertyBuilder(type, name);
     }
 
     public static <T> MappedPropertyBuilder<T> newMappedProperty(final Class<T> type, final String name,
                                                                  final Class<? extends Map> mapType) {
-        return new MappedPropertyBuilder<T>(type, name, mapType);
+        return newMappedPropertyBuilder(type, name, mapType);
     }
 
     public static <T> MappedPropertyBuilder<T> newMappedProperty(final Class<T> type, final String name,
                                                                  final Map<String, T> def) {
-        return new MappedPropertyBuilder<T>(type, name, def);
+        return newMappedPropertyBuilder(type, name, def);
     }
 
     public static <T extends NestedProperties> NestedPropertyBuilder<T> newNestedProperty(final Class<T> type,
                                                                                           final String name) {
-        return new NestedPropertyBuilder<T>(type, name);
+        return newNestedPropertyBuilder(type, name);
+    }
+
+    @Override
+    public Property build() {
+        throw new UnsupportedOperationException();
     }
 }

@@ -20,7 +20,7 @@ public abstract class PermFactory {
     private static Constructor<? extends PermFactory> factory;
     /** Represents the information for the plugin utilizing this PermFactory. */
 
-    static boolean hasFactory() {
+    protected static boolean hasFactory() {
         return factory != null;
     }
 

@@ -1,7 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.bukkit;
 
-import com.dumptruckman.minecraft.pluginbase.minecraft.server.ServerInterface;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginInfo;
+import com.dumptruckman.minecraft.pluginbase.plugin.ServerInterface;
 import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;

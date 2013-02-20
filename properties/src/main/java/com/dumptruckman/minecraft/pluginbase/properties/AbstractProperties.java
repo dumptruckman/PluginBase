@@ -4,6 +4,7 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.properties.serializers.PropertySerializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -66,7 +67,7 @@ public abstract class AbstractProperties implements Properties {
 
     protected static final class Entries {
 
-        protected final Set<Property> properties = new CopyOnWriteArraySet<Property>();
+        public final Set<Property> properties = new CopyOnWriteArraySet<Property>();
 
         private Entries(Class... configClasses) {
             final Set<Class> classes = new LinkedHashSet<Class>(10);

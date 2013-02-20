@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.minecraft;
 
-import com.dumptruckman.minecraft.pluginbase.messaging.MessageReceiver;
+import com.dumptruckman.minecraft.pluginbase.messages.messaging.MessageReceiver;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.Permissible;
 

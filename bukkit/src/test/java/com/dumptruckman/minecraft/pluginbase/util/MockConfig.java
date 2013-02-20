@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.util;
 
-import com.dumptruckman.minecraft.pluginbase.config.BaseConfig;
+import com.dumptruckman.minecraft.pluginbase.bukkit.properties.YamlProperties;
+import com.dumptruckman.minecraft.pluginbase.plugin.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.properties.ListProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.MappedProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.NestedProperties;
@@ -8,7 +9,6 @@ import com.dumptruckman.minecraft.pluginbase.properties.NestedProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.NullProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
-import com.dumptruckman.minecraft.pluginbase.properties.YamlProperties;
 
 import java.io.File;
 import java.io.IOException;

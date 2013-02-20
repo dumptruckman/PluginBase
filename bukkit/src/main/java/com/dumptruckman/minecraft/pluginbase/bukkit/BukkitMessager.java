@@ -4,10 +4,10 @@
 package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
-import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
-import com.dumptruckman.minecraft.pluginbase.messaging.Message;
-import com.dumptruckman.minecraft.pluginbase.messaging.MessageReceiver;
-import com.dumptruckman.minecraft.pluginbase.messaging.SimpleMessager;
+import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messages.Message;
+import com.dumptruckman.minecraft.pluginbase.messages.messaging.MessageReceiver;
+import com.dumptruckman.minecraft.pluginbase.messages.messaging.SimpleMessager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.util.ChatPaginator;
@@ -18,11 +18,11 @@ import java.io.File;
 import java.util.List;
 
 /**
- * A Bukkit specific implementation of {@link com.dumptruckman.minecraft.pluginbase.messaging.Messager}.
+ * A Bukkit specific implementation of {@link com.dumptruckman.minecraft.pluginbase.messages.messaging.Messager}.
  *
  * Provides word wrapping on messages too long to fit on one line.
  *
- * Please refer to {@link com.dumptruckman.minecraft.pluginbase.messaging.Messager} for javadoc for the methods in this class.  This class merely adds
+ * Please refer to {@link com.dumptruckman.minecraft.pluginbase.messages.messaging.Messager} for javadoc for the methods in this class.  This class merely adds
  * convenience methods for Bukkit CommandSenders.
  */
 public class BukkitMessager extends SimpleMessager {

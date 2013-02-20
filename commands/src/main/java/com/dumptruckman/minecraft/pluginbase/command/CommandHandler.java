@@ -2,10 +2,10 @@ package com.dumptruckman.minecraft.pluginbase.command;
 
 import com.dumptruckman.minecraft.pluginbase.command.builtin.BuiltInCommand;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
-import com.dumptruckman.minecraft.pluginbase.messaging.BundledMessage;
-import com.dumptruckman.minecraft.pluginbase.messaging.ChatColor;
-import com.dumptruckman.minecraft.pluginbase.messaging.Message;
-import com.dumptruckman.minecraft.pluginbase.messaging.Messaging;
+import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messages.ChatColor;
+import com.dumptruckman.minecraft.pluginbase.messages.Message;
+import com.dumptruckman.minecraft.pluginbase.messages.messaging.Messaging;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.util.time.Duration;
 import com.sk89q.minecraft.util.commands.CommandContext;

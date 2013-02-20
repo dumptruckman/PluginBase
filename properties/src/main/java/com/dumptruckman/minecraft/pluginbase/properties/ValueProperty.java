@@ -3,7 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
-import com.dumptruckman.minecraft.pluginbase.messaging.Message;
+import com.dumptruckman.minecraft.pluginbase.messages.Message;
+import com.dumptruckman.minecraft.pluginbase.properties.serializers.PropertySerializer;
 
 import java.util.List;
 
@@ -62,7 +63,7 @@ public interface ValueProperty<T> extends Property<T> {
 
     /**
      * Retrieves the language to use when an invalid value is attempted to be used for this entry.
-     * This will return {@link com.dumptruckman.minecraft.pluginbase.messaging.Messages#BLANK} by default.
+     * This will return {@link com.dumptruckman.minecraft.pluginbase.messages.Messages#BLANK} by default.
      *
      * @return the language to use when an invalid value is attempted to be used for this entry.
      */
@@ -70,7 +71,7 @@ public interface ValueProperty<T> extends Property<T> {
 
     /**
      * Retrieves the description of this entry in Message form.
-     * This will return {@link com.dumptruckman.minecraft.pluginbase.messaging.Messages#BLANK} by default.
+     * This will return {@link com.dumptruckman.minecraft.pluginbase.messages.Messages#BLANK} by default.
      *
      * @return the description of this entry in Message form.
      */

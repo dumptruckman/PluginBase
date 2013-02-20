@@ -99,7 +99,7 @@ public abstract class Perm {
     /** Whether or not this permissions is allowed to be used without a specific node added. */
     protected final boolean specificOnly;
 
-    Perm(final Class declaringPluginClass, final String name, final String description,
+    protected Perm(final Class declaringPluginClass, final String name, final String description,
          final Map<String, Boolean> children, final PermDefault permDefault, final Map<String, Boolean> parents,
          final boolean baseName, final boolean specificOnly) {
         if (baseName) {
