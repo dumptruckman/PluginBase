@@ -3,40 +3,59 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.database;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * An abstract implementation of SQLDatabase which implements most of the methods with
+ * a SQLConnectionPool passed in via the constructor.
+ */
 public abstract class SQLDB implements SQLDatabase {
 
     private final SQLConnectionPool connectionPool;
 
-    SQLDB(SQLConnectionPool connectionPool) {
+    /**
+     * Creates a SQLDatabase using the given connection pool.
+     *
+     * @param connectionPool the connection pool to use for this SQLDatabase.
+     */
+    SQLDB(@NotNull final SQLConnectionPool connectionPool) {
         this.connectionPool = connectionPool;
     }
 
-    public PreparedStatement getFreshPreparedStatementHotFromTheOven(String query) throws SQLException {
-        final PreparedStatement preparedStatement = getConnection().prepareStatement(query);
-        return preparedStatement;
+    /** {@inheritDoc} */
+    @NotNull
+    public PreparedStatement getFreshPreparedStatementHotFromTheOven(@NotNull final String query) throws SQLException {
+        return getConnection().prepareStatement(query);
     }
 
-    public PreparedStatement getFreshPreparedStatementWithGeneratedKeys(String query) throws SQLException {
-        final PreparedStatement ps = getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-        return ps;
+    /** {@inheritDoc} */
+    @NotNull
+    public PreparedStatement getFreshPreparedStatementWithGeneratedKeys(@NotNull final String query) throws SQLException {
+        return getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     public Connection getConnection() throws SQLException {
         return getPool().getConnection();
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     public SQLConnectionPool getPool() {
         return connectionPool;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public abstract boolean checkTable(String table) throws SQLException;
+    public abstract boolean checkTable(@NotNull final String table) throws SQLException;
 
+    /** {@inheritDoc} */
     @Override
     public void shutdown() {
         connectionPool.close();

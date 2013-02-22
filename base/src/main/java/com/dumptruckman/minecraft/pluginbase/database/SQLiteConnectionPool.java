@@ -3,12 +3,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.database;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-class SQLiteConnectionPool extends SQLConnectionPool {
+class SQLiteConnectionPool extends AbstractSQLConnectionPool {
 
     private final File file;
 
@@ -27,11 +29,20 @@ class SQLiteConnectionPool extends SQLConnectionPool {
         this.file = file;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Connection getBaseConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
     }
 
+    /**
+     * Unlike most other database types, SQLite will not utilize a pool of connections.  As such
+     * this method always returns the same connection to the database.
+     *
+     * @return the single connection to the SQLite database.
+     * @throws SQLException  if any SQL exceptions occur while attempting to obtain the connection.
+     */
+    @NotNull
     public Connection getConnection() throws SQLException {
         return getBaseConnection();
     }

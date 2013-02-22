@@ -3,7 +3,8 @@
  */
 package com.dumptruckman.minecraft.pluginbase.database;
 
-import java.io.Closeable;
+import org.jetbrains.annotations.NotNull;
+
 import java.sql.Array;
 import java.sql.Blob;
 import java.sql.CallableStatement;
@@ -28,7 +29,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-abstract class AbstractSQLConnectionPool implements Closeable {
+abstract class AbstractSQLConnectionPool implements SQLConnectionPool {
 
     private final static int POOL_SIZE = 10;
     private final static long TIME_TO_LIVE = 300000;
@@ -40,6 +41,7 @@ abstract class AbstractSQLConnectionPool implements Closeable {
         new ConnectionReaper().start();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void close() {
         lock.lock();
@@ -54,6 +56,8 @@ abstract class AbstractSQLConnectionPool implements Closeable {
 
     protected abstract Connection getBaseConnection() throws SQLException;
 
+    /** {@inheritDoc} */
+    @NotNull
     public Connection getConnection() throws SQLException {
         lock.lock();
         try {

@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-class MySQLConnectionPool extends SQLConnectionPool {
+class MySQLConnectionPool extends AbstractSQLConnectionPool {
 
     private final String url, user, password;
 
@@ -18,6 +18,7 @@ class MySQLConnectionPool extends SQLConnectionPool {
         this.password = password;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected Connection getBaseConnection() throws SQLException {
         return DriverManager.getConnection(url, user, password);
