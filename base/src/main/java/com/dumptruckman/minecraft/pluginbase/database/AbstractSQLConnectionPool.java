@@ -28,14 +28,14 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-abstract class SQLConnectionPool implements Closeable {
+abstract class AbstractSQLConnectionPool implements Closeable {
 
     private final static int POOL_SIZE = 10;
     private final static long TIME_TO_LIVE = 300000;
     private final Vector<JDCConnection> connections;
     private final Lock lock = new ReentrantLock();
 
-    SQLConnectionPool() throws ClassNotFoundException {
+    AbstractSQLConnectionPool() throws ClassNotFoundException {
         connections = new Vector<JDCConnection>(POOL_SIZE);
         new ConnectionReaper().start();
     }
