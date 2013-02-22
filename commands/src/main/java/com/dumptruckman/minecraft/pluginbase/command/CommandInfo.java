@@ -11,10 +11,11 @@ public @interface CommandInfo {
 
     /**
      * The primary alias of the command.
-     *
+     * <p/>
      * This shows the primary string required to execute the command.  By default this string must be prefixed by the
      * {@link com.dumptruckman.minecraft.pluginbase.command.CommandProvider#getCommandPrefix()} followed by a space
      * UNLESS {@link #prefixPrimary()} is set to false.
+     * <p/>
      * Additionally if {@link #directlyPrefixPrimary()} is set to true, the space between the command prefix and this
      * string is not required.
      *
@@ -33,7 +34,7 @@ public @interface CommandInfo {
 
     /**
      * Whether the primary alias is directly (no space) prefixed by the {@link com.dumptruckman.minecraft.pluginbase.command.CommandProvider#getCommandPrefix()}.
-     *
+     * <p/>
      * If {@link #prefixPrimary()} is false, this setting is ignored.
      *
      * @return true if the primary alias must be directly prefixed by the {@link com.dumptruckman.minecraft.pluginbase.command.CommandProvider#getCommandPrefix()}.
@@ -42,7 +43,7 @@ public @interface CommandInfo {
 
     /**
      * These are alternate aliases for this command with no predefined prefix.
-     *
+     * <p/>
      * These aliases must be entered by the user exactly as shown here to active this command.
      *
      * @return alternate aliases for this command.
@@ -51,7 +52,7 @@ public @interface CommandInfo {
 
     /**
      * These are alternate aliases for this command that utilize the {@link com.dumptruckman.minecraft.pluginbase.command.CommandProvider#getCommandPrefix()} followed by a space.
-     *
+     * <p/>
      * These aliases must be entered by the user following the command prefix and a space to activate this command.
      *
      * @return alternate aliases for this command that utilize the {@link com.dumptruckman.minecraft.pluginbase.command.CommandProvider#getCommandPrefix()} followed by a space.
@@ -60,7 +61,7 @@ public @interface CommandInfo {
 
     /**
      * These are alternate aliases for this command that utilize the {@link com.dumptruckman.minecraft.pluginbase.command.CommandProvider#getCommandPrefix()} with no space.
-     *
+     * <p/>
      * These aliases must be entered by the user directly following the command prefix to activate this command.
      *
      * @return alternate aliases for this command that utilize the {@link com.dumptruckman.minecraft.pluginbase.command.CommandProvider#getCommandPrefix()} with no space.
@@ -69,10 +70,10 @@ public @interface CommandInfo {
 
     /**
      * Describes the usage of this command beyond just the alias.
-     *
+     * <p/>
      * This should demonstrate only the parameters that are used for the command.
-     *
-     * example: <required> [optional 1] [optional 2]
+     * <p/>
+     * example: {@code <required> [optional 1] [optional 2]}
      *
      * @return the usage of this command beyond just the alias.
      */
@@ -101,9 +102,13 @@ public @interface CommandInfo {
     int max() default -1;
 
     /**
+     * Gets the flags for the command.
+     * <p/>
      * Flags allow special processing for flags such as -h in the command,
-     * allowing users to easily turn on a flag. This is a string with
-     * each character being a flag. Use A-Z and a-z as possible flags.
+     * allowing users to easily turn on a flag.
+     * <p/>
+     * This is a string with each character being a flag. Use A-Z and a-z as possible flags.
+     *  <p/>
      * Appending a flag with a : makes the flag character before a value flag,
      * meaning that if it is given it must have a value
      *

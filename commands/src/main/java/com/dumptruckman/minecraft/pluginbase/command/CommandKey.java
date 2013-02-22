@@ -1,25 +1,30 @@
 package com.dumptruckman.minecraft.pluginbase.command;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 import java.util.Map;
 
 class CommandKey {
 
+    @NotNull
     private final String key;
     private final boolean command;
     private Map<String, CommandKey> commandKeys;
 
-    CommandKey(final String key, final boolean command) {
+    CommandKey(@NotNull final String key, final boolean command) {
         this.key = key;
         this.command = command;
     }
 
-    CommandKey(CommandKey previousKey) {
+    CommandKey(@NotNull final CommandKey previousKey) {
         this.key = previousKey.key;
         this.command = true;
         this.commandKeys = previousKey.commandKeys;
     }
 
+    @NotNull
     String getName() {
         return key;
     }
@@ -34,12 +39,14 @@ class CommandKey {
         }
     }
 
-    CommandKey getKey(final String key) {
+    @Nullable
+    CommandKey getKey(@NotNull final String key) {
         initMap();
         return commandKeys.get(key);
     }
 
-    CommandKey newKey(final String key, final boolean command) {
+    @NotNull
+    CommandKey newKey(@NotNull final String key, final boolean command) {
         initMap();
         if (commandKeys.containsKey(key)) {
             if (command) {

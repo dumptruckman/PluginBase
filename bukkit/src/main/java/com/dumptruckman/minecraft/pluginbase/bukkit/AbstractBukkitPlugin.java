@@ -5,11 +5,7 @@ package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.bukkit.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.bukkit.properties.YamlProperties;
-import com.dumptruckman.minecraft.pluginbase.command.Command;
-import com.dumptruckman.minecraft.pluginbase.command.CommandHandler;
-import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
-import com.dumptruckman.minecraft.pluginbase.command.CommandUsageException;
-import com.dumptruckman.minecraft.pluginbase.command.QueuedCommand;
+import com.dumptruckman.minecraft.pluginbase.command.*;
 import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
@@ -22,11 +18,7 @@ import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginInfo;
 import com.dumptruckman.minecraft.pluginbase.plugin.ServerInterface;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ConfirmCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.InfoCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.*;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.sk89q.minecraft.util.commands.CommandException;
 import org.bukkit.Bukkit;
@@ -405,7 +397,9 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     /** {@inheritDoc} */
     @Override
     public void scheduleQueuedCommandExpiration(@NotNull final QueuedCommand queuedCommand) {
-        getServerInterface().runTaskLater(this, queuedCommand, queuedCommand.getExpirationDuration());
+        if (useQueuedCommands()) {
+            getServerInterface().runTaskLater(this, queuedCommand, queuedCommand.getExpirationDuration());
+        }
     }
 
     /** {@inheritDoc} */
