@@ -11,6 +11,7 @@ import com.dumptruckman.minecraft.pluginbase.util.time.Duration;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -22,6 +23,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This class is responsible for handling commands.
+ *
+ * This entails everything from registering them to detecting executed commands and delegating them
+ * to the appropriate command class.
+ *
+ * This must be implemented fully for a specific Minecraft server implementation.
+ *
+ * @param <P> Typically represents a plugin implementing this command handler.
+ */
 public abstract class CommandHandler<P extends CommandProvider & Messaging> {
 
     @NotNull
@@ -33,6 +44,13 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
     @NotNull
     private final Map<BasePlayer, QueuedCommand> queuedCommands = new HashMap<BasePlayer, QueuedCommand>();
 
+    /**
+     * Creates a new command handler.
+     *
+     * Typically you only want one of these per plugin.
+     *
+     * @param plugin The plugin utilizing this command handler.
+     */
     public CommandHandler(@NotNull final P plugin) {
         this.plugin = plugin;
         this.commandMap = new HashMap<String, Class<? extends Command>>();
@@ -42,7 +60,14 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
 
     //}
 
-    public boolean registerCommand(@NotNull final Class<? extends Command> commandClass) {
+    /**
+     * Registers the command represented by the given command class.
+     *
+     * @param commandClass the command class to register.
+     * @return true if command registered successfully.
+     * @throws IllegalArgumentException if there was some problem with the command class passed in.
+     */
+    public boolean registerCommand(@NotNull final Class<? extends Command> commandClass) throws IllegalArgumentException {
         final CommandInfo cmdInfo = commandClass.getAnnotation(CommandInfo.class);
         if (cmdInfo == null) {
             throw new IllegalArgumentException("Command must be annotated with @CommandInfo");
@@ -122,9 +147,26 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         return false;
     }
 
-    protected abstract boolean register(com.sk89q.bukkit.util.CommandInfo command);
+    /**
+     * Tells the server implementation to register the given command information as a command so that
+     * someone using the command will delegate the execution to this plugin/command handler.
+     *
+     * @param commandInfo the info for the command to register.
+     * @return true if successfully registered.
+     */
+    protected abstract boolean register(@NotNull final com.sk89q.bukkit.util.CommandInfo commandInfo);
 
-    protected Command loadCommand(final Class<? extends Command> clazz) {
+    /**
+     * Constructs a command object from the given Command class.
+     *
+     * The command class must accept a single parameter which is an object extending both
+     * {@link Messaging} and {@link CommandProvider}.
+     *
+     * @param clazz the command class to instantiate.
+     * @return a new instance of the command or null if unable to instantiate.
+     */
+    @Nullable
+    protected Command loadCommand(@NotNull final Class<? extends Command> clazz) {
         try {
             for (final Constructor constructor : clazz.getDeclaredConstructors()) {
                 if (constructor.getParameterTypes().length == 1
@@ -154,12 +196,20 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         }
     }
 
+    /** Message used when a users tries to confirm a command but has not queued one or the queued one has expired. */
     public static final Message NO_QUEUED_COMMANDS = new Message("commands.queued.none_queued",
             ChatColor.DARK_GRAY + "Sorry, but you have not used any commands that require confirmation.");
+    /** Default message used when the user must confirm a queued command. */
     public static final Message MUST_CONFIRM = new Message("commands.queued.must_confirm",
             ChatColor.BLUE + "You must confirm the previous command by typing " + ChatColor.BOLD + "%s"
             + "\n" + ChatColor.RESET + ChatColor.GRAY + "You have %s to comply.");
 
+    /**
+     * Confirms any queued command for the given player.
+     *
+     * @param player the player to confirm queued commands for.
+     * @return true if there was a queued command.
+     */
     public boolean confirmCommand(@NotNull final BasePlayer player) {
         final QueuedCommand queuedCommand = queuedCommands.get(player);
         if (queuedCommand != null) {
@@ -170,6 +220,16 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         }
     }
 
+    /**
+     * Locates and runs a command executed by a user.
+     *
+     * @param player the user executing the command.
+     * @param args the space separated arguments of the command including the base command itself.
+     * @return true if the command executed successfully.
+     * @throws CommandException if there were any exceptions brought about by the usage of the command.  The causes are
+     * many fold and include things such as using an improper amount of parameters or attempting to use a flag not
+     * recognized by the command.
+     */
     public boolean locateAndRunCommand(@NotNull final BasePlayer player, @NotNull String[] args) throws CommandException {
         args = commandDetection(args);
         Logging.finest("'%s' is attempting to use command '%s'", player, Arrays.toString(args));
@@ -243,6 +303,15 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         return true;
     }
 
+    /**
+     * Returns a list of strings detailing the usage of the given command.
+     *
+     * @param args
+     * @param level
+     * @param cmd
+     * @param cmdInfo
+     * @return
+     */
     protected List<String> getUsage(@NotNull final String[] args, final int level, final Command cmd, @NotNull final CommandInfo cmdInfo) {
         final List<String> commandUsage = new ArrayList<String>();
         final StringBuilder command = new StringBuilder();

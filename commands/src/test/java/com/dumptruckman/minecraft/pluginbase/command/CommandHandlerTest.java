@@ -17,7 +17,7 @@ public class CommandHandlerTest extends TestCase {
                 getKey("pb").newKey("reload", true);
             }
             @Override
-            protected boolean register(CommandInfo command) {
+            protected boolean register(CommandInfo commandInfo) {
                 return false;  //To change body of implemented methods use File | Settings | File Templates.
             }
         });

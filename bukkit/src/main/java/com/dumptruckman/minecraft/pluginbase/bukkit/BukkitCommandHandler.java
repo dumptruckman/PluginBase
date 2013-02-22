@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
+import org.jetbrains.annotations.NotNull;
 
 class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
 
@@ -24,15 +25,15 @@ class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
         this.executor = executor;
     }
 
-    protected boolean register(com.sk89q.bukkit.util.CommandInfo command) {
+    protected boolean register(@NotNull final com.sk89q.bukkit.util.CommandInfo commandInfo) {
         CommandMap commandMap = getCommandMap();
-        if (command == null || commandMap == null) {
+        if (commandMap == null) {
             return false;
         }
-        DynamicPluginCommand cmd = new DynamicPluginCommand(command.getAliases(), command.getDesc(),
-                "/" + command.getName() + " " + command.getUsage(), executor, command.getRegisteredWith(), plugin);
-        cmd.setPermissions(command.getPermissions());
-        commandMap.register(command.getName(), plugin.getDescription().getName(), cmd);
+        DynamicPluginCommand cmd = new DynamicPluginCommand(commandInfo.getAliases(), commandInfo.getDesc(),
+                "/" + commandInfo.getName() + " " + commandInfo.getUsage(), executor, commandInfo.getRegisteredWith(), plugin);
+        cmd.setPermissions(commandInfo.getPermissions());
+        commandMap.register(commandInfo.getName(), plugin.getDescription().getName(), cmd);
         return true;
     }
 
