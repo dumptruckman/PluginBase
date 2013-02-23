@@ -15,12 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
+import java.util.logging.*;
 
 /**
  * Maintains a connection to a file debug log for writing debug messages to from PluginLogger.
@@ -59,7 +54,7 @@ class DebugLog {
 
     /**
      * Sets the debug level for this logger.
-     *
+     * <p/>
      * PluginLogger stores its debug level in this debug logger so that plugins sharing the debug log can share a
      * debug level setting.
      *
@@ -165,6 +160,7 @@ class DebugLog {
     private static class LogFormatter extends Formatter {
         private final SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+        /** {@inheritDoc} */
         @Override
         @NotNull
         public String format(@NotNull final LogRecord record) {

@@ -8,8 +8,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 
 /**
- * Any plugin wishing to use the PluginLogger must implement this method.  In a Bukkit plugin this is as simple
- * as adding this class in an implements clause.
+ * Any plugin wishing to use the PluginLogger must implement this method.
+ * <p/>
+ * In a Bukkit plugin this is as simple as adding this class in an implements clause.
  */
 public interface LoggablePlugin {
 

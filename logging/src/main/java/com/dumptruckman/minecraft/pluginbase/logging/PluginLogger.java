@@ -17,20 +17,20 @@ import java.util.logging.Logger;
 /**
  * This is the primary class to use for logging purposes.  It allows you to obtain your own copy of PluginLogger
  * via {@link #getLogger(LoggablePlugin)}.
- *
+ * <p/>
  * Features:
- * - Thread safe logging.
- * - Plugin name prepended to log messages.
- * - Debug messages append plugin name with -Debug.  {@link #setDebugPrefix(String)}.
- * - {@link Level#CONFIG} messages can be silenced via {@link #setShowingConfig(boolean)}.
- * - {@link Level#FINE}, {@link Level#FINER}, {@link Level#FINEST} show as {@link Level#INFO} with
+ * <br/>- Thread safe logging.
+ * <br/>- Plugin name prepended to log messages.
+ * <br/>- Debug messages append plugin name with -Debug.  {@link #setDebugPrefix(String)}.
+ * <br/>- {@link Level#CONFIG} messages can be silenced via {@link #setShowingConfig(boolean)}.
+ * <br/>- {@link Level#FINE}, {@link Level#FINER}, {@link Level#FINEST} show as {@link Level#INFO} with
  *   {@link #setDebugLevel(int)} while also being written to a debug.log file.
- * - Allows you to share debug logs with another plugin.  (How Multiverse does it..)
- * - Adds var-arg parameter logging methods for use with messages in the style of
+ * <br/>- Allows you to share debug logs with another plugin.  (How Multiverse does it..)
+ * <br/>- Adds var-arg parameter logging methods for use with messages in the style of
  * {@link String#format(String, Object...)}.
- * - {@link Level#FINE} and finer message do not perform {@link String#format(String, Object...)} on messages that
+ * <br/>- {@link Level#FINE} and finer message do not perform {@link String#format(String, Object...)} on messages that
  * won't be logged.
- *
+ * <p/>
  * Tip: Create a static {@link Logging} class of your own in your own namespace to allow high flexibility in your
  * plugin's logging. (No need to pass an object around everywhere!)
  */
@@ -61,9 +61,14 @@ public class PluginLogger extends Logger {
     static final Map<String, PluginLogger> INITIALIZED_LOGGERS = new HashMap<String, PluginLogger>();
 
     /**
-     * Prepares the log for use.  Debugging will default to disabled when initialized.  This should be called early on
-     * in plugin initialization, such as during onLoad() or onEnable().  If a logger has already been created for the
-     * plugin passed then that will be returned with no additional initialization steps.
+     * Prepares the log for use.
+     * <p/>
+     * Debugging will default to disabled when initialized.
+     * <p/>
+     * This should be called early on in plugin initialization, such as during onLoad() or onEnable().
+     * <p/>
+     * If a logger has already been created for the plugin passed then that will be returned with no additional
+     * initialization steps.
      *
      * @param plugin The plugin using this logger.
      * @param pluginToShareDebugLogger If you would like to use the same debug log file as another LoggablePlugin
@@ -91,9 +96,14 @@ public class PluginLogger extends Logger {
     }
 
     /**
-     * Prepares the log for use.  Debugging will default to disabled when initialized.  This should be called early on
-     * in plugin initialization, such as during onLoad() or onEnable().  If a logger has already been created for the
-     * plugin passed then that will be returned with no additional initialization steps.
+     * Prepares the log for use.
+     * <p/>
+     * Debugging will default to disabled when initialized.
+     * <p/>
+     * This should be called early on in plugin initialization, such as during onLoad() or onEnable().
+     * <p/>
+     * If a logger has already been created for the plugin passed then that will be returned with no additional
+     * initialization steps.
      *
      * @param plugin The plugin using this logger.
      * @return A logger for your plugin.
@@ -126,11 +136,13 @@ public class PluginLogger extends Logger {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public final synchronized void log(@NotNull final Level level, @NotNull final String message) {
         log(level, message, new Object[0]);
     }
 
+    /** {@inheritDoc} */
     @Override
     public final synchronized void log(@NotNull final LogRecord record) {
         final Level level = record.getLevel();
@@ -174,13 +186,15 @@ public class PluginLogger extends Logger {
     }
 
     /**
-     * Sets the debug logging level of this plugin.  Debug messages will print to the console and to a
-     * debug log file when enabled.
+     * Sets the debug logging level of this plugin.
+     * <p/>
+     * Debug messages will print to the console and to a debug log file when enabled.
+     * <p/>
      * debugLevel:
-     *   0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
-     *   1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
-     *   2 - enables debug logging of {@link java.util.logging.Level#FINER} or lower messages.
-     *   3 - enables debug logging of {@link java.util.logging.Level#FINEST} or lower messages.
+     * <br/>0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
+     * <br/>1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
+     * <br/>2 - enables debug logging of {@link java.util.logging.Level#FINER} or lower messages.
+     * <br/>3 - enables debug logging of {@link java.util.logging.Level#FINEST} or lower messages.
      *
      * @param debugLevel 0 = off, 1-3 = debug level
      */
@@ -252,9 +266,12 @@ public class PluginLogger extends Logger {
     }
 
     /**
-     * Custom log method.  Always logs to a single static logger.  Applies String.format() to the message if it is a
-     * non-debug level logging and to debug level logging IF debug logging is enabled.  Optionally appends version to
-     * prefix.
+     * Custom log method that always logs to a single static logger.
+     * <p/>
+     * Applies String.format() to the message if it is a non-debug level logging and to debug level logging IF debug
+     * logging is enabled.
+     * <p/>
+     * Optionally appends version to prefix.
      *
      * @param level       One of the message level identifiers, e.g. SEVERE.
      * @param message     The string message.

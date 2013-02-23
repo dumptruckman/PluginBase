@@ -21,12 +21,14 @@ public final class Logging {
      * The default "plugin" class to use for static logging.
      */
     private static class LoggingPlugin implements LoggablePlugin {
+        /** {@inheritDoc} */
         @NotNull
         @Override
         public String getName() {
             return LoggingPlugin.class.getSimpleName();
         }
 
+        /** {@inheritDoc} */
         @NotNull
         @Override
         public File getDataFolder() {
@@ -64,13 +66,15 @@ public final class Logging {
     }
 
     /**
-     * Sets the debug logging level of this plugin.  Debug messages will print to the console and to a
-     * debug log file when enabled.
+     * Sets the debug logging level of this plugin.
+     * <p/>
+     * Debug messages will print to the console and to a debug log file when enabled.
+     * <p/>
      * debugLevel:
-     *   0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
-     *   1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
-     *   2 - enables debug logging of {@link java.util.logging.Level#FINER} or lower messages.
-     *   3 - enables debug logging of {@link java.util.logging.Level#FINEST} or lower messages.
+     * <br/>0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
+     * <br/>1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
+     * <br/>2 - enables debug logging of {@link java.util.logging.Level#FINER} or lower messages.
+     * <br/>3 - enables debug logging of {@link java.util.logging.Level#FINEST} or lower messages.
      *
      * @param debugLevel 0 = off, 1-3 = debug level
      */
@@ -86,9 +90,12 @@ public final class Logging {
     }
 
     /**
-     * Custom log method.  Always logs to a single static logger.  Applies String.format() to the message if it is a
-     * non-debug level logging and to debug level logging IF debug logging is enabled.  Optionally appends version to
-     * prefix.
+     * Custom log method that always logs to a single static logger.
+     * <p/>
+     * Applies String.format() to the message if it is a non-debug level logging and to debug level logging IF debug
+     * logging is enabled.
+     * <br/>
+     * Optionally appends version to prefix.
      *
      * @param level       One of the message level identifiers, e.g. SEVERE.
      * @param message     The string message.
