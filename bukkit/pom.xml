@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dumptruckman.minecraft</groupId>
+        <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
         <artifactId>PluginBase</artifactId>
         <version>1.5-SNAPSHOT</version>
     </parent>
@@ -125,9 +125,9 @@ and adjust the build number accordingly -->
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>com.dumptruckman.minecraft:Plugin</include>
-                                    <include>com.dumptruckman.minecraft:Properties-Bukkit</include>
-                                    <include>com.dumptruckman.minecraft:Permissions-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Plugin</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Properties-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Permissions-Bukkit</include>
                                     <include>com.feildmaster.lib:EnhancedConfiguration</include>
                                     <include>org.mcstats:metrics</include>
                                     <include>com.sk89q:worldedit</include>
@@ -180,21 +180,21 @@ and adjust the build number accordingly -->
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Plugin</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Permissions-Bukkit</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Properties-Bukkit</artifactId>
             <version>${project.version}</version>
             <type>jar</type>

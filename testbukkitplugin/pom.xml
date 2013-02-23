@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dumptruckman.minecraft</groupId>
+        <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
         <artifactId>PluginBase</artifactId>
         <version>1.5-SNAPSHOT</version>
     </parent>
@@ -126,7 +126,7 @@ and adjust the build number accordingly -->
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>com.dumptruckman.minecraft:BukkitPlugin</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:BukkitPlugin</include>
                                 </includes>
                             </artifactSet>
                             <filters>
@@ -148,7 +148,7 @@ and adjust the build number accordingly -->
     <dependencies>
         <!-- Start of PluginBase Dependency -->
         <dependency>
-            <groupId>com.dumptruckman.minecraft</groupId>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>BukkitPlugin</artifactId>
             <version>1.5-SNAPSHOT</version>
             <type>jar</type>
