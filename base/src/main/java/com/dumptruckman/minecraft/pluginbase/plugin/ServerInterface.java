@@ -6,7 +6,7 @@ import java.io.File;
 
 /**
  * An interface for interacting with required aspects the Minecraft server.
- *
+ * <p/>
  * This must be implemented by the specific server implementation of PluginBase.
  *
  * @param <P> The server implementation of the PluginBase plugin.

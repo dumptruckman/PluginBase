@@ -15,20 +15,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class is responsible for handling commands.
- *
+ * <p/>
  * This entails everything from registering them to detecting executed commands and delegating them
  * to the appropriate command class.
- *
+ * <p/>
  * This must be implemented fully for a specific Minecraft server implementation.
  *
  * @param <P> Typically represents a plugin implementing this command handler.
@@ -46,7 +40,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
 
     /**
      * Creates a new command handler.
-     *
+     * <p/>
      * Typically you only want one of these per plugin.
      *
      * @param plugin The plugin utilizing this command handler.
@@ -158,7 +152,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
 
     /**
      * Constructs a command object from the given Command class.
-     *
+     * <p/>
      * The command class must accept a single parameter which is an object extending both
      * {@link Messaging} and {@link CommandProvider}.
      *

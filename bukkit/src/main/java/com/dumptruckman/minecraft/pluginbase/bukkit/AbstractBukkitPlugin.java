@@ -268,11 +268,20 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     }
 
     /**
-     * Called when commands should be registered.  Override this method in order to register commands at the
-     * most correct time.  Use {@link #registerCommand(Class)} to register your command classes.
+     * Called when commands should be registered.
+     * <p/>
+     * Override this method in order to register commands at the most correct time.  PluginBase will call this method
+     * when appropriate.
+     * <p/>
+     * Use {@link #registerCommand(Class)} to register your command classes.
      */
     protected void registerCommands() { }
 
+    /**
+     * Register the given command class as a command for this plugin.
+     *
+     * @param commandClass the command class to register as a command for this plugin.
+     */
     protected final void registerCommand(Class<? extends Command> commandClass) {
         if (commandClass.getAnnotation(CommandInfo.class) == null) {
             throw new IllegalArgumentException("Command class must be annotated with " + CommandInfo.class);

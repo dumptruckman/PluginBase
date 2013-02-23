@@ -19,9 +19,9 @@ import java.util.List;
 
 /**
  * A Bukkit specific implementation of {@link com.dumptruckman.minecraft.pluginbase.messages.messaging.Messager}.
- *
+ * <p/>
  * Provides word wrapping on messages too long to fit on one line.
- *
+ * <p/>
  * Please refer to {@link com.dumptruckman.minecraft.pluginbase.messages.messaging.Messager} for javadoc for the methods in this class.  This class merely adds
  * convenience methods for Bukkit CommandSenders.
  */

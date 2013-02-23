@@ -33,7 +33,7 @@ public class DebugCommand extends BaseBuiltInCommand {
 
     /**
      * Adds an alias to this built in command.
-     *
+     * <p/>
      * Allows adding aliases to a built in command which is not normally possible since you cannot
      * add CommandInfo annotations to them.
      *

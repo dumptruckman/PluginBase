@@ -19,6 +19,13 @@ public abstract class Command<P extends CommandProvider & Messaging> {
 
     private P plugin;
 
+    /**
+     * Constructs a command.
+     * <p/>
+     * You will never need to call this constructor.  It is used by {@link CommandHandler}
+     *
+     * @param plugin your plugin.
+     */
     protected Command(@NotNull final P plugin) {
         this.plugin = plugin;
     }
@@ -61,7 +68,7 @@ public abstract class Command<P extends CommandProvider & Messaging> {
 
     /**
      * This is the method called when someone executes this command.
-     *
+     * <p/>
      * If any parameter limitations are set in the {@link CommandInfo} then this method will only be called if the
      * executor used the correct amount of parameters.
      *

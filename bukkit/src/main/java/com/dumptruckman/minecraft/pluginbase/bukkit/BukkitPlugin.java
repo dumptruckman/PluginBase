@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * This interface represents the merger of a PluginBase plugin and a Bukkit plugin.
- *
+ * <p/>
  * Contains some convenience overloaded methods and a few methods specific to Bukkit such as wrapper methods.
  */
 public interface BukkitPlugin extends PluginBase, Plugin {
@@ -46,7 +46,7 @@ public interface BukkitPlugin extends PluginBase, Plugin {
 
     /**
      * Gets the name used as a prefix for all permissions for this plugin.
-     *
+     * <p/>
      * An example would be Multiverse-Core using "multiverse.core" for the return value.
      *
      * @return the name used as a prefix for all permissions for this plugin.

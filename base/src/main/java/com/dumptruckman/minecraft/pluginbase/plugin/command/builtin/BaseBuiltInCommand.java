@@ -19,7 +19,7 @@ abstract class BaseBuiltInCommand extends BuiltInCommand<PluginBase> {
 
     /**
      * Gets any aliases added to a command via a static method for each built in command.
-     *
+     * <p/>
      * These allow for custom aliases for the built in commands which can not be added through normal means.
      *
      * @return a list of aliases for the command.

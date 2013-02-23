@@ -26,7 +26,7 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging> exten
     /**
      * This method should return a user friendly message explaining that this command
      * requires confirmation using the appropriate confirm command.
-     *
+     * <p/>
      * The confirm command is "/" + {@link com.dumptruckman.minecraft.pluginbase.command.CommandProvider#getCommandPrefix()} + "confirm" by default.
      *
      * @return The confirm required message or null to use the default {@link CommandHandler#MUST_CONFIRM}.

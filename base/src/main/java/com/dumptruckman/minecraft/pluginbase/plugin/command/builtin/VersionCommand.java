@@ -12,25 +12,16 @@ import com.dumptruckman.minecraft.pluginbase.plugin.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
 import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandPerms;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.BitlyURLShortener;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteFailedException;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteService;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteServiceFactory;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteServiceType;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.URLShortener;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.*;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
  * Produces version information related to this plugin.
- *
+ * <p/>
  * Specific information for the plugin can be displayed and is determined by {@link com.dumptruckman.minecraft.pluginbase.plugin.PluginBase#dumpVersionInfo()}.
  * Also has the option to output to pastebin or pastie.
  */
@@ -48,7 +39,7 @@ public class VersionCommand extends BaseBuiltInCommand {
 
     /**
      * Adds an alias to this built in command.
-     *
+     * <p/>
      * Allows adding aliases to a built in command which is not normally possible since you cannot
      * add CommandInfo annotations to them.
      *

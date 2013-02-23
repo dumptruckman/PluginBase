@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * This represents the PluginBase plugin itself.
- *
+ * <p/>
  * Provides numerous useful methods for general plugin self-management.
  */
 public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
@@ -50,7 +50,7 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
 
     /**
      * Returns the short prefix for the commands owned by this plugin.
-     *
+     * <p/>
      * This is particularly necessary due to PluginBase offering built in commands.
      *
      * @return the short prefix for the commands owned by this plugin.
@@ -85,7 +85,7 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
 
     /**
      * Tells the plugin to reload the configuration and other data files.
-     *
+     * <p/>
      * Exactly what this entails is up to the implementation.
      */
     void reloadConfig();
