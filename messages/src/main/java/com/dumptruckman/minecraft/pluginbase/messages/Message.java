@@ -8,8 +8,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * A localization key and its defaults.
- *
+ * <p/>
  * The key represents the location of the localized strings in a language file.
+ * <br/>
  * The default is what should populate the localization file by default.
  */
 public final class Message {
@@ -21,7 +22,7 @@ public final class Message {
 
     /**
      * Creates a new localization message.
-     *
+     * <p/>
      * These messages are automatically added to the localization pool which is generally written out to a default
      * language file.  This means that this Message needs to be initialized prior to the default language file being
      * generated.

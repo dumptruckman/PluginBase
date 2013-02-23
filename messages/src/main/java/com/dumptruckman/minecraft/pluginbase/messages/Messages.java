@@ -20,7 +20,7 @@ public class Messages {
     public final static Message BLANK = new Message("");
     // END CHECKSTYLE-SUPPRESSION: Javadoc
 
-    static void registerMessage(@NotNull Message message) {
+    static void registerMessage(@NotNull final Message message) {
         if (message.getKey() != null) {
             messages.put(message.getKey(), message.getDefault());
         }

@@ -5,75 +5,75 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
- * All supported color values for chat
+ * All supported color values for chat.
  */
 public enum ChatColor {
     /**
-     * Represents black
+     * Represents black.
      */
     BLACK('0', 0x00),
     /**
-     * Represents dark blue
+     * Represents dark blue.
      */
     DARK_BLUE('1', 0x1),
     /**
-     * Represents dark green
+     * Represents dark green.
      */
     DARK_GREEN('2', 0x2),
     /**
-     * Represents dark blue (aqua)
+     * Represents dark blue (aqua).
      */
     DARK_AQUA('3', 0x3),
     /**
-     * Represents dark red
+     * Represents dark red.
      */
     DARK_RED('4', 0x4),
     /**
-     * Represents dark purple
+     * Represents dark purple.
      */
     DARK_PURPLE('5', 0x5),
     /**
-     * Represents gold
+     * Represents gold.
      */
     GOLD('6', 0x6),
     /**
-     * Represents gray
+     * Represents gray.
      */
     GRAY('7', 0x7),
     /**
-     * Represents dark gray
+     * Represents dark gray.
      */
     DARK_GRAY('8', 0x8),
     /**
-     * Represents blue
+     * Represents blue.
      */
     BLUE('9', 0x9),
     /**
-     * Represents green
+     * Represents green.
      */
     GREEN('a', 0xA),
     /**
-     * Represents aqua
+     * Represents aqua.
      */
     AQUA('b', 0xB),
     /**
-     * Represents red
+     * Represents red.
      */
     RED('c', 0xC),
     /**
-     * Represents light purple
+     * Represents light purple.
      */
     LIGHT_PURPLE('d', 0xD),
     /**
-     * Represents yellow
+     * Represents yellow.
      */
     YELLOW('e', 0xE),
     /**
-     * Represents white
+     * Represents white.
      */
     WHITE('f', 0xF),
     /**
-     * Represents magical characters that change around randomly
+     * Represents magical characters that change around randomly.
      */
     MAGIC('k', 0x10, true),
     /**
@@ -98,8 +98,9 @@ public enum ChatColor {
     RESET('r', 0x15);
 
     /**
-     * The special character which prefixes all chat colour codes. Use this if you need to dynamically
-     * convert colour codes from your custom format.
+     * The special character which prefixes all chat colour codes.
+     * <p/>
+     * Use this if you need to dynamically convert colour codes from your custom format.
      */
     public static final char COLOR_CHAR = '\u00A7';
     private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + String.valueOf(COLOR_CHAR) + "[0-9A-FK-OR]");
@@ -123,9 +124,9 @@ public enum ChatColor {
     }
 
     /**
-     * Gets the char value associated with this color
+     * Gets the char value associated with this color.
      *
-     * @return A char value of this color code
+     * @return A char value of this color code.
      */
     public char getChar() {
         return code;
@@ -151,30 +152,30 @@ public enum ChatColor {
     }
 
     /**
-     * Gets the color represented by the specified color code
+     * Gets the color represented by the specified color code.
      *
-     * @param code Code to check
-     * @return Associative {@link ChatColor} with the given code, or null if it doesn't exist
+     * @param code Code to check.
+     * @return Associated {@link ChatColor} with the given code, or null if it doesn't exist.
      */
     public static ChatColor getByChar(char code) {
         return BY_CHAR.get(code);
     }
 
     /**
-     * Gets the color represented by the specified color code
+     * Gets the color represented by the specified color code.
      *
-     * @param code Code to check
-     * @return Associative {@link ChatColor} with the given code, or null if it doesn't exist
+     * @param code Code to check.
+     * @return Associated {@link ChatColor} with the given code, or null if it doesn't exist.
      */
     public static ChatColor getByChar(String code) {
         return BY_CHAR.get(code.charAt(0));
     }
 
     /**
-     * Strips the given message of all color codes
+     * Strips the given message of all color codes.
      *
-     * @param input String to strip of color
-     * @return A copy of the input string, without any coloring
+     * @param input String to strip of color.
+     * @return A copy of the input string, without any coloring.
      */
     public static String stripColor(final String input) {
         if (input == null) {
@@ -186,10 +187,11 @@ public enum ChatColor {
 
     /**
      * Translates a string using an alternate color code character into a string that uses the internal
-     * ChatColor.COLOR_CODE color code character. The alternate color code character will only be replaced
-     * if it is immediately followed by 0-9, A-F, or a-f.
+     * ChatColor.COLOR_CODE color code character.
+     * <p/>
+     * The alternate color code character will only be replaced if it is immediately followed by 0-9, A-F, or a-f.
      *
-     * @param altColorChar The alternate color code character to replace. Ex: &
+     * @param altColorChar The alternate color code character to replace. Ex: &.
      * @param textToTranslate Text containing the alternate color code character.
      * @return Text containing the ChatColor.COLOR_CODE color code character.
      */

@@ -5,25 +5,47 @@ package com.dumptruckman.minecraft.pluginbase.messages;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents a {@link Message} preset with arguments to fill in any instances of {@code %s}.
+ * <p/>
+ * Can be used in cases where you are required to return a message of some sort and it is otherwise impossible to
+ * return a localized message due to also requiring arguments.
+ */
 public class BundledMessage {
 
     @NotNull
-    private Message message;
+    private final Message message;
     @NotNull
-    private Object[] args;
+    private final Object[] args;
 
+    /**
+     * Creates a bundled message.
+     *
+     * @param message The localization message for the bundle.
+     * @param args The arguments for the bundled message.
+     */
     public BundledMessage(@NotNull final Message message, @NotNull final Object...args) {
         this.message = message;
         this.args = args;
     }
 
+    /**
+     * Gets the localization message for this bundle.
+     *
+     * @return the localization message for this bundle.
+     */
     @NotNull
-    public Message getMessage() {
+    public final Message getMessage() {
         return message;
     }
 
+    /**
+     * Gets the arguments for the bundled message.
+     *
+     * @return the arguments for the bundled message.
+     */
     @NotNull
-    public Object[] getArgs() {
+    public final Object[] getArgs() {
         return args;
     }
 }
