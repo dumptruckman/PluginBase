@@ -59,14 +59,22 @@ public abstract class PermFactory {
     }
 
     static PermFactory newUncheckedPerm(final Class pluginClass, final String permName) {
+        final boolean access = factory.isAccessible();
         try {
-            factory.newInstance(pluginClass, permName);
+            if (!access) {
+                factory.setAccessible(true);
+            }
+            return factory.newInstance(pluginClass, permName);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
+        } finally {
+            if (!access) {
+                factory.setAccessible(false);
+            }
         }
         return new PermFactory(pluginClass, permName) {
             @Override

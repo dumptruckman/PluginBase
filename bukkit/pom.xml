@@ -92,7 +92,7 @@ and adjust the build number accordingly -->
                 <version>2.11</version>
                 <configuration>
                     <excludes>
-                        <!--exclude>**/TestBasics.java</exclude-->
+                        <exclude>**/TestBasics.java</exclude>
                     </excludes>
                 </configuration>
                 <dependencies>
