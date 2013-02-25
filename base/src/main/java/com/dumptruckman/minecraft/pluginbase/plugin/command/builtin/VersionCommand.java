@@ -8,15 +8,23 @@ import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
+import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandPerms;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.*;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.BitlyURLShortener;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteFailedException;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteService;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteServiceFactory;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteServiceType;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.URLShortener;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -32,6 +40,24 @@ import java.util.logging.Level;
         usage = "[-p|-b]"
 )
 public class VersionCommand extends BaseBuiltInCommand {
+
+    /** Permission for version command. */
+    public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.version").usePluginName().commandPermission()
+            .desc("Sends version information to the console.").build();
+
+    public final static Message VERSION_HELP = new Message("cmd.version.help",
+            "Displays version and other helpful information about the plugin."
+                    + "\nFlags:"
+                    + "\n  -p will output an http://pastie.org url containing the information."
+                    + "\n  -b will output an http://pastebin.com url containing the information.");
+    public final static Message VERSION_PLAYER = new Message("cmd.version.player",
+            "Version info dumped to console. Please check your server logs.");
+    public final static Message VERSION_PLUGIN_VERSION = new Message("cmd.version.info.plugin_version", "%s Version: %s");
+    public final static Message VERSION_SERVER_NAME = new Message("cmd.version.info.server_name", "Server Name: %s");
+    public final static Message VERSION_SERVER_VERSION = new Message("cmd.version.info.server_version", "Server Version: %s");
+    public final static Message VERSION_LANG_FILE = new Message("cmd.version.info.lang_file", "Language file: %s");
+    public final static Message VERSION_DEBUG_MODE = new Message("cmd.version.info.debug_mode", "Debug Mode: %s");
+    public final static Message VERSION_INFO_DUMPED = new Message("cmd.version.dumped", "Version info dumped here: %s");
 
     private static final URLShortener SHORTENER = new BitlyURLShortener();
 
@@ -63,13 +89,13 @@ public class VersionCommand extends BaseBuiltInCommand {
     /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
-        return CommandPerms.COMMAND_VERSION;
+        return PERMISSION;
     }
 
     /** {@inheritDoc} */
     @Override
     public Message getHelp() {
-        return CommandMessages.VERSION_HELP;
+        return VERSION_HELP;
     }
 
     /** {@inheritDoc} */
@@ -77,15 +103,15 @@ public class VersionCommand extends BaseBuiltInCommand {
     public boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         // Check if the command was sent from a Player.
         if (sender.isPlayer()) {
-            getMessager().message(sender, CommandMessages.VERSION_PLAYER);
+            getMessager().message(sender, VERSION_PLAYER);
         }
 
         final List<String> buffer = new LinkedList<String>();
-        buffer.add(getMessager().getMessage(CommandMessages.VERSION_PLUGIN_VERSION, getPlugin().getPluginInfo().getName(), getPlugin().getPluginInfo().getVersion()));
-        buffer.add(getMessager().getMessage(CommandMessages.VERSION_SERVER_NAME, getPlugin().getServerInterface().getName()));
-        buffer.add(getMessager().getMessage(CommandMessages.VERSION_SERVER_VERSION, getPlugin().getServerInterface().getVersion()));
-        buffer.add(getMessager().getMessage(CommandMessages.VERSION_LANG_FILE, getPlugin().config().get(BaseConfig.LANGUAGE_FILE)));
-        buffer.add(getMessager().getMessage(CommandMessages.VERSION_DEBUG_MODE, getPlugin().config().get(BaseConfig.DEBUG_MODE)));
+        buffer.add(getMessager().getMessage(VERSION_PLUGIN_VERSION, getPlugin().getPluginInfo().getName(), getPlugin().getPluginInfo().getVersion()));
+        buffer.add(getMessager().getMessage(VERSION_SERVER_NAME, getPlugin().getServerInterface().getName()));
+        buffer.add(getMessager().getMessage(VERSION_SERVER_VERSION, getPlugin().getServerInterface().getVersion()));
+        buffer.add(getMessager().getMessage(VERSION_LANG_FILE, getPlugin().config().get(BaseConfig.LANGUAGE_FILE)));
+        buffer.add(getMessager().getMessage(VERSION_DEBUG_MODE, getPlugin().config().get(BaseConfig.DEBUG_MODE)));
 
         final List<String> versionInfoDump = getPlugin().dumpVersionInfo();
         if (versionInfoDump != null) {
@@ -114,7 +140,7 @@ public class VersionCommand extends BaseBuiltInCommand {
                         getPlugin().getServerInterface().runTask(getPlugin(), new Runnable() {
                             @Override
                             public void run() {
-                                getMessager().message(sender, CommandMessages.VERSION_INFO_DUMPED, pasteUrl);
+                                getMessager().message(sender, VERSION_INFO_DUMPED, pasteUrl);
                             }
                         });
                     }

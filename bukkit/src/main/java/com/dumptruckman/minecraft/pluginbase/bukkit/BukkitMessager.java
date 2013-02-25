@@ -6,6 +6,7 @@ package com.dumptruckman.minecraft.pluginbase.bukkit;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
+import com.dumptruckman.minecraft.pluginbase.messages.MessageProviding;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.MessageReceiver;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.SimpleMessager;
 import org.bukkit.command.CommandSender;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A Bukkit specific implementation of {@link com.dumptruckman.minecraft.pluginbase.messages.messaging.Messager}.
@@ -27,8 +29,10 @@ import java.util.List;
  */
 public class BukkitMessager extends SimpleMessager {
 
-    BukkitMessager(@NotNull final File dataFolder) {
-        super(dataFolder);
+    public BukkitMessager(@NotNull final MessageProviding providing,
+                          @NotNull final File languageFile,
+                          @NotNull final Locale locale) {
+        super(providing, languageFile, locale);
     }
 
     /** {@inheritDoc} */

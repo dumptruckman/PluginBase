@@ -7,9 +7,8 @@ import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
+import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandPerms;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +25,13 @@ import java.util.List;
         max = 0
 )
 public class ReloadCommand extends BaseBuiltInCommand {
+
+    /** Permission for reload command. */
+    public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.reload").usePluginName().commandPermission()
+            .desc("Reloads the config file.").build();
+
+    public final static Message RELOAD_HELP = new Message("cmd.reload.help", "Reloads the plugin, typically detecting any external changes in plugin files.");
+    public final static Message RELOAD_COMPLETE = new Message("cmd.reload.complete", "&b===[ Reload Complete! ]===");
 
     private static final List<String> STATIC_KEYS = new ArrayList<String>();
 
@@ -55,20 +61,20 @@ public class ReloadCommand extends BaseBuiltInCommand {
     /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
-        return CommandPerms.COMMAND_RELOAD;
+        return PERMISSION;
     }
 
     /** {@inheritDoc} */
     @Override
     public Message getHelp() {
-        return CommandMessages.RELOAD_HELP;
+        return RELOAD_HELP;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         getPlugin().reloadConfig();
-        getMessager().message(sender, CommandMessages.RELOAD_COMPLETE);
+        getMessager().message(sender, RELOAD_COMPLETE);
         return true;
     }
 }

@@ -8,9 +8,8 @@ import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
+import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandPerms;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,6 +26,12 @@ import java.util.List;
         prefixedAliases = "confirm"
 )
 public class ConfirmCommand extends BaseBuiltInCommand {
+
+    public final static Message PERMISSION = new Message("cmd.confirm.help", "Confirms the usage of a previously entered command, if required.");
+
+    /** Permission for confirm command. */
+    public static final Perm CONFIRM_COMMAND_PERM = PermFactory.newPerm(PluginBase.class, "cmd.confirm").usePluginName().commandPermission()
+            .desc("If you have not been prompted to use this, it will not do anything.").build();
 
     private final static List<String> STATIC_KEYS = new ArrayList<String>();
 
@@ -56,13 +61,13 @@ public class ConfirmCommand extends BaseBuiltInCommand {
     /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
-        return CommandPerms.COMMAND_CONFIRM;
+        return CONFIRM_COMMAND_PERM;
     }
 
     /** {@inheritDoc} */
     @Override
     public Message getHelp() {
-        return CommandMessages.CONFIRM_HELP;
+        return PERMISSION;
     }
 
     /** {@inheritDoc} */

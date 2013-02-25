@@ -9,6 +9,7 @@ package com.dumptruckman.minecraft.pluginbase.util;
 
 import com.dumptruckman.minecraft.pluginbase.bukkit.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.bukkit.BukkitHelper;
+import com.dumptruckman.minecraft.pluginbase.messages.Messages;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -334,6 +335,8 @@ public class TestInstanceCreator {
 
             // Load Multiverse Core
             plugin.onLoad();
+
+            Messages.registerMessages(plugin, MockMessages.class);
 
             // Enable it.
             plugin.onEnable();

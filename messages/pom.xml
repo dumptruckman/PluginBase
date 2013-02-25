@@ -112,6 +112,16 @@ and adjust the build number accordingly -->
         </plugins>
     </build>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Logging</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
     <distributionManagement>
         <repository>
             <id>OnARandomBox</id>

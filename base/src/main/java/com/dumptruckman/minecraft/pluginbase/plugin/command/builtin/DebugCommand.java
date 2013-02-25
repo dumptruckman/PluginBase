@@ -8,10 +8,9 @@ import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
+import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandPerms;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +27,17 @@ import java.util.List;
         max = 1
 )
 public class DebugCommand extends BaseBuiltInCommand {
+
+    /** Permission for debug command. */
+    public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.debug").usePluginName().commandPermission()
+            .desc("Spams the console a bunch.").build();
+
+    public final static Message DEBUG_HELP = new Message("cmd.debug.help", "Enables or disable debug mode."
+            + "When enabled the console will be spammed with lots of information useful for helping developers debug.");
+    public final static Message DEBUG_SET = new Message("cmd.debug.set", "Debug mode is &2%s");
+    public final static Message DEBUG_DISABLED = new Message("cmd.debug.off", "Debug mode is &cOFF");
+    public final static Message INVALID_DEBUG = new Message("debug.invalid",
+            "&fInvalid debug level.  Please use number 0-3.  &b(3 being many many messages!)");
 
     private static final List<String> STATIC_KEYS = new ArrayList<String>();
 
@@ -57,13 +67,13 @@ public class DebugCommand extends BaseBuiltInCommand {
     /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
-        return CommandPerms.COMMAND_DEBUG;
+        return PERMISSION;
     }
 
     /** {@inheritDoc} */
     @Override
     public Message getHelp() {
-        return CommandMessages.DEBUG_HELP;
+        return DEBUG_HELP;
     }
 
     /** {@inheritDoc} */
@@ -79,7 +89,7 @@ public class DebugCommand extends BaseBuiltInCommand {
                 }
             }
             if (debugLevel > 3 || debugLevel < 0) {
-                getMessager().message(sender, CommandMessages.INVALID_DEBUG);
+                getMessager().message(sender, INVALID_DEBUG);
             } else {
                 getPlugin().config().set(BaseConfig.DEBUG_MODE, debugLevel);
                 Logging.setDebugLevel(getPlugin().config().get(BaseConfig.DEBUG_MODE));
@@ -92,9 +102,9 @@ public class DebugCommand extends BaseBuiltInCommand {
 
     private void displayDebugMode(PluginBase p, BasePlayer sender) {
         if (p.config().get(BaseConfig.DEBUG_MODE) == 0) {
-            p.getMessager().message(sender, CommandMessages.DEBUG_DISABLED, sender);
+            p.getMessager().message(sender, DEBUG_DISABLED, sender);
         } else {
-            p.getMessager().message(sender, CommandMessages.DEBUG_SET, p.config().get(BaseConfig.DEBUG_MODE).toString());
+            p.getMessager().message(sender, DEBUG_SET, p.config().get(BaseConfig.DEBUG_MODE).toString());
             Logging.fine("%s debug ENABLED", p.getPluginInfo().getName());
         }
     }

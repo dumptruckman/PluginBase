@@ -7,9 +7,8 @@ import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
+import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandPerms;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +25,12 @@ import java.util.List;
         desc = "Gives some information about this plugin"
 )
 public class InfoCommand extends BaseBuiltInCommand {
+
+    /** Permission for info command. */
+    public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.info").usePluginName().commandPermission()
+            .desc("Gives some basic information about this plugin.").build();
+
+    public final static Message INFO_HELP = new Message("cmd.info.help", "Gives some basic information about this plugin.");
 
     private static final List<String> STATIC_KEYS = new ArrayList<String>();
 
@@ -55,13 +60,13 @@ public class InfoCommand extends BaseBuiltInCommand {
     /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
-        return CommandPerms.COMMAND_INFO;
+        return PERMISSION;
     }
 
     /** {@inheritDoc} */
     @Override
     public Message getHelp() {
-        return CommandMessages.INFO_HELP;
+        return INFO_HELP;
     }
 
     /** {@inheritDoc} */

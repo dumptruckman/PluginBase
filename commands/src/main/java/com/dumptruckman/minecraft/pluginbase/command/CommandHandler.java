@@ -5,6 +5,7 @@ import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.messages.ChatColor;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
+import com.dumptruckman.minecraft.pluginbase.messages.Messages;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.Messaging;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.util.time.Duration;
@@ -15,7 +16,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is responsible for handling commands.
@@ -48,6 +55,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
     public CommandHandler(@NotNull final P plugin) {
         this.plugin = plugin;
         this.commandMap = new HashMap<String, Class<? extends Command>>();
+        Messages.registerMessages(plugin, getClass());
     }
 
     //public boolean registerCommmands(String packageName) {
@@ -135,6 +143,8 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
                 }
             }
             commandMap.put(aliases.get(0), commandClass);
+            // Register language in the command class if any.
+            Messages.registerMessages(plugin, commandClass);
             return true;
         }
         Logging.severe("Failed to register: " + commandClass);

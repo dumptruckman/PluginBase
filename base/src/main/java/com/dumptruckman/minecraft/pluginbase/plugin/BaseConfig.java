@@ -4,8 +4,8 @@
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
-import com.dumptruckman.minecraft.pluginbase.messages.messaging.MessageProvider;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
+import com.dumptruckman.minecraft.pluginbase.messages.MessageProvider;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
 import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
@@ -22,7 +22,7 @@ public interface BaseConfig {
      * Locale name config path, default and comments.
      */ //TODO Add more comments about acceptable locales.
     SimpleProperty<Locale> LOCALE = PropertyFactory.newProperty(Locale.class, "settings.language.locale",
-            Locale.ENGLISH)
+            MessageProvider.DEFAULT_LOCALE)
             .comment("# This is the locale you wish to use.").serializer(new PropertySerializer<Locale>() {
                 @Override
                 public Locale deserialize(Object o) {
@@ -64,7 +64,7 @@ public interface BaseConfig {
 
                 @Override
                 public Message getInvalidMessage() {
-                    return CommandMessages.INVALID_DEBUG;
+                    return DebugCommand.INVALID_DEBUG;
                 }
             }).build();
 

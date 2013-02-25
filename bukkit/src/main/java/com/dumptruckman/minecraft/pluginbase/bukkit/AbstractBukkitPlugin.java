@@ -5,7 +5,11 @@ package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.bukkit.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.bukkit.properties.YamlProperties;
-import com.dumptruckman.minecraft.pluginbase.command.*;
+import com.dumptruckman.minecraft.pluginbase.command.Command;
+import com.dumptruckman.minecraft.pluginbase.command.CommandHandler;
+import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
+import com.dumptruckman.minecraft.pluginbase.command.CommandUsageException;
+import com.dumptruckman.minecraft.pluginbase.command.QueuedCommand;
 import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
@@ -17,8 +21,11 @@ import com.dumptruckman.minecraft.pluginbase.plugin.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginInfo;
 import com.dumptruckman.minecraft.pluginbase.plugin.ServerInterface;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.CommandMessages;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.*;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ConfirmCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.InfoCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionCommand;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import com.sk89q.minecraft.util.commands.CommandException;
 import org.bukkit.Bukkit;
@@ -50,11 +57,6 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private Properties sqlConfig = null;
     private Metrics metrics = null;
 
-    static {
-        // Statically initializes the members of the command language class.
-        CommandMessages.class.getName();
-    }
-
     /**
      * Override this method if you wish for your permissions to start with something other than the plugin name
      * when using the {@link com.dumptruckman.minecraft.pluginbase.permission.PermFactory#usePluginName()} method.
@@ -83,6 +85,8 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         setupConfig();
         // Setup the command handler.
         this.commandHandler = new BukkitCommandHandler(this);
+        // Setup messages.
+        _registerMessages();
 
         // Call the method implementers should use in place of onLoad().
         onPluginLoad();
@@ -98,7 +102,6 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     public final void onDisable() {
         // Call the method implementers should use in place of onDisable().
         onPluginDisable();
-        getMessager().pruneLanguageFile();
 
         // Shut down our logging.
         Logging.shutdown();
@@ -206,12 +209,17 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         }
     }
 
+    private void _registerMessages() {
+
+    }
+
+    /**
+     * Override this method as a place for registering your plugin's localized message classes at the appropriate time.
+     */
+    protected void registerMessages() { }
+
     private void setupMessager() {
-        this.messager = new BukkitMessager(getDataFolder());
-        if (config() != null) {
-            this.messager.setLocale(config().get(BaseConfig.LOCALE));
-            this.messager.loadLanguageFile(config().get(BaseConfig.LANGUAGE_FILE));
-        }
+        this.messager = new BukkitMessager(this, new File(getDataFolder(), config().get(BaseConfig.LANGUAGE_FILE)), config().get(BaseConfig.LOCALE));
     }
 
     /**
@@ -229,7 +237,6 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      * Nulls the config object and reloads a new one.
      */
     public final void reloadConfig() {
-        getMessager().pruneLanguageFile();
         setupDB();
         setupConfig();
         setupMessager();

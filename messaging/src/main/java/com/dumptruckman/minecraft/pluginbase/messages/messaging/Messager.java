@@ -5,6 +5,7 @@ package com.dumptruckman.minecraft.pluginbase.messages.messaging;
 
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
+import com.dumptruckman.minecraft.pluginbase.messages.MessageProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -13,12 +14,6 @@ import java.util.List;
  * This interface describes a Messager which sends messages to {@link MessageReceiver}s.
  */
 public interface Messager extends MessageProvider {
-
-    /** A message of general success */
-    Message SUCCESS = new Message("generic.success", "&a[SUCCESS]&f");
-
-    /** A message of general error */
-    Message ERROR = new Message("generic.error", "&c[ERROR]&f");
 
     /**
      * Sends a message to the specified player with NO special prefix.

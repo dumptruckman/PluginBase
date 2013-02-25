@@ -3,16 +3,21 @@ package com.dumptruckman.minecraft.pluginbase.messages.messaging;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
+import com.dumptruckman.minecraft.pluginbase.messages.MessageProviding;
+import com.dumptruckman.minecraft.pluginbase.messages.SimpleMessageProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
 public class SimpleMessager extends SimpleMessageProvider implements Messager {
 
-    public SimpleMessager(@NotNull File dataFolder) {
-        super(dataFolder);
+    public SimpleMessager(@NotNull final MessageProviding providing,
+                          @NotNull final File languageFile,
+                          @NotNull final Locale locale) {
+        super(providing, languageFile, locale);
     }
 
     protected void send(@NotNull final MessageReceiver sender,

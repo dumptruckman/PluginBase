@@ -19,9 +19,8 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.dumptruckman.minecraft.pluginbase.messages.messaging;
+package com.dumptruckman.minecraft.pluginbase.messages;
 
-import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -46,7 +45,7 @@ public interface MessageProvider {
      * @return The message
      */
     @NotNull
-    String getMessage(@NotNull Message key, Object... args);
+    String getMessage(@NotNull final Message key, @NotNull final Object... args);
 
     /**
      * Returns the Locale this MessageProvider is currently using.
@@ -55,28 +54,5 @@ public interface MessageProvider {
      */
     @NotNull
     Locale getLocale();
-
-    /**
-     * Sets the locale for this MessageProvider.
-     *
-     * @param locale The new {@link java.util.Locale}.
-     */
-    void setLocale(@NotNull final Locale locale);
-
-    /**
-     * Loads the given language file which will be used for localized messages with this message provider.
-     * <p/>
-     * If the file does not exist it will be created and populated with the default values.
-     *
-     * @param languageFileName the name of the file to use.
-     */
-    void loadLanguageFile(@NotNull final String languageFileName);
-
-    /**
-     * Removes any messages in the currently loaded language file that does not exist in set of registered messages.
-     * <p/>
-     * Registered messages would be messages created using {@link Message#Message(String, String)}.
-     */
-    void pruneLanguageFile();
 }
 

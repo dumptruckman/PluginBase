@@ -1,6 +1,8 @@
 package com.dumptruckman.minecraft.pluginbase.messages.messaging;
 
-public interface Messaging {
+import com.dumptruckman.minecraft.pluginbase.messages.MessageProviding;
+
+public interface Messaging extends MessageProviding {
 
     Messager getMessager();
 }

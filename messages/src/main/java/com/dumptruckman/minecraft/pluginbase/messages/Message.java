@@ -4,7 +4,6 @@
 package com.dumptruckman.minecraft.pluginbase.messages;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * A localization key and its defaults.
@@ -17,33 +16,33 @@ public final class Message {
 
     @NotNull
     private final String def;
-    @Nullable
+
     private final String key;
 
     /**
-     * Creates a new localization message.
+     * Creates a new localized message.
      * <p/>
-     * These messages are automatically added to the localization pool which is generally written out to a default
-     * language file.  This means that this Message needs to be initialized prior to the default language file being
-     * generated.
+     * This should be defined as a final static object (constant).
+     * <p/>
+     * The class that contains the definition must be
+     * registered with {@link Messages#registerMessages(MessageProviding, Class)} prior to creating a {@link SimpleMessageProvider}
+     * in order to have the default messages populate the language file.
      *
      * @param key The localization key for this message.
-     * @param def The default message.
+     * @param def The default message in whatever your plugin's primary language is.
      */
     public Message(@NotNull final String key, @NotNull final String def) {
         this.key = key;
         this.def = def;
-        Messages.registerMessage(this);
     }
 
     Message(@NotNull final String def) {
         this.key = null;
         this.def = def;
-        Messages.registerMessage(this);
     }
 
     /**
-     * The default messages in whatever your pimary plugin language is.
+     * The default message in whatever your plugin's primary language is.
      *
      * @return The default non-localized messages.
      */
@@ -57,7 +56,7 @@ public final class Message {
      *
      * @return The localization key for the message.
      */
-    @Nullable
+    @NotNull
     public String getKey() {
         return key;
     }
