@@ -11,10 +11,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -141,12 +139,6 @@ public class SimpleMessageProvider extends Messages implements MessageProvider {
 
     @Override
     @NotNull
-    public List<String> getMessages(@NotNull Message key, Object... args) {
-        return Arrays.asList(getMessage(key, args));
-    }
-
-    @Override
-    @NotNull
     public Locale getLocale() {
         return this.locale;
     }
@@ -154,11 +146,6 @@ public class SimpleMessageProvider extends Messages implements MessageProvider {
     @Override
     public void setLocale(@NotNull final Locale locale) {
         this.locale = locale;
-    }
-
-    @Override
-    public void setLanguage(@NotNull final String languageFileName) {
-        loadLanguageFile(languageFileName);
     }
 
     @Override
@@ -173,7 +160,7 @@ public class SimpleMessageProvider extends Messages implements MessageProvider {
         if (languageFileName != null) {
             final Properties language = getProperties(languageFileName);
             // Prune file
-            Iterator<Object> it = language.keySet().iterator();
+            final Iterator<Object> it = language.keySet().iterator();
             while (it.hasNext()) {
                 final String key = it.next().toString();
                 if (!Messages.messages.containsKey(key)) {

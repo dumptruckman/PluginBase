@@ -5,17 +5,20 @@ package com.dumptruckman.minecraft.pluginbase.messages.messaging;
 
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 /**
- * This interface describes a Messager which sends messages to CommandSenders.
+ * This interface describes a Messager which sends messages to {@link MessageReceiver}s.
  */
 public interface Messager extends MessageProvider {
 
+    /** A message of general success */
     Message SUCCESS = new Message("generic.success", "&a[SUCCESS]&f");
 
-    Message ERROR = new Message("generic.success", "&c[ERROR]&f");
+    /** A message of general error */
+    Message ERROR = new Message("generic.error", "&c[ERROR]&f");
 
     /**
      * Sends a message to the specified player with NO special prefix.
@@ -24,7 +27,7 @@ public interface Messager extends MessageProvider {
      * @param message The message to send.
      * @param args    arguments for String.format().
      */
-    void message(MessageReceiver sender, Message message, Object... args);
+    void message(@NotNull final MessageReceiver sender, @NotNull final Message message, @NotNull final Object... args);
 
     /**
      * Sends a message to the specified player with NO special prefix.
@@ -32,7 +35,7 @@ public interface Messager extends MessageProvider {
      * @param sender  The entity to send the messages to.
      * @param message The message to send.
      */
-    void message(MessageReceiver sender, BundledMessage message);
+    void message(@NotNull final MessageReceiver sender, @NotNull final BundledMessage message);
 
     /**
      * Sends a message to a player that automatically takes words that are too long and puts them on a new line.
@@ -40,7 +43,7 @@ public interface Messager extends MessageProvider {
      * @param player  Player to send message to.
      * @param message Message to send.
      */
-    void message(MessageReceiver player, String message);
+    void message(@NotNull final MessageReceiver player, @NotNull final String message);
 
     /**
      * Sends a message to a player that automatically takes words that are too long and puts them on a new line.
@@ -48,20 +51,20 @@ public interface Messager extends MessageProvider {
      * @param player   Player to send message to.
      * @param messages Messages to send.
      */
-    void message(MessageReceiver player, List<String> messages);
+    void message(@NotNull final MessageReceiver player, @NotNull final List<String> messages);
 
-    void messageSuccess(MessageReceiver sender, Message message, Object... args);
+    void messageSuccess(@NotNull final MessageReceiver sender, @NotNull final Message message, @NotNull final Object... args);
 
-    void messageSuccess(MessageReceiver sender, BundledMessage message);
+    void messageSuccess(@NotNull final MessageReceiver sender, @NotNull final BundledMessage message);
 
-    void messageSuccess(MessageReceiver sender, String message);
+    void messageSuccess(@NotNull final MessageReceiver sender, @NotNull final String message);
 
-    void messageError(MessageReceiver sender, Message message, Object... args);
+    void messageError(@NotNull final MessageReceiver sender, @NotNull final Message message, @NotNull final Object... args);
 
-    void messageError(MessageReceiver sender, BundledMessage message);
+    void messageError(@NotNull final MessageReceiver sender, @NotNull final BundledMessage message);
 
-    void messageError(MessageReceiver sender, String message);
+    void messageError(@NotNull final MessageReceiver sender, @NotNull final String message);
 
-    void messageAndLog(MessageReceiver sender, Message message, Object... args);
+    void messageAndLog(@NotNull final MessageReceiver sender, @NotNull final Message message, @NotNull final Object... args);
 }
 

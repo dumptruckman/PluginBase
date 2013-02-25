@@ -24,20 +24,17 @@ package com.dumptruckman.minecraft.pluginbase.messages.messaging;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.Locale;
 
 /**
- * Multiverse 2 MessageProvider.
- * <p/>
- * This interface describes a Multiverse-MessageProvider.
+ * Contains methods for retrieving messages from a persistent set of localized messages.
  */
 public interface MessageProvider {
-    /**
-     * The default locale.
-     */
+
+    /** The default locale. */
     @NotNull
     Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    /** The default message/language file */
     @NotNull
     String DEFAULT_LANGUAGE_FILE_NAME = "english.txt";
 
@@ -52,17 +49,6 @@ public interface MessageProvider {
     String getMessage(@NotNull Message key, Object... args);
 
     /**
-     * Returns a message (as {@link java.util.List}) of Strings for the specified key (as {@link com.dumptruckman.minecraft.pluginbase.messages.Messages}).
-     *
-     * @param key  The key
-     * @param args Args for String.format()
-     * @return The messages
-     */
-    @Deprecated
-    @NotNull
-    List<String> getMessages(@NotNull Message key, Object... args);
-
-    /**
      * Returns the Locale this MessageProvider is currently using.
      *
      * @return The locale this MessageProvider is currently using.
@@ -75,13 +61,22 @@ public interface MessageProvider {
      *
      * @param locale The new {@link java.util.Locale}.
      */
-    void setLocale(@NotNull Locale locale);
+    void setLocale(@NotNull final Locale locale);
 
-    @Deprecated
-    void setLanguage(@NotNull String languageFileName);
+    /**
+     * Loads the given language file which will be used for localized messages with this message provider.
+     * <p/>
+     * If the file does not exist it will be created and populated with the default values.
+     *
+     * @param languageFileName the name of the file to use.
+     */
+    void loadLanguageFile(@NotNull final String languageFileName);
 
-    void loadLanguageFile(@NotNull String languageFileName);
-
+    /**
+     * Removes any messages in the currently loaded language file that does not exist in set of registered messages.
+     * <p/>
+     * Registered messages would be messages created using {@link Message#Message(String, String)}.
+     */
     void pruneLanguageFile();
 }
 
