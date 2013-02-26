@@ -39,7 +39,7 @@ abstract class AbstractBukkitCommandSender<S extends CommandSender> extends Base
 
     /** {@inheritDoc} */
     @Override
-    public boolean hasPermission(String perm) {
+    public boolean hasPermission(@NotNull final String perm) {
         return getSender().hasPermission(perm);
     }
 

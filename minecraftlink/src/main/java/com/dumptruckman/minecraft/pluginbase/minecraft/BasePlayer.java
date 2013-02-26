@@ -4,20 +4,36 @@
 package com.dumptruckman.minecraft.pluginbase.minecraft;
 
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.MessageReceiver;
-import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.Permissible;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+/**
+ * Represents a player/user currently on a Minecraft server.
+ * <p/>
+ * It may not always represent an actual player but could also represent a console user.  {@link #isPlayer()} is used
+ * to determine this difference.
+ */
 public abstract class BasePlayer implements MessageReceiver, Permissible {
 
+    /**
+     * Gets the name of this player/user.
+     *
+     * @return the name of this player/user.
+     */
     public abstract String getName();
 
-    public abstract boolean hasPermission(String perm);
+    /** {@inheritDoc} */
+    @Override
+    public abstract boolean hasPermission(@NotNull final String perm);
 
+    /** {@inheritDoc} */
+    @Override
     public abstract void sendMessage(@NotNull final String message);
 
+    /** {@inheritDoc} */
     @Override
-    public boolean equals(final Object other) {
+    public boolean equals(@Nullable final Object other) {
         if (!(other instanceof BasePlayer)) {
             return false;
         }
@@ -25,25 +41,14 @@ public abstract class BasePlayer implements MessageReceiver, Permissible {
         return other2.getName().equals(getName());
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         return getName().hashCode();
     }
 
-    public void hasPerm(Perm perm) {
-        perm.hasPermission(this);
-    }
-
-    public void hasPerm(Perm perm, String specific) {
-        perm.hasPermission(this, specific);
-    }
-
-    public void checkPermission(String permission) {
-        if (!hasPermission(permission)) {
-            //throw new WorldEditPermissionException();
-        }
-    }
-
+    /** {@inheritDoc} */
+    @Override
     public boolean isPlayer() {
         return true;
     }
