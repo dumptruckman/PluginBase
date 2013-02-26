@@ -6,6 +6,7 @@ package com.dumptruckman.minecraft.pluginbase.minecraft;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.MessageReceiver;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.Permissible;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class BasePlayer implements MessageReceiver, Permissible {
 
@@ -13,7 +14,7 @@ public abstract class BasePlayer implements MessageReceiver, Permissible {
 
     public abstract boolean hasPermission(String perm);
 
-    public abstract void sendMessage(String message);
+    public abstract void sendMessage(@NotNull final String message);
 
     @Override
     public boolean equals(final Object other) {

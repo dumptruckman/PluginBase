@@ -45,7 +45,7 @@ abstract class AbstractBukkitCommandSender<S extends CommandSender> extends Base
 
     /** {@inheritDoc} */
     @Override
-    public void sendMessage(String message) {
+    public void sendMessage(@NotNull final String message) {
         getSender().sendMessage(message);
     }
 }
