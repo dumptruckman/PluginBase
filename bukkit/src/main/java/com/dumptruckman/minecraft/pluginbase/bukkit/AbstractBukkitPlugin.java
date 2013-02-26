@@ -219,7 +219,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     protected void registerMessages() { }
 
     private void setupMessager() {
-        this.messager = new BukkitMessager(this, new File(getDataFolder(), config().get(BaseConfig.LANGUAGE_FILE)), config().get(BaseConfig.LOCALE));
+        this.messager = BukkitMessager.loadMessagerWithMessages(this, new File(getDataFolder(), config().get(BaseConfig.LANGUAGE_FILE)), config().get(BaseConfig.LOCALE));
     }
 
     /**

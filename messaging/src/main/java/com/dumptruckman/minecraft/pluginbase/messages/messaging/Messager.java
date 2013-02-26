@@ -3,17 +3,72 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.messages.messaging;
 
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messages.Localizable;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.messages.MessageProvider;
+import com.dumptruckman.minecraft.pluginbase.messages.Messages;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This interface describes a Messager which sends messages to {@link MessageReceiver}s.
  */
-public interface Messager extends MessageProvider {
+public class Messager implements MessageProvider {
+
+    @NotNull
+    private final MessageProvider provider;
+
+    /**
+     * Creates a new messager backed by the given message provider.
+     *
+     * @param provider the backing message provider.
+     */
+    protected Messager(@NotNull final MessageProvider provider) {
+        this.provider = provider;
+    }
+
+    /**
+     * Loads the given language file into a new Messager set to use the given locale.
+     * <p/>
+     * Any messages registered with {@link Messages#registerMessages(Localizable, Class)} for the same Localizable object
+     * should be present in this file.  If they are not previously present, they will be inserted with the default
+     * message.  If any message is located in the file that is not registered as previously mentioned it will be
+     * removed from the file.
+     *
+     * @param localizable the object that registered localizable messages.
+     * @param languageFile the language file to load localized messages from.
+     * @param locale the locale to use when formatting the messages.
+     * @return a new messager loaded with the messages from the given language file and locale.
+     */
+    public static Messager loadMessagerWithMessages(@NotNull final Localizable localizable,
+                                                    @NotNull final File languageFile,
+                                                    @NotNull final Locale locale) {
+        return new Messager(Messages.loadMessages(localizable, languageFile, locale));
+    }
+
+    /** {@inheritDoc} */
+    @NotNull
+    @Override
+    public String getLocalizedMessage(@NotNull final Message key, @NotNull final Object... args) {
+        return provider.getLocalizedMessage(key, args);
+    }
+
+    protected void send(@NotNull final MessageReceiver sender,
+                        @Nullable final String prefix,
+                        @NotNull final Message message,
+                        @NotNull final Object... args) {
+        String string = getLocalizedMessage(message, args);
+        if (prefix != null && !prefix.isEmpty()) {
+            string = prefix + " " + string;
+        }
+        message(sender, string);
+    }
 
     /**
      * Sends a message to the specified player with NO special prefix.
@@ -22,7 +77,9 @@ public interface Messager extends MessageProvider {
      * @param message The message to send.
      * @param args    arguments for String.format().
      */
-    void message(@NotNull final MessageReceiver sender, @NotNull final Message message, @NotNull final Object... args);
+    public void message(@NotNull MessageReceiver sender, @NotNull Message message, Object... args) {
+        send(sender, "", message, args);
+    }
 
     /**
      * Sends a message to the specified player with NO special prefix.
@@ -30,36 +87,67 @@ public interface Messager extends MessageProvider {
      * @param sender  The entity to send the messages to.
      * @param message The message to send.
      */
-    void message(@NotNull final MessageReceiver sender, @NotNull final BundledMessage message);
+    public void message(@NotNull MessageReceiver sender, @NotNull BundledMessage message) {
+        message(sender, message.getMessage(), message.getArgs());
+    }
 
     /**
      * Sends a message to a player that automatically takes words that are too long and puts them on a new line.
      *
-     * @param player  Player to send message to.
+     * @param sender  Player to send message to.
      * @param message Message to send.
      */
-    void message(@NotNull final MessageReceiver player, @NotNull final String message);
+    public void message(@NotNull MessageReceiver sender, @NotNull String message) {
+        sender.sendMessage(message);
+    }
 
     /**
      * Sends a message to a player that automatically takes words that are too long and puts them on a new line.
      *
-     * @param player   Player to send message to.
+     * @param sender   Player to send message to.
      * @param messages Messages to send.
      */
-    void message(@NotNull final MessageReceiver player, @NotNull final List<String> messages);
+    public void message(@NotNull MessageReceiver sender, @NotNull List<String> messages) {
+        for (String s : messages) {
+            sender.sendMessage(s);
+        }
+    }
 
-    void messageSuccess(@NotNull final MessageReceiver sender, @NotNull final Message message, @NotNull final Object... args);
+    public void messageSuccess(MessageReceiver sender, Message message, Object... args) {
+        send(sender, getLocalizedMessage(Messages.SUCCESS), message, args);
+    }
 
-    void messageSuccess(@NotNull final MessageReceiver sender, @NotNull final BundledMessage message);
+    public void messageSuccess(MessageReceiver sender, BundledMessage message) {
+        send(sender, getLocalizedMessage(Messages.SUCCESS), message.getMessage(), message.getArgs());
+    }
 
-    void messageSuccess(@NotNull final MessageReceiver sender, @NotNull final String message);
+    public void messageSuccess(MessageReceiver sender, String message) {
+        message(sender, getLocalizedMessage(Messages.SUCCESS) + " " + message);
+    }
 
-    void messageError(@NotNull final MessageReceiver sender, @NotNull final Message message, @NotNull final Object... args);
+    public void messageError(MessageReceiver sender, Message message, Object... args) {
+        send(sender, getLocalizedMessage(Messages.ERROR), message, args);
+    }
 
-    void messageError(@NotNull final MessageReceiver sender, @NotNull final BundledMessage message);
+    public void messageError(MessageReceiver sender, BundledMessage message) {
+        send(sender, getLocalizedMessage(Messages.ERROR), message.getMessage(), message.getArgs());
+    }
 
-    void messageError(@NotNull final MessageReceiver sender, @NotNull final String message);
+    public void messageError(MessageReceiver sender, String message) {
+        message(sender, getLocalizedMessage(Messages.ERROR) + " " + message);
+    }
 
-    void messageAndLog(@NotNull final MessageReceiver sender, @NotNull final Message message, @NotNull final Object... args);
+    protected void sendMessages(@NotNull MessageReceiver player, @NotNull String[] messages) {
+        for (String s : messages) {
+            player.sendMessage(s);
+        }
+    }
+
+    public void messageAndLog(@NotNull MessageReceiver sender, @NotNull Message message, @NotNull Object... args) {
+        if (sender.isPlayer()) {
+            message(sender, message, args);
+        }
+        Logging.info(getLocalizedMessage(message, args));
+    }
 }
 

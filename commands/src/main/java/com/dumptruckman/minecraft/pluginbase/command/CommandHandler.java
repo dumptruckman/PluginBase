@@ -329,7 +329,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
 
         final String help;
         if (cmd.getHelp() != null) {
-            help = plugin.getMessager().getMessage(cmd.getHelp());
+            help = plugin.getMessager().getLocalizedMessage(cmd.getHelp());
         } else {
             help = "";
         }

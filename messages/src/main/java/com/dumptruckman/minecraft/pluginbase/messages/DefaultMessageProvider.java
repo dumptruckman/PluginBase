@@ -1,3 +1,6 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.messages;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
@@ -12,7 +15,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Properties;
 
-public class SimpleMessageProvider extends Messages implements MessageProvider {
+class DefaultMessageProvider implements MessageProvider {
 
     @NotNull
     private final Locale locale;
@@ -20,12 +23,12 @@ public class SimpleMessageProvider extends Messages implements MessageProvider {
     @NotNull
     private final Properties messages;
 
-    public SimpleMessageProvider(@NotNull final MessageProviding providing,
-                                 @NotNull final File languageFile,
-                                 @NotNull final Locale locale) {
+    public DefaultMessageProvider(@NotNull final Localizable localizable,
+                                  @NotNull final File languageFile,
+                                  @NotNull final Locale locale) {
         this.locale = locale;
-        messages = getProperties(providing, languageFile);
-        pruneLanguage(providing, messages);
+        messages = getProperties(localizable, languageFile);
+        pruneLanguage(localizable, messages);
         storeProperties(languageFile, messages);
     }
 
@@ -49,12 +52,12 @@ public class SimpleMessageProvider extends Messages implements MessageProvider {
         }
     }
 
-    private void pruneLanguage(@NotNull final MessageProviding providing, @NotNull final Properties language){
+    private void pruneLanguage(@NotNull final Localizable localizable, @NotNull final Properties language){
         // Prune file
         final Iterator<Object> it = language.keySet().iterator();
         while (it.hasNext()) {
             final String key = it.next().toString();
-            if (!Messages.containsMessageKey(providing, key)) {
+            if (!Messages.containsMessageKey(localizable, key)) {
                 Logging.finer("Removing unused language: %s", key);
                 it.remove();
             }
@@ -62,7 +65,7 @@ public class SimpleMessageProvider extends Messages implements MessageProvider {
     }
 
     @NotNull
-    private Properties getProperties(@NotNull final MessageProviding providing, @NotNull final File languageFile){
+    private Properties getProperties(@NotNull final Localizable localizable, @NotNull final File languageFile){
         final Properties language = new Properties();
         if (!languageFile.exists()) {
             try {
@@ -88,9 +91,9 @@ public class SimpleMessageProvider extends Messages implements MessageProvider {
                 }
             }
         }
-        for (final String key : Messages.getMessageKeys(providing)) {
+        for (final String key : Messages.getMessageKeys(localizable)) {
             if (!language.containsKey(key)) {
-                language.put(key, Messages.getDefaultMessage(providing, key));
+                language.put(key, Messages.getDefaultMessage(localizable, key));
             }
         }
         return language;
@@ -105,8 +108,6 @@ public class SimpleMessageProvider extends Messages implements MessageProvider {
         return message;
     }
 
-
-
     /**
      * Formats a string by replacing ampersand with the Section symbol and %s with the corresponding args
      * object in a fashion similar to String.format().
@@ -116,7 +117,7 @@ public class SimpleMessageProvider extends Messages implements MessageProvider {
      * @return The formatted string.
      */
     @NotNull
-    private static String format(@NotNull final Locale locale, @NotNull String string, final Object... args) {
+    private static String format(@NotNull final Locale locale, @NotNull String string, @NotNull final Object... args) {
         // Replaces & with the Section character
         string = ChatColor.translateAlternateColorCodes('&', string);
         // If there are arguments, %n notations in the message will be
@@ -141,13 +142,7 @@ public class SimpleMessageProvider extends Messages implements MessageProvider {
 
     @Override
     @NotNull
-    public String getMessage(@NotNull Message key, Object... args) {
+    public String getLocalizedMessage(@NotNull final Message key, @NotNull final Object... args) {
         return format(locale, _getMessage(key), args);
-    }
-
-    @Override
-    @NotNull
-    public Locale getLocale() {
-        return this.locale;
     }
 }

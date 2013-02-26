@@ -1,8 +1,19 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.messages.messaging;
 
-import com.dumptruckman.minecraft.pluginbase.messages.MessageProviding;
+import com.dumptruckman.minecraft.pluginbase.messages.Localizable;
 
-public interface Messaging extends MessageProviding {
+/**
+ * Indicates that this class has a Messager available for sending messages to users.
+ */
+public interface Messaging extends Localizable {
 
+    /**
+     * Gets the messager.
+     *
+     * @return the messager.
+     */
     Messager getMessager();
 }

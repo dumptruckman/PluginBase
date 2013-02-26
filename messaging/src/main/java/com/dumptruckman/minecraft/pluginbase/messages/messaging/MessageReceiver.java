@@ -3,6 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.messages.messaging;
 
+/**
+ *
+ */
 public interface MessageReceiver {
 
     void sendMessage(String message);

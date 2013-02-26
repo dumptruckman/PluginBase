@@ -7,45 +7,47 @@ import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
 /**
- * A class used internally to store all of the in use Localization messages.
+ * A class used for registering and keeping track of localized messages.
  */
 public class Messages {
 
     @NotNull
-    private static final Map<MessageProviding, Properties> messages = new HashMap<MessageProviding, Properties>();
+    private static final Map<Localizable, Properties> messages = new HashMap<Localizable, Properties>();
 
     @NotNull
-    public static Set<String> getMessageKeys(@NotNull final MessageProviding provider) {
-        if (!messages.containsKey(provider)) {
+    static Set<String> getMessageKeys(@NotNull final Localizable localizable) {
+        if (!messages.containsKey(localizable)) {
             throw new IllegalArgumentException("Provider has no registered messages.");
         }
-        return messages.get(provider).stringPropertyNames();
+        return messages.get(localizable).stringPropertyNames();
     }
 
     @Nullable
-    public static String getDefaultMessage(@NotNull final MessageProviding provider, @Nullable final String key) {
-        if (!messages.containsKey(provider)) {
+    static String getDefaultMessage(@NotNull final Localizable localizable, @Nullable final String key) {
+        if (!messages.containsKey(localizable)) {
             throw new IllegalArgumentException("Provider has no registered messages.");
         }
         if (key == null) {
             return BLANK.getDefault();
         }
-        return messages.get(provider).getProperty(key);
+        return messages.get(localizable).getProperty(key);
     }
 
-    public static boolean containsMessageKey(@NotNull final MessageProviding provider, @NotNull final String key) {
-        if (!messages.containsKey(provider)) {
+    static boolean containsMessageKey(@NotNull final Localizable localizable, @NotNull final String key) {
+        if (!messages.containsKey(localizable)) {
             throw new IllegalArgumentException("Provider has no registered messages.");
         }
-        return messages.get(provider).containsKey(key);
+        return messages.get(localizable).containsKey(key);
     }
 
     @NotNull public final static Message BLANK = new Message("");
@@ -56,14 +58,26 @@ public class Messages {
     /** A message of general error */
     @NotNull public final static Message ERROR = new Message("generic.error", "&c[ERROR]&f");
 
-    public static void registerMessages(@NotNull final MessageProviding provider, @NotNull final Class clazz) {
+    /**
+     * Registers all of the messages in a given class to the localizable object.
+     * <p/>
+     * Messages are defined with the {@link Message} class and should be declared as static and final (constant).
+     * Their access modifier is not important and should be set as your needs dictate.
+     * <p/>
+     * This method will import all of the Messages defined per the above guide lines that exist in the class.
+     * Those messages imported will be linked to the given localizable object.
+     *
+     * @param localizable the "owner" of the message.  Typically this a plugin who will be using the messages.
+     * @param clazz the class that contains the definition of the messages.
+     */
+    public static void registerMessages(@NotNull final Localizable localizable, @NotNull final Class clazz) {
         if (clazz.equals(Messages.class)) {
             return;
         }
-        if (!messages.containsKey(provider)) {
-            messages.put(provider, new Properties());
+        if (!messages.containsKey(localizable)) {
+            messages.put(localizable, new Properties());
         }
-        final Properties props = messages.get(provider);
+        final Properties props = messages.get(localizable);
         if (!props.containsKey(SUCCESS.getKey())) {
             props.setProperty(SUCCESS.getKey(), SUCCESS.getDefault());
         }
@@ -73,7 +87,9 @@ public class Messages {
 
         final Field[] fields = clazz.getDeclaredFields();
         for (final Field field : fields) {
-            if (Modifier.isStatic(field.getModifiers()) && Message.class.isAssignableFrom(field.getType())) {
+            if (Modifier.isStatic(field.getModifiers())
+                    && Modifier.isFinal(field.getModifiers())
+                    && Message.class.isAssignableFrom(field.getType())) {
                 final boolean access = field.isAccessible();
                 if (!access) {
                     field.setAccessible(true);
@@ -94,6 +110,26 @@ public class Messages {
                 }
             }
         }
+    }
+
+    /**
+     * Loads the given language file into a new MessageProvider set to use the given locale.
+     * <p/>
+     * Any messages registered with {@link #registerMessages(Localizable, Class)} for the same Localizable object
+     * should be present in this file.  If they are not previously present, they will be inserted with the default
+     * message.  If any message is located in the file that is not registered as previously mentioned it will be
+     * removed from the file.
+     *
+     * @param localizable the object that registered localizable messages.
+     * @param languageFile the language file to load localized messages from.
+     * @param locale the locale to use when formatting the messages.
+     * @return a new MessagerProvider loaded with the messages from the given language file and locale.
+     */
+    @NotNull
+    public static MessageProvider loadMessages(@NotNull final Localizable localizable,
+                                               @NotNull final File languageFile,
+                                               @NotNull final Locale locale) {
+        return new DefaultMessageProvider(localizable, languageFile, locale);
     }
 }
 

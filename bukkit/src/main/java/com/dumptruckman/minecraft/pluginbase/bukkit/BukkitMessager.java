@@ -5,10 +5,12 @@ package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messages.Localizable;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
-import com.dumptruckman.minecraft.pluginbase.messages.MessageProviding;
+import com.dumptruckman.minecraft.pluginbase.messages.MessageProvider;
+import com.dumptruckman.minecraft.pluginbase.messages.Messages;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.MessageReceiver;
-import com.dumptruckman.minecraft.pluginbase.messages.messaging.SimpleMessager;
+import com.dumptruckman.minecraft.pluginbase.messages.messaging.Messager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.util.ChatPaginator;
@@ -27,12 +29,34 @@ import java.util.Locale;
  * Please refer to {@link com.dumptruckman.minecraft.pluginbase.messages.messaging.Messager} for javadoc for the methods in this class.  This class merely adds
  * convenience methods for Bukkit CommandSenders.
  */
-public class BukkitMessager extends SimpleMessager {
+public class BukkitMessager extends Messager {
 
-    public BukkitMessager(@NotNull final MessageProviding providing,
-                          @NotNull final File languageFile,
-                          @NotNull final Locale locale) {
-        super(providing, languageFile, locale);
+    /**
+     * Creates a new messager backed by the given message provider.
+     *
+     * @param provider the backing message provider.
+     */
+    protected BukkitMessager(@NotNull final MessageProvider provider) {
+        super(provider);
+    }
+
+    /**
+     * Loads the given language file into a new BukkitMessager set to use the given locale.
+     * <p/>
+     * Any messages registered with {@link Messages#registerMessages(Localizable, Class)} for the same Localizable object
+     * should be present in this file.  If they are not previously present, they will be inserted with the default
+     * message.  If any message is located in the file that is not registered as previously mentioned it will be
+     * removed from the file.
+     *
+     * @param localizable the object that registered localizable messages.
+     * @param languageFile the language file to load localized messages from.
+     * @param locale the locale to use when formatting the messages.
+     * @return a new messager loaded with the messages from the given language file and locale.
+     */
+    public static BukkitMessager loadMessagerWithMessages(@NotNull final Localizable localizable,
+                                                          @NotNull final File languageFile,
+                                                          @NotNull final Locale locale) {
+        return new BukkitMessager(Messages.loadMessages(localizable, languageFile, locale));
     }
 
     /** {@inheritDoc} */
@@ -45,7 +69,7 @@ public class BukkitMessager extends SimpleMessager {
                         @Nullable final String prefix,
                         @NotNull final Message message,
                         @NotNull final Object... args) {
-        String string = getMessage(message, args);
+        String string = getLocalizedMessage(message, args);
         if (prefix != null && !prefix.isEmpty()) {
             string = prefix + " " + string;
         }
@@ -71,27 +95,27 @@ public class BukkitMessager extends SimpleMessager {
     }
 
     public void messageSuccess(@NotNull final CommandSender sender, @NotNull final Message message, @NotNull final Object... args) {
-        send(sender, getMessage(SUCCESS), message, args);
+        send(sender, getLocalizedMessage(Messages.SUCCESS), message, args);
     }
 
     public void messageSuccess(@NotNull final CommandSender sender, @NotNull final BundledMessage message) {
-        send(sender, getMessage(SUCCESS), message.getMessage(), message.getArgs());
+        send(sender, getLocalizedMessage(Messages.SUCCESS), message.getMessage(), message.getArgs());
     }
 
     public void messageSuccess(@NotNull final CommandSender sender, @NotNull final String message) {
-        message(sender, getMessage(SUCCESS) + " " + message);
+        message(sender, getLocalizedMessage(Messages.SUCCESS) + " " + message);
     }
 
     public void messageError(@NotNull final CommandSender sender, @NotNull final Message message, @NotNull final Object... args) {
-        send(sender, getMessage(ERROR), message, args);
+        send(sender, getLocalizedMessage(Messages.ERROR), message, args);
     }
 
     public void messageError(@NotNull final CommandSender sender, @NotNull final BundledMessage message) {
-        send(sender, getMessage(ERROR), message.getMessage(), message.getArgs());
+        send(sender, getLocalizedMessage(Messages.ERROR), message.getMessage(), message.getArgs());
     }
 
     public void messageError(@NotNull final CommandSender sender, @NotNull final String message) {
-        message(sender, getMessage(ERROR) + " " + message);
+        message(sender, getLocalizedMessage(Messages.ERROR) + " " + message);
     }
 
     protected void sendMessages(@NotNull final CommandSender player, @NotNull final String[] messages) {
@@ -102,7 +126,7 @@ public class BukkitMessager extends SimpleMessager {
         if (!(sender instanceof ConsoleCommandSender)) {
             message(sender, message, args);
         }
-        Logging.info(getMessage(message, args));
+        Logging.info(getLocalizedMessage(message, args));
     }
 }
 
