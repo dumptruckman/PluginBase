@@ -3,7 +3,7 @@ package com.dumptruckman.minecraft.pluginbase.minecraft.location;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * A helper class for creating a variety of location designating objects.
+ * A helper class for creating and copying a variety of location designating objects.
  */
 public class Locations {
 

@@ -15,6 +15,7 @@ import com.dumptruckman.minecraft.pluginbase.database.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.database.SQLite;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.BaseConfig;
@@ -130,7 +131,14 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         if (config() != null && config().get(BaseConfig.FIRST_RUN)) {
             firstRun();
             config().set(BaseConfig.FIRST_RUN, false);
-            config().flush();
+            try {
+                config().flush();
+            } catch (PluginBaseException e) {
+                e.printStackTrace();
+                Logging.severe("Cannot save config on startup.  Terminating plugin.");
+                getServer().getPluginManager().disablePlugin(this);
+                return;
+            }
         }
 
         // Call the method implements should use in place of onEnable().

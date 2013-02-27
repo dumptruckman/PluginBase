@@ -26,7 +26,21 @@ public interface Coordinates {
      */
     double getZ();
 
+    /**
+     * Adds to the x, y and/or z values of this coordinate set.
+     *
+     * @param x the amount to add to the x coordinate.
+     * @param y the amount to add to the y coordinate.
+     * @param z the amount to add to the z coordinate.
+     */
     void add(final double x, final double y, final double z);
 
+    /**
+     * Subtracts from the x, y and/or z values of this coordinate set.
+     *
+     * @param x the amount to subtract from the x coordinate.
+     * @param y the amount to subtract from the y coordinate.
+     * @param z the amount to subtract from the z coordinate.
+     */
     void subtract(final double x, final double y, final double z);
 }

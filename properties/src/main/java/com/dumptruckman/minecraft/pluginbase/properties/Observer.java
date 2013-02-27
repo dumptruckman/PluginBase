@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * A property observer.
- *
+ * <p/>
  * Any class wishing to be notified when a {@link ValueProperty} has changes in a {@link Properties}
  * object should implement this class and add it as an observer with {@link Properties#addObserver(Observer)}.
  */

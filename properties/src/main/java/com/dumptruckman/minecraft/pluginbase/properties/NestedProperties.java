@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
-public interface NestedProperties extends Properties {
-
-}
+/**
+ * An interface to indicate that a set of {@link Properties} are to be nested within another set of {@link Properties}.
+ */
+public interface NestedProperties extends Properties { }

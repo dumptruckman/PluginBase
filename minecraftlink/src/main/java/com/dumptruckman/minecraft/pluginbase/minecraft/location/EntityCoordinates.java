@@ -2,6 +2,9 @@ package com.dumptruckman.minecraft.pluginbase.minecraft.location;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents the possible location of an entity in a Minecraft world.
+ */
 public interface EntityCoordinates extends FacingCoordinates, BlockCoordinates, Cloneable {
 
     /**

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * This interface describes a Messager which sends messages to {@link MessageReceiver}s.
+ * This interface describes a Messager which sends localized messages to {@link MessageReceiver}s.
  */
 public class Messager implements MessageProvider {
 
@@ -113,26 +113,66 @@ public class Messager implements MessageProvider {
         }
     }
 
+    /**
+     * Sends a message to the specified player with a prefix indicating success.
+     *
+     * @param sender  The entity to send the messages to.
+     * @param message The message to send.
+     * @param args    arguments for String.format().
+     */
     public void messageSuccess(MessageReceiver sender, Message message, Object... args) {
         send(sender, getLocalizedMessage(Messages.SUCCESS), message, args);
     }
 
+    /**
+     * Sends a message to the specified player with a prefix indicating success.
+     *
+     * @param sender  The entity to send the messages to.
+     * @param message The message to send.
+     */
     public void messageSuccess(MessageReceiver sender, BundledMessage message) {
         send(sender, getLocalizedMessage(Messages.SUCCESS), message.getMessage(), message.getArgs());
     }
 
+    /**
+     * Sends a message to a player that automatically takes words that are too long and puts them on a new line.
+     * This message will have a prefix indicating success.
+     *
+     * @param sender  Player to send message to.
+     * @param message Message to send.
+     */
     public void messageSuccess(MessageReceiver sender, String message) {
         message(sender, getLocalizedMessage(Messages.SUCCESS) + " " + message);
     }
 
+    /**
+     * Sends a message to the specified player with a prefix indicating failure.
+     *
+     * @param sender  The entity to send the messages to.
+     * @param message The message to send.
+     * @param args    arguments for String.format().
+     */
     public void messageError(MessageReceiver sender, Message message, Object... args) {
         send(sender, getLocalizedMessage(Messages.ERROR), message, args);
     }
 
+    /**
+     * Sends a message to the specified player with a prefix indicating failure.
+     *
+     * @param sender  The entity to send the messages to.
+     * @param message The message to send.
+     */
     public void messageError(MessageReceiver sender, BundledMessage message) {
         send(sender, getLocalizedMessage(Messages.ERROR), message.getMessage(), message.getArgs());
     }
 
+    /**
+     * Sends a message to a player that automatically takes words that are too long and puts them on a new line.
+     * This message will have a prefix indicating failure.
+     *
+     * @param sender  Player to send message to.
+     * @param message Message to send.
+     */
     public void messageError(MessageReceiver sender, String message) {
         message(sender, getLocalizedMessage(Messages.ERROR) + " " + message);
     }
@@ -143,6 +183,13 @@ public class Messager implements MessageProvider {
         }
     }
 
+    /**
+     * Sends a message to the sender and logs it in the server logs.
+     *
+     * @param sender  The entity to send the messages to.
+     * @param message The message to send.
+     * @param args    arguments for String.format().
+     */
     public void messageAndLog(@NotNull MessageReceiver sender, @NotNull Message message, @NotNull Object... args) {
         if (sender.isPlayer()) {
             message(sender, message, args);

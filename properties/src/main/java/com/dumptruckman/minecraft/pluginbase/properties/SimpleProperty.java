@@ -3,18 +3,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
- * This represents the simplest of Properties Entries and should represent a key : value pair where the value is not
+ * This represents the simplest of Properties and should represent a key : value pair where the value is not
  * a list or a map.
+ * <p/>
+ * This property does not store the value, merely identifies it.
+ * <p/>
+ * See {@link com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory} for creating properties.
  *
- * @param <T> The type for the value of this entry.
+ * @param <T> the type of the property.
  */
 public interface SimpleProperty<T> extends ValueProperty<T> {
 
-    /**
-     * Retrieves the default value for a config path.
-     *
-     * @return The default value for a config path.
-     */
+    /** {@inheritDoc} */
+    @Nullable
     T getDefault();
 }

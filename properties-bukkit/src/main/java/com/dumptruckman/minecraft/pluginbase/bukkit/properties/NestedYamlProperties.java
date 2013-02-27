@@ -60,5 +60,5 @@ class NestedYamlProperties extends AbstractYamlProperties implements NestedPrope
     public void flush() { }
 
     @Override
-    public void reload() throws Exception { }
+    public void reload() { }
 }

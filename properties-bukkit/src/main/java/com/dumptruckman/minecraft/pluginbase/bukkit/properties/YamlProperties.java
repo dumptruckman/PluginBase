@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
 
+import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 
 import java.io.File;
@@ -43,8 +44,12 @@ public class YamlProperties extends AbstractYamlProperties implements Properties
     }
 
     @Override
-    public void reload() throws Exception {
-        load();
+    public void reload() throws PluginBaseException {
+        try {
+            load();
+        } catch (IOException e) {
+            throw new PluginBaseException(e);
+        }
     }
 
     /**

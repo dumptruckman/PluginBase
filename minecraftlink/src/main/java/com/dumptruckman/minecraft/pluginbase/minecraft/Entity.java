@@ -3,6 +3,9 @@ package com.dumptruckman.minecraft.pluginbase.minecraft;
 import com.dumptruckman.minecraft.pluginbase.minecraft.location.EntityCoordinates;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Describes an entity in minecraft which is anything that is not a block or an item in an inventory.
+ */
 public interface Entity {
 
     /**

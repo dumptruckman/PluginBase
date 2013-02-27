@@ -4,6 +4,7 @@
 package com.dumptruckman.minecraft.pluginbase.minecraft;
 
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.MessageReceiver;
+import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.Permissible;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -51,5 +52,17 @@ public abstract class BasePlayer implements MessageReceiver, Permissible {
     @Override
     public boolean isPlayer() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPerm(@NotNull final Perm perm) {
+        return hasPermission(perm.getName());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean hasPerm(@NotNull final Perm perm, @NotNull final String specific) {
+        return hasPermission(perm.getName(specific));
     }
 }

@@ -5,7 +5,7 @@ package com.dumptruckman.minecraft.pluginbase.properties;
 
 /**
  * This represents a special type of property that has no value and only typically exists to add section comments.
+ * <p/>
+ * See {@link com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory} for creating properties.
  */
-public interface NullProperty extends ValueProperty<Null> {
-
-}
+public interface NullProperty extends ValueProperty<Null> { }

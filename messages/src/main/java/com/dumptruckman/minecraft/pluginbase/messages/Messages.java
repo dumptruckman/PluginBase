@@ -50,7 +50,11 @@ public class Messages {
         return messages.get(localizable).containsKey(key);
     }
 
+    /** A message with no text. */
     @NotNull public final static Message BLANK = new Message("");
+
+    /** Used for wrapping regular exceptions into a PluginBaseException. */
+    @NotNull public final static Message EXCEPTION = new Message("generic.exception", "%s");
 
     /** A message of general success */
     @NotNull public final static Message SUCCESS = new Message("generic.success", "&a[SUCCESS]&f");
@@ -83,6 +87,9 @@ public class Messages {
         }
         if (!props.containsKey(ERROR.getKey())) {
             props.setProperty(ERROR.getKey(), ERROR.getDefault());
+        }
+        if (!props.containsKey(EXCEPTION.getKey())) {
+            props.setProperty(EXCEPTION.getKey(), EXCEPTION.getDefault());
         }
 
         final Field[] fields = clazz.getDeclaredFields();

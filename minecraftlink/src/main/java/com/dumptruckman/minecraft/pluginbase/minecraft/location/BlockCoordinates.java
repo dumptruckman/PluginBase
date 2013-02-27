@@ -2,6 +2,9 @@ package com.dumptruckman.minecraft.pluginbase.minecraft.location;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents the possible location of block in a Minecraft World.
+ */
 public interface BlockCoordinates {
 
     /**
@@ -33,7 +36,21 @@ public interface BlockCoordinates {
      */
     int getBlockZ();
 
+    /**
+     * Adds to the x, y and/or z values of this coordinate set.
+     *
+     * @param x the amount to add to the x coordinate.
+     * @param y the amount to add to the y coordinate.
+     * @param z the amount to add to the z coordinate.
+     */
     void add(final int x, final int y, final int z);
 
+    /**
+     * Subtracts from the x, y and/or z values of this coordinate set.
+     *
+     * @param x the amount to subtract from the x coordinate.
+     * @param y the amount to subtract from the y coordinate.
+     * @param z the amount to subtract from the z coordinate.
+     */
     void subtract(final int x, final int y, final int z);
 }

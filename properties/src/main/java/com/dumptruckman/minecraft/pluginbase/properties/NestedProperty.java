@@ -3,7 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
-public interface NestedProperty<T extends NestedProperties> extends Property<T> {
-
-    Class<T> getType();
-}
+/**
+ * Represents a property that contains an additional set of properties.
+ * <p/>
+ * See {@link com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory} for creating properties.
+ *
+ * @param <T> the class that represents the nested set of properties.
+ */
+public interface NestedProperty<T extends NestedProperties> extends Property<T> { }

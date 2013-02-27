@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * Use this to create new Perm objects.
- *
+ * <p/>
  * This class will function without any initialization but should generally be registered with a Minecraft server
  * implementation specific implementation of itself via {@link #registerPermissionFactory(Class)}.
  * This allows the PermFactory to create properly implemented permissions.
@@ -28,7 +28,7 @@ public abstract class PermFactory {
 
     /**
      * Registers a given base name to the given class.
-     *
+     * <p/>
      * This affects what name is used as the top level namespace when using {@link #usePluginName()}
      *
      * @param pluginClass Your plugin class.
@@ -90,8 +90,9 @@ public abstract class PermFactory {
 
     /**
      * Registers an implementation specific PermissionFactory.
-     *
-     * Call this before initializing any Perm objects!
+     * <p/>
+     * <b>Call this before initializing any Perm objects!</b>
+     * <p/>
      * The given PermissionFactory class must have a constructor that accepts only a Class object and String object,
      * respectively.
      *
@@ -250,7 +251,7 @@ public abstract class PermFactory {
 
     /**
      * Sets the default for this permission.
-     *
+     * <p/>
      * By default {@link PermDefault#OP} is used.
      *
      * @param permissionDefault The default for this permission.
@@ -264,7 +265,7 @@ public abstract class PermFactory {
     /**
      * Calling this will cause the permission to be prefixed with a top level name space provided by the class object
      * passed into the {@link #newPerm(Class, String)} method.
-     *
+     * <p/>
      * The name is based on the name registered through {@link #registerPermissionName(Class, String)} or the
      * static method 'String getPermissionName()' defined in the plugin class.  If neither of those methods result
      * in a name, the simple class name will be used.
@@ -279,7 +280,7 @@ public abstract class PermFactory {
     /**
      * Indicates that the permissions is only to be used with the specific node method
      * {@link Perm#hasPermission(Permissible, String)}.
-     *
+     * <p/>
      * This means that the name of the permission defined will not be registered in the server implementation and that
      * it only serves as a placeholder.
      *
@@ -292,7 +293,7 @@ public abstract class PermFactory {
 
     /**
      * Creates the Perm object.
-     *
+     * <p/>
      * Call this after using all the other methods in this class that you require.  Afterwards, this PermFactory object
      * may be discarded.
      *

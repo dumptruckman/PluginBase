@@ -10,6 +10,8 @@ import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
 import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.serializers.PropertySerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
 
@@ -58,10 +60,11 @@ public interface BaseConfig {
     SimpleProperty<Integer> DEBUG_MODE = PropertyFactory.newProperty(Integer.class, "settings.debug_level", 0)
             .comment("# 0 = off, 1-3 display debug info with increasing granularity.").validator(new PropertyValidator<Integer>() {
                 @Override
-                public boolean isValid(Integer obj) {
-                    return obj >= 0 && obj <= 3;
+                public boolean isValid(@Nullable final Integer obj) {
+                    return obj != null && obj >= 0 && obj <= 3;
                 }
 
+                @NotNull
                 @Override
                 public Message getInvalidMessage() {
                     return DebugCommand.INVALID_DEBUG;

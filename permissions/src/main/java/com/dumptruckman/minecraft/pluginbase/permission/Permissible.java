@@ -5,6 +5,9 @@ package com.dumptruckman.minecraft.pluginbase.permission;
 
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents an object that is capable of having permissions.
+ */
 public interface Permissible {
 
     /**
@@ -17,7 +20,23 @@ public interface Permissible {
      */
     boolean hasPermission(@NotNull final String perm);
 
-    public void hasPerm(@NotNull final Perm perm);
+    /**
+     * Gets the value of the specified permission, if set.
+     * <p/>
+     * If a permission override is not set on this object, the default value of the permission will be returned.
+     *
+     * @param perm permission to get.
+     * @return value of permission.
+     */
+    public boolean hasPerm(@NotNull final Perm perm);
 
-    public void hasPerm(@NotNull final Perm perm, @NotNull final String specific);
+    /**
+     * Gets the value of the specified permission, if set.
+     * <p/>
+     * If a permission override is not set on this object, the default value of the permission will be returned.
+     *
+     * @param perm permission to get.
+     * @return value of permission.
+     */
+    public boolean hasPerm(@NotNull final Perm perm, @NotNull final String specific);
 }

@@ -3,19 +3,35 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * A class that represents the same thing as the java keyword <em>null</em>.
+ * <p/>
+ * This is particularly used for {@link NullProperty} but may server other purposes.
+ * <p/>
+ * Please do not try to instantiate this class.
+ * Instead use this static {@link #NULL} for all purposes uses of this class.
+ */
 public final class Null {
 
+    /**
+     * A singleton instance of this Null class.
+     */
     public static final Null NULL = new Null();
 
-    private Null() {
-        throw new AssertionError();
+    private Null() { }
+
+    /** {@inheritDoc} */
+    @Override
+    public final boolean equals(@Nullable final Object o) {
+        return o == null || (o instanceof Null && o == NULL);
     }
 
-    public boolean equals(Object o) {
-        return o == NULL || o == null;
-    }
-
-    public int hashCode() {
+    /** {@inheritDoc} */
+    @Override
+    public final int hashCode() {
         return 0;
     }
 }

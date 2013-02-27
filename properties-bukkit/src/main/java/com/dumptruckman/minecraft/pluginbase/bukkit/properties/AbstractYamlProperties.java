@@ -39,7 +39,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
         super(configClasses);
         this.config = config;
 
-        for (final Property property : entries.properties) {
+        for (final Property property : getProperties()) {
             if (property instanceof ValueProperty) {
                 final ValueProperty valueProperty = (ValueProperty) property;
                 final Class type = valueProperty.getType();
@@ -73,7 +73,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     protected void doComments(final CommentedYamlConfiguration config) {
-        for (Property property : entries.properties) {
+        for (Property property : getProperties()) {
             final String path;
             if (!getName().isEmpty()) {
                 path = getName() + getConfigOptions().pathSeparator() + property.getName();
@@ -91,7 +91,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     protected void deserializeAll() {
-        for (final Property property : entries.properties) {
+        for (final Property property : getProperties()) {
             if (property instanceof ValueProperty) {
                 final ValueProperty valueProperty = (ValueProperty) property;
                 if (getConfig().get(valueProperty.getName()) != null) {
@@ -156,7 +156,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     protected void serializeAll(ConfigurationSection newConfig) {
-        for (final Property property : entries.properties) {
+        for (final Property property : getProperties()) {
             if (property instanceof ValueProperty) {
                 final ValueProperty valueProperty = (ValueProperty) property;
                 if (getConfig().get(valueProperty.getName()) != null) {
@@ -233,7 +233,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
      * Loads default settings for any missing config values.
      */
     protected void setDefaults() {
-        for (Property path : entries.properties) {
+        for (Property path : getProperties()) {
             if (path instanceof ValueProperty) {
                 ValueProperty valueProperty = (ValueProperty) path;
                 if (getConfig().get(valueProperty.getName()) == null) {

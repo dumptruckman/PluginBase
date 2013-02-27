@@ -16,7 +16,7 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
 
     public MemoryProperties(final boolean autoDefaults, @NotNull final Class... configClasses) {
         super(configClasses);
-        data = new HashMap<String, Object>(entries.properties.size());
+        data = new HashMap<String, Object>(getProperties().size());
         this.autoDefaults = autoDefaults;
         if (autoDefaults) {
             setDefaults();
@@ -27,7 +27,7 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
     public void flush() { }
 
     @Override
-    public void reload() throws Exception { }
+    public void reload() { }
 
     protected Map<String, Object> getData() {
         return this.data;
@@ -37,7 +37,7 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
      * Loads default settings for any missing config values.
      */
     protected void setDefaults() {
-        for (Property path : entries.properties) {
+        for (Property path : getProperties()) {
             if (path instanceof ValueProperty) {
                 ValueProperty valueProperty = (ValueProperty) path;
                 if (getData().get(valueProperty.getName()) == null) {

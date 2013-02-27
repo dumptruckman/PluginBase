@@ -62,10 +62,20 @@ public class PluginBaseException extends Exception {
     }
 
     /**
+     * Copy constructor for generic exceptions.
+     *
+     * @param e The exception to copy.
+     */
+    public PluginBaseException(@NotNull final Exception e) {
+        this(new BundledMessage(Messages.EXCEPTION, e.getMessage()), e.getCause());
+    }
+
+    /**
      * Gets the {@link BundledMessage} used this in exception.
      *
      * @return The {@link BundledMessage} used this in exception.
      */
+    @NotNull
     public BundledMessage getBundledMessage() {
         return this.languageMessage;
     }

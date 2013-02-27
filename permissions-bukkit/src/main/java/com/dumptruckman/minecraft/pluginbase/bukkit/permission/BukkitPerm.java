@@ -14,8 +14,9 @@ import java.util.Map;
 
 /**
  * Represents a permissions that a Minecraft player may have.
- *
+ * <p/>
  * These should generally be defined as constants.
+ * <p/>
  * This class must be implemented for your specific Minecraft Server implementation.  See {@link #verify(String)}.
  */
 public class BukkitPerm extends Perm {
@@ -43,6 +44,7 @@ public class BukkitPerm extends Perm {
         return null;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void verify(final String name) {
         final Permission permission = setupPermission(name);
