@@ -21,7 +21,7 @@ import java.util.Locale;
 public interface BaseConfig {
 
     /**
-     * Locale name config path, default and comments.
+     * Locale name config key, default and comments.
      */ //TODO Add more comments about acceptable locales.
     SimpleProperty<Locale> LOCALE = PropertyFactory.newProperty(Locale.class, "settings.language.locale",
             MessageProvider.DEFAULT_LOCALE)
@@ -48,14 +48,14 @@ public interface BaseConfig {
             }).build();
 
     /**
-     * Locale name config path, default and comments.
+     * Locale name config key, default and comments.
      */
     SimpleProperty<String> LANGUAGE_FILE = PropertyFactory.newProperty(String.class, "settings.language.file",
             MessageProvider.DEFAULT_LANGUAGE_FILE_NAME).comment("# This is the language file you wish to use.")
             .build();
 
     /**
-     * Debug Mode config path, default and comments.
+     * Debug Mode config key, default and comments.
      */
     SimpleProperty<Integer> DEBUG_MODE = PropertyFactory.newProperty(Integer.class, "settings.debug_level", 0)
             .comment("# 0 = off, 1-3 display debug info with increasing granularity.").validator(new PropertyValidator<Integer>() {
@@ -72,7 +72,7 @@ public interface BaseConfig {
             }).build();
 
     /**
-     * First Run flag config path, default and comments.
+     * First Run flag config key, default and comments.
      */
     SimpleProperty<Boolean> FIRST_RUN = PropertyFactory.newProperty(Boolean.class, "settings.first_run", true)
             .comment("# Will make the plugin perform tasks only done on a first run (if any.)").build();

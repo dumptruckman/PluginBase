@@ -7,34 +7,52 @@ import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.properties.MappedProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
 import com.dumptruckman.minecraft.pluginbase.properties.serializers.PropertySerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Used in the construction of a {@link MappedProperty}.
+ * <p/>
+ * See {@link com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory} to get started.
+ *
+ * @param <T> the type for the value of the map.
+ */
 public class MappedPropertyBuilder<T> extends ValuePropertyBuilder<T> {
 
+    @NotNull
     private final Map<String, T> def;
+    @NotNull
     private final Class<? extends Map> mapClass;
 
-    MappedPropertyBuilder(Class<T> type, String name) {
+    MappedPropertyBuilder(@NotNull final Class<T> type, @NotNull final String name) {
         this(type, name, null, HashMap.class);
     }
 
-    MappedPropertyBuilder(Class<T> type, String name, Map<String, T> def) {
-        this(type, name, def, def != null ? def.getClass() : HashMap.class);
+    MappedPropertyBuilder(@NotNull final Class<T> type, @NotNull final String name,
+                          @NotNull final Map<String, T> def) {
+        this(type, name, def, def.getClass());
     }
 
-    MappedPropertyBuilder(Class<T> type, String name, Class<? extends Map> mapClass) {
+    MappedPropertyBuilder(@NotNull final Class<T> type, @NotNull final String name,
+                          @NotNull final Class<? extends Map> mapClass) {
         this(type, name, null, mapClass);
     }
 
-    private MappedPropertyBuilder(Class<T> type, String name, Map<String, T> def, Class<? extends Map> mapClass) {
+    private MappedPropertyBuilder(@NotNull final Class<T> type,
+                                  @NotNull final String name,
+                                  @SuppressWarnings("all") @Nullable final Map<String, T> def,
+                                  @NotNull final Class<? extends Map> mapClass) {
         super(type, name, false);
-        this.mapClass = mapClass != null ? mapClass : HashMap.class;
+        this.mapClass = mapClass;
         if (def == null) {
             try {
-                this.def = mapClass.newInstance();
+                @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+                final Map<String, T> map = mapClass.newInstance();
+                this.def = map;
             } catch (InstantiationException e) {
                 throw new RuntimeException(e);
             } catch (IllegalAccessException e) {
@@ -45,31 +63,52 @@ public class MappedPropertyBuilder<T> extends ValuePropertyBuilder<T> {
         }
     }
 
-    public MappedPropertyBuilder<T> comment(String comment) {
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
+    public MappedPropertyBuilder<T> comment(@NotNull final String comment) {
         return (MappedPropertyBuilder<T>) super.comment(comment);
     }
 
-    public MappedPropertyBuilder<T> serializer(PropertySerializer<T> customSerializer) {
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
+    public MappedPropertyBuilder<T> serializer(@NotNull final PropertySerializer<T> customSerializer) {
         return (MappedPropertyBuilder<T>) super.serializer(customSerializer);
     }
 
-    public MappedPropertyBuilder<T> validator(PropertyValidator<T> validator) {
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
+    public MappedPropertyBuilder<T> validator(@NotNull final PropertyValidator<T> validator) {
         return (MappedPropertyBuilder<T>) super.validator(validator);
     }
 
-    public MappedPropertyBuilder<T> description(Message message) {
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
+    public MappedPropertyBuilder<T> description(@NotNull final Message message) {
         return (MappedPropertyBuilder<T>) super.description(message);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
     public MappedPropertyBuilder<T> deprecated() {
         return (MappedPropertyBuilder<T>) super.deprecated();
     }
 
-    public MappedPropertyBuilder<T> alias(String alias) {
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
+    public MappedPropertyBuilder<T> alias(@NotNull final String alias) {
         return (MappedPropertyBuilder<T>) super.alias(alias);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
     public MappedProperty<T> build() {
-        return new DefaultMappedProperty<T>(type, path, def, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, mapClass);
+        return new DefaultMappedProperty<T>(type, key, def, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing, mapClass);
     }
 }

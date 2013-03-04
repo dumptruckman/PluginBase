@@ -4,18 +4,34 @@
 package com.dumptruckman.minecraft.pluginbase.properties.serializers;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+/**
+ * A simple serializer that uses java's built in string methods to serialize/deserialize.
+ * <p/>
+ * To use this serializer, the type in question <b>must</b> have a {@code public static T valueOf({@link String})} method
+ * declared as part of the class.
+ *
+ * @param <T> the type to serialize for.
+ */
 public class DefaultStringSerializer<T> implements PropertySerializer<T> {
 
     private final Method valueOfMethod;
     private final Class<T> clazz;
     private final boolean isEnum;
 
-    public DefaultStringSerializer(Class<T> clazz) {
+    /**
+     * Constructs a new string serializer for the given class.
+     *
+     * @param clazz this class object <b>must</b> have a {@code public static T valueOf({@link String})} method
+     *              declaration.
+     */
+    public DefaultStringSerializer(@NotNull final Class<T> clazz) {
         this.clazz = clazz;
         try {
             valueOfMethod = clazz.getMethod("valueOf", String.class);
@@ -23,18 +39,19 @@ public class DefaultStringSerializer<T> implements PropertySerializer<T> {
             if (!valueOfMethod.getReturnType().equals(clazz) || !Modifier.isStatic(valueOfMethod.getModifiers())) {
                 throw new IllegalArgumentException(clazz.getName() + " has no static valueOf(String) method!");
             }
-            if (Enum.class.isAssignableFrom(clazz)) {
-                isEnum = true;
-            } else {
-                isEnum = false;
-            }
+            isEnum = Enum.class.isAssignableFrom(clazz);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(clazz.getName() + " has no static valueOf(String) method!");
         }
     }
 
+    /** {@inheritDoc} */
+    @Nullable
     @Override
-    public T deserialize(Object obj) {
+    public T deserialize(@Nullable final Object obj) {
+        if (obj == null) {
+            return null;
+        }
         try {
             return clazz.cast(valueOfMethod.invoke(null, !isEnum ? obj.toString() : obj.toString().toUpperCase()));
         } catch (IllegalAccessException e) {
@@ -46,8 +63,10 @@ public class DefaultStringSerializer<T> implements PropertySerializer<T> {
         throw new IllegalStateException(this.getClass().getName() + " was used illegally!  Contact dumptruckman!");
     }
 
+    /** {@inheritDoc} */
+    @Nullable
     @Override
-    public Object serialize(T t) {
-        return t.toString();
+    public Object serialize(@Nullable final T t) {
+        return t == null ? null : t.toString();
     }
 }

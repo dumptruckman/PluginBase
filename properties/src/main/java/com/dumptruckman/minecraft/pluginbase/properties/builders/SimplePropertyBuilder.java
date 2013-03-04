@@ -7,43 +7,74 @@ import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
 import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.serializers.PropertySerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * Used in the construction of a {@link SimpleProperty}.
+ * <p/>
+ * See {@link com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory} to get started.
+ *
+ * @param <T> the type for the property.
+ */
 public class SimplePropertyBuilder<T> extends ValuePropertyBuilder<T> {
 
+    @Nullable
     private final T def;
 
-    SimplePropertyBuilder(Class<T> type, String name, T def) {
+    SimplePropertyBuilder(@NotNull final Class<T> type, @NotNull final String name, @Nullable T def) {
         super(type, name, def == null);
         this.def = def;
     }
 
-    public SimplePropertyBuilder<T> comment(String comment) {
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
+    public SimplePropertyBuilder<T> comment(@NotNull final String comment) {
         return (SimplePropertyBuilder<T>) super.comment(comment);
     }
 
-    public SimplePropertyBuilder<T> serializer(PropertySerializer<T> customSerializer) {
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
+    public SimplePropertyBuilder<T> serializer(@NotNull final PropertySerializer<T> customSerializer) {
         return (SimplePropertyBuilder<T>) super.serializer(customSerializer);
     }
 
-    public SimplePropertyBuilder<T> validator(PropertyValidator<T> validator) {
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
+    public SimplePropertyBuilder<T> validator(@NotNull final PropertyValidator<T> validator) {
         return (SimplePropertyBuilder<T>) super.validator(validator);
     }
 
-    public SimplePropertyBuilder<T> description(Message message) {
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
+    public SimplePropertyBuilder<T> description(@NotNull final Message message) {
         return (SimplePropertyBuilder<T>) super.description(message);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
     public SimplePropertyBuilder<T> deprecated() {
         return (SimplePropertyBuilder<T>) super.deprecated();
     }
 
-    public SimplePropertyBuilder<T> alias(String alias) {
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
+    public SimplePropertyBuilder<T> alias(@NotNull final String alias) {
         return (SimplePropertyBuilder<T>) super.alias(alias);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    @NotNull
     public SimpleProperty<T> build() {
-        return new DefaultSimpleProperty<T>(type, path, def, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing);
+        return new DefaultSimpleProperty<T>(type, key, def, comments, new ArrayList<String>(aliases), serializer, validator, description, deprecated, defaultIfMissing);
     }
 }

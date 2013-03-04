@@ -4,15 +4,32 @@
 package com.dumptruckman.minecraft.pluginbase.properties.serializers;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
+/**
+ * A simple serializer that uses java's built in string methods to serialize/deserialize.
+ * <p/>
+ * Functions similarly to {@link DefaultStringSerializer} except relies on a public constructor that accepts a single
+ * {@link String} argument.
+ * <p/>
+ * An example usage would be for the {@link String} class.
+ *
+ * @param <T> the type to serialize for.
+ */
 public class StringStringSerializer<T> implements PropertySerializer<T> {
 
     private Constructor<T> constructor;
 
-    public StringStringSerializer(Class<T> clazz) {
+    /**
+     * Constructs a new string serializer for the given class.
+     *
+     * @param clazz this class object must have a {@code public T(String)} constructor declared.
+     */
+    public StringStringSerializer(@NotNull final Class<T> clazz) {
         try {
             constructor = clazz.getConstructor(String.class);
         } catch (NoSuchMethodException e) {
@@ -20,8 +37,12 @@ public class StringStringSerializer<T> implements PropertySerializer<T> {
         }
     }
 
+    @Nullable
     @Override
-    public T deserialize(Object obj) {
+    public T deserialize(@Nullable final Object obj) {
+        if (obj == null) {
+            return null;
+        }
         try {
             return constructor.newInstance(obj.toString());
         } catch (IllegalAccessException e) {
@@ -36,8 +57,9 @@ public class StringStringSerializer<T> implements PropertySerializer<T> {
         throw new IllegalStateException(this.getClass().getName() + " was used illegally!  Contact dumptruckman!");
     }
 
+    @Nullable
     @Override
-    public Object serialize(T t) {
-        return t;
+    public Object serialize(@Nullable final T t) {
+        return t == null ? null : t.toString();
     }
 }

@@ -3,25 +3,46 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties.serializers;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * A extremely basic "serializer".
+ * <p/>
+ * Performs no actual serialization.  Simply uses the values as-is.
+ *
+ * @param <T> the type of the value.
+ */
 public class DefaultSerializer<T> implements PropertySerializer<T> {
 
-    private Class<T> type;
+    @NotNull
+    private final Class<T> type;
 
-    public DefaultSerializer(Class<T> type) {
+    /**
+     * Creates a new "serializer" for the given type.
+     *
+     * @param type the type to serialize.
+     */
+    public DefaultSerializer(@NotNull final Class<T> type) {
         this.type = type;
     }
 
+    @NotNull
     private Class<T> getType() {
         return this.type;
     }
 
+    /** {@inheritDoc} */
+    @Nullable
     @Override
-    public T deserialize(Object obj) {
+    public T deserialize(@Nullable final Object obj) {
         return getType().cast(obj);
     }
 
+    /** {@inheritDoc} */
+    @Nullable
     @Override
-    public Object serialize(T t) {
+    public Object serialize(@Nullable final T t) {
         return t;
     }
 }

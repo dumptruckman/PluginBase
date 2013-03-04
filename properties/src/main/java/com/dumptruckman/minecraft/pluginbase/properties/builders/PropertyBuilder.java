@@ -5,71 +5,127 @@ package com.dumptruckman.minecraft.pluginbase.properties.builders;
 
 import com.dumptruckman.minecraft.pluginbase.properties.NestedProperties;
 import com.dumptruckman.minecraft.pluginbase.properties.Property;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Used to construct new {@link Property} objects.
+ * <p/>
+ * An implementation of this will be returned by the {@link com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory}.
+ * Look there for all your Property building needs!
+ *
+ * @param <T> The type of the property.
+ */
 public abstract class PropertyBuilder<T> {
 
-    protected final String path;
+    /** The key of the property.  Used for identification. */
+    @NotNull
+    protected final String key;
+    /** The type of the property. */
+    @NotNull
     protected final Class<T> type;
+    /** Comments for the property. */
+    @NotNull
     protected final List<String> comments = new ArrayList<String>();
 
+    /** Do not use this constructor!  It is only for a special internal inheritance case. */
     protected PropertyBuilder() {
         throw new AssertionError();
     }
 
-    protected PropertyBuilder(Class<T> type, String name) {
-        this.path = name;
+    /**
+     * Constructs a new PropertyBuilder with the given type and name (key).
+     *
+     * @param type the type of the property.
+     * @param name the key for the property. Used for identification.
+     */
+    protected PropertyBuilder(@NotNull final Class<T> type, @NotNull final String name) {
+        this.key = name;
         this.type = type;
     }
 
-    protected PropertyBuilder<T> comment(String comment) {
+    /**
+     * Adds a comment to the comments of this property.
+     * <p/>
+     * This can be called multiple times.  Each time generally adds a comment on a new line though this ultimately
+     * depends on the implementation of {@link com.dumptruckman.minecraft.pluginbase.properties.Properties} for actual
+     * usage.
+     *
+     * @param comment the comment to add.
+     * @return this PropertyBuilder for method chaining.
+     */
+    @NotNull
+    public PropertyBuilder<T> comment(@NotNull final String comment) {
         comments.add(comment);
         return this;
     }
 
+    /**
+     * Finalizes the settings declared in this PropertyBuilder and creates the {@link Property} object.
+     *
+     * @return a custom built Property object.
+     */
+    @NotNull
     public abstract Property<T> build();
 
-    protected static NullPropertyBuilder newNullPropertyBuilder(final String name) {
+    @NotNull
+    protected static NullPropertyBuilder newNullPropertyBuilder(@NotNull final String name) {
         return new NullPropertyBuilder(name);
     }
 
-    protected static <T> SimplePropertyBuilder<T> newSimplePropertyBuilder(final Class<T> type, final String name, final T def) {
+    @NotNull
+    protected static <T> SimplePropertyBuilder<T> newSimplePropertyBuilder(@NotNull final Class<T> type,
+                                                                           @NotNull final String name,
+                                                                           @NotNull final T def) {
         return new SimplePropertyBuilder<T>(type, name, def);
     }
 
-    protected static <T> ListPropertyBuilder<T> newListPropertyBuilder(final Class<T> type, final String name) {
+    @NotNull
+    protected static <T> ListPropertyBuilder<T> newListPropertyBuilder(@NotNull final Class<T> type,
+                                                                       @NotNull final String name) {
         return new ListPropertyBuilder<T>(type, name);
     }
 
-    protected static <T> ListPropertyBuilder<T> newListPropertyBuilder(final Class<T> type, final String name,
-                                                             final List<T> def) {
+    @NotNull
+    protected static <T> ListPropertyBuilder<T> newListPropertyBuilder(@NotNull final Class<T> type,
+                                                                       @NotNull final String name,
+                                                                       @NotNull final List<T> def) {
         return new ListPropertyBuilder<T>(type, name, def);
     }
 
-    protected static <T> ListPropertyBuilder<T> newListPropertyBuilder(final Class<T> type, final String name,
-                                                             final Class<? extends List> listType) {
+    @NotNull
+    protected static <T> ListPropertyBuilder<T> newListPropertyBuilder(@NotNull final Class<T> type,
+                                                                       @NotNull final String name,
+                                                                       @NotNull final Class<? extends List> listType) {
         return new ListPropertyBuilder<T>(type, name, listType);
     }
 
-    protected static <T> MappedPropertyBuilder<T> newMappedPropertyBuilder(final Class<T> type, final String name) {
+    @NotNull
+    protected static <T> MappedPropertyBuilder<T> newMappedPropertyBuilder(@NotNull final Class<T> type,
+                                                                           @NotNull final String name) {
         return new MappedPropertyBuilder<T>(type, name);
     }
 
-    protected static <T> MappedPropertyBuilder<T> newMappedPropertyBuilder(final Class<T> type, final String name,
-                                                                 final Class<? extends Map> mapType) {
+    @NotNull
+    protected static <T> MappedPropertyBuilder<T> newMappedPropertyBuilder(@NotNull final Class<T> type,
+                                                                           @NotNull final String name,
+                                                                           @NotNull final Class<? extends Map> mapType) {
         return new MappedPropertyBuilder<T>(type, name, mapType);
     }
 
-    protected static <T> MappedPropertyBuilder<T> newMappedPropertyBuilder(final Class<T> type, final String name,
-                                                                 final Map<String, T> def) {
+    @NotNull
+    protected static <T> MappedPropertyBuilder<T> newMappedPropertyBuilder(@NotNull final Class<T> type,
+                                                                           @NotNull final String name,
+                                                                           @NotNull final Map<String, T> def) {
         return new MappedPropertyBuilder<T>(type, name, def);
     }
 
-    protected static <T extends NestedProperties> NestedPropertyBuilder<T> newNestedPropertyBuilder(final Class<T> type,
-                                                                                          final String name) {
+    @NotNull
+    protected static <T extends NestedProperties> NestedPropertyBuilder<T> newNestedPropertyBuilder(@NotNull final Class<T> type,
+                                                                                                    @NotNull final String name) {
         return new NestedPropertyBuilder<T>(type, name);
     }
 }

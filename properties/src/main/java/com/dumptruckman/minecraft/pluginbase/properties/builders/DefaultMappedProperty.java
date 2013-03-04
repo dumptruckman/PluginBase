@@ -8,28 +8,43 @@ import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.properties.MappedProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
 import com.dumptruckman.minecraft.pluginbase.properties.serializers.PropertySerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-class DefaultMappedProperty<T> extends DefaultValueProperty<T> implements MappedProperty<T> {
+final class DefaultMappedProperty<T> extends DefaultValueProperty<T> implements MappedProperty<T> {
 
+    @NotNull
     private final Class<? extends Map> mapClass;
+    @Nullable
     private final Map<String, T> defMap;
 
-    public DefaultMappedProperty(Class<T> type, String path, Map<String, T> def, List<String> comments, List<String> aliases,
-                                 PropertySerializer<T> serializer, PropertyValidator validator, Message description,
-                                 boolean deprecated, boolean defaultIfMissing, Class<? extends Map> mapClass) {
+    public DefaultMappedProperty(@NotNull final Class<T> type, @NotNull final String path,
+                                 @Nullable final Map<String, T> def, @NotNull final List<String> comments,
+                                 @NotNull final List<String> aliases, @Nullable final PropertySerializer<T> serializer,
+                                 @NotNull final PropertyValidator<T> validator, Message description,
+                                 boolean deprecated, boolean defaultIfMissing,
+                                 @NotNull final Class<? extends Map> mapClass) {
         super(type, path, comments, aliases, serializer, validator, description, deprecated, defaultIfMissing);
         this.mapClass = mapClass;
-        this.defMap = def;
+        if (def == null) {
+            this.defMap = null;
+        } else {
+            this.defMap = Collections.unmodifiableMap(def);
+        }
     }
 
+    @NotNull
     @Override
     public Map<String, T> getNewTypeMap() {
         try {
-            return (Map<String, T>) mapClass.newInstance();
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            final Map<String, T> map = mapClass.newInstance();
+            return map;
         } catch (InstantiationException e) {
             Logging.warning("Could not instantiate desired class, defaulting to HashMap");
         } catch (IllegalAccessException e) {
@@ -38,8 +53,14 @@ class DefaultMappedProperty<T> extends DefaultValueProperty<T> implements Mapped
         return new HashMap<String, T>();
     }
 
+    @Nullable
     @Override
     public Map<String, T> getDefault() {
-        return defMap;
+        if (defMap == null) {
+            return null;
+        }
+        Map<String, T> map = getNewTypeMap();
+        map.putAll(defMap);
+        return map;
     }
 }

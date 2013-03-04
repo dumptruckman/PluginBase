@@ -5,12 +5,14 @@ package com.dumptruckman.minecraft.pluginbase.properties.builders;
 
 import com.dumptruckman.minecraft.pluginbase.properties.NestedProperties;
 import com.dumptruckman.minecraft.pluginbase.properties.NestedProperty;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-class DefaultNestedProperty<T extends NestedProperties> extends DefaultProperty<T> implements NestedProperty<T> {
+final class DefaultNestedProperty<T extends NestedProperties> extends DefaultProperty<T> implements NestedProperty<T> {
 
-    DefaultNestedProperty(Class<T> type, String path, List<String> comments) {
+    DefaultNestedProperty(@NotNull final Class<T> type, @NotNull final String path,
+                          @NotNull final List<String> comments) {
         super(type, path, comments);
     }
 }

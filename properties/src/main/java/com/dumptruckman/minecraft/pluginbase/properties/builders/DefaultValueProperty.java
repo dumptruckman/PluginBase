@@ -7,22 +7,30 @@ import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
 import com.dumptruckman.minecraft.pluginbase.properties.ValueProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.serializers.PropertySerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.List;
 
 abstract class DefaultValueProperty<T> extends DefaultProperty<T> implements ValueProperty<T> {
 
+    @Nullable
     private final PropertySerializer<T> serializer;
+    @NotNull
     private final PropertyValidator<T> validator;
+    @NotNull
     private final Message description;
     private final boolean deprecated;
     private final boolean defaultIfMissing;
+    @NotNull
     private final List<String> aliases;
 
-    public DefaultValueProperty(Class<T> type, String path, List<String> comments, List<String> aliases,
-                                PropertySerializer<T> serializer, PropertyValidator<T> validator, Message description,
-                                boolean deprecated, boolean defaultIfMissing) {
+    DefaultValueProperty(@NotNull final Class<T> type, @NotNull final String path,
+                         @NotNull final List<String> comments, @NotNull final List<String> aliases,
+                         @Nullable final PropertySerializer<T> serializer,
+                         @NotNull final PropertyValidator<T> validator,
+                         @NotNull Message description, boolean deprecated, boolean defaultIfMissing) {
         super(type, path, comments);
         this.aliases = Collections.unmodifiableList(aliases);
         this.serializer = serializer;
@@ -32,12 +40,13 @@ abstract class DefaultValueProperty<T> extends DefaultProperty<T> implements Val
         this.defaultIfMissing = defaultIfMissing;
     }
 
+    @NotNull
     @Override
     public List<String> getAliases() {
         return this.aliases;
     }
 
-    public boolean isValid(T obj) {
+    public boolean isValid(@Nullable final T obj) {
         return validator.isValid(obj);
     }
 
@@ -51,10 +60,7 @@ abstract class DefaultValueProperty<T> extends DefaultProperty<T> implements Val
         return defaultIfMissing;
     }
 
-    public Message getInvalidMessage() {
-        return validator.getInvalidMessage();
-    }
-
+    @NotNull
     @Override
     public Message getDescription() {
         return description;

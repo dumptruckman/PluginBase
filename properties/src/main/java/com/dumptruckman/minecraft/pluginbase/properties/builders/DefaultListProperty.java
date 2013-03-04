@@ -8,31 +8,53 @@ import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.properties.ListProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
 import com.dumptruckman.minecraft.pluginbase.properties.serializers.PropertySerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-class DefaultListProperty<T> extends DefaultValueProperty<T> implements ListProperty<T> {
+final class DefaultListProperty<T> extends DefaultValueProperty<T> implements ListProperty<T> {
 
+    @NotNull
     private final Class<? extends List> listClass;
+    @Nullable
     private final List<T> defList;
 
-    public DefaultListProperty(Class<T> type, String path, List<T> def, List<String> comments, List<String> aliases,
-                               PropertySerializer<T> serializer, PropertyValidator validator, Message description,
-                               boolean deprecated, boolean defaultIfMissing, Class<? extends List> listClass) {
+    public DefaultListProperty(@NotNull final Class<T> type, @NotNull final String path,
+                               @Nullable final List<T> def, @NotNull final List<String> comments,
+                               @NotNull final List<String> aliases, @Nullable final PropertySerializer<T> serializer,
+                               @NotNull final PropertyValidator<T> validator, Message description,
+                               boolean deprecated, boolean defaultIfMissing,
+                               @NotNull final Class<? extends List> listClass) {
         super(type, path, comments, aliases, serializer, validator, description, deprecated, defaultIfMissing);
         this.listClass = listClass;
-        this.defList = def;
+        if (def == null) {
+            this.defList = null;
+        } else {
+            this.defList = Collections.unmodifiableList(def);
+        }
     }
 
+    @Nullable
+    @Override
     public List<T> getDefault() {
-        return defList;
+        if (defList == null) {
+            return null;
+        }
+        List<T> list = getNewTypeList();
+        list.addAll(defList);
+        return list;
     }
 
+    @NotNull
     @Override
     public List<T> getNewTypeList() {
         try {
-            return (List<T>) listClass.newInstance();
+            @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+            final List<T> list = listClass.newInstance();
+            return list;
         } catch (InstantiationException e) {
             Logging.warning("Could not instantiate desired class, defaulting to ArrayList");
         } catch (IllegalAccessException e) {

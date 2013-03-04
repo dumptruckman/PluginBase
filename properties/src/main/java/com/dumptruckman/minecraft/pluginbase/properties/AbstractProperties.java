@@ -53,6 +53,7 @@ public abstract class AbstractProperties implements Properties {
      * Use {@link #setPropertySerializer(Class, com.dumptruckman.minecraft.pluginbase.properties.serializers.PropertySerializer)}
      * to register a serializer.
      */
+    @SuppressWarnings("EmptyMethod")
     protected void registerSerializers() { }
 
     /**
@@ -74,7 +75,8 @@ public abstract class AbstractProperties implements Properties {
      */
     @NotNull
     protected <T> PropertySerializer<T> getPropertySerializer(@NotNull final Class<T> type) {
-        final PropertySerializer serializer = propertySerializerMap.get(type);
+        @SuppressWarnings("unchecked")
+        final PropertySerializer<T> serializer = propertySerializerMap.get(type);
         if (serializer == null) {
             throw new IllegalStateException("There is no serializer for " + type + "!");
         }
@@ -85,7 +87,9 @@ public abstract class AbstractProperties implements Properties {
     @Override
     public <T> boolean isValid(@NotNull final ValueProperty<T> property, @Nullable final T value) {
         if (propertyValidatorMap.containsKey(property)) {
-            return propertyValidatorMap.get(property).isValid(value);
+            @SuppressWarnings("unchecked")
+            final PropertyValidator<T> validator = propertyValidatorMap.get(property);
+            return validator.isValid(value);
         }
         return property.isValid(value);
     }
@@ -192,7 +196,7 @@ public abstract class AbstractProperties implements Properties {
         return observers.remove(observer);
     }
 
-    private final void notifyObservers(@NotNull final ValueProperty property) {
+    private void notifyObservers(@NotNull final ValueProperty property) {
         for (final Observer observer : observers) {
             observer.update(this, property);
         }

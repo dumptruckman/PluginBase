@@ -2,19 +2,28 @@ package com.dumptruckman.minecraft.pluginbase.properties;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A simple, memory only, backed properties implementation.
+ */
 public class MemoryProperties extends AbstractProperties implements NestedProperties {
 
-    protected final Map<String, Object> data;
-
+    private final Map<String, Object> data;
     private final boolean autoDefaults;
 
-    public MemoryProperties(final boolean autoDefaults, @NotNull final Class... configClasses) {
+    /**
+     * Constructs a new MemoryProperties object configured to use the indicated classes as repositories for {@link Property} objects.
+     *
+     * @param autoDefaults true will cause default values to be assigned immediately for all properties.
+     * @param configClasses the classes that contain the {@link Property} objects that "belong" to this Properties object.
+     */
+    protected MemoryProperties(final boolean autoDefaults, @NotNull final Class... configClasses) {
         super(configClasses);
         data = new HashMap<String, Object>(getProperties().size());
         this.autoDefaults = autoDefaults;
@@ -23,12 +32,38 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
         }
     }
 
+    /**
+     * Creates a new MemoryProperties object configured to use the indicated classes as repositories for {@link Property} objects.
+     *
+     * @param configClasses the classes that contain the {@link Property} objects that "belong" to this Properties object.
+     */
+    public static Properties newMemoryProperties(@NotNull final Class... configClasses) {
+        return newMemoryProperties(true, configClasses);
+    }
+
+    /**
+     * Creates a new MemoryProperties object configured to use the indicated classes as repositories for {@link Property} objects.
+     *
+     * @param autoDefaults true will cause default values to be assigned immediately for all properties.
+     * @param configClasses the classes that contain the {@link Property} objects that "belong" to this Properties object.
+     */
+    public static Properties newMemoryProperties(final boolean autoDefaults, @NotNull final Class... configClasses) {
+        return new MemoryProperties(autoDefaults, configClasses);
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void flush() { }
 
+    /** {@inheritDoc} */
     @Override
     public void reload() { }
 
+    /**
+     * Gets the data map for this properties object.
+     *
+     * @return the data map for this properties object.
+     */
     protected Map<String, Object> getData() {
         return this.data;
     }
@@ -93,8 +128,10 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
         return obj;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> T get(SimpleProperty<T> entry) throws IllegalArgumentException {
+    @Nullable
+    public <T> T get(@NotNull final SimpleProperty<T> entry) throws IllegalArgumentException {
         Object obj;
         try {
             obj = getEntryValue(entry);
@@ -107,8 +144,10 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
         return entry.getType().cast(obj);
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> List<T> get(ListProperty<T> entry) {
+    @Nullable
+    public <T> List<T> get(@NotNull final ListProperty<T> entry) {
         Object obj;
         try {
             obj = getEntryValue(entry);
@@ -121,11 +160,15 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
         if (!(obj instanceof List)) {
             obj = new ArrayList<Object>();
         }
-        return (List) obj;
+        @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+        final List<T> list = (List) obj;
+        return list;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> Map<String, T> get(MappedProperty<T> entry) {
+    @Nullable
+    public <T> Map<String, T> get(@NotNull final MappedProperty<T> entry) {
         Object obj;
         try {
             obj = getEntryValue(entry);
@@ -138,16 +181,23 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
         if (!(obj instanceof Map)) {
             obj = new HashMap<String, T>();
         }
-        return (Map<String, T>) obj;
+        @SuppressWarnings({"unchecked", "UnnecessaryLocalVariable"})
+        final Map<String, T> map = (Map<String, T>) obj;
+        return map;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> T get(MappedProperty<T> entry, String key) {
+    @Nullable
+    public <T> T get(@NotNull final MappedProperty<T> entry, @NotNull final String key) {
         Map<String, T> map;
         try {
             map = get(entry);
         } catch (IllegalArgumentException e) {
             throw (IllegalArgumentException) e.fillInStackTrace();
+        }
+        if (map == null) {
+            return null;
         }
         Object obj = map.get(key);
         if (obj == null) {
@@ -156,16 +206,19 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
         return entry.getType().cast(obj);
     }
 
+    /** {@inheritDoc} */
     @Override
-    public NestedProperties get(NestedProperty entry) {
+    @NotNull
+    public NestedProperties get(@NotNull final NestedProperty entry) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("entry not registered to this config!");
         }
         return getNestedProperties(entry);
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> boolean set(SimpleProperty<T> entry, T value) {
+    public <T> boolean set(@NotNull final SimpleProperty<T> entry, @Nullable final T value) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -182,8 +235,9 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> boolean set(ListProperty<T> entry, List<T> newValue) {
+    public <T> boolean set(@NotNull final ListProperty<T> entry, @Nullable final List<T> newValue) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -192,8 +246,9 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> boolean set(MappedProperty<T> entry, Map<String, T> newValue) {
+    public <T> boolean set(@NotNull final MappedProperty<T> entry, @Nullable final Map<String, T> newValue) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -202,8 +257,9 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> boolean set(MappedProperty<T> entry, String key, T value) {
+    public <T> boolean set(@NotNull final MappedProperty<T> entry, @NotNull final String key, @Nullable final T value) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -215,11 +271,14 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
             obj = new HashMap<String, T>();
             getData().put(entry.getName(), obj);
         }
-        ((Map<String, T>) obj).put(key, value);
+        @SuppressWarnings("unchecked")
+        Map<String, T> map = (Map<String, T>) obj;
+        map.put(key, value);
         changed(entry);
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
     public String toString() {
         return getData().toString();

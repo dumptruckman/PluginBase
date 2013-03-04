@@ -4,34 +4,43 @@
 package com.dumptruckman.minecraft.pluginbase.properties.builders;
 
 import com.dumptruckman.minecraft.pluginbase.properties.Property;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.List;
 
 class DefaultProperty<T> implements Property<T> {
 
+    @NotNull
     private final String path;
+    @NotNull
     private final List<String> comments;
+    @NotNull
     private final Class<T> type;
 
-    public DefaultProperty(Class<T> type, String path, List<String> comments) {
+    DefaultProperty(@NotNull final Class<T> type,
+                    @NotNull final String path,
+                    @NotNull final List<String> comments) {
         this.type = type;
         this.path = path;
         this.comments = Collections.unmodifiableList(comments);
     }
 
+    @NotNull
     @Override
-    public String getName() {
+    public final String getName() {
         return path;
     }
 
+    @NotNull
     @Override
-    public Class<T> getType() {
+    public final Class<T> getType() {
         return type;
     }
 
+    @NotNull
     @Override
-    public List<String> getComments() {
+    public final List<String> getComments() {
         return comments;
     }
 }

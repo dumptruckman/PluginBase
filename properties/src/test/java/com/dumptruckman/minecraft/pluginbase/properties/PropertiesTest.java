@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(PowerMockRunner.class)
 public class PropertiesTest {
 
+    @SuppressWarnings("ConstantConditions")
     @Test
     public void testMemoryProperties() throws Exception {
         Properties props = new TestProperties();

@@ -7,24 +7,31 @@ import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyValidator;
 import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.serializers.PropertySerializer;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 class DefaultSimpleProperty<T> extends DefaultValueProperty<T> implements SimpleProperty<T> {
 
+    @Nullable
     private final T def;
 
-    public DefaultSimpleProperty(Class<T> type, String path, T def, List<String> comments, List<String> aliases,
-                                 PropertySerializer<T> serializer, PropertyValidator validator, Message description,
+    public DefaultSimpleProperty(@NotNull final Class<T> type, @NotNull final String path, @Nullable final T def,
+                                 @NotNull final List<String> comments, @NotNull final List<String> aliases,
+                                 @Nullable final PropertySerializer<T> serializer,
+                                 @NotNull final PropertyValidator<T> validator, @NotNull final Message description,
                                  boolean deprecated, boolean defaultIfMissing) {
         super(type, path, comments, aliases, serializer, validator, description, deprecated, defaultIfMissing);
         this.def = def;
     }
     /**
-     * Retrieves the default value for a config path.
+     * Retrieves the default value for a config key.
      *
-     * @return The default value for a config path.
+     * @return The default value for a config key.
      */
+    @Nullable
+    @Override
     public T getDefault() {
         return this.def;
     }
