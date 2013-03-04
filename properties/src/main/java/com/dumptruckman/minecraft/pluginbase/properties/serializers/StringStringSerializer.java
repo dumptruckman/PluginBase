@@ -37,6 +37,7 @@ public class StringStringSerializer<T> implements PropertySerializer<T> {
         }
     }
 
+    /** {@inheritDoc} */
     @Nullable
     @Override
     public T deserialize(@Nullable final Object obj) {
@@ -57,6 +58,7 @@ public class StringStringSerializer<T> implements PropertySerializer<T> {
         throw new IllegalStateException(this.getClass().getName() + " was used illegally!  Contact dumptruckman!");
     }
 
+    /** {@inheritDoc} */
     @Nullable
     @Override
     public Object serialize(@Nullable final T t) {
