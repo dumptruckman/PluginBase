@@ -15,7 +15,11 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 /**
  * Maintains a connection to a file debug log for writing debug messages to from PluginLogger.
@@ -157,7 +161,7 @@ class DebugLog {
     /**
      * Our log-{@link java.util.logging.Formatter}.
      */
-    private static class LogFormatter extends Formatter {
+    private static class LogFormatter extends java.util.logging.Formatter {
         private final SimpleDateFormat date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         /** {@inheritDoc} */
