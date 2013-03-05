@@ -1,9 +1,30 @@
 package com.dumptruckman.minecraft.pluginbase.util.time;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.text.ParseException;
 
+/**
+ * Several utility methods for converting amounts of times from seconds to human readable string representations
+ * and back.
+ * <p/>
+ * It is recommended that you generally use {@link Duration} for these purposes however.
+ */
 public class TimeTools {
 
+    private TimeTools() {
+        throw new AssertionError();
+    }
+
+    /**
+     * Returns the amount of time the given amount of seconds represents as a short, concise human-readable String.
+     * <p/>
+     * Example: {@code 5d 1h 15m 32s}
+     *
+     * @param second the amount of seconds to stringify.
+     * @return the amount of time the given amount of seconds represents as a short, concise human-readable String.
+     */
+    @NotNull
     public static String toShortForm(long second) {
         if (second == 0) {
             return "0s";
@@ -30,6 +51,15 @@ public class TimeTools {
         return time.toString().trim();
     }
 
+    /**
+     * Returns the amount of time the given amount of seconds represents as a verbose human-readable String.
+     * <p/>
+     * Example: {@code 5 days 1 hour 15 minutes 32 seconds}
+     *
+     * @param second the amount of seconds to stringify.
+     * @return the amount of time the given amount of seconds represents as a verbose human-readable String.
+     */
+    @NotNull
     public static String toLongForm(long second) {
         if (second == 0) {
             return "0 seconds";
@@ -76,7 +106,32 @@ public class TimeTools {
         return time.toString().trim();
     }
 
-    public static long fromShortForm(String dhms) throws ParseException {
+    /**
+     * Converts a string that represents a length of time into an amount of seconds.
+     * <p/>
+     * The string form must be:
+     * <p/>
+     * <b>Short form: </b>{@code DDd HHh MMm SSs}
+     * <p/>
+     * {@code DD} - an amount of days
+     * <br/>
+     * {@code HH} - an amount of hours
+     * <br/>
+     * {@code MM} - an amount of minutes
+     * <br/>
+     * {@code SS} - an amount of seconds
+     * <p/>
+     * Spaces in the string will not affect the parsing.
+     * <br/>
+     * In the short form, any of the time intervals may be omitted as long as one is present.
+     * However, the order must remain consistent as given in the examples.  For instance, the minutes may not
+     * come before the hours in the string.
+     *
+     * @param dhms the length of time in one of the allowed string forms.
+     * @return an amount of seconds representing on the given length of time.
+     * @throws ParseException in case the string is formatted incorrectly and the time cannot be interpreted from it.
+     */
+    public static long fromShortForm(@NotNull String dhms) throws ParseException {
         long seconds = 0, minutes = 0, hours = 0, days = 0;
         boolean valid = false;
         if (dhms.contains("d")) {
@@ -118,7 +173,34 @@ public class TimeTools {
         return (days * 86400) + (hours * 3600) + (minutes * 60) + seconds;
     }
 
-    public static long fromLongForm(String dhms) throws ParseException {
+    /**
+     * Converts a string that represents a length of time into an amount of seconds.
+     * <p/>
+     * The string form must be:
+     * <p/>
+     * <b>Long form: </b>{@code DD day(s) HH hour(s) MM minute(s) SS second(s)}
+     * <p/>
+     * {@code DD} - an amount of days
+     * <br/>
+     * {@code HH} - an amount of hours
+     * <br/>
+     * {@code MM} - an amount of minutes
+     * <br/>
+     * {@code SS} - an amount of seconds
+     * <br/>
+     * {@code (s)} - this "s" is optional
+     * <p/>
+     * Spaces in the string will not affect the parsing.
+     * <br/>
+     * In the long form, any of the time intervals may be omitted as long as one is present.
+     * However, the order must remain consistent as given in the examples.  For instance, the minutes may not
+     * come before the hours in the string.
+     *
+     * @param dhms the length of time in one of the allowed string forms.
+     * @return an amount of seconds representing on the given length of time.
+     * @throws ParseException in case the string is formatted incorrectly and the time cannot be interpreted from it.
+     */
+    public static long fromLongForm(@NotNull String dhms) throws ParseException {
         long seconds = 0, minutes = 0, hours = 0, days = 0;
         boolean valid = false;
         if (dhms.contains("days")) {

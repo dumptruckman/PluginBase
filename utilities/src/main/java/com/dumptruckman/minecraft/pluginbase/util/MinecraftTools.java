@@ -4,7 +4,7 @@
 package com.dumptruckman.minecraft.pluginbase.util;
 
 /**
- * General minecraft to help with minecraftian things.
+ * General utility to help with minecraftian things.
  */
 public class MinecraftTools {
 
@@ -20,7 +20,7 @@ public class MinecraftTools {
      * @param seconds Amount of seconds to convertForSet
      * @return Ticks converted from seconds.
      */
-    public static long convertSecondsToTicks(long seconds) {
+    public static long secondsToTicks(long seconds) {
         return seconds * TICKS_PER_SECOND;
     }
 }

@@ -302,7 +302,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
             } else {
                 this.plugin.getMessager().message(player, MUST_CONFIRM,
                         "/" + this.plugin.getCommandPrefix() + "confirm",
-                        Duration.valueOf(queuedCommand.getExpirationDuration()).asPrettyString());
+                        Duration.valueOf(queuedCommand.getExpirationDuration()).asVerboseString());
             }
         }
         return true;
