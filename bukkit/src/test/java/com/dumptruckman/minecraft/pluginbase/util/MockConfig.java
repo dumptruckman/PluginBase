@@ -10,6 +10,7 @@ import com.dumptruckman.minecraft.pluginbase.properties.NestedProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.NullProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -33,6 +34,7 @@ public class MockConfig extends YamlProperties implements BaseConfig {
         super(doComments, true, configFile, MockConfig.class, BaseConfig.class);
     }
 
+    @NotNull
     @Override
     protected String getHeader() {
         return "# ===[ PluginBase Config ]===";

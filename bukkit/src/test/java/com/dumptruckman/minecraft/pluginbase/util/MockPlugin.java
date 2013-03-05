@@ -41,7 +41,7 @@ public class MockPlugin extends AbstractBukkitPlugin {
     @NotNull
     @Override
     protected Properties getNewConfig() throws PluginBaseException {
-        return new YamlProperties(true, true, new File(getDataFolder(), "config.yml"), MockConfig.class);
+        return new YamlProperties.Loader(new File(getDataFolder(), "config.yml"), MockConfig.class).load();
     }
 
     @Override

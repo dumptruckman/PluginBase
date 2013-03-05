@@ -379,7 +379,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     private void initDatabase() {
         try {
-            sqlConfig = new YamlProperties(true, true, new File(getDataFolder(), "db_config.yml"), SQLConfig.class);
+            sqlConfig = new YamlProperties.Loader(new File(getDataFolder(), "db_config.yml"), SQLConfig.class).load();
         } catch (PluginBaseException e) {
             Logging.severe("Could not create db_config.yml!");
             e.logException(getPluginLogger(), Level.SEVERE);

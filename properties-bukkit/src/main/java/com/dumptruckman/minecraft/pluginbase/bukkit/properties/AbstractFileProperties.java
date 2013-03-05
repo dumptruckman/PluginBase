@@ -20,20 +20,33 @@ import com.dumptruckman.minecraft.pluginbase.properties.serializers.StringString
 import org.bukkit.configuration.ConfigurationOptions;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A Properties implementation that stores Property values into a {@link FileConfiguration}.
+ */
 public abstract class AbstractFileProperties extends AbstractProperties implements Properties {
 
+    /** The file configuration object that backs this Properties object. */
+    @NotNull
     protected final FileConfiguration config;
 
     private final Map<NestedProperty, NestedFileProperties> nestMap = new HashMap<NestedProperty, NestedFileProperties>();
 
-    public AbstractFileProperties(final FileConfiguration config,
-                                  final Class... configClasses) {
+    /**
+     * Constructs a new Properties object using the given config to store Property values in.
+     *
+     * @param config the persistence object.
+     * @param configClasses the classes that declare what {@link Property} objects belong to this Properties object.
+     */
+    protected AbstractFileProperties(@NotNull final FileConfiguration config,
+                                     @NotNull final Class... configClasses) {
         super(configClasses);
         this.config = config;
 
@@ -58,27 +71,59 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         }
     }
 
+    /**
+     * Gets the config object backing this Properties object.
+     * <p/>
+     * Should be overridden in NestedProperties to give the appropriate ConfigurationSection for the Properties sub
+     * path of the backing Configuration object.
+     *
+     * @return the config object backing this Properties object.
+     */
+    @NotNull
     protected ConfigurationSection getConfig() {
         return this.config;
     }
 
-    protected ConfigurationOptions getConfigOptions() {
+    /**
+     * Gets the configuration options for the backing file configuration.
+     *
+     * @return the configuration options for the backing file configuration.
+     */
+    @NotNull
+    protected final ConfigurationOptions getConfigOptions() {
         return this.config.options();
     }
 
+    /**
+     * The name of this Properties object which is used to define the path it holds in the Configuration object.
+     * <p/>
+     * Should be overridden in NestedProperties to indicate the sub path this Properties object has in the
+     * backing Configuration object.
+     *
+     * @return the name of this Properties object which is used to define the path it holds in the Configuration object.
+     */
+    @NotNull
     protected String getName() {
         return "";
     }
 
-    protected void doComments(final CommentedYamlConfiguration config) {
-        for (Property property : getProperties()) {
+    /**
+     * Tells this AbstractFileProperties to associate the comments for its Property objects with the key associated with
+     * the Property's value in the backing Configuration object.
+     * <p/>
+     * This is typically done right before saving the Configuration to disk.
+     *
+     * @param config The backing configuration object to apply comments to.
+     */
+    protected final void doComments(@NotNull final CommentedFile config) {
+        for (final Property property : getProperties()) {
             final String path;
             if (!getName().isEmpty()) {
                 path = getName() + getConfigOptions().pathSeparator() + property.getName();
             } else {
                 path = property.getName();
             }
-            config.addComment(path, property.getComments());
+            config.addComments(path, property.getComments());
             if (property instanceof NestedProperty) {
                 NestedFileProperties nestedProperties = this.nestMap.get(property);
                 if (nestedProperties != null) {
@@ -88,6 +133,14 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         }
     }
 
+    /**
+     * Deserializes all the values in the backing Configuration object.
+     * <p/>
+     * This causes the Configuration object to hold references to the actual objects each Property represents instead
+     * of references to serialized form.
+     * <p/>
+     * If this is overridden this super method should probably still be called.
+     */
     protected void deserializeAll() {
         for (final Property property : getProperties()) {
             if (property instanceof ValueProperty) {
@@ -153,7 +206,17 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         }
     }
 
-    protected void serializeAll(ConfigurationSection newConfig) {
+    /**
+     * Serializes all the values in the backing Configuration object.
+     * <p/>
+     * This causes the Configuration object to hold references to the serialized form of the objects each Property
+     * represents instead of references to the actual form.
+     * <p/>
+     * If this is overridden this super method should probably still be called.
+     *
+     * @param newConfig the section of the config to be serializing for.
+     */
+    protected void serializeAll(@NotNull final ConfigurationSection newConfig) {
         for (final Property property : getProperties()) {
             if (property instanceof ValueProperty) {
                 final ValueProperty valueProperty = (ValueProperty) property;
@@ -229,6 +292,8 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
 
     /**
      * Loads default settings for any missing config values.
+     * <p/>
+     * If this is overridden this super method should probably still be called.
      */
     protected void setDefaults() {
         for (Property path : getProperties()) {
@@ -270,7 +335,8 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         }
     }
 
-    private Object getEntryValue(ValueProperty valueProperty) throws IllegalArgumentException {
+    @Nullable
+    private Object getEntryValue(@NotNull final ValueProperty valueProperty) throws IllegalArgumentException {
         if (!isInConfig(valueProperty)) {
             throw new IllegalArgumentException("property not registered to this config!");
         }
@@ -283,8 +349,10 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         return obj;
     }
 
+    /** {@inheritDoc} */
+    @Nullable
     @Override
-    public <T> T get(SimpleProperty<T> entry) throws IllegalArgumentException {
+    public <T> T get(@NotNull final SimpleProperty<T> entry) throws IllegalArgumentException {
         Object obj = null;
         try {
             obj = getEntryValue(entry);
@@ -304,8 +372,10 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         return entry.getType().cast(obj);
     }
 
+    /** {@inheritDoc} */
+    @Nullable
     @Override
-    public <T> List<T> get(ListProperty<T> entry) {
+    public <T> List<T> get(@NotNull final ListProperty<T> entry) {
         Object obj = null;
         try {
             obj = getEntryValue(entry);
@@ -336,8 +406,10 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         return list;
     }
 
+    /** {@inheritDoc} */
+    @Nullable
     @Override
-    public <T> Map<String, T> get(MappedProperty<T> entry) {
+    public <T> Map<String, T> get(@NotNull final MappedProperty<T> entry) {
         Object obj = null;
         try {
             obj = getEntryValue(entry);
@@ -371,8 +443,10 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         return (Map<String, T>) map;
     }
 
+    /** {@inheritDoc} */
+    @Nullable
     @Override
-    public <T> T get(MappedProperty<T> entry, String key) {
+    public <T> T get(@NotNull final MappedProperty<T> entry, @NotNull final String key) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("entry not registered to this config!");
         }
@@ -391,16 +465,19 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         return entry.getType().cast(obj);
     }
 
+    /** {@inheritDoc} */
+    @NotNull
     @Override
-    public NestedProperties get(NestedProperty entry) {
+    public NestedProperties get(@NotNull final NestedProperty entry) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("entry not registered to this config!");
         }
         return this.nestMap.get(entry);
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> boolean set(SimpleProperty<T> entry, T value) {
+    public <T> boolean set(@NotNull final SimpleProperty<T> entry, @Nullable final T value) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -417,8 +494,9 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> boolean set(ListProperty<T> entry, List<T> newValue) {
+    public <T> boolean set(@NotNull final ListProperty<T> entry, @Nullable final List<T> newValue) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -427,8 +505,9 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> boolean set(MappedProperty<T> entry, Map<String, T> newValue) {
+    public <T> boolean set(@NotNull final MappedProperty<T> entry, @Nullable final Map<String, T> newValue) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }
@@ -437,8 +516,9 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         return true;
     }
 
+    /** {@inheritDoc} */
     @Override
-    public <T> boolean set(MappedProperty<T> entry, String key, T value) {
+    public <T> boolean set(@NotNull final MappedProperty<T> entry, @NotNull final String key, @Nullable final T value) {
         if (!isInConfig(entry)) {
             throw new IllegalArgumentException("Property not registered to this config!");
         }

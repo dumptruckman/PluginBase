@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * A Configuration wrapper class that allows for comments to be applied to the config paths.
  */
-class CommentedYamlConfiguration extends YamlConfiguration {
+class CommentedYamlConfiguration extends YamlConfiguration implements CommentedFile {
 
     private final HashMap<String, String> comments = new HashMap<String, String>();;
     private final boolean doComments;
@@ -209,7 +209,7 @@ class CommentedYamlConfiguration extends YamlConfiguration {
      * @param path         Configuration path to add comment.
      * @param commentLines Comments to add.  One String per line.
      */
-    public void addComment(String path, List<String> commentLines) {
+    public void addComments(@NotNull final String path, @NotNull final List<String> commentLines) {
         StringBuilder commentstring = new StringBuilder();
         String leadingSpaces = "";
         for (int n = 0; n < path.length(); n++) {

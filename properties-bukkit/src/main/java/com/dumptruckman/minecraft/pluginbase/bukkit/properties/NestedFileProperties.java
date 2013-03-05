@@ -3,6 +3,7 @@ package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
 import com.dumptruckman.minecraft.pluginbase.properties.NestedProperties;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 class NestedFileProperties extends AbstractFileProperties implements NestedProperties {
 
@@ -11,9 +12,9 @@ class NestedFileProperties extends AbstractFileProperties implements NestedPrope
     private final ConfigurationSection thisSection;
     private final String fullName;
 
-    NestedFileProperties(final FileConfiguration config,
-                         final AbstractFileProperties parent, final String name,
-                         final Class... configClasses) {
+    NestedFileProperties(@NotNull final FileConfiguration config,
+                         @NotNull final AbstractFileProperties parent, @NotNull final String name,
+                         @NotNull final Class... configClasses) {
         super(config, configClasses);
         this.parentSection = parent.getConfig();
         this.name = name;
@@ -29,10 +30,13 @@ class NestedFileProperties extends AbstractFileProperties implements NestedPrope
         }
     }
 
+    @NotNull
+    @Override
     protected ConfigurationSection getConfig() {
         return thisSection;
     }
 
+    @NotNull
     @Override
     protected String getName() {
         return fullName;
@@ -45,7 +49,7 @@ class NestedFileProperties extends AbstractFileProperties implements NestedPrope
     }
 
     @Override
-    protected void serializeAll(ConfigurationSection newConfig) {
+    protected void serializeAll(@NotNull final ConfigurationSection newConfig) {
         super.serializeAll(newConfig);
         parentSection.set(this.name, getConfig());
 
