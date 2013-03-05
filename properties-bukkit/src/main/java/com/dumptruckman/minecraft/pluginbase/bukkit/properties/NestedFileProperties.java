@@ -2,16 +2,17 @@ package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
 
 import com.dumptruckman.minecraft.pluginbase.properties.NestedProperties;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
-class NestedYamlProperties extends AbstractYamlProperties implements NestedProperties {
+class NestedFileProperties extends AbstractFileProperties implements NestedProperties {
 
     private final String name;
     private final ConfigurationSection parentSection;
     private final ConfigurationSection thisSection;
     private final String fullName;
 
-    NestedYamlProperties(final CommentedYamlConfiguration config,
-                         final AbstractYamlProperties parent, final String name,
+    NestedFileProperties(final FileConfiguration config,
+                         final AbstractFileProperties parent, final String name,
                          final Class... configClasses) {
         super(config, configClasses);
         this.parentSection = parent.getConfig();

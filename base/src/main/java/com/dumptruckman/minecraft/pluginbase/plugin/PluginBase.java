@@ -7,6 +7,7 @@ import com.dumptruckman.minecraft.pluginbase.command.CommandHandler;
 import com.dumptruckman.minecraft.pluginbase.command.CommandProvider;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.logging.LoggablePlugin;
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.Messager;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.Messaging;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
@@ -121,4 +122,12 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
      */
     @NotNull
     CommandHandler getCommandHandler();
+
+    /**
+     * Gets the PluginBase logger for this PluginBase plugin.
+     *
+     * @return the PluginBase logger for this PluginBase plugin.
+     */
+    @NotNull
+    PluginLogger getPluginLogger();
 }

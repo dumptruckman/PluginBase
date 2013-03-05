@@ -4,13 +4,15 @@
 package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
-import com.feildmaster.lib.configuration.EnhancedConfiguration;
-import org.bukkit.configuration.file.FileConfiguration;
+import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -25,82 +28,49 @@ import java.util.List;
 /**
  * A Configuration wrapper class that allows for comments to be applied to the config paths.
  */
-class CommentedYamlConfiguration {
+class CommentedYamlConfiguration extends YamlConfiguration {
 
-    private final HashMap<String, String> comments;
-    private final File file;
-    private FileConfiguration config = null;
+    private final HashMap<String, String> comments = new HashMap<String, String>();;
     private final boolean doComments;
 
-    public CommentedYamlConfiguration(File file, boolean doComments) {
-        if (file == null) {
-            throw new IllegalArgumentException("configFile may not be null!");
-        }
-        this.comments = new HashMap<String, String>();
-        this.file = file;
+    CommentedYamlConfiguration(final boolean doComments) {
         this.doComments = doComments;
     }
 
-    /**
-     * Loads this Configuration object into memory.
-     */
-    public final void load() throws IOException {
-        if (file.isDirectory()) {
-            throw new IllegalArgumentException("configFile may NOT be directory!");
-        }
-        // Make the data folders
-        if (file.getParent() != null) {
-            if (file.getParentFile().mkdirs()) {
-                Logging.fine("Created folder for config file.");
-            }
+    static CommentedYamlConfiguration loadCommentedConfiguration(@NotNull final File file, final boolean doComments) throws PluginBaseException {
+        CommentedYamlConfiguration config;
+        try {
+            config = new EncodedYamlConfiguration("UTF-8", doComments);
+        } catch (UnsupportedEncodingException e) {
+            Logging.fine("Could not create UTF-8 configuration.  Special/Foreign characters may not be saved.");
+            config = new CommentedYamlConfiguration(doComments);
         }
 
-        // Check if the config file exists.  If not, create it.
-        if (!file.exists()) {
-            if (file.createNewFile()) {
-                Logging.fine("Created config file: %s", file.getAbsolutePath());
-            }
+        try {
+            config.load(file);
+        } catch (FileNotFoundException e) {
+            throw new PluginBaseException(e);
+        } catch (IOException e) {
+            throw new PluginBaseException(e);
+        } catch (InvalidConfigurationException e) {
+            throw new PluginBaseException(e);
         }
-        config = EnhancedConfiguration.loadConfiguration(file);
-    }
 
-    public void newConfig() {
-        config = new YamlConfiguration();
-    }
-
-    /**
-     * @return The underlying configuration object.
-     */
-    public FileConfiguration getConfig() {
-        return this.config;
+        return config;
     }
 
     /**
      * Saves the file as per normal for YamlConfiguration and then parses the file and inserts
      * comments where necessary.
-     *
-     * @return True if succesful.
      */
-    public boolean save() {
-        boolean saved = true;
-        // Save the config just like normal
-        try {
-            config.save(file);
-        } catch (Exception e) {
-            saved = false;
-        }
-
-        if (!doComments) {
-            return saved;
-        }
-
+    private void _save(@NotNull final File file) throws IOException {
         // if there's comments to add and it saved fine, we need to add comments
-        if (!comments.isEmpty() && saved) {
+        if (doComments && !comments.isEmpty()) {
             // String array of each line in the config file
             String[] yamlContents =
                     this.convertFileToString(file).split("[" + System.getProperty("line.separator") + "]");
 
-            String header = config.options().header();
+            String header = options().header();
             if (header == null) {
                 header = "";
             }
@@ -228,14 +198,9 @@ class CommentedYamlConfiguration {
                 newContents = newContents.replaceFirst(System.getProperty("line.separator"), "");
             }
             */
-            try {
-                // Write the string to the config file
-                this.stringToFile(newContents.toString(), file);
-            } catch (IOException e) {
-                saved = false;
-            }
+            // Write the string to the config file
+            this.stringToFile(newContents.toString(), file);
         }
-        return saved;
     }
 
     /**
@@ -336,6 +301,12 @@ class CommentedYamlConfiguration {
                 }
             }
         }
+    }
+
+    @Override
+    public void save(@NotNull final File file) throws IOException {
+        super.save(file);
+        _save(file);
     }
 }
 

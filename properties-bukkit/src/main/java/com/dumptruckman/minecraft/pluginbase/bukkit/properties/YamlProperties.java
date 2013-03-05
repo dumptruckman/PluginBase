@@ -5,34 +5,35 @@ package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
 
 import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
+import org.bukkit.configuration.InvalidConfigurationException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public class YamlProperties extends AbstractYamlProperties implements Properties {
+public class YamlProperties extends AbstractFileProperties implements Properties {
 
     private final File configFile;
     private final boolean doComments;
     private final boolean autoDefaults;
 
-    public YamlProperties(boolean doComments, boolean autoDefaults, File configFile, Class... configClasses) throws IOException {
-        super(new CommentedYamlConfiguration(configFile, doComments), configClasses);
+    public YamlProperties(boolean doComments, boolean autoDefaults, File configFile, Class... configClasses) throws PluginBaseException {
+        super(CommentedYamlConfiguration.loadCommentedConfiguration(configFile, doComments), configClasses);
         this.configFile = configFile;
         this.doComments = doComments;
         this.autoDefaults = autoDefaults;
 
-        // Load the configuration file into memory
-        load();
+        // Prepare the loaded configuration file.
+        prepareConfig();
 
-        // Saves the configuration from memory to file
+        // Saves the configuration from memory to file.
         flush();
     }
 
-    private void load() throws IOException {
-        config.load();
+    private void prepareConfig() {
         deserializeAll();
 
         // Sets defaults config values
@@ -40,33 +41,44 @@ public class YamlProperties extends AbstractYamlProperties implements Properties
             this.setDefaults();
         }
 
-        config.getConfig().options().header(getHeader());
+        config.options().header(getHeader());
     }
 
+    private void loadConfig() throws PluginBaseException {
+        try {
+            config.load(configFile);
+        } catch (FileNotFoundException e) {
+            throw new PluginBaseException(e);
+        } catch (IOException e) {
+            throw new PluginBaseException(e);
+        } catch (InvalidConfigurationException e) {
+            throw new PluginBaseException(e);
+        }
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void reload() throws PluginBaseException {
+        loadConfig();
+        prepareConfig();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void flush() throws PluginBaseException {
+        CommentedYamlConfiguration newConfig = new CommentedYamlConfiguration(doComments);
+        newConfig.options().header(getHeader());
+        serializeAll(newConfig);
+        if (doComments) {
+            doComments(newConfig);
+        }
         try {
-            load();
+            newConfig.save(configFile);
         } catch (IOException e) {
             throw new PluginBaseException(e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void flush() {
-        CommentedYamlConfiguration newConfig = new CommentedYamlConfiguration(configFile, doComments);
-        newConfig.newConfig();
-        newConfig.getConfig().options().header(getHeader());
-        serializeAll(newConfig.getConfig());
-        if (doComments) {
-            doComments(newConfig);
-        }
-        newConfig.save();
-    }
-    
     protected String getHeader() {
         return "";
     }

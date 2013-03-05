@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.util;
 
 import com.dumptruckman.minecraft.pluginbase.bukkit.properties.YamlProperties;
+import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.plugin.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.properties.ListProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.MappedProperty;
@@ -11,7 +12,6 @@ import com.dumptruckman.minecraft.pluginbase.properties.PropertyFactory;
 import com.dumptruckman.minecraft.pluginbase.properties.SimpleProperty;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 
 public class MockConfig extends YamlProperties implements BaseConfig {
@@ -29,7 +29,7 @@ public class MockConfig extends YamlProperties implements BaseConfig {
 
     public static final NestedProperty<Nested> NESTED_TEST = PropertyFactory.newNestedProperty(Nested.class, "nested").comment("# ababadfga").build();
     
-    public MockConfig(boolean doComments, File configFile) throws IOException {
+    public MockConfig(boolean doComments, File configFile) throws PluginBaseException {
         super(doComments, true, configFile, MockConfig.class, BaseConfig.class);
     }
 

@@ -19,22 +19,20 @@ import com.dumptruckman.minecraft.pluginbase.properties.serializers.DefaultStrin
 import com.dumptruckman.minecraft.pluginbase.properties.serializers.StringStringSerializer;
 import org.bukkit.configuration.ConfigurationOptions;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Commented Yaml implementation of ConfigBase.
- */
-public abstract class AbstractYamlProperties extends AbstractProperties implements Properties {
+public abstract class AbstractFileProperties extends AbstractProperties implements Properties {
 
-    protected final CommentedYamlConfiguration config;
+    protected final FileConfiguration config;
 
-    private final Map<NestedProperty, NestedYamlProperties> nestMap = new HashMap<NestedProperty, NestedYamlProperties>();
+    private final Map<NestedProperty, NestedFileProperties> nestMap = new HashMap<NestedProperty, NestedFileProperties>();
 
-    public AbstractYamlProperties(final CommentedYamlConfiguration config,
+    public AbstractFileProperties(final FileConfiguration config,
                                   final Class... configClasses) {
         super(configClasses);
         this.config = config;
@@ -61,11 +59,11 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
     }
 
     protected ConfigurationSection getConfig() {
-        return this.config.getConfig();
+        return this.config;
     }
 
     protected ConfigurationOptions getConfigOptions() {
-        return this.config.getConfig().options();
+        return this.config.options();
     }
 
     protected String getName() {
@@ -82,7 +80,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
             }
             config.addComment(path, property.getComments());
             if (property instanceof NestedProperty) {
-                NestedYamlProperties nestedProperties = this.nestMap.get(property);
+                NestedFileProperties nestedProperties = this.nestMap.get(property);
                 if (nestedProperties != null) {
                     nestedProperties.doComments(config);
                 }
@@ -146,7 +144,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                 }
             } else if (property instanceof NestedProperty) {
                 final NestedProperty nestedProperty = (NestedProperty) property;
-                final NestedYamlProperties nestedProperties = new NestedYamlProperties(config, this,
+                final NestedFileProperties nestedProperties = new NestedFileProperties(config, this,
                         nestedProperty.getName(), nestedProperty.getType());
                 nestedProperties.deserializeAll();
                 getConfig().set(nestedProperty.getName(), nestedProperties.getConfig());
@@ -219,7 +217,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                 }
             } else if (property instanceof NestedProperty) {
                 final NestedProperty nestedProperty = (NestedProperty) property;
-                final NestedYamlProperties nestedProperties = this.nestMap.get(nestedProperty);
+                final NestedFileProperties nestedProperties = this.nestMap.get(nestedProperty);
                 if (nestedProperties != null) {
                     nestedProperties.serializeAll(newConfig.createSection(nestedProperty.getName()));
                 } else {
@@ -262,7 +260,7 @@ public abstract class AbstractYamlProperties extends AbstractProperties implemen
                 }
             } else if (path instanceof NestedProperty) {
                 final NestedProperty nestedProperty = (NestedProperty) path;
-                final NestedYamlProperties nestedProperties = this.nestMap.get(nestedProperty);
+                final NestedFileProperties nestedProperties = this.nestMap.get(nestedProperty);
                 if (nestedProperties != null) {
                     nestedProperties.setDefaults();
                 } else {

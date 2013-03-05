@@ -2,12 +2,12 @@ package com.dumptruckman.minecraft.pluginbase.util;
 
 import com.dumptruckman.minecraft.pluginbase.bukkit.AbstractBukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.bukkit.properties.YamlProperties;
+import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class MockPlugin extends AbstractBukkitPlugin {
 
     @NotNull
     @Override
-    protected Properties getNewConfig() throws IOException {
+    protected Properties getNewConfig() throws PluginBaseException {
         return new YamlProperties(true, true, new File(getDataFolder(), "config.yml"), MockConfig.class);
     }
 

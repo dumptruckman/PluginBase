@@ -15,6 +15,7 @@ import com.dumptruckman.minecraft.pluginbase.database.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.database.SQLite;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
@@ -43,7 +44,7 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
- * An implemention of PluginBase made for Bukkit Plugin that automatically takes care of many of the setup steps
+ * An implementation of PluginBase made for Bukkit Plugin that automatically takes care of many of the setup steps
  * required in a plugin.
  */
 public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitPlugin {
@@ -57,6 +58,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private SQLDatabase db = null;
     private Properties sqlConfig = null;
     private Metrics metrics = null;
+    private PluginLogger logger;
 
     /**
      * Override this method if you wish for your permissions to start with something other than the plugin name
@@ -76,7 +78,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         // Setup the server interface.
         this.serverInterface = new BukkitServerInterface(getServer());
         // Initialize our logging.
-        Logging.init(this);
+        logger = PluginLogger.getLogger(this);
         // Setup a permission factory for Bukkit permissions.
         PermFactory.registerPermissionFactory(BukkitPermFactory.class);
         PermFactory.registerPermissionName(PluginBase.class, getPermissionName());
@@ -193,10 +195,10 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      * classes it will utilize.
      *
      * @return a new config instance.
-     * @throws IOException in case anything goes wrong during config initialization/loading.
+     * @throws PluginBaseException in case anything goes wrong during config initialization/loading.
      */
     @NotNull
-    protected abstract Properties getNewConfig() throws IOException;
+    protected abstract Properties getNewConfig() throws PluginBaseException;
 
     private void setupConfig() {
         try {
@@ -206,9 +208,9 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
                 this.config.reload();
             }
             Logging.fine("Loaded config file!");
-        } catch (Exception e) {  // Catch errors loading the config file and exit out if found.
+        } catch (PluginBaseException e) {  // Catch errors loading the config file and exit out if found.
             Logging.severe("Error loading config file!");
-            Logging.getLogger().log(Level.SEVERE, "Exception: ", e);
+            e.logException(getPluginLogger(), Level.SEVERE);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
@@ -378,8 +380,9 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private void initDatabase() {
         try {
             sqlConfig = new YamlProperties(true, true, new File(getDataFolder(), "db_config.yml"), SQLConfig.class);
-        } catch (IOException e) {
-            Logging.severe("Could not create db_config.yml! " + e.getMessage());
+        } catch (PluginBaseException e) {
+            Logging.severe("Could not create db_config.yml!");
+            e.logException(getPluginLogger(), Level.SEVERE);
         }
     }
 
@@ -430,5 +433,12 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     @Override
     public boolean useQueuedCommands() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @NotNull
+    @Override
+    public PluginLogger getPluginLogger() {
+        return logger;
     }
 }

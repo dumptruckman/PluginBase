@@ -233,6 +233,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
      * @throws CommandException if there were any exceptions brought about by the usage of the command.  The causes are
      * many fold and include things such as using an improper amount of parameters or attempting to use a flag not
      * recognized by the command.
+     * TODO This needs to throw an extended PluginBaseException
      */
     public boolean locateAndRunCommand(@NotNull final BasePlayer player, @NotNull String[] args) throws CommandException {
         args = commandDetection(args);
