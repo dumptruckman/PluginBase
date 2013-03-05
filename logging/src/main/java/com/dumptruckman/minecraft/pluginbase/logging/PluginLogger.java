@@ -8,7 +8,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.IllegalFormatException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -266,7 +265,7 @@ public class PluginLogger extends Logger {
     }
 
     /**
-     * Custom log method that always logs to a single static logger.
+     * Custom log method.
      * <p/>
      * Applies String.format() to the message if it is a non-debug level logging and to debug level logging IF debug
      * logging is enabled.
@@ -288,29 +287,12 @@ public class PluginLogger extends Logger {
         } else if (level != Level.FINE && level != Level.FINER && level != Level.FINEST) {
             if (level != Level.CONFIG || showConfig) {
                 if (level == Level.CONFIG) {
-                    privateLog(Level.INFO, getPrefixedMessage(format(message, args)));
+                    privateLog(Level.INFO, getPrefixedMessage(Formatter.format(message, args)));
                 } else {
-                    privateLog(level, getPrefixedMessage(format(message, args)));
+                    privateLog(level, getPrefixedMessage(Formatter.format(message, args)));
                 }
             }
         }
-    }
-
-    @NotNull
-    private String format(@NotNull final String message, @NotNull final Object[] args) {
-        try {
-            return String.format(message, args);
-        } catch (IllegalFormatException e) {
-            final StringBuilder builder = new StringBuilder();
-            for (final Object object : args) {
-                if (builder.length() != 0) {
-                    builder.append(", ");
-                }
-                builder.append(object);
-            }
-            System.out.println("Illegal format in the following message with args: " + builder.toString());
-        }
-        return message;
     }
 
     /**
@@ -320,7 +302,7 @@ public class PluginLogger extends Logger {
      * @param args    Arguments for the String.format() that is applied to the message.
      */
     private void debug(@NotNull final String message, @NotNull final Object...args) {
-        privateLog(Level.INFO, getDebugString(format(message, args)));
+        privateLog(Level.INFO, getDebugString(Formatter.format(message, args)));
     }
 
     /**

@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,6 +21,22 @@ import java.util.Locale;
  * This interface describes a Messager which sends localized messages to {@link MessageReceiver}s.
  */
 public class Messager implements MessageProvider {
+
+    @Nullable
+    private static WeakReference<Messager> staticMessager = null;
+
+    /**
+     * Retrieves the most recently created Messager object.
+     * <p/>
+     * You should not store any hard references to the returned Messager as it needs to be able to be garbage collected
+     * as needed.
+     *
+     * @return the most recently created messager object or null if none created or all have been garbage collected.
+     */
+    @Nullable
+    public static Messager requestMessager() {
+        return staticMessager != null ? staticMessager.get() : null;
+    }
 
     @NotNull
     private final MessageProvider provider;
@@ -31,6 +48,7 @@ public class Messager implements MessageProvider {
      */
     protected Messager(@NotNull final MessageProvider provider) {
         this.provider = provider;
+        staticMessager = new WeakReference<Messager>(this);
     }
 
     /**

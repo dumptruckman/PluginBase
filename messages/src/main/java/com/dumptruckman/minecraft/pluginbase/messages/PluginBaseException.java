@@ -3,8 +3,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.messages;
 
+import com.dumptruckman.minecraft.pluginbase.logging.Formatter;
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.logging.Level;
 
 /**
  * The main exception class for PluginBase.
@@ -25,7 +29,7 @@ public class PluginBaseException extends Exception {
      * @param languageMessage the bundled message to use for this exception.
      */
     public PluginBaseException(@NotNull final BundledMessage languageMessage) {
-        super(String.format(ChatColor.translateAlternateColorCodes('&', languageMessage.getMessage().getDefault()), languageMessage.getArgs()));
+        super(getUnbundledDefaultMessage(languageMessage));
         this.languageMessage = languageMessage;
     }
 
@@ -35,7 +39,7 @@ public class PluginBaseException extends Exception {
      * @param languageMessage the bundled message to use for this exception.
      */
     public PluginBaseException(@NotNull final BundledMessage languageMessage, @NotNull final Throwable throwable) {
-        super(String.format(ChatColor.translateAlternateColorCodes('&', languageMessage.getMessage().getDefault()), languageMessage.getArgs()), throwable);
+        super(getUnbundledDefaultMessage(languageMessage), throwable);
         this.languageMessage = languageMessage;
     }
 
@@ -88,5 +92,77 @@ public class PluginBaseException extends Exception {
     @Nullable
     public PluginBaseException getCauseException() {
         return this.cause;
+    }
+
+    /** {@inheritDoc} */
+    @NotNull
+    @Override
+    public String getMessage() {
+        return super.getMessage();    //To change body of overridden methods use File | Settings | File Templates.
+    }
+
+    /**
+     * Logs the exception to the given logger at the given level.
+     * <p/>
+     * This logs the message of the original exception and all caused by exceptions when possible.
+     *
+     * @param logger the logger to log to.
+     * @param level the level to log at.
+     */
+    public void logException(@NotNull final PluginLogger logger, @NotNull final Level level) {
+        logger.log(level, toString());
+        final Throwable cause = getCause();
+        if (cause != null) {
+            logCauseException(cause, logger, level);
+        }
+    }
+
+    private static void logCauseException(@NotNull final Throwable cause, @NotNull final PluginLogger logger, @NotNull final Level level) {
+        logger.log(level, "Caused by: " + cause.toString());
+        final Throwable newCause = cause.getCause();
+        if (newCause != null) {
+            logCauseException(newCause, logger, level);
+        }
+    }
+
+    /**
+     * Logs the exception along with its stack trace to the given logger at the given level.
+     * <p/>
+     * This logs the message and stack trace of the original exception and all caused by exceptions when possible.
+     *
+     * @param logger the logger to log to.
+     * @param level the level to log at.
+     */
+    public void logExceptionWithStackTrace(@NotNull final PluginLogger logger, @NotNull final Level level) {
+        logger.log(level, toString());
+        for (final StackTraceElement stackElement : getStackTrace()) {
+            logger.log(level, stackElement.toString());
+        }
+        final Throwable cause = getCause();
+        if (cause != null) {
+            logCauseExceptionWithStackTrace(cause, logger, level);
+        }
+    }
+
+    private static void logCauseExceptionWithStackTrace(@NotNull final Throwable cause, @NotNull final PluginLogger logger, @NotNull final Level level) {
+        logger.log(level, "Caused by: " + cause.toString());
+        for (final StackTraceElement stackElement : cause.getStackTrace()) {
+            logger.log(level, stackElement.toString());
+        }
+        final Throwable newCause = cause.getCause();
+        if (newCause != null) {
+            logCauseExceptionWithStackTrace(newCause, logger, level);
+        }
+    }
+
+    protected static String getUnbundledDefaultMessage(@NotNull final BundledMessage message) {
+        return Formatter.format(ChatColor.translateAlternateColorCodes('&', message.getMessage().getDefault()), message.getArgs());
+    }
+
+    /** {@inheritDoc} */
+    @NotNull
+    @Override
+    public String toString() {
+        return getClass().getName() + ": " + getMessage();
     }
 }

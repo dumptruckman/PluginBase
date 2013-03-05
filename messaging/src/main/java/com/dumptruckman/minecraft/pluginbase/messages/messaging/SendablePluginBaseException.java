@@ -4,8 +4,10 @@
 package com.dumptruckman.minecraft.pluginbase.messages.messaging;
 
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messages.Messages;
 import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A extension of the basic {@link PluginBaseException} that adds ease of use methods for sending the exception to
@@ -59,15 +61,41 @@ public class SendablePluginBaseException extends PluginBaseException {
      * @param receiver the message receiver.
      */
     public void sendException(@NotNull final Messager messager, @NotNull final MessageReceiver receiver) {
-        messager.message(receiver, getBundledMessage().getMessage(), getBundledMessage().getArgs());
-        if (getCauseException() != null) {
-            if (getCauseException() instanceof SendablePluginBaseException) {
-                ((SendablePluginBaseException) getCauseException()).sendException(messager, receiver);
-            } else {
-                messager.message(receiver, getCauseException().getMessage());
-            }
+        messager.message(receiver, getBundledMessage());
+        final PluginBaseException cause = getCauseException();
+        if (cause != null) {
+            sendCauseException(cause, messager, receiver);
         } else if (getCause() != null) {
-            messager.message(receiver, getCause().getMessage());
+            messager.message(receiver, Messages.CAUSE_EXCEPTION, getCause().toString());
         }
+    }
+
+    private static void sendCauseException(@NotNull final PluginBaseException cause, @NotNull final Messager messager, @NotNull final MessageReceiver receiver) {
+        messager.message(receiver, Messages.CAUSE_EXCEPTION,
+                messager.getLocalizedMessage(cause.getBundledMessage().getMessage(),
+                        cause.getBundledMessage().getArgs()));
+        final PluginBaseException newCause = cause.getCauseException();
+        if (newCause != null) {
+            sendCauseException(newCause, messager, receiver);
+        } else if (cause.getCause() != null) {
+            messager.message(receiver, Messages.CAUSE_EXCEPTION, cause.getCause().toString());
+        }
+    }
+
+    /** {@inheritDoc} */
+    @NotNull
+    @Override
+    public String toString() {
+        return toString(Messager.requestMessager());
+    }
+
+    private String toString(@Nullable final Messager messager) {
+        String message;
+        if (messager != null) {
+            message = messager.getLocalizedMessage(getBundledMessage().getMessage(), getBundledMessage().getArgs());
+        } else {
+            message = getMessage();
+        }
+        return getClass().getName() + ": " + message;
     }
 }

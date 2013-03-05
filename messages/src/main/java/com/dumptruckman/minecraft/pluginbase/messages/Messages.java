@@ -56,6 +56,8 @@ public class Messages {
     /** Used for wrapping regular exceptions into a PluginBaseException. */
     @NotNull public final static Message EXCEPTION = new Message("generic.exception", "%s");
 
+    @NotNull public final static Message CAUSE_EXCEPTION = new Message("generic.cause_exception", "Caused by: %s");
+
     /** A message of general success */
     @NotNull public final static Message SUCCESS = new Message("generic.success", "&a[SUCCESS]&f");
 
