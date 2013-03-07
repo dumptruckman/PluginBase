@@ -50,6 +50,17 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repository.jetbrains.com</id>
+            <name>repository.jetbrains.com-all</name>
+            <url>http://repository.jetbrains.com/all</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
     <dependencies>
         <dependency>
             <groupId>com.intellij</groupId>
