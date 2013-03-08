@@ -50,23 +50,7 @@
         </snapshotRepository>
     </distributionManagement>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>repository.jetbrains.com</id>
-            <name>repository.jetbrains.com-all</name>
-            <url>http://repository.jetbrains.com/all</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-
     <dependencies>
-        <dependency>
-            <groupId>com.intellij</groupId>
-            <artifactId>javac2</artifactId>
-            <version>7.0.3</version>
-        </dependency>
         <dependency>
             <groupId>com.intellij</groupId>
             <artifactId>annotations</artifactId>

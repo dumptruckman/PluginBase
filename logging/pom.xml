@@ -55,6 +55,28 @@ and adjust the build number accordingly -->
                     <target>1.6</target>
                 </configuration>
             </plugin>
+            <!-- IntelliJ Annotation Instrumenter -->
+            <plugin>
+                <groupId>com.electriccloud</groupId>
+                <artifactId>javac2-maven-plugin</artifactId>
+                <version>1.0.2</version>
+                <executions>
+                    <execution>
+                        <id>@NotNull Instrumentation</id>
+                        <goals>
+                            <goal>instrument</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                    <execution>
+                        <id>@NotNull Test Instrumentation</id>
+                        <goals>
+                            <goal>testInstrument</goal>
+                        </goals>
+                        <phase>process-test-classes</phase>
+                    </execution>
+                </executions>
+            </plugin>
             <!-- Jar Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -66,20 +88,6 @@ and adjust the build number accordingly -->
                         </manifestEntries>
                     </archive>
                 </configuration>
-            </plugin>
-            <!-- IntelliJ Annotation Instrumenter -->
-            <plugin>
-                <groupId>com.intellij</groupId>
-                <artifactId>notnull-instrumenter-maven-plugin</artifactId>
-                <version>1.0-SNAPSHOT</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>instrument</goal>
-                            <goal>tests-instrument</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <!-- Maven Source Plugin -->
             <plugin>
