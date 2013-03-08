@@ -27,7 +27,7 @@ import java.util.List;
 )
 public class ConfirmCommand extends BaseBuiltInCommand {
 
-    public final static Message PERMISSION = new Message("cmd.confirm.help", "Confirms the usage of a previously entered command, if required.");
+    public final static Message PERMISSION = Message.createMessage("cmd.confirm.help", "Confirms the usage of a previously entered command, if required.");
 
     /** Permission for confirm command. */
     public static final Perm CONFIRM_COMMAND_PERM = PermFactory.newPerm(PluginBase.class, "cmd.confirm").usePluginName().commandPermission()

@@ -30,8 +30,8 @@ public class ReloadCommand extends BaseBuiltInCommand {
     public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.reload").usePluginName().commandPermission()
             .desc("Reloads the config file.").build();
 
-    public final static Message RELOAD_HELP = new Message("cmd.reload.help", "Reloads the plugin, typically detecting any external changes in plugin files.");
-    public final static Message RELOAD_COMPLETE = new Message("cmd.reload.complete", "&b===[ Reload Complete! ]===");
+    public final static Message RELOAD_HELP = Message.createMessage("cmd.reload.help", "Reloads the plugin, typically detecting any external changes in plugin files.");
+    public final static Message RELOAD_COMPLETE = Message.createMessage("cmd.reload.complete", "&b===[ Reload Complete! ]===");
 
     private static final List<String> STATIC_KEYS = new ArrayList<String>();
 

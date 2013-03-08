@@ -34,11 +34,11 @@ public class DebugCommand extends BaseBuiltInCommand {
     public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.debug").usePluginName().commandPermission()
             .desc("Spams the console a bunch.").build();
 
-    public final static Message DEBUG_HELP = new Message("cmd.debug.help", "Enables or disable debug mode."
+    public final static Message DEBUG_HELP = Message.createMessage("cmd.debug.help", "Enables or disable debug mode."
             + "When enabled the console will be spammed with lots of information useful for helping developers debug.");
-    public final static Message DEBUG_SET = new Message("cmd.debug.set", "Debug mode is &2%s");
-    public final static Message DEBUG_DISABLED = new Message("cmd.debug.off", "Debug mode is &cOFF");
-    public final static Message INVALID_DEBUG = new Message("debug.invalid",
+    public final static Message DEBUG_SET = Message.createMessage("cmd.debug.set", "Debug mode is &2%s");
+    public final static Message DEBUG_DISABLED = Message.createMessage("cmd.debug.off", "Debug mode is &cOFF");
+    public final static Message INVALID_DEBUG = Message.createMessage("debug.invalid",
             "&fInvalid debug level.  Please use number 0-3.  &b(3 being many many messages!)");
 
     private static final List<String> STATIC_KEYS = new ArrayList<String>();

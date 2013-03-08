@@ -19,6 +19,16 @@ public final class Message {
 
     private final String key;
 
+    private Message(@NotNull final String key, @NotNull final String def) {
+        this.key = key;
+        this.def = def;
+    }
+
+    Message(@NotNull final String def) {
+        this.key = null;
+        this.def = def;
+    }
+
     /**
      * Creates a new localized message.
      * <p/>
@@ -31,14 +41,8 @@ public final class Message {
      * @param key The localization key for this message.
      * @param def The default message in whatever your plugin's primary language is.
      */
-    public Message(@NotNull final String key, @NotNull final String def) {
-        this.key = key;
-        this.def = def;
-    }
-
-    Message(@NotNull final String def) {
-        this.key = null;
-        this.def = def;
+    public static Message createMessage(@NotNull final String key, @NotNull final String def) {
+        return new Message(key, def);
     }
 
     /**

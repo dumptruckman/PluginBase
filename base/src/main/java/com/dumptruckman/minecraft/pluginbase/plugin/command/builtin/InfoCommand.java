@@ -30,7 +30,7 @@ public class InfoCommand extends BaseBuiltInCommand {
     public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.info").usePluginName().commandPermission()
             .desc("Gives some basic information about this plugin.").build();
 
-    public final static Message INFO_HELP = new Message("cmd.info.help", "Gives some basic information about this plugin.");
+    public final static Message INFO_HELP = Message.createMessage("cmd.info.help", "Gives some basic information about this plugin.");
 
     private static final List<String> STATIC_KEYS = new ArrayList<String>();
 

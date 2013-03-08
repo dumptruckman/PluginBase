@@ -21,6 +21,10 @@ import java.util.Set;
  */
 public class Messages {
 
+    private Messages() {
+        throw new AssertionError();
+    }
+
     @NotNull
     private static final Map<Localizable, Properties> messages = new HashMap<Localizable, Properties>();
 
@@ -54,15 +58,15 @@ public class Messages {
     @NotNull public final static Message BLANK = new Message("");
 
     /** Used for wrapping regular exceptions into a PluginBaseException. */
-    @NotNull public final static Message EXCEPTION = new Message("generic.exception", "%s");
+    @NotNull public final static Message EXCEPTION = Message.createMessage("generic.exception", "%s");
 
-    @NotNull public final static Message CAUSE_EXCEPTION = new Message("generic.cause_exception", "Caused by: %s");
+    @NotNull public final static Message CAUSE_EXCEPTION = Message.createMessage("generic.cause_exception", "Caused by: %s");
 
     /** A message of general success */
-    @NotNull public final static Message SUCCESS = new Message("generic.success", "&a[SUCCESS]&f");
+    @NotNull public final static Message SUCCESS = Message.createMessage("generic.success", "&a[SUCCESS]&f");
 
     /** A message of general error */
-    @NotNull public final static Message ERROR = new Message("generic.error", "&c[ERROR]&f");
+    @NotNull public final static Message ERROR = Message.createMessage("generic.error", "&c[ERROR]&f");
 
     /**
      * Registers all of the messages in a given class to the localizable object.

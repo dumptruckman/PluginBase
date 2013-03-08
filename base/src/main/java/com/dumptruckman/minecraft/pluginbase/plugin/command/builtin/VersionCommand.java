@@ -45,19 +45,19 @@ public class VersionCommand extends BaseBuiltInCommand {
     public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.version").usePluginName().commandPermission()
             .desc("Sends version information to the console.").build();
 
-    public final static Message VERSION_HELP = new Message("cmd.version.help",
+    public final static Message VERSION_HELP = Message.createMessage("cmd.version.help",
             "Displays version and other helpful information about the plugin."
                     + "\nFlags:"
                     + "\n  -p will output an http://pastie.org url containing the information."
                     + "\n  -b will output an http://pastebin.com url containing the information.");
-    public final static Message VERSION_PLAYER = new Message("cmd.version.player",
+    public final static Message VERSION_PLAYER = Message.createMessage("cmd.version.player",
             "Version info dumped to console. Please check your server logs.");
-    public final static Message VERSION_PLUGIN_VERSION = new Message("cmd.version.info.plugin_version", "%s Version: %s");
-    public final static Message VERSION_SERVER_NAME = new Message("cmd.version.info.server_name", "Server Name: %s");
-    public final static Message VERSION_SERVER_VERSION = new Message("cmd.version.info.server_version", "Server Version: %s");
-    public final static Message VERSION_LANG_FILE = new Message("cmd.version.info.lang_file", "Language file: %s");
-    public final static Message VERSION_DEBUG_MODE = new Message("cmd.version.info.debug_mode", "Debug Mode: %s");
-    public final static Message VERSION_INFO_DUMPED = new Message("cmd.version.dumped", "Version info dumped here: %s");
+    public final static Message VERSION_PLUGIN_VERSION = Message.createMessage("cmd.version.info.plugin_version", "%s Version: %s");
+    public final static Message VERSION_SERVER_NAME = Message.createMessage("cmd.version.info.server_name", "Server Name: %s");
+    public final static Message VERSION_SERVER_VERSION = Message.createMessage("cmd.version.info.server_version", "Server Version: %s");
+    public final static Message VERSION_LANG_FILE = Message.createMessage("cmd.version.info.lang_file", "Language file: %s");
+    public final static Message VERSION_DEBUG_MODE = Message.createMessage("cmd.version.info.debug_mode", "Debug Mode: %s");
+    public final static Message VERSION_INFO_DUMPED = Message.createMessage("cmd.version.dumped", "Version info dumped here: %s");
 
     private static final URLShortener SHORTENER = new BitlyURLShortener();
 

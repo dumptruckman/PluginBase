@@ -52,7 +52,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
      *
      * @param plugin The plugin utilizing this command handler.
      */
-    public CommandHandler(@NotNull final P plugin) {
+    protected CommandHandler(@NotNull final P plugin) {
         this.plugin = plugin;
         this.commandMap = new HashMap<String, Class<? extends Command>>();
         Messages.registerMessages(plugin, getClass());
@@ -201,12 +201,12 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
     }
 
     /** Message used when a users tries to confirm a command but has not queued one or the queued one has expired. */
-    public static final Message NO_QUEUED_COMMANDS = new Message("commands.queued.none_queued",
+    public static final Message NO_QUEUED_COMMANDS = Message.createMessage("commands.queued.none_queued",
             ChatColor.DARK_GRAY + "Sorry, but you have not used any commands that require confirmation.");
     /** Default message used when the user must confirm a queued command. */
-    public static final Message MUST_CONFIRM = new Message("commands.queued.must_confirm",
+    public static final Message MUST_CONFIRM = Message.createMessage("commands.queued.must_confirm",
             ChatColor.BLUE + "You must confirm the previous command by typing " + ChatColor.BOLD + "%s"
-            + "\n" + ChatColor.RESET + ChatColor.GRAY + "You have %s to comply.");
+                    + "\n" + ChatColor.RESET + ChatColor.GRAY + "You have %s to comply.");
 
     /**
      * Confirms any queued command for the given player.
