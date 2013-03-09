@@ -10,67 +10,10 @@
 
     <repositories>
         <repository>
-            <id>onarandombox</id>
-            <url>http://repo.onarandombox.com/content/groups/public</url>
-        </repository>
-        <repository>
             <id>bukkit</id>
             <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
     </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>doodleproject-repo</id>
-            <name>DoodleProject Maven 2 Repository</name>
-            <url>http://doodleproject.sourceforge.net/maven2/release</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <ciManagement>
-        <system>jenkins</system>
-        <url>http://ci.onarandombox.com</url>
-    </ciManagement>
-
-    <build>
-        <defaultGoal>clean package</defaultGoal>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                    <stylesheetfile>${project.basedir}/style/stylesheet.css</stylesheetfile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>non-aggregate</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <links>
-                                <link>http://jd.bukkit.org/apidocs/</link>
-                                <link>http://mythcraft.dyndns.org/javadoc/vault/</link>
-                            </links>
-                            <linksource>true</linksource>
-                            <includeDependencySources>true</includeDependencySources>
-                            <dependencySourceExcludes>
-                                <dependencySourceExclude>com.intellij:*</dependencySourceExclude>
-                                <dependencySourceExclude>junit:*</dependencySourceExclude>
-                                <dependencySourceExclude>org.powermock:*</dependencySourceExclude>
-                                <dependencySourceExclude>org.easymock:*</dependencySourceExclude>
-                            </dependencySourceExcludes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 
     <dependencies>
         <dependency>
@@ -156,25 +99,44 @@
             <version>${project.version}</version>
             <type>jar</type>
             <scope>compile</scope>
-            <!--
-            <exclusions>
-                <exclusion>
-                    <groupId>org.mcstats</groupId>
-                    <artifactId>metrics</artifactId>
-                </exclusion>
-            </exclusions>
-            -->
         </dependency>
     </dependencies>
 
-    <distributionManagement>
-        <repository>
-            <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse/</url>
-        </repository>
-        <snapshotRepository>
-            <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/multiverse-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <build>
+        <defaultGoal>clean package</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <stylesheetfile>${project.basedir}/style/stylesheet.css</stylesheetfile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>non-aggregate</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <links>
+                                <link>http://jd.bukkit.org/apidocs/</link>
+                                <link>http://mythcraft.dyndns.org/javadoc/vault/</link>
+                            </links>
+                            <linksource>true</linksource>
+                            <includeDependencySources>true</includeDependencySources>
+                            <dependencySourceExcludes>
+                                <dependencySourceExclude>com.intellij:*</dependencySourceExclude>
+                                <dependencySourceExclude>junit:*</dependencySourceExclude>
+                                <dependencySourceExclude>org.powermock:*</dependencySourceExclude>
+                                <dependencySourceExclude>org.easymock:*</dependencySourceExclude>
+                            </dependencySourceExcludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
