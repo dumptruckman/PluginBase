@@ -11,11 +11,11 @@ License, v. 2.0. If a copy of the MPL was not distributed with this
 file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
------------------
-WorldEdit License
------------------
+----------------------------------
+WorldEdit License & Bukkit License
+----------------------------------
 
-WorldEdit as a whole is licensed under:
+WorldEdit and Bukkit as a whole are licensed under:
 
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
