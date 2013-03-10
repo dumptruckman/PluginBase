@@ -1,9 +1,9 @@
 package com.dumptruckman.minecraft.pluginbase.plugin.command.builtin;
 
+import com.dumptruckman.minecraft.pluginbase.command.CommandContext;
 import com.dumptruckman.minecraft.pluginbase.command.builtin.BuiltInCommand;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-import com.sk89q.minecraft.util.commands.CommandContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

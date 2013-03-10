@@ -1,7 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.command.CommandProvider;
-import com.sk89q.util.StringUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;

@@ -46,6 +46,19 @@ public final class Message {
     }
 
     /**
+     * Bundles a {@link Message} with preset arguments.
+     * <p/>
+     * Can be used in cases where you are required to return a message of some sort and it is otherwise impossible to
+     * return a localized message due to also requiring arguments.
+     *
+     * @param message The localization message for the bundle.
+     * @param args The arguments for the bundled message.
+     */
+    public static BundledMessage bundleMessage(@NotNull final Message message, @NotNull final Object... args) {
+        return new BundledMessage(message, args);
+    }
+
+    /**
      * The default message in whatever your plugin's primary language is.
      *
      * @return The default non-localized messages.

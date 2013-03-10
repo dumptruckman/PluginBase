@@ -1,15 +1,32 @@
 package com.dumptruckman.minecraft.pluginbase.command;
 
-import com.sk89q.minecraft.util.commands.CommandException;
+import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
+import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class CommandUsageException extends CommandException {
 
-    protected List<String> usage;
+    private final List<String> usage;
 
-    public CommandUsageException(String message, List<String> usage) {
-        super(message);
+    public CommandUsageException(@NotNull final BundledMessage languageMessage, final List<String> usage) {
+        super(languageMessage);
+        this.usage = usage;
+    }
+
+    public CommandUsageException(@NotNull final BundledMessage languageMessage, @NotNull final Throwable throwable, final List<String> usage) {
+        super(languageMessage, throwable);
+        this.usage = usage;
+    }
+
+    public CommandUsageException(@NotNull final BundledMessage languageMessage, @NotNull final PluginBaseException cause, final List<String> usage) {
+        super(languageMessage, cause);
+        this.usage = usage;
+    }
+
+    public CommandUsageException(@NotNull final PluginBaseException e, final List<String> usage) {
+        super(e);
         this.usage = usage;
     }
 

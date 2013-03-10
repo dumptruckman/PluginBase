@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.plugin.command.builtin;
 
+import com.dumptruckman.minecraft.pluginbase.command.CommandContext;
 import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
@@ -11,20 +12,10 @@ import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.BitlyURLShortener;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteFailedException;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteService;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteServiceFactory;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteServiceType;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.URLShortener;
-import com.sk89q.minecraft.util.commands.CommandContext;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 /**

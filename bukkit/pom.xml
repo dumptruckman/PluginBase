@@ -17,23 +17,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.sk89q</groupId>
-            <artifactId>worldedit</artifactId>
-            <version>5.4</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.bukkit</groupId>
-                    <artifactId>bukkit</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.spout</groupId>
-                    <artifactId>spoutapi</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Plugin</artifactId>
             <version>${project.version}</version>
@@ -113,33 +96,9 @@
                                     <include>com.dumptruckman.minecraft.pluginbase:Plugin</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Properties-Bukkit</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Permissions-Bukkit</include>
-                                    <include>com.feildmaster.lib:EnhancedConfiguration</include>
                                     <include>org.mcstats:metrics</include>
-                                    <include>com.sk89q:worldedit</include>
                                 </includes>
                             </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>com.feildmaster.lib.configuration</pattern>
-                                    <shadedPattern>com.dumptruckman.minecraft.pluginbase.config</shadedPattern>
-                                </relocation>
-                            </relocations>
-                            <filters>
-                                <filter>
-                                    <artifact>com.sk89q:worldedit</artifact>
-                                    <includes>
-                                        <include>com/sk89q/bukkit/util/DynamicPluginCommand.**</include>
-                                        <include>com/sk89q/util/ReflectionUtil.**</include>
-                                        <include>com/sk89q/util/StringUtil.**</include>
-                                        <include>com/sk89q/bukkit/util/FallbackRegistrationListener.**</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>defaults</exclude>
-                                        <exclude>plugin.yml</exclude>
-                                        <exclude>spoutplugin.yml</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
                         </configuration>
                     </execution>
                 </executions>

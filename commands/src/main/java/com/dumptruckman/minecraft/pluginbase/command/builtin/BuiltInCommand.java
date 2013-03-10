@@ -1,10 +1,10 @@
 package com.dumptruckman.minecraft.pluginbase.command.builtin;
 
 import com.dumptruckman.minecraft.pluginbase.command.Command;
+import com.dumptruckman.minecraft.pluginbase.command.CommandContext;
 import com.dumptruckman.minecraft.pluginbase.command.CommandProvider;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.Messaging;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
-import com.sk89q.minecraft.util.commands.CommandContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

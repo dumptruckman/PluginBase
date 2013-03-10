@@ -10,6 +10,8 @@ import org.jetbrains.annotations.NotNull;
  * <p/>
  * Can be used in cases where you are required to return a message of some sort and it is otherwise impossible to
  * return a localized message due to also requiring arguments.
+ * <p/>
+ * See {@link Message#bundleMessage(Message, Object...)} for creation of these bundled messages.
  */
 public class BundledMessage {
 
@@ -18,13 +20,7 @@ public class BundledMessage {
     @NotNull
     private final Object[] args;
 
-    /**
-     * Creates a bundled message.
-     *
-     * @param message The localization message for the bundle.
-     * @param args The arguments for the bundled message.
-     */
-    public BundledMessage(@NotNull final Message message, @NotNull final Object...args) {
+    BundledMessage(@NotNull final Message message, @NotNull final Object... args) {
         this.message = message;
         this.args = args;
     }

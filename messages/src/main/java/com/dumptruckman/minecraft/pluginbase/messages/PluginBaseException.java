@@ -71,7 +71,7 @@ public class PluginBaseException extends Exception {
      * @param e The exception to copy.
      */
     public PluginBaseException(@NotNull final Exception e) {
-        this(new BundledMessage(Messages.EXCEPTION, e.getMessage()), e.getCause());
+        this(Message.bundleMessage(Messages.EXCEPTION, e.getMessage()), e.getCause());
     }
 
     /**

@@ -13,10 +13,6 @@
             <id>mcstats</id>
             <url>http://repo.mcstats.org/content/repositories/snapshots</url>
         </repository>
-        <repository>
-            <id>sk89q-repo</id>
-            <url>http://maven.sk89q.com/repo/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -116,34 +112,6 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>1.5</version>
                 <executions>
-                    <execution>
-                        <id>worldedit-reqs</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>com.sk89q:worldedit</include>
-                                </includes>
-                            </artifactSet>
-                            <filters>
-                                <filter>
-                                    <artifact>com.sk89q:worldedit</artifact>
-                                    <includes>
-                                        <include>com/sk89q/**</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>defaults</exclude>
-                                        <exclude>plugin.yml</exclude>
-                                        <exclude>spoutplugin.yml</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <minimizeJar>true</minimizeJar>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>pluginbase-reqs</id>
                         <phase>package</phase>

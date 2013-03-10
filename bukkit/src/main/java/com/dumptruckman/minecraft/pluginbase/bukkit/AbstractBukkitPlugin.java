@@ -5,11 +5,7 @@ package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.bukkit.permission.BukkitPermFactory;
 import com.dumptruckman.minecraft.pluginbase.bukkit.properties.YamlProperties;
-import com.dumptruckman.minecraft.pluginbase.command.Command;
-import com.dumptruckman.minecraft.pluginbase.command.CommandHandler;
-import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
-import com.dumptruckman.minecraft.pluginbase.command.CommandUsageException;
-import com.dumptruckman.minecraft.pluginbase.command.QueuedCommand;
+import com.dumptruckman.minecraft.pluginbase.command.*;
 import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
@@ -23,13 +19,8 @@ import com.dumptruckman.minecraft.pluginbase.plugin.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginInfo;
 import com.dumptruckman.minecraft.pluginbase.plugin.ServerInterface;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ConfirmCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.DebugCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.InfoCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.ReloadCommand;
-import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.VersionCommand;
+import com.dumptruckman.minecraft.pluginbase.plugin.command.builtin.*;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
-import com.sk89q.minecraft.util.commands.CommandException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -320,12 +311,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         try {
             return getCommandHandler().locateAndRunCommand(wrappedSender, allArgs);
         } catch (CommandException e) {
-            if (e.getMessage() != null) {
-                getMessager().message(wrappedSender, e.getMessage());
-            }
-            if (e instanceof CommandUsageException) {
-                getMessager().message(wrappedSender, ((CommandUsageException) e).getUsage());
-            }
+            e.sendException(getMessager(), wrappedSender);
         }
         return true;
     }

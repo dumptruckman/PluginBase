@@ -8,8 +8,8 @@
 package com.dumptruckman.minecraft.pluginbase;
 
 import com.dumptruckman.minecraft.pluginbase.bukkit.AbstractBukkitPlugin;
+import com.dumptruckman.minecraft.pluginbase.bukkit.CommandUtil;
 import com.dumptruckman.minecraft.pluginbase.plugin.BaseConfig;
-import com.dumptruckman.minecraft.pluginbase.util.CommandUtil;
 import com.dumptruckman.minecraft.pluginbase.util.MockConfig;
 import com.dumptruckman.minecraft.pluginbase.util.MockMessages;
 import com.dumptruckman.minecraft.pluginbase.util.MockPlugin;
@@ -27,12 +27,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;

@@ -7,12 +7,3 @@ even snapshot versions.  This can cause conflicts if multiple plugins use this l
 relocation and are using different builds.
 
 See the README file located in each module for more information about the modules.
-
-
-The following license applies to all sub modules of PluginBase:
-
-Copyright (C) dumptruckman 2012
-
-This Source Code Form is subject to the terms of the Mozilla Public
-License, v. 2.0. If a copy of the MPL was not distributed with this
-file, You can obtain one at http://mozilla.org/MPL/2.0/.

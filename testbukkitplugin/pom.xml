@@ -77,16 +77,6 @@
                                     <include>com.dumptruckman.minecraft.pluginbase:BukkitPlugin</include>
                                 </includes>
                             </artifactSet>
-                            <filters>
-                                <filter>
-                                    <artifact>com.sk89q:worldedit</artifact>
-                                    <excludes>
-                                        <exclude>defaults</exclude>
-                                        <exclude>plugin.yml</exclude>
-                                        <exclude>spoutplugin.yml</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
                         </configuration>
                     </execution>
                 </executions>

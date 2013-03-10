@@ -1,9 +1,8 @@
 package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.command.CommandHandler;
+import com.dumptruckman.minecraft.pluginbase.command.CommandRegistration;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
-import com.sk89q.bukkit.util.FallbackRegistrationListener;
-import com.sk89q.util.ReflectionUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
@@ -25,7 +24,7 @@ class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
         this.executor = executor;
     }
 
-    protected boolean register(@NotNull final com.sk89q.bukkit.util.CommandInfo commandInfo) {
+    protected boolean register(@NotNull final CommandRegistration commandInfo) {
         CommandMap commandMap = getCommandMap();
         if (commandMap == null) {
             return false;

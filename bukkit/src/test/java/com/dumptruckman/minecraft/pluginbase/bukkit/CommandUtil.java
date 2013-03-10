@@ -1,6 +1,5 @@
-package com.dumptruckman.minecraft.pluginbase.util;
+package com.dumptruckman.minecraft.pluginbase.bukkit;
 
-import com.sk89q.util.StringUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

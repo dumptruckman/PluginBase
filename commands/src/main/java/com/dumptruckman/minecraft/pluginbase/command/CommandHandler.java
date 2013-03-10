@@ -7,22 +7,15 @@ import com.dumptruckman.minecraft.pluginbase.messages.ChatColor;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.messages.Messages;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.Messaging;
+import com.dumptruckman.minecraft.pluginbase.messages.messaging.SendablePluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.util.time.Duration;
-import com.sk89q.minecraft.util.commands.CommandContext;
-import com.sk89q.minecraft.util.commands.CommandException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class is responsible for handling commands.
@@ -129,7 +122,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         } else {
             permissions = new String[0];
         }
-        final com.sk89q.bukkit.util.CommandInfo bukkitCmdInfo = new com.sk89q.bukkit.util.CommandInfo(cmdInfo.usage(), cmdInfo.desc(), aliases.toArray(new String[aliases.size()]), this, permissions);
+        final CommandRegistration bukkitCmdInfo = new CommandRegistration(cmdInfo.usage(), cmdInfo.desc(), aliases.toArray(new String[aliases.size()]), this, permissions);
         if (register(bukkitCmdInfo)) {
             Logging.fine("Registered command '%s' to: %s", aliases.get(0), commandClass);
             String split[] = aliases.get(0).split(" ");
@@ -158,7 +151,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
      * @param commandInfo the info for the command to register.
      * @return true if successfully registered.
      */
-    protected abstract boolean register(@NotNull final com.sk89q.bukkit.util.CommandInfo commandInfo);
+    protected abstract boolean register(@NotNull final CommandRegistration commandInfo);
 
     /**
      * Constructs a command object from the given Command class.
@@ -230,9 +223,10 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
      * @param player the user executing the command.
      * @param args the space separated arguments of the command including the base command itself.
      * @return true if the command executed successfully.
-     * @throws CommandException if there were any exceptions brought about by the usage of the command.  The causes are
-     * many fold and include things such as using an improper amount of parameters or attempting to use a flag not
-     * recognized by the command.
+     * @throws SendablePluginBaseException if there were any exceptions brought about by the usage of the command.
+     * <p/>
+     * The causes are many fold and include things such as using an improper amount of parameters or attempting to
+     * use a flag not recognized by the command.
      * TODO This needs to throw an extended PluginBaseException
      */
     public boolean locateAndRunCommand(@NotNull final BasePlayer player, @NotNull String[] args) throws CommandException {
@@ -277,20 +271,20 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         }
         final CommandContext context = new CommandContext(args, valueFlags);
         if (context.argsLength() < cmdInfo.min()) {
-            throw new CommandUsageException("Too few arguments.", getUsage(args, 0, command, cmdInfo));
+            throw new CommandUsageException(Message.bundleMessage(TOO_FEW_ARGUMENTS), getUsage(args, 0, command, cmdInfo));
         }
         if (cmdInfo.max() != -1 && context.argsLength() > cmdInfo.max()) {
-            throw new CommandUsageException("Too many arguments.", getUsage(args, 0, command, cmdInfo));
+            throw new CommandUsageException(Message.bundleMessage(TOO_MANY_ARGUMENTS), getUsage(args, 0, command, cmdInfo));
         }
         if (!cmdInfo.anyFlags()) {
             for (char flag : context.getFlags()) {
                 if (!newFlags.contains(flag)) {
-                    throw new CommandUsageException("Unknown flag: " + flag, getUsage(args, 0, command, cmdInfo));
+                    throw new CommandUsageException(Message.bundleMessage(UNKNOWN_FLAG, flag), getUsage(args, 0, command, cmdInfo));
                 }
             }
         }
         if (!command.runCommand(player, context)) {
-            throw new CommandUsageException("Usage error..", getUsage(args, 0, command, cmdInfo));
+            throw new CommandUsageException(Message.bundleMessage(USAGE_ERROR), getUsage(args, 0, command, cmdInfo));
         }
         if (command instanceof QueuedCommand) {
             final QueuedCommand queuedCommand = (QueuedCommand) command;
@@ -307,6 +301,18 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         }
         return true;
     }
+
+    public static final Message TOO_FEW_ARGUMENTS = Message.createMessage("commands.usage.too_few_arguments",
+            "Too few arguments.");
+    public static final Message TOO_MANY_ARGUMENTS = Message.createMessage("commands.usage.too_many_arguments",
+            "Too many arguments.");
+    public static final Message UNKNOWN_FLAG = Message.createMessage("commands.usage.unknown_flag", "Unknown flag: %s");
+    public static final Message USAGE_ERROR = Message.createMessage("commands.usage.usage_error", "Usage error...");
+
+    public static final Message VALUE_FLAG_ALREADY_GIVEN = Message.createMessage("commands.usage.value_flag_already_given",
+            "Value flag '%s' already given");
+    public static final Message NO_VALUE_FOR_VALUE_FLAG = Message.createMessage("commands.usage.must_specify_value_for_value_flag",
+            "No value specified for the '-%s' flag.");
 
     /**
      * Returns a list of strings detailing the usage of the given command.
@@ -329,8 +335,9 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         commandUsage.add(command.toString());
 
         final String help;
-        if (cmd.getHelp() != null) {
-            help = plugin.getMessager().getLocalizedMessage(cmd.getHelp());
+        final Message helpMessage = cmd.getHelp();
+        if (helpMessage != null) {
+            help = plugin.getMessager().getLocalizedMessage(helpMessage);
         } else {
             help = "";
         }

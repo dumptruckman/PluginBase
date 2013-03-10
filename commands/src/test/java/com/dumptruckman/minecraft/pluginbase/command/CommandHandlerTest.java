@@ -1,6 +1,5 @@
 package com.dumptruckman.minecraft.pluginbase.command;
 
-import com.sk89q.bukkit.util.CommandInfo;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -17,7 +16,7 @@ public class CommandHandlerTest extends TestCase {
                 getKey("pb").newKey("reload", true);
             }
             @Override
-            protected boolean register(CommandInfo commandInfo) {
+            protected boolean register(CommandRegistration commandInfo) {
                 return false;  //To change body of implemented methods use File | Settings | File Templates.
             }
         });
