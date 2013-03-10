@@ -9,9 +9,11 @@ import java.io.File;
 class BukkitServerInterface implements ServerInterface<BukkitPlugin> {
 
     private final Server server;
+    private final File serverFolder;
 
-    BukkitServerInterface(final Server server) {
+    BukkitServerInterface(@NotNull final Server server) {
         this.server = server;
+        this.serverFolder = new File(".");
     }
 
     /** {@inheritDoc} */
@@ -33,6 +35,13 @@ class BukkitServerInterface implements ServerInterface<BukkitPlugin> {
     @Override
     public File getWorldContainer() {
         return server.getWorldContainer();
+    }
+
+    /** {@inheritDoc} */
+    @NotNull
+    @Override
+    public File getServerFolder() {
+        return serverFolder;
     }
 
     /** {@inheritDoc} */

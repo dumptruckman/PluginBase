@@ -37,6 +37,14 @@ public interface ServerInterface<P extends PluginBase> {
     @NotNull
     File getWorldContainer();
 
+    /**
+     * Returns the directory in which the minecraft server is hosted.
+     *
+     * @return the directory in which the minecraft server is hosted.
+     */
+    @NotNull
+    File getServerFolder();
+
     int runTask(@NotNull final P p, @NotNull final Runnable runnable);
 
     int runTaskAsynchronously(@NotNull final P p, @NotNull final Runnable runnable);
