@@ -92,8 +92,18 @@ class DefaultMessageProvider implements MessageProvider {
             }
         }
         for (final String key : Messages.getMessageKeys(localizable)) {
+
             if (!language.containsKey(key)) {
-                language.put(key, Messages.getDefaultMessage(localizable, key));
+                final Message message = Messages.getMessage(localizable, key);
+                if (message != null) {
+                    language.put(key, message.getDefault());
+                }
+            } else {
+                final Message message = Messages.getMessage(localizable, key);
+                if (message != null && Message.countArgs(language.getProperty(key)) == message.getArgCount()) {
+                    Logging.warning("The message for '%s' in the file '%s' does not have the correct amount of arguments (%s).  The default will be used.", key, languageFile, message.getArgCount());
+                    language.put(key, message.getDefault());
+                }
             }
         }
         return language;

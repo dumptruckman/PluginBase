@@ -19,14 +19,22 @@ public final class Message {
 
     private final String key;
 
+    private final int argCount;
+
     private Message(@NotNull final String key, @NotNull final String def) {
         this.key = key;
         this.def = def;
+        this.argCount = countArgs(def);
     }
 
     Message(@NotNull final String def) {
         this.key = null;
         this.def = def;
+        this.argCount = countArgs(def);
+    }
+
+    static int countArgs(@NotNull final String def) {
+        return def.split("%s").length - 1;
     }
 
     /**
@@ -76,5 +84,17 @@ public final class Message {
     @NotNull
     public String getKey() {
         return key;
+    }
+
+    /**
+     * Gets the number of expected arguments for this message.
+     * <p/>
+     * This is used to validate localized versions of this message to ensure they were given the appropriate
+     * amount of arguments.
+     *
+     * @return the number of expected arguments for this message.
+     */
+    public int getArgCount() {
+        return argCount;
     }
 }

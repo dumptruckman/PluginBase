@@ -13,7 +13,6 @@ import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -26,25 +25,25 @@ public class Messages {
     }
 
     @NotNull
-    private static final Map<Localizable, Properties> messages = new HashMap<Localizable, Properties>();
+    private static final Map<Localizable, Map<String, Message>> messages = new HashMap<Localizable, Map<String, Message>>();
 
     @NotNull
     static Set<String> getMessageKeys(@NotNull final Localizable localizable) {
         if (!messages.containsKey(localizable)) {
             throw new IllegalArgumentException("Provider has no registered messages.");
         }
-        return messages.get(localizable).stringPropertyNames();
+        return messages.get(localizable).keySet();
     }
 
     @Nullable
-    static String getDefaultMessage(@NotNull final Localizable localizable, @Nullable final String key) {
+    static Message getMessage(@NotNull final Localizable localizable, @Nullable final String key) {
         if (!messages.containsKey(localizable)) {
             throw new IllegalArgumentException("Provider has no registered messages.");
         }
         if (key == null) {
-            return BLANK.getDefault();
+            return BLANK;
         }
-        return messages.get(localizable).getProperty(key);
+        return messages.get(localizable).get(key);
     }
 
     static boolean containsMessageKey(@NotNull final Localizable localizable, @NotNull final String key) {
@@ -85,17 +84,17 @@ public class Messages {
             return;
         }
         if (!messages.containsKey(localizable)) {
-            messages.put(localizable, new Properties());
+            messages.put(localizable, new HashMap<String, Message>());
         }
-        final Properties props = messages.get(localizable);
-        if (!props.containsKey(SUCCESS.getKey())) {
-            props.setProperty(SUCCESS.getKey(), SUCCESS.getDefault());
+        final Map<String, Message> messages = Messages.messages.get(localizable);
+        if (!messages.containsKey(SUCCESS.getKey())) {
+            messages.put(SUCCESS.getKey(), SUCCESS);
         }
-        if (!props.containsKey(ERROR.getKey())) {
-            props.setProperty(ERROR.getKey(), ERROR.getDefault());
+        if (!messages.containsKey(ERROR.getKey())) {
+            messages.put(ERROR.getKey(), ERROR);
         }
-        if (!props.containsKey(EXCEPTION.getKey())) {
-            props.setProperty(EXCEPTION.getKey(), EXCEPTION.getDefault());
+        if (!messages.containsKey(EXCEPTION.getKey())) {
+            messages.put(EXCEPTION.getKey(), EXCEPTION);
         }
 
         final Field[] fields = clazz.getDeclaredFields();
@@ -112,8 +111,8 @@ public class Messages {
                     if (message == null) {
                         continue;
                     }
-                    if (!props.containsKey(message.getKey())) {
-                        props.put(message.getKey(), message.getDefault());
+                    if (!messages.containsKey(message.getKey())) {
+                        messages.put(message.getKey(), message);
                     }
                 } catch (IllegalAccessException e) {
                     Logging.warning("Could not register language message: %s", field);
