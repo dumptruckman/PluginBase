@@ -123,6 +123,7 @@
                                 <includes>
                                     <include>com.dumptruckman.minecraft.pluginbase:Logging</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Utilities</include>
+                                    <include>org.apache.commons:commons-io</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Messaging</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Properties</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:MinecraftLink</include>

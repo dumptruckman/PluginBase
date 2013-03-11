@@ -58,8 +58,8 @@ public class TestInstanceCreator {
     public static final File serverDirectory = new File("bin/test/server");
     public static final File worldsDirectory = new File("bin/test/server");
 
-    public boolean setUp() {
-        FileUtils.deleteFolder(serverDirectory);
+    public boolean setUp() throws Exception {
+        org.apache.commons.io.FileUtils.deleteDirectory(serverDirectory);
         try {
             pluginDirectory.mkdirs();
             Assert.assertTrue(pluginDirectory.exists());
