@@ -145,7 +145,10 @@ class DefaultMessageProvider implements MessageProvider {
         try {
             string = String.format(locale, string, args);
         } catch (IllegalFormatException e) {
-            Logging.warning("Language string format is incorrect: " + string);
+            Logging.warning("Language string format is incorrect: %s", string);
+            for (final StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                Logging.warning(ste.toString());
+            }
         }
         return string;
     }

@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.messages;
 
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -63,6 +64,12 @@ public final class Message {
      * @param args The arguments for the bundled message.
      */
     public static BundledMessage bundleMessage(@NotNull final Message message, @NotNull final Object... args) {
+        if (args.length != message.getArgCount()) {
+            Logging.warning("Bundled message created without appropriate number of arguments!");
+            for (final StackTraceElement e : Thread.currentThread().getStackTrace()) {
+                Logging.warning(e.toString());
+            }
+        }
         return new BundledMessage(message, args);
     }
 
