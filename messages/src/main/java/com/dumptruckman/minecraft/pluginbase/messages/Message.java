@@ -6,6 +6,9 @@ package com.dumptruckman.minecraft.pluginbase.messages;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * A localization key and its defaults.
  * <p/>
@@ -34,8 +37,15 @@ public final class Message {
         this.argCount = countArgs(def);
     }
 
+    private static final Pattern PATTERN = Pattern.compile("%s");
+
     static int countArgs(@NotNull final String def) {
-        return def.split("%s").length - 1;
+        final Matcher matcher = PATTERN.matcher(def);
+        int count = 0;
+        while (matcher.find()) {
+            count++;
+        }
+        return count;
     }
 
     /**
