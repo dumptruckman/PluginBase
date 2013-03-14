@@ -97,7 +97,11 @@ public class Messages {
             messages.put(EXCEPTION.getKey(), EXCEPTION);
         }
 
-        final Field[] fields = clazz.getDeclaredFields();
+        final Field[] f1 = clazz.getDeclaredFields();
+        final Field[] f2 = clazz.getFields();
+        final Field[] fields = new Field[f1.length + f2.length];
+        System.arraycopy(f1, 0, fields, 0, f1.length);
+        System.arraycopy(f2, 0, fields, f1.length, f2.length);
         for (final Field field : fields) {
             if (Modifier.isStatic(field.getModifiers())
                     && Modifier.isFinal(field.getModifiers())

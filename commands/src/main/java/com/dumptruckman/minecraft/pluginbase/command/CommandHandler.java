@@ -15,7 +15,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class is responsible for handling commands.
@@ -48,7 +54,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
     protected CommandHandler(@NotNull final P plugin) {
         this.plugin = plugin;
         this.commandMap = new HashMap<String, Class<? extends Command>>();
-        Messages.registerMessages(plugin, getClass());
+        Messages.registerMessages(plugin, CommandHandler.class);
     }
 
     //public boolean registerCommmands(String packageName) {
