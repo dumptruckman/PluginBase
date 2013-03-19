@@ -9,6 +9,7 @@ import com.dumptruckman.minecraft.pluginbase.command.Command;
 import com.dumptruckman.minecraft.pluginbase.command.CommandException;
 import com.dumptruckman.minecraft.pluginbase.command.CommandHandler;
 import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
+import com.dumptruckman.minecraft.pluginbase.command.CommandUsageException;
 import com.dumptruckman.minecraft.pluginbase.command.QueuedCommand;
 import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLConfig;
@@ -319,6 +320,11 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
             return getCommandHandler().locateAndRunCommand(wrappedSender, allArgs);
         } catch (CommandException e) {
             e.sendException(getMessager(), wrappedSender);
+            if (e instanceof CommandUsageException) {
+                for (final String usageString : ((CommandUsageException) e).getUsage()) {
+                    wrappedSender.sendMessage(usageString);
+                }
+            }
         }
         return true;
     }
