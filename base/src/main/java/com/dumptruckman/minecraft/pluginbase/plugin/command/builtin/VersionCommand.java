@@ -5,17 +5,26 @@ package com.dumptruckman.minecraft.pluginbase.plugin.command.builtin;
 
 import com.dumptruckman.minecraft.pluginbase.command.CommandContext;
 import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
 import com.dumptruckman.minecraft.pluginbase.plugin.BaseConfig;
 import com.dumptruckman.minecraft.pluginbase.plugin.PluginBase;
-import com.dumptruckman.minecraft.pluginbase.util.webpaste.*;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.BitlyURLShortener;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteFailedException;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteService;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteServiceFactory;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.PasteServiceType;
+import com.dumptruckman.minecraft.pluginbase.util.webpaste.URLShortener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -111,7 +120,7 @@ public class VersionCommand extends BaseBuiltInCommand {
 
         // log to console
         for (String line : buffer) {
-            Logging.info(line);
+            getPlugin().getLog().info(line);
         }
 
         final Set<Character> flags = new LinkedHashSet<Character>(context.getFlags());
@@ -122,9 +131,9 @@ public class VersionCommand extends BaseBuiltInCommand {
                     for (Character flag : flags) {
                         final String pasteUrl;
                         if (flag.equals('p')) {
-                            pasteUrl = postToService(PasteServiceType.PASTIE, true, buffer);
+                            pasteUrl = postToService(PasteServiceType.PASTIE, true, buffer, getPlugin().getLog());
                         } else if (flag.equals('b')) {
-                            pasteUrl = postToService(PasteServiceType.PASTEBIN, true, buffer);
+                            pasteUrl = postToService(PasteServiceType.PASTEBIN, true, buffer, getPlugin().getLog());
                         } else {
                             continue;
                         }
@@ -148,7 +157,7 @@ public class VersionCommand extends BaseBuiltInCommand {
      * @param isPrivate Should the paste be marked as private.
      * @return URL of visible paste
      */
-    private static String postToService(PasteServiceType type, boolean isPrivate, List<String> pasteData) {
+    private static String postToService(PasteServiceType type, boolean isPrivate, List<String> pasteData, @NotNull final PluginLogger logger) {
         StringBuilder buffer = new StringBuilder();
         for (String data : pasteData) {
             if (!buffer.toString().isEmpty()) {
@@ -160,7 +169,7 @@ public class VersionCommand extends BaseBuiltInCommand {
         try {
             return SHORTENER.shorten(ps.postData(ps.encodeData(buffer.toString()), ps.getPostURL()));
         } catch (PasteFailedException e) {
-            Logging.getLogger().log(Level.WARNING, "Error pasting version information: ", e);
+            logger.log(Level.WARNING, "Error pasting version information: ", e);
             return "Error posting to service";
         }
     }

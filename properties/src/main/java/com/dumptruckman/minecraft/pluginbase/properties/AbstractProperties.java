@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.properties;
 
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.properties.serializers.PropertySerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,16 +31,31 @@ public abstract class AbstractProperties implements Properties {
     private final Map<Class, PropertySerializer> propertySerializerMap = new HashMap<Class, PropertySerializer>();
     private final Map<ValueProperty, PropertyValidator> propertyValidatorMap = new HashMap<ValueProperty, PropertyValidator>();
 
+    @NotNull
+    private final PluginLogger logger;
+
     /**
      * Constructs a new AbstractProperties using the classes to indicate what {@link Property} objects this properties
      * deals with.
      *
+     * @param logger a logger to use for any important messages this Properties object may need to log.
      * @param classes a class containing definitions of {@link Property} objects that are available for setting/getting
      *                in this properties object.
      */
-    protected AbstractProperties(@NotNull final Class... classes) {
+    protected AbstractProperties(@NotNull final PluginLogger logger, @NotNull final Class... classes) {
+        this.logger = logger;
         this.entries = new Entries(classes);
         registerSerializers();
+    }
+
+    /**
+     * Gets the logger for this properties object.
+     *
+     * @return a PluginLogger for this AbstractProperties.
+     */
+    @NotNull
+    protected final PluginLogger getLog() {
+        return logger;
     }
 
     /**

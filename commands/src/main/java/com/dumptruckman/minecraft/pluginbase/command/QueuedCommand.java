@@ -3,7 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.command;
 
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.Messaging;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
@@ -34,13 +33,13 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging> exten
     protected abstract BundledMessage getConfirmMessage();
 
     final void confirm() {
-        Logging.finer("Confirming queued command '%s' for '%s' with '%s'", this, sender, context);
+        getPlugin().getLog().finer("Confirming queued command '%s' for '%s' with '%s'", this, sender, context);
         onConfirm(sender, context);
         getPlugin().getCommandHandler().removedQueuedCommand(sender, this);
     }
 
     private void expire() {
-        Logging.finer("Expiring queued command '%s' for '%s' with '%s'", this, sender, context);
+        getPlugin().getLog().finer("Expiring queued command '%s' for '%s' with '%s'", this, sender, context);
         onExpire(sender, context);
         getPlugin().getCommandHandler().removedQueuedCommand(sender, this);
     }

@@ -1,6 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,11 +20,12 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
     /**
      * Constructs a new MemoryProperties object configured to use the indicated classes as repositories for {@link Property} objects.
      *
+     * @param logger a logger to use for any important messages this Properties object may need to log.
      * @param autoDefaults true will cause default values to be assigned immediately for all properties.
-     * @param configClasses the classes that contain the {@link Property} objects that "belong" to this Properties object.
+     * @param configClasses the classes that contain the {@link com.dumptruckman.minecraft.pluginbase.properties.Property} objects that "belong" to this Properties object.
      */
-    protected MemoryProperties(final boolean autoDefaults, @NotNull final Class... configClasses) {
-        super(configClasses);
+    protected MemoryProperties(@NotNull final PluginLogger logger, final boolean autoDefaults, @NotNull final Class... configClasses) {
+        super(logger, configClasses);
         data = new HashMap<String, Object>(getProperties().size());
         this.autoDefaults = autoDefaults;
         if (autoDefaults) {
@@ -35,20 +36,22 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
     /**
      * Creates a new MemoryProperties object configured to use the indicated classes as repositories for {@link Property} objects.
      *
+     * @param logger a logger to use for any important messages this Properties object may need to log.
      * @param configClasses the classes that contain the {@link Property} objects that "belong" to this Properties object.
      */
-    public static Properties newMemoryProperties(@NotNull final Class... configClasses) {
-        return newMemoryProperties(true, configClasses);
+    public static Properties newMemoryProperties(@NotNull final PluginLogger logger, @NotNull final Class... configClasses) {
+        return newMemoryProperties(logger, true, configClasses);
     }
 
     /**
      * Creates a new MemoryProperties object configured to use the indicated classes as repositories for {@link Property} objects.
      *
+     * @param logger a logger to use for any important messages this Properties object may need to log.
      * @param autoDefaults true will cause default values to be assigned immediately for all properties.
-     * @param configClasses the classes that contain the {@link Property} objects that "belong" to this Properties object.
+     * @param configClasses the classes that contain the {@link com.dumptruckman.minecraft.pluginbase.properties.Property} objects that "belong" to this Properties object.
      */
-    public static Properties newMemoryProperties(final boolean autoDefaults, @NotNull final Class... configClasses) {
-        return new MemoryProperties(autoDefaults, configClasses);
+    public static Properties newMemoryProperties(@NotNull final PluginLogger logger, final boolean autoDefaults, @NotNull final Class... configClasses) {
+        return new MemoryProperties(logger, autoDefaults, configClasses);
     }
 
     /** {@inheritDoc} */
@@ -80,7 +83,7 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
                         continue;
                     }
                     if (valueProperty instanceof MappedProperty) {
-                        Logging.fine("Config: Defaulting map for '%s'", valueProperty.getName());
+                        getLog().fine("Config: Defaulting map for '%s'", valueProperty.getName());
                         if (valueProperty.getDefault() != null) {
                             getData().put(valueProperty.getName(), valueProperty.getDefault());
                         } else {
@@ -88,14 +91,14 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
                         }
                     } else if (valueProperty instanceof ListProperty) {
                         ListProperty listPath = (ListProperty) valueProperty;
-                        Logging.fine("Config: Defaulting list for '%s'", valueProperty.getName());
+                        getLog().fine("Config: Defaulting list for '%s'", valueProperty.getName());
                         if (listPath.getDefault() != null) {
                             getData().put(valueProperty.getName(), listPath.getDefault());
                         } else {
                             getData().put(valueProperty.getName(), listPath.getNewTypeList());
                         }
                     } else if (valueProperty.getDefault() != null) {
-                        Logging.fine("Config: Defaulting '%s' to %s", valueProperty.getName(), valueProperty.getDefault());
+                        getLog().fine("Config: Defaulting '%s' to %s", valueProperty.getName(), valueProperty.getDefault());
                         getData().put(valueProperty.getName(), valueProperty.getDefault());
                     }
                 }
@@ -108,7 +111,7 @@ public class MemoryProperties extends AbstractProperties implements NestedProper
     private NestedProperties getNestedProperties(@NotNull final NestedProperty nestedProperty) {
         Object obj = getData().get(nestedProperty.getName());
         if (obj == null || !(obj instanceof NestedProperties)) {
-            obj = new MemoryProperties(autoDefaults, nestedProperty.getType());
+            obj = new MemoryProperties(getLog(), autoDefaults, nestedProperty.getType());
             getData().put(nestedProperty.getName(), obj);
         }
         return (NestedProperties) obj;

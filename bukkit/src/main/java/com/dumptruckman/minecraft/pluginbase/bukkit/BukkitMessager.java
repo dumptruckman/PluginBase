@@ -3,7 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.bukkit;
 
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.messages.Localizable;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
@@ -126,7 +125,7 @@ public class BukkitMessager extends Messager {
         if (!(sender instanceof ConsoleCommandSender)) {
             message(sender, message, args);
         }
-        Logging.info(getLocalizedMessage(message, args));
+        getLog().info(getLocalizedMessage(message, args));
     }
 }
 

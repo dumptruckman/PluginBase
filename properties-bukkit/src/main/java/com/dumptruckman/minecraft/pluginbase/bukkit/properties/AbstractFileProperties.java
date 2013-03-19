@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
 
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.properties.AbstractProperties;
 import com.dumptruckman.minecraft.pluginbase.properties.ListProperty;
 import com.dumptruckman.minecraft.pluginbase.properties.MappedProperty;
@@ -42,12 +42,14 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
     /**
      * Constructs a new Properties object using the given config to store Property values in.
      *
+     * @param logger a logger to use for any important messages this Properties object may need to log.
      * @param config the persistence object.
      * @param configClasses the classes that declare what {@link Property} objects belong to this Properties object.
      */
-    protected AbstractFileProperties(@NotNull final FileConfiguration config,
+    protected AbstractFileProperties(@NotNull final PluginLogger logger,
+                                     @NotNull final FileConfiguration config,
                                      @NotNull final Class... configClasses) {
-        super(configClasses);
+        super(logger, configClasses);
         this.config = config;
 
         for (final Property property : getProperties()) {
@@ -158,7 +160,7 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
                                     if (isValid(valueProperty, res)) {
                                         section.set(key, res);
                                     } else {
-                                        Logging.warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + getConfigOptions().pathSeparator() + key + "'.  Value will be deleted!");
+                                        getLog().warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + getConfigOptions().pathSeparator() + key + "'.  Value will be deleted!");
                                         section.set(key, null);
                                     }
                                 }
@@ -175,7 +177,7 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
                                 if (isValid(valueProperty, res)) {
                                     newList.add(res);
                                 } else {
-                                    Logging.warning("Invalid value '" + res + "' at '" + valueProperty.getName() + "[" + i + "]'.  Value will be deleted!");
+                                    getLog().warning("Invalid value '" + res + "' at '" + valueProperty.getName() + "[" + i + "]'.  Value will be deleted!");
                                 }
                             }
                             getConfig().set(valueProperty.getName(), newList);
@@ -189,7 +191,7 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
                             if (isValid(valueProperty, res)) {
                                 getConfig().set(valueProperty.getName(), res);
                             } else {
-                                Logging.warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + "'.  Value will be defaulted!");
+                                getLog().warning("Invalid value '" + obj + "' at '" + valueProperty.getName() + "'.  Value will be defaulted!");
                                 getConfig().set(valueProperty.getName(), valueProperty.getDefault());
                             }
                         }
@@ -197,7 +199,7 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
                 }
             } else if (property instanceof NestedProperty) {
                 final NestedProperty nestedProperty = (NestedProperty) property;
-                final NestedFileProperties nestedProperties = new NestedFileProperties(config, this,
+                final NestedFileProperties nestedProperties = new NestedFileProperties(getLog(), config, this,
                         nestedProperty.getName(), nestedProperty.getType());
                 nestedProperties.deserializeAll();
                 getConfig().set(nestedProperty.getName(), nestedProperties.getConfig());
@@ -224,14 +226,14 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
                     if (valueProperty instanceof MappedProperty) {
                         Object o = getConfig().get(valueProperty.getName());
                         if (o == null) {
-                            Logging.fine("Missing property: %s", valueProperty.getName());
+                            getLog().fine("Missing property: %s", valueProperty.getName());
                             continue;
                         }
                         Map map;
                         if (o instanceof ConfigurationSection) {
                             map = ((ConfigurationSection) o).getValues(false);
                         } else if (!(o instanceof Map)) {
-                            Logging.fine("Missing property: %s", valueProperty.getName());
+                            getLog().fine("Missing property: %s", valueProperty.getName());
                             continue;
                         } else {
                             map = (Map) o;
@@ -243,14 +245,14 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
                                     map.put(key, getPropertySerializer(valueProperty.getType()).serialize(valueProperty.getType().cast(obj)));
                                 }
                             } else {
-                                Logging.warning("Could not serialize: %s", valueProperty.getName());
+                                getLog().warning("Could not serialize: %s", valueProperty.getName());
                             }
                         }
                         newConfig.set(valueProperty.getName(), map);
                     } else if (valueProperty instanceof ListProperty) {
                         List list = getConfig().getList(valueProperty.getName());
                         if (list == null) {
-                            Logging.fine("Missing property: %s", valueProperty.getName());
+                            getLog().fine("Missing property: %s", valueProperty.getName());
                             continue;
                         }
                         List newList = new ArrayList(list.size());
@@ -260,21 +262,21 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
                                     newList.add(getPropertySerializer(valueProperty.getType()).serialize(valueProperty.getType().cast(obj)));
                                 }
                             } else {
-                                Logging.warning("Could not serialize: %s", valueProperty.getName());
+                                getLog().warning("Could not serialize: %s", valueProperty.getName());
                             }
                         }
                         newConfig.set(valueProperty.getName(), newList);
                     } else if (valueProperty instanceof SimpleProperty && !valueProperty.getType().isAssignableFrom(Null.class)) {
                         Object obj = getConfig().get(valueProperty.getName());
                         if (obj == null) {
-                            Logging.fine("Missing property: %s", valueProperty.getName());
+                            getLog().fine("Missing property: %s", valueProperty.getName());
                             continue;
                         }
                         if (valueProperty.getType().isInstance(obj)) {
                             Object res = getPropertySerializer(valueProperty.getType()).serialize(valueProperty.getType().cast(obj));
                             newConfig.set(valueProperty.getName(), res);
                         } else {
-                            Logging.warning("Could not serialize '%s' since value is '%s' instead of '%s'", valueProperty.getName(), obj.getClass(), valueProperty.getType());
+                            getLog().warning("Could not serialize '%s' since value is '%s' instead of '%s'", valueProperty.getName(), obj.getClass(), valueProperty.getType());
                         }
                     }
                 }
@@ -304,7 +306,7 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
                         continue;
                     }
                     if (valueProperty instanceof MappedProperty) {
-                        Logging.fine("Config: Defaulting map for '%s'", valueProperty.getName());
+                        getLog().fine("Config: Defaulting map for '%s'", valueProperty.getName());
                         if (valueProperty.getDefault() != null) {
                             getConfig().set(valueProperty.getName(), valueProperty.getDefault());
                         } else {
@@ -312,14 +314,14 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
                         }
                     } else if (valueProperty instanceof ListProperty) {
                         ListProperty listPath = (ListProperty) valueProperty;
-                        Logging.fine("Config: Defaulting list for '%s'", valueProperty.getName());
+                        getLog().fine("Config: Defaulting list for '%s'", valueProperty.getName());
                         if (listPath.getDefault() != null) {
                             getConfig().set(valueProperty.getName(), listPath.getDefault());
                         } else {
                             getConfig().set(valueProperty.getName(), listPath.getNewTypeList());
                         }
                     } else if (valueProperty.getDefault() != null) {
-                        Logging.fine("Config: Defaulting '%s' to %s", valueProperty.getName(), valueProperty.getDefault());
+                        getLog().fine("Config: Defaulting '%s' to %s", valueProperty.getName(), valueProperty.getDefault());
                         getConfig().set(valueProperty.getName(), valueProperty.getDefault());
                     }
                 }
@@ -363,7 +365,7 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
             return null;
         }
         if (!entry.getType().isInstance(obj)) {
-            Logging.fine("An invalid value of '%s' was detected at '%s' during a get call.  Attempting to deserialize and replace...", obj, entry.getName());
+            getLog().fine("An invalid value of '%s' was detected at '%s' during a get call.  Attempting to deserialize and replace...", obj, entry.getName());
             final Object res = getPropertySerializer(entry.getType()).deserialize(obj);
             if (isValid(entry, (T) res)) {
                 obj = res;
@@ -392,13 +394,13 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         for (int i = 0; i < list.size(); i++) {
             Object o = list.get(i);
             if (!entry.getType().isInstance(o)) {
-                Logging.fine("An invalid value of '%s' was detected at '%s[%s]' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), i);
+                getLog().fine("An invalid value of '%s' was detected at '%s[%s]' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), i);
                 final Object res = getPropertySerializer(entry.getType()).deserialize(o);
                 if (isValid(entry, (T) res)) {
                     o = res;
                     list.set(i, entry.getType().cast(o));
                 } else {
-                    Logging.warning("Invalid value '%s' at '%s[%s]'!", obj, entry.getName(), i);
+                    getLog().warning("Invalid value '%s' at '%s[%s]'!", obj, entry.getName(), i);
                     continue;
                 }
             }
@@ -429,13 +431,13 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
         for (Map.Entry<String, Object> mapEntry : map.entrySet()) {
             Object o = mapEntry.getValue();
             if (!entry.getType().isInstance(o)) {
-                Logging.fine("An invalid value of '%s' was detected at '%s%s%s' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), getConfigOptions().pathSeparator(), mapEntry.getKey());
+                getLog().fine("An invalid value of '%s' was detected at '%s%s%s' during a get call.  Attempting to deserialize and replace...", o, entry.getName(), getConfigOptions().pathSeparator(), mapEntry.getKey());
                 final Object res = getPropertySerializer(entry.getType()).deserialize(o);
                 if (isValid(entry, (T) res)) {
                     o = res;
                     map.put(mapEntry.getKey(), entry.getType().cast(o));
                 } else {
-                    Logging.warning("Invalid value '%s' at '%s%s%s'!", obj, entry.getName() + getConfigOptions().pathSeparator() + mapEntry.getKey());
+                    getLog().warning("Invalid value '%s' at '%s%s%s'!", obj, entry.getName() + getConfigOptions().pathSeparator() + mapEntry.getKey());
                     continue;
                 }
             }
@@ -456,7 +458,7 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
             return null;
         }
         if (!entry.getType().isInstance(obj)) {
-            Logging.fine("An invalid value of '%s' was detected at '%s' during a get call.  Attempting to deserialize and replace...", obj, path);
+            getLog().fine("An invalid value of '%s' was detected at '%s' during a get call.  Attempting to deserialize and replace...", obj, path);
             final Object res = getPropertySerializer(entry.getType()).deserialize(obj);
             if (isValid(entry, (T) res)) {
                 obj = res;

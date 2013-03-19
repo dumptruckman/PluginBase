@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
 
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -28,14 +29,16 @@ public class YamlProperties extends AbstractFileProperties implements Properties
     /**
      * Constructs a new YamlProperties object with the specified parameters.
      *
+     * @param logger a logger to use for any important messages this Properties object may need to log.
      * @param doComments true to use comments.
      * @param autoDefaults true to set default values automatically.
      * @param configFile the file to load config from and to write config to.
      * @param configClasses the classes containing the Property objects associated with this Properties object.
      * @throws PluginBaseException if anything goes wrong while loading/writing-to the file.
      */
-    protected YamlProperties(boolean doComments, boolean autoDefaults, File configFile, Class... configClasses) throws PluginBaseException {
-        super(CommentedYamlConfiguration.loadCommentedConfiguration(configFile, doComments), configClasses);
+    protected YamlProperties(@NotNull final PluginLogger logger, boolean doComments, boolean autoDefaults,
+                             @NotNull final File configFile, @NotNull final Class... configClasses) throws PluginBaseException {
+        super(logger, CommentedYamlConfiguration.loadCommentedConfiguration(configFile, doComments), configClasses);
         this.configFile = configFile;
         this.doComments = doComments;
         this.autoDefaults = autoDefaults;
@@ -52,6 +55,7 @@ public class YamlProperties extends AbstractFileProperties implements Properties
      */
     public static class Loader {
 
+        private final PluginLogger logger;
         private final File configFile;
         private final Class[] configClasses;
         private boolean doComments = true;
@@ -65,10 +69,14 @@ public class YamlProperties extends AbstractFileProperties implements Properties
          * <p/>
          * Use {@link #load()} to finalize the options and create the YamlProperties object.
          *
+         * @param logger a logger to use for any important messages this Properties object may need to log.
          * @param configFile the file to use for the Configuration object.
          * @param configClasses the classes the YamlProperties will get its Property objects from.
          */
-        public Loader(@NotNull final File configFile, @NotNull final Class... configClasses) {
+        public Loader(@NotNull final PluginLogger logger,
+                      @NotNull final File configFile,
+                      @NotNull final Class... configClasses) {
+            this.logger = logger;
             this.configFile = configFile;
             this.configClasses = configClasses;
         }
@@ -106,7 +114,7 @@ public class YamlProperties extends AbstractFileProperties implements Properties
          * @throws PluginBaseException if anything goes wrong while loading the file.
          */
         public YamlProperties load() throws PluginBaseException {
-            return new YamlProperties(doComments, autoDefaults, configFile, configClasses);
+            return new YamlProperties(logger, doComments, autoDefaults, configFile, configClasses);
         }
     }
 

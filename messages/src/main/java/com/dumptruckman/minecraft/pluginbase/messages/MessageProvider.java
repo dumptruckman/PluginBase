@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.messages;
 
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -32,5 +33,14 @@ public interface MessageProvider {
      */
     @NotNull
     String getLocalizedMessage(@NotNull final Message key, @NotNull final Object... args);
+
+    /**
+     * MessageProvider requires a method to acquire a logger due to the needs of the default implementations of the
+     * classes that utilize the MessageProvider interface to log messages.
+     *
+     * @return a PluginLogger for this MessageProvider.
+     */
+    @NotNull
+    PluginLogger getLog();
 }
 

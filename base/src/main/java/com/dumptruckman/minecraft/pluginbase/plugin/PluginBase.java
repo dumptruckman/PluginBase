@@ -129,5 +129,5 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
      * @return the PluginBase logger for this PluginBase plugin.
      */
     @NotNull
-    PluginLogger getPluginLogger();
+    PluginLogger getLog();
 }

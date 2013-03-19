@@ -1,6 +1,12 @@
 package com.dumptruckman.minecraft.pluginbase.properties;
 
-import java.util.*;
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TestProperties extends MemoryProperties {
 
@@ -27,7 +33,7 @@ public class TestProperties extends MemoryProperties {
     }
 
     public TestProperties() {
-        super(true, TestProperties.class);
+        super(Logging.getLogger(), true, TestProperties.class);
     }
 
 }

@@ -119,7 +119,7 @@ public class Messages {
                         messages.put(message.getKey(), message);
                     }
                 } catch (IllegalAccessException e) {
-                    Logging.warning("Could not register language message: %s", field);
+                    Logging.warning("Could not register language message '%s' from class '%s'", field, clazz);
                 }
                 if (!access) {
                     field.setAccessible(false);

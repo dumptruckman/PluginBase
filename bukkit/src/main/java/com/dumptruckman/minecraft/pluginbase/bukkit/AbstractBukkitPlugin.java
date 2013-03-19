@@ -14,7 +14,6 @@ import com.dumptruckman.minecraft.pluginbase.database.MySQL;
 import com.dumptruckman.minecraft.pluginbase.database.SQLConfig;
 import com.dumptruckman.minecraft.pluginbase.database.SQLDatabase;
 import com.dumptruckman.minecraft.pluginbase.database.SQLite;
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
@@ -106,7 +105,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         onPluginDisable();
 
         // Shut down our logging.
-        Logging.shutdown();
+        getLog().shutdown();
     }
 
     /**
@@ -136,7 +135,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
                 config().flush();
             } catch (PluginBaseException e) {
                 e.printStackTrace();
-                Logging.severe("Cannot save config on startup.  Terminating plugin.");
+                getLog().severe("Cannot save config on startup.  Terminating plugin.");
                 getServer().getPluginManager().disablePlugin(this);
                 return;
             }
@@ -153,7 +152,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         try {
             metrics = new Metrics(this);
         } catch (IOException e) {
-            Logging.warning("Error while enabling plugin metrics: " + e.getMessage());
+            getLog().warning("Error while enabling plugin metrics: " + e.getMessage());
             metrics = null;
         }
     }
@@ -177,13 +176,13 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
                             sqlConfig().get(SQLConfig.DB_USER),
                             sqlConfig().get(SQLConfig.DB_PASS));
                 } catch (ClassNotFoundException e) {
-                    Logging.severe("Your server does not support MySQL!");
+                    getLog().severe("Your server does not support MySQL!");
                 }
             } else {
                 try {
                     this.db = new SQLite(new File(getDataFolder(), "data"));
                 } catch (ClassNotFoundException e) {
-                    Logging.severe("Your server does not support SQLite!");
+                    getLog().severe("Your server does not support SQLite!");
                 }
             }
         }
@@ -206,15 +205,15 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
             } else {
                 this.config.reload();
             }
-            Logging.fine("Loaded config file!");
+            getLog().fine("Loaded config file!");
         } catch (PluginBaseException e) {  // Catch errors loading the config file and exit out if found.
-            Logging.severe("Error loading config file!");
-            e.logException(getPluginLogger(), Level.SEVERE);
+            getLog().severe("Error loading config file!");
+            e.logException(getLog(), Level.SEVERE);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
         if (config() != null) {
-            Logging.setDebugLevel(config().get(BaseConfig.DEBUG_MODE));
+            getLog().setDebugLevel(config().get(BaseConfig.DEBUG_MODE));
         }
     }
 
@@ -373,10 +372,10 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     private void initDatabase() {
         try {
-            sqlConfig = new YamlProperties.Loader(new File(getDataFolder(), "db_config.yml"), SQLConfig.class).load();
+            sqlConfig = new YamlProperties.Loader(getLog(), new File(getDataFolder(), "db_config.yml"), SQLConfig.class).load();
         } catch (PluginBaseException e) {
-            Logging.severe("Could not create db_config.yml!");
-            e.logException(getPluginLogger(), Level.SEVERE);
+            getLog().severe("Could not create db_config.yml!");
+            e.logException(getLog(), Level.SEVERE);
         }
     }
 
@@ -432,7 +431,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     /** {@inheritDoc} */
     @NotNull
     @Override
-    public PluginLogger getPluginLogger() {
+    public PluginLogger getLog() {
         return logger;
     }
 }

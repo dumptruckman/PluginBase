@@ -9,7 +9,9 @@ import java.io.File;
 import java.util.logging.Level;
 
 /**
- * Static plugin logger.  {@link #init(LoggablePlugin)} should be called before using other methods in this class.
+ * Anonymous static plugin logger.
+ * <p/>
+ * This class's methods should only be used if you do not care where the log messages appear to originate from.
  */
 public final class Logging {
 
@@ -25,14 +27,14 @@ public final class Logging {
         @NotNull
         @Override
         public String getName() {
-            return LoggingPlugin.class.getSimpleName();
+            return Logging.class.getName();
         }
 
         /** {@inheritDoc} */
         @NotNull
         @Override
         public File getDataFolder() {
-            return new File(System.getProperty("user.dir"));
+            return new File("anonymous-logging");
         }
     }
 
@@ -43,22 +45,16 @@ public final class Logging {
     @NotNull
     static volatile PluginLogger pluginLogger = PluginLogger.getLogger(DEFAULT_PLUGIN);
 
-    /**
-     * Initializes this static logging class for the FIRST plugin to call this method.  Any subsequent calls will
-     * DO NOTHING.
-     *
-     * @param plugin The plugin that will use this static logging class.
-     */
-    public static void init(@NotNull final LoggablePlugin plugin) {
+    static void init(@NotNull final LoggablePlugin plugin) {
         if (pluginLogger.plugin == DEFAULT_PLUGIN) {
             pluginLogger = PluginLogger.getLogger(plugin);
         }
     }
 
     /**
-     * Returns the single PluginLogger instance for this static logging class.
+     * Returns the single anonymous PluginLogger instance for this static logging class.
      *
-     * @return the PluginLogger used for static logging by this class.
+     * @return the anonymous PluginLogger used for static logging by this class.
      */
     @NotNull
     public static PluginLogger getLogger() {
@@ -80,13 +76,6 @@ public final class Logging {
      */
     public static void setDebugLevel(final int debugLevel) {
         pluginLogger.setDebugLevel(debugLevel);
-    }
-
-    /**
-     * Performs any necessary shutdown steps to ensure this logger keeps no open file hooks.
-     */
-    public static void shutdown() {
-        pluginLogger.shutdown();
     }
 
     /**

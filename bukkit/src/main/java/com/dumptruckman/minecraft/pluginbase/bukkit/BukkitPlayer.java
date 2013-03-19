@@ -29,7 +29,7 @@ class BukkitPlayer extends AbstractBukkitCommandSender<Player> implements Entity
     public boolean teleport(@NotNull final EntityCoordinates location) {
         final World world = Bukkit.getWorld(location.getWorld());
         if (world == null) {
-            Logging.finer("Could not teleport '%s' to target location '%s'.  The target world is not loaded.", getName(), location);
+            Logging.warning("Could not teleport '%s' to target location '%s'.  The target world is not loaded.", getName(), location);
             return false;
         }
         final Location l = new Location(world, location.getX(), location.getY(), location.getZ());

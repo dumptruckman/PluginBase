@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.messages.messaging;
 
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.messages.Localizable;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
@@ -212,7 +212,13 @@ public class Messager implements MessageProvider {
         if (sender.isPlayer()) {
             message(sender, message, args);
         }
-        Logging.info(getLocalizedMessage(message, args));
+        getLog().info(getLocalizedMessage(message, args));
+    }
+
+    @NotNull
+    @Override
+    public PluginLogger getLog() {
+        return provider.getLog();
     }
 }
 

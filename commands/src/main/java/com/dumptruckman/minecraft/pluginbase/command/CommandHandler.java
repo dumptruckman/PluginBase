@@ -1,7 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.command;
 
 import com.dumptruckman.minecraft.pluginbase.command.builtin.BuiltInCommand;
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
 import com.dumptruckman.minecraft.pluginbase.messages.ChatColor;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
@@ -57,6 +57,16 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         Messages.registerMessages(plugin, CommandHandler.class);
     }
 
+    /**
+     * Retrieves a PluginLogger for this CommandHandler which is inherited from the plugin passed in during construction.
+     *
+     * @return a PluginLogger for this CommandHandler.
+     */
+    @NotNull
+    protected PluginLogger getLog() {
+        return plugin.getLog();
+    }
+
     //public boolean registerCommmands(String packageName) {
 
     //}
@@ -75,7 +85,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         }
         final Command command = loadCommand(commandClass);
         if (command == null) {
-            Logging.severe("Could not register: " + commandClass);
+            getLog().severe("Could not register: " + commandClass);
             return false;
         }
 
@@ -130,7 +140,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         }
         final CommandRegistration bukkitCmdInfo = new CommandRegistration(cmdInfo.usage(), cmdInfo.desc(), aliases.toArray(new String[aliases.size()]), this, permissions);
         if (register(bukkitCmdInfo)) {
-            Logging.fine("Registered command '%s' to: %s", aliases.get(0), commandClass);
+            getLog().fine("Registered command '%s' to: %s", aliases.get(0), commandClass);
             String split[] = aliases.get(0).split(" ");
             CommandKey key;
             if (split.length == 1) {
@@ -146,7 +156,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
             Messages.registerMessages(plugin, commandClass);
             return true;
         }
-        Logging.severe("Failed to register: " + commandClass);
+        getLog().severe("Failed to register: " + commandClass);
         return false;
     }
 
@@ -237,13 +247,13 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
      */
     public boolean locateAndRunCommand(@NotNull final BasePlayer player, @NotNull String[] args) throws CommandException {
         args = commandDetection(args);
-        Logging.finest("'%s' is attempting to use command '%s'", player, Arrays.toString(args));
+        getLog().finest("'%s' is attempting to use command '%s'", player, Arrays.toString(args));
         if (this.plugin.useQueuedCommands()
                 && !this.commandMap.containsKey(this.plugin.getCommandPrefix() + "confirm")
                 && args.length == 2
                 && args[0].equalsIgnoreCase(this.plugin.getCommandPrefix())
                 && args[1].equalsIgnoreCase("confirm")) {
-            Logging.finer("No confirm command registered, using built in confirm...");
+            getLog().finer("No confirm command registered, using built in confirm...");
             if (!confirmCommand(player)) {
                 this.plugin.getMessager().message(player, NO_QUEUED_COMMANDS);
             }
@@ -251,17 +261,17 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         }
         final Class<? extends Command> commandClass = commandMap.get(args[0]);
         if (commandClass == null) {
-            Logging.severe("Could not locate registered command '" + args[0] + "'");
+            getLog().severe("Could not locate registered command '" + args[0] + "'");
             return false;
         }
         final Command command = loadCommand(commandClass);
         if (command == null) {
-            Logging.severe("Could not load registered command class '" + commandClass + "'");
+            getLog().severe("Could not load registered command class '" + commandClass + "'");
             return false;
         }
         final CommandInfo cmdInfo = command.getClass().getAnnotation(CommandInfo.class);
         if (cmdInfo == null) {
-            Logging.severe("Missing CommandInfo for command: " + args[0]);
+            getLog().severe("Missing CommandInfo for command: " + args[0]);
             return false;
         }
         final Set<Character> valueFlags = new HashSet<Character>();
@@ -294,7 +304,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         }
         if (command instanceof QueuedCommand) {
             final QueuedCommand queuedCommand = (QueuedCommand) command;
-            Logging.finer("Queueing command '%s' for '%s'", queuedCommand, player);
+            getLog().finer("Queueing command '%s' for '%s'", queuedCommand, player);
             queuedCommands.put(player, queuedCommand);
             final BundledMessage confirmMessage = queuedCommand.getConfirmMessage();
             if (confirmMessage != null) {

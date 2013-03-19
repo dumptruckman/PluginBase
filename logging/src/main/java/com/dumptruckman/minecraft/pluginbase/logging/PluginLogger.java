@@ -88,9 +88,6 @@ public class PluginLogger extends Logger {
         }
         final PluginLogger logging = new PluginLogger(plugin, logger, debugLog);
         INITIALIZED_LOGGERS.put(logging.getName(), logging);
-        if (Logging.pluginLogger != null && Logging.pluginLogger.plugin == Logging.DEFAULT_PLUGIN) {
-            Logging.pluginLogger = logging;
-        }
         return logging;
     }
 
@@ -239,6 +236,9 @@ public class PluginLogger extends Logger {
      */
     @NotNull
     public final synchronized String getPrefixedMessage(@NotNull final String message) {
+        if (pluginName.equals(Logging.class.getName())) {
+            return message;
+        }
         final StringBuilder builder = new StringBuilder("[").append(pluginName);
         builder.append("] ").append(message);
         return builder.toString();
@@ -261,6 +261,9 @@ public class PluginLogger extends Logger {
      */
     @NotNull
     public final synchronized String getDebugString(@NotNull final String message) {
+        if (pluginName.equals(Logging.class.getName())) {
+            return "[" + debugString + "] " + message;
+        }
         return "[" + pluginName + debugString + "] " + message;
     }
 

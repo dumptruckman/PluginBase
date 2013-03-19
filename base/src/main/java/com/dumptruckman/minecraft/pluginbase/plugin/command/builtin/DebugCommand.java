@@ -5,7 +5,6 @@ package com.dumptruckman.minecraft.pluginbase.plugin.command.builtin;
 
 import com.dumptruckman.minecraft.pluginbase.command.CommandContext;
 import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.SendablePluginBaseException;
@@ -94,7 +93,7 @@ public class DebugCommand extends BaseBuiltInCommand {
                 getMessager().message(sender, INVALID_DEBUG);
             } else {
                 getPlugin().config().set(BaseConfig.DEBUG_MODE, debugLevel);
-                Logging.setDebugLevel(getPlugin().config().get(BaseConfig.DEBUG_MODE));
+                getPlugin().getLog().setDebugLevel(getPlugin().config().get(BaseConfig.DEBUG_MODE));
                 try {
                     getPlugin().config().flush();
                 } catch (PluginBaseException e) {
@@ -114,7 +113,7 @@ public class DebugCommand extends BaseBuiltInCommand {
             p.getMessager().message(sender, DEBUG_DISABLED, sender);
         } else {
             p.getMessager().message(sender, DEBUG_SET, p.config().get(BaseConfig.DEBUG_MODE).toString());
-            Logging.fine("%s debug ENABLED", p.getPluginInfo().getName());
+            getPlugin().getLog().fine("%s debug ENABLED", p.getPluginInfo().getName());
         }
     }
 }

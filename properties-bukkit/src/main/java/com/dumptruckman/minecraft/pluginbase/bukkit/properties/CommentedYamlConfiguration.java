@@ -42,7 +42,7 @@ class CommentedYamlConfiguration extends YamlConfiguration implements CommentedF
         try {
             config = new EncodedYamlConfiguration("UTF-8", doComments);
         } catch (UnsupportedEncodingException e) {
-            Logging.fine("Could not create UTF-8 configuration.  Special/Foreign characters may not be saved.");
+            Logging.warning("Could not create UTF-8 configuration.  Special/Foreign characters may not be saved.");
             config = new CommentedYamlConfiguration(doComments);
         }
 

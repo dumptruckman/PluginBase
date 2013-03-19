@@ -1,5 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
 
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.properties.NestedProperties;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,10 +13,10 @@ class NestedFileProperties extends AbstractFileProperties implements NestedPrope
     private final ConfigurationSection thisSection;
     private final String fullName;
 
-    NestedFileProperties(@NotNull final FileConfiguration config,
+    NestedFileProperties(@NotNull final PluginLogger logger, @NotNull final FileConfiguration config,
                          @NotNull final AbstractFileProperties parent, @NotNull final String name,
                          @NotNull final Class... configClasses) {
-        super(config, configClasses);
+        super(logger, config, configClasses);
         this.parentSection = parent.getConfig();
         this.name = name;
         ConfigurationSection section = this.parentSection.getConfigurationSection(this.name);

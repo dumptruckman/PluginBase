@@ -25,6 +25,6 @@ public class TestPlugin extends AbstractBukkitPlugin {
     @NotNull
     @Override
     protected Properties getNewConfig() throws PluginBaseException {
-        return new YamlProperties.Loader(new File(getDataFolder(), "config.yml"), BaseConfig.class).load();
+        return new YamlProperties.Loader(getLog(), new File(getDataFolder(), "config.yml"), BaseConfig.class).load();
     }
 }

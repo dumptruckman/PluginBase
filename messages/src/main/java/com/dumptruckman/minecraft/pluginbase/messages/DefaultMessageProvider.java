@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.messages;
 
-import com.dumptruckman.minecraft.pluginbase.logging.Logging;
+import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -23,10 +23,14 @@ class DefaultMessageProvider implements MessageProvider {
     @NotNull
     private final Properties messages;
 
+    @NotNull
+    private final PluginLogger logger;
+
     public DefaultMessageProvider(@NotNull final Localizable localizable,
                                   @NotNull final File languageFile,
                                   @NotNull final Locale locale) {
         this.locale = locale;
+        this.logger = localizable.getLog();
         messages = getProperties(localizable, languageFile);
         pruneLanguage(localizable, messages);
         storeProperties(languageFile, messages);
@@ -41,7 +45,7 @@ class DefaultMessageProvider implements MessageProvider {
                             + "\nExample: &cThis is red\n\nAny place where there is %s represents data"
                             + " to be filled in by the plugin.\nMAKE SURE THESE REMAIN IN ANY REPLACEMENTS!");
         } catch (IOException e) {
-            Logging.warning("Problem saving language file '%s'", languageFile);
+            getLog().warning("Problem saving language file '%s'", languageFile);
             e.printStackTrace();
         } finally {
             if (writer != null) {
@@ -58,7 +62,7 @@ class DefaultMessageProvider implements MessageProvider {
         while (it.hasNext()) {
             final String key = it.next().toString();
             if (!Messages.containsMessageKey(localizable, key)) {
-                Logging.finer("Removing unused language: %s", key);
+                getLog().finer("Removing unused language: %s", key);
                 it.remove();
             }
         }
@@ -71,7 +75,7 @@ class DefaultMessageProvider implements MessageProvider {
             try {
                 languageFile.createNewFile();
             } catch (IOException e) {
-                Logging.warning("Problem creating language file '%s'", languageFile);
+                getLog().warning("Problem creating language file '%s'", languageFile);
                 e.printStackTrace();
             }
         }
@@ -81,7 +85,7 @@ class DefaultMessageProvider implements MessageProvider {
                 reader = new FileReader(languageFile);
                 language.load(reader);
             } catch (IOException e) {
-                Logging.warning("Problem loading language file '%s'", languageFile);
+                getLog().warning("Problem loading language file '%s'", languageFile);
                 e.printStackTrace();
             } finally {
                 if (reader != null) {
@@ -101,7 +105,7 @@ class DefaultMessageProvider implements MessageProvider {
             } else {
                 final Message message = Messages.getMessage(localizable, key);
                 if (message != null && Message.countArgs(language.getProperty(key)) != message.getArgCount()) {
-                    Logging.warning("The message for '%s' in the file '%s' does not have the correct amount of arguments (%s).  The default will be used.", key, languageFile, message.getArgCount());
+                    getLog().warning("The message for '%s' in the file '%s' does not have the correct amount of arguments (%s).  The default will be used.", key, languageFile, message.getArgCount());
                     language.put(key, message.getDefault());
                 }
             }
@@ -112,7 +116,7 @@ class DefaultMessageProvider implements MessageProvider {
     private String _getMessage(@NotNull final Message key) {
         final String message = this.messages.getProperty(key.getKey());
         if (message == null) {
-            Logging.warning("There is not language entry for %s.  Was it registered?", key.getKey());
+            getLog().warning("There is not language entry for %s.  Was it registered?", key.getKey());
             return "";
         }
         return message;
@@ -127,7 +131,7 @@ class DefaultMessageProvider implements MessageProvider {
      * @return The formatted string.
      */
     @NotNull
-    private static String format(@NotNull final Locale locale, @NotNull String string, @NotNull final Object... args) {
+    private static String format(@NotNull final Locale locale, @NotNull String string, @NotNull final Object... args) throws IllegalFormatException {
         // Replaces & with the Section character
         string = ChatColor.translateAlternateColorCodes('&', string);
         // If there are arguments, %n notations in the message will be
@@ -142,20 +146,28 @@ class DefaultMessageProvider implements MessageProvider {
         }*/
         // Format for locale
         // TODO need a fix for this when language vars are not passed in as args.
-        try {
-            string = String.format(locale, string, args);
-        } catch (IllegalFormatException e) {
-            Logging.warning("Language string format is incorrect: %s", string);
-            for (final StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-                Logging.warning(ste.toString());
-            }
-        }
+        string = String.format(locale, string, args);
         return string;
     }
 
     @Override
     @NotNull
     public String getLocalizedMessage(@NotNull final Message key, @NotNull final Object... args) {
-        return format(locale, _getMessage(key), args);
+        final String message = _getMessage(key);
+        try {
+            return format(locale, _getMessage(key), args);
+        } catch (IllegalFormatException e) {
+            getLog().warning("Language string format is incorrect: %s", message);
+            for (final StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                getLog().warning(ste.toString());
+            }
+            return message;
+        }
+    }
+
+    @Override
+    @NotNull
+    public PluginLogger getLog() {
+        return logger;
     }
 }
