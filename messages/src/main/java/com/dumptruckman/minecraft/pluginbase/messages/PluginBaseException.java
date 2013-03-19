@@ -40,6 +40,9 @@ public class PluginBaseException extends Exception {
      */
     public PluginBaseException(@NotNull final BundledMessage languageMessage, @NotNull final Throwable throwable) {
         super(getUnbundledDefaultMessage(languageMessage), throwable);
+        if (throwable instanceof PluginBaseException) {
+            this.cause = (PluginBaseException) throwable;
+        }
         this.languageMessage = languageMessage;
     }
 

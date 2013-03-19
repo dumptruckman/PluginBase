@@ -59,6 +59,7 @@ public class Messages {
     /** Used for wrapping regular exceptions into a PluginBaseException. */
     @NotNull public final static Message EXCEPTION = Message.createMessage("generic.exception", "%s");
 
+    /** Used for wrapping PluginBaseExceptions into a PluginBaseException. */
     @NotNull public final static Message CAUSE_EXCEPTION = Message.createMessage("generic.cause_exception", "Caused by: %s");
 
     /** A message of general success */
@@ -95,6 +96,9 @@ public class Messages {
         }
         if (!messages.containsKey(EXCEPTION.getKey())) {
             messages.put(EXCEPTION.getKey(), EXCEPTION);
+        }
+        if (!messages.containsKey(CAUSE_EXCEPTION.getKey())) {
+            messages.put(CAUSE_EXCEPTION.getKey(), CAUSE_EXCEPTION);
         }
 
         final Field[] f1 = clazz.getDeclaredFields();
