@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<theme>
+    <SUCCESS>
+        <tag>+</tag>
+        <color>GREEN</color>
+    </SUCCESS>
+    <ERROR>
+        <tag>-</tag>
+        <color>RED</color>
+    </ERROR>
+    <PLAIN>
+        <tag>.</tag>
+        <color>RESET</color>
+    </PLAIN>
+</theme>

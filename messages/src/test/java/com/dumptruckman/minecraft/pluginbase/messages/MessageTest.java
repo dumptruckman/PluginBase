@@ -1,12 +1,19 @@
 package com.dumptruckman.minecraft.pluginbase.messages;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 public class MessageTest {
 
     final String testKey = "this is my key";
     final String testMessage = "this is my default message: %s";
+
+    @Before
+    public void setUp() {
+        // Tests the loading of theme.xml
+        Messages.BLANK.getDefault();
+    }
 
     @Test
     public void testCreateMessage() throws Exception {

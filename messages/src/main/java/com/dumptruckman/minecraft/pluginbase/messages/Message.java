@@ -5,7 +5,14 @@ package com.dumptruckman.minecraft.pluginbase.messages;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import org.jetbrains.annotations.NotNull;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,6 +25,30 @@ import java.util.regex.Pattern;
  */
 public final class Message {
 
+    static {
+        // Load the theme from theme.xml
+        final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        try {
+            Enumeration<URL> urls = Messages.class.getClassLoader().getResources(Theme.getThemeResource());
+            if (urls.hasMoreElements()) {
+                try {
+                    DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
+                    try {
+                        Theme.loadTheme(documentBuilder.parse(urls.nextElement().openStream()));
+                    } catch (SAXException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @NotNull
     private final String def;
 
@@ -27,14 +58,14 @@ public final class Message {
 
     private Message(@NotNull final String key, @NotNull final String def) {
         this.key = key;
-        this.def = def;
-        this.argCount = countArgs(def);
+        this.def = Theme.parseMessage(def);
+        this.argCount = countArgs(this.def);
     }
 
     Message(@NotNull final String def) {
         this.key = null;
-        this.def = def;
-        this.argCount = countArgs(def);
+        this.def = Theme.parseMessage(def);
+        this.argCount = countArgs(this.def);
     }
 
     private static final Pattern PATTERN = Pattern.compile("%s");

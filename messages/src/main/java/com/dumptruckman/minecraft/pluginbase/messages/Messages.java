@@ -57,16 +57,16 @@ public class Messages {
     @NotNull public final static Message BLANK = new Message("");
 
     /** Used for wrapping regular exceptions into a PluginBaseException. */
-    @NotNull public final static Message EXCEPTION = Message.createMessage("generic.exception", "%s");
+    @NotNull public final static Message EXCEPTION = Message.createMessage("generic.exception", Theme.PLAIN + "%s");
 
     /** Used for wrapping PluginBaseExceptions into a PluginBaseException. */
-    @NotNull public final static Message CAUSE_EXCEPTION = Message.createMessage("generic.cause_exception", "Caused by: %s");
+    @NotNull public final static Message CAUSE_EXCEPTION = Message.createMessage("generic.cause_exception", Theme.PLAIN + "Caused by: %s");
 
     /** A message of general success */
-    @NotNull public final static Message SUCCESS = Message.createMessage("generic.success", "&a[SUCCESS]&f");
+    @NotNull public final static Message SUCCESS = Message.createMessage("generic.success", Theme.SUCCESS + "[SUCCESS]");
 
     /** A message of general error */
-    @NotNull public final static Message ERROR = Message.createMessage("generic.error", "&c[ERROR]&f");
+    @NotNull public final static Message ERROR = Message.createMessage("generic.error", Theme.ERROR + "[ERROR]");
 
     /**
      * Registers all of the messages in a given class to the localizable object.
