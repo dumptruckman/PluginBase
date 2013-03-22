@@ -169,6 +169,9 @@ public enum Theme {
                 buffer.append(currentChar);
             }
         }
+        if (!message.isEmpty()) {
+            buffer.append(message.charAt(message.length() - 1));
+        }
         return buffer.toString();
     }
 }
