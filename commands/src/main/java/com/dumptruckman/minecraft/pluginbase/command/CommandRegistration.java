@@ -21,18 +21,20 @@
 */
 package com.dumptruckman.minecraft.pluginbase.command;
 
-public class CommandRegistration {
+import com.dumptruckman.minecraft.pluginbase.messages.messaging.Messaging;
+
+public class CommandRegistration<P extends CommandProvider & Messaging> {
 
     private final String[] aliases;
-    private final Object registeredWith;
+    private final P registeredWith;
     private final String usage, desc;
     private final String[] permissions;
 
-    CommandRegistration(String usage, String desc, String[] aliases, Object registeredWith) {
+    CommandRegistration(String usage, String desc, String[] aliases, P registeredWith) {
         this(usage, desc, aliases, registeredWith, null);
     }
 
-    CommandRegistration(String usage, String desc, String[] aliases, Object registeredWith, String[] permissions) {
+    CommandRegistration(String usage, String desc, String[] aliases, P registeredWith, String[] permissions) {
         this.usage = usage;
         this.desc = desc;
         this.aliases = aliases;
@@ -60,7 +62,7 @@ public class CommandRegistration {
         return permissions;
     }
 
-    public Object getRegisteredWith() {
+    public P getRegisteredWith() {
         return registeredWith;
     }
 }

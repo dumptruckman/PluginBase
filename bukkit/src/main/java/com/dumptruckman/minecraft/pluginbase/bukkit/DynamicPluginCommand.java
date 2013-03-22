@@ -31,11 +31,11 @@ import java.util.Arrays;
 class DynamicPluginCommand extends org.bukkit.command.Command implements PluginIdentifiableCommand {
 
     protected final CommandExecutor owner;
-    protected final Object registeredWith;
+    protected final BukkitPlugin registeredWith;
     protected final Plugin owningPlugin;
     protected String[] permissions = new String[0];
 
-    public DynamicPluginCommand(String[] aliases, String desc, String usage, CommandExecutor owner, Object registeredWith, Plugin plugin) {
+    public DynamicPluginCommand(String[] aliases, String desc, String usage, CommandExecutor owner, BukkitPlugin registeredWith, Plugin plugin) {
         super(aliases[0], desc, usage, Arrays.asList(aliases));
         this.owner = owner;
         this.owningPlugin = plugin;

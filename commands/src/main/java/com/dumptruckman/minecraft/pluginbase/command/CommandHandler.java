@@ -22,6 +22,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class is responsible for handling commands.
@@ -43,6 +45,8 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
     private final Map<String, CommandKey> commandKeys = new HashMap<String, CommandKey>();
     @NotNull
     private final Map<BasePlayer, QueuedCommand> queuedCommands = new HashMap<BasePlayer, QueuedCommand>();
+    @NotNull
+    private Map<CommandInfo, String> usageMap = new HashMap<CommandInfo, String>();
 
     /**
      * Creates a new command handler.
@@ -138,8 +142,9 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         } else {
             permissions = new String[0];
         }
-        final CommandRegistration bukkitCmdInfo = new CommandRegistration(cmdInfo.usage(), cmdInfo.desc(), aliases.toArray(new String[aliases.size()]), this, permissions);
-        if (register(bukkitCmdInfo)) {
+        cacheUsageString(cmdInfo);
+        final CommandRegistration<P> bukkitCmdInfo = new CommandRegistration<P>(getArguments(cmdInfo), cmdInfo.desc(), aliases.toArray(new String[aliases.size()]), plugin, permissions);
+        if (register(bukkitCmdInfo, command)) {
             getLog().fine("Registered command '%s' to: %s", aliases.get(0), commandClass);
             String split[] = aliases.get(0).split(" ");
             CommandKey key;
@@ -156,7 +161,9 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
             Messages.registerMessages(plugin, commandClass);
             return true;
         }
+
         getLog().severe("Failed to register: " + commandClass);
+        usageMap.remove(cmdInfo);
         return false;
     }
 
@@ -167,7 +174,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
      * @param commandInfo the info for the command to register.
      * @return true if successfully registered.
      */
-    protected abstract boolean register(@NotNull final CommandRegistration commandInfo);
+    protected abstract boolean register(@NotNull final CommandRegistration<P> commandInfo, @NotNull final Command<P> command);
 
     /**
      * Constructs a command object from the given Command class.
@@ -342,6 +349,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
     protected List<String> getUsage(@NotNull final String[] args, final int level, final Command cmd, @NotNull final CommandInfo cmdInfo) {
         final List<String> commandUsage = new ArrayList<String>();
         final StringBuilder command = new StringBuilder();
+        command.append(Theme.CMD_USAGE);
         command.append('/');
         for (int i = 0; i <= level; ++i) {
             command.append(args[i]);
@@ -364,24 +372,72 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         return commandUsage;
     }
 
-    protected CharSequence getArguments(@NotNull final CommandInfo cmdInfo) {
+    private void cacheUsageString(@NotNull final CommandInfo cmdInfo) {
         final String flags = cmdInfo.flags();
 
         final StringBuilder command2 = new StringBuilder();
-        if (flags.length() > 0) {
-            String flagString = flags.replaceAll(".:", "");
-            if (flagString.length() > 0) {
-                command2.append("[-");
-                for (int i = 0; i < flagString.length(); ++i) {
-                    command2.append(flagString.charAt(i));
-                }
-                command2.append("] ");
+        command2.append(parseUsage(cmdInfo.usage()));
+
+        for (int i = 0; i < flags.length(); ++i) {
+            command2.append(" ");
+            command2.append(Theme.OPT_ARG).append("[").append(Theme.CMD_FLAG).append("-");
+            command2.append(flags.charAt(i));
+            if (flags.length() > (i + 1) && flags.charAt(i + 1) == ':') {
+                command2.append(Theme.REQ_ARG).append(" {VALUE}");
+                i++;
             }
+            command2.append(Theme.OPT_ARG).append("]");
         }
 
-        command2.append(cmdInfo.usage());
+        usageMap.put(cmdInfo, command2.toString());
+    }
 
-        return command2;
+    protected String getArguments(@NotNull final CommandInfo cmdInfo) {
+        return usageMap.containsKey(cmdInfo) ? usageMap.get(cmdInfo) : "";
+    }
+
+    private static final Pattern OPTIONAL_ARGS_PATTERN = Pattern.compile("\\[.+?\\]");
+    private static final Pattern REQUIRED_ARGS_PATTERN = Pattern.compile("\\{.+?\\}");
+
+    private CharSequence parseUsage(@NotNull String usageString) {
+        if (usageString.isEmpty()) {
+            return usageString;
+        }
+        // Add required arg theme before required args
+        StringBuilder usage = new StringBuilder(usageString.length() + 10);
+        Matcher matcher = REQUIRED_ARGS_PATTERN.matcher(usageString);
+        int lastIndex = 0;
+        while (matcher.find()) {
+            if (matcher.start() > lastIndex) {
+                // Add the initial part of the string if the required arg isn't first position
+                usage.append(usageString.subSequence(lastIndex, matcher.start()));
+            }
+            usage.append(Theme.REQ_ARG);
+            usage.append(matcher.group());
+            lastIndex = matcher.end();
+        }
+        // Add what is left over in the string
+        usage.append(usageString.subSequence(lastIndex, usageString.length()));
+
+        // Replace initial string with builder that contains colored required args
+        usageString = usage.toString();
+
+        // Add optional arg theme before optional args
+        usage = new StringBuilder(usageString.length() + 10);
+        matcher = OPTIONAL_ARGS_PATTERN.matcher(usageString);
+        lastIndex = 0;
+        while (matcher.find()) {
+            if (matcher.start() > lastIndex) {
+                // Add the initial part of the string if the optional arg isn't first position
+                usage.append(usageString.subSequence(lastIndex, matcher.start()));
+            }
+            usage.append(Theme.OPT_ARG);
+            usage.append(matcher.group());
+            lastIndex = matcher.end();
+        }
+        // Add what is left over in the string
+        usage.append(usageString.subSequence(lastIndex, usageString.length()));
+        return usage;
     }
 
     public String[] commandDetection(@NotNull final String[] split) {

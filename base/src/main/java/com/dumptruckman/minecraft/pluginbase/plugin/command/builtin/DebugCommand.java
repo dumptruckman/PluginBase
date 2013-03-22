@@ -25,7 +25,7 @@ import java.util.List;
 @CommandInfo(
         primaryAlias = "debug",
         desc = "Turns debug mode on/off",
-        usage = Theme.OPT_ARG + "[1|2|3|off]",
+        usage = "[1|2|3|off]",
         max = 1
 )
 public class DebugCommand extends BaseBuiltInCommand {

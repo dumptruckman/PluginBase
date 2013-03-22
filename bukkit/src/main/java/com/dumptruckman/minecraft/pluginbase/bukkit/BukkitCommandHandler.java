@@ -23,15 +23,17 @@ class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
         this.executor = executor;
     }
 
-    protected boolean register(@NotNull final CommandRegistration commandInfo) {
+    protected boolean register(@NotNull final CommandRegistration<BukkitPlugin> commandInfo, @NotNull final com.dumptruckman.minecraft.pluginbase.command.Command<BukkitPlugin> command) {
         CommandMap commandMap = getCommandMap();
         if (commandMap == null) {
             return false;
         }
         DynamicPluginCommand cmd = new DynamicPluginCommand(commandInfo.getAliases(), commandInfo.getDesc(),
                 "/" + commandInfo.getName() + " " + commandInfo.getUsage(), executor, commandInfo.getRegisteredWith(), plugin);
+        CommandHelpTopic helpTopic = new CommandHelpTopic(cmd, command.getHelp());
         cmd.setPermissions(commandInfo.getPermissions());
         commandMap.register(commandInfo.getName(), plugin.getDescription().getName(), cmd);
+        Bukkit.getServer().getHelpMap().addTopic(helpTopic);
         return true;
     }
 
