@@ -6,6 +6,7 @@ package com.dumptruckman.minecraft.pluginbase.plugin.command.builtin;
 import com.dumptruckman.minecraft.pluginbase.command.CommandContext;
 import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
+import com.dumptruckman.minecraft.pluginbase.messages.Theme;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
@@ -30,8 +31,8 @@ public class ReloadCommand extends BaseBuiltInCommand {
     public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.reload").usePluginName().commandPermission()
             .desc("Reloads the config file.").build();
 
-    public final static Message RELOAD_HELP = Message.createMessage("cmd.reload.help", "Reloads the plugin, typically detecting any external changes in plugin files.");
-    public final static Message RELOAD_COMPLETE = Message.createMessage("cmd.reload.complete", "&b===[ Reload Complete! ]===");
+    public final static Message RELOAD_HELP = Message.createMessage("cmd.reload.help", Theme.HELP + "Reloads the plugin, typically detecting any external changes in plugin files.");
+    public final static Message RELOAD_COMPLETE = Message.createMessage("cmd.reload.complete", Theme.INFO + "===[ Reload Complete! ]===");
 
     private static final List<String> STATIC_KEYS = new ArrayList<String>();
 

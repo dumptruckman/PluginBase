@@ -6,6 +6,7 @@ package com.dumptruckman.minecraft.pluginbase.plugin.command.builtin;
 import com.dumptruckman.minecraft.pluginbase.command.CommandContext;
 import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
+import com.dumptruckman.minecraft.pluginbase.messages.Theme;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
@@ -30,7 +31,7 @@ public class InfoCommand extends BaseBuiltInCommand {
     public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.info").usePluginName().commandPermission()
             .desc("Gives some basic information about this plugin.").build();
 
-    public final static Message INFO_HELP = Message.createMessage("cmd.info.help", "Gives some basic information about this plugin.");
+    public final static Message INFO_HELP = Message.createMessage("cmd.info.help", Theme.HELP + "Gives some basic information about this plugin.");
 
     private static final List<String> STATIC_KEYS = new ArrayList<String>();
 

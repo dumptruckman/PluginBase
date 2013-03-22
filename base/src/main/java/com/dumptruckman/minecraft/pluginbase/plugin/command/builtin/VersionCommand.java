@@ -7,6 +7,7 @@ import com.dumptruckman.minecraft.pluginbase.command.CommandContext;
 import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
+import com.dumptruckman.minecraft.pluginbase.messages.Theme;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
 import com.dumptruckman.minecraft.pluginbase.permission.PermFactory;
@@ -36,8 +37,7 @@ import java.util.logging.Level;
 @CommandInfo(
         primaryAlias = "version",
         desc = "Prints useful version information to the console.",
-        flags = "pb",
-        usage = "[-p|-b]"
+        flags = "pb"
 )
 public class VersionCommand extends BaseBuiltInCommand {
 
@@ -46,18 +46,18 @@ public class VersionCommand extends BaseBuiltInCommand {
             .desc("Sends version information to the console.").build();
 
     public final static Message VERSION_HELP = Message.createMessage("cmd.version.help",
-            "Displays version and other helpful information about the plugin."
-                    + "\nFlags:"
-                    + "\n  -p will output an http://pastie.org url containing the information."
-                    + "\n  -b will output an http://pastebin.com url containing the information.");
+            Theme.HELP + "Displays version and other helpful information about the plugin."
+                    + "\n" + Theme.HELP + "Flags:"
+                    + "\n" + Theme.CMD_FLAG + "  -p " + Theme.HELP + "will output an http://pastie.org url containing the information."
+                    + "\n" + Theme.CMD_FLAG + "  -b " + Theme.HELP + "will output an http://pastebin.com url containing the information.");
     public final static Message VERSION_PLAYER = Message.createMessage("cmd.version.player",
-            "Version info dumped to console. Please check your server logs.");
+            Theme.INFO.toString() + Theme.IMPORTANT2 + "Version info dumped to console. Please check your server logs.");
     public final static Message VERSION_PLUGIN_VERSION = Message.createMessage("cmd.version.info.plugin_version", "%s Version: %s");
     public final static Message VERSION_SERVER_NAME = Message.createMessage("cmd.version.info.server_name", "Server Name: %s");
     public final static Message VERSION_SERVER_VERSION = Message.createMessage("cmd.version.info.server_version", "Server Version: %s");
     public final static Message VERSION_LANG_FILE = Message.createMessage("cmd.version.info.lang_file", "Language file: %s");
     public final static Message VERSION_DEBUG_MODE = Message.createMessage("cmd.version.info.debug_mode", "Debug Mode: %s");
-    public final static Message VERSION_INFO_DUMPED = Message.createMessage("cmd.version.dumped", "Version info dumped here: %s");
+    public final static Message VERSION_INFO_DUMPED = Message.createMessage("cmd.version.dumped", Theme.INFO.toString() + Theme.IMPORTANT + "Version info dumped here: " + Theme.VALUE + Theme.IMPORTANT3 + "%s");
 
     private static final URLShortener SHORTENER = new BitlyURLShortener();
 

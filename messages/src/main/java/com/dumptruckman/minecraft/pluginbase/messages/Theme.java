@@ -16,9 +16,21 @@ public enum Theme {
     ERROR('-', ChatColor.RED),
     PLAIN('.', ChatColor.RESET),
     IMPORTANT('!', null, ChatColor.BOLD),
+    IMPORTANT2('*', null, ChatColor.ITALIC),
+    IMPORTANT3('_', null, ChatColor.UNDERLINE),
     HELP('h', ChatColor.WHITE),
-    INFO('i', ChatColor.YELLOW),
+    INFO('i', ChatColor.AQUA),
+    SORRY('$', ChatColor.DARK_GRAY),
+    RETRY(',', ChatColor.GRAY),
+    DO_THIS('~', ChatColor.BLUE),
     VALUE('v', ChatColor.DARK_GREEN),
+    TITLE('t', ChatColor.DARK_AQUA),
+
+    CMD_USAGE('c', ChatColor.WHITE),
+    CMD_FLAG('f', ChatColor.GOLD, ChatColor.ITALIC),
+    OPT_ARG('o', ChatColor.GOLD),
+    REQ_ARG('r', ChatColor.GREEN),
+    CMD_HIGHLIGHT('C', null, ChatColor.BOLD),
     ;
 
     @NotNull

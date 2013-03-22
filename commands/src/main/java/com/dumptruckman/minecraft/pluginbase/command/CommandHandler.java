@@ -3,9 +3,9 @@ package com.dumptruckman.minecraft.pluginbase.command;
 import com.dumptruckman.minecraft.pluginbase.command.builtin.BuiltInCommand;
 import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.messages.BundledMessage;
-import com.dumptruckman.minecraft.pluginbase.messages.ChatColor;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.messages.Messages;
+import com.dumptruckman.minecraft.pluginbase.messages.Theme;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.Messaging;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.SendablePluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
@@ -211,11 +211,11 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
 
     /** Message used when a users tries to confirm a command but has not queued one or the queued one has expired. */
     public static final Message NO_QUEUED_COMMANDS = Message.createMessage("commands.queued.none_queued",
-            ChatColor.DARK_GRAY + "Sorry, but you have not used any commands that require confirmation.");
+            Theme.SORRY + "Sorry, but you have not used any commands that require confirmation.");
     /** Default message used when the user must confirm a queued command. */
     public static final Message MUST_CONFIRM = Message.createMessage("commands.queued.must_confirm",
-            ChatColor.BLUE + "You must confirm the previous command by typing " + ChatColor.BOLD + "%s"
-                    + "\n" + ChatColor.RESET + ChatColor.GRAY + "You have %s to comply.");
+            Theme.DO_THIS + "You must confirm the previous command by typing " + Theme.CMD_HIGHLIGHT + "%s"
+                    + "\n" + Theme.INFO + "You have %s to comply.");
 
     /**
      * Confirms any queued command for the given player.
@@ -319,16 +319,16 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
     }
 
     public static final Message TOO_FEW_ARGUMENTS = Message.createMessage("commands.usage.too_few_arguments",
-            "Too few arguments.");
+            Theme.ERROR + "Too few arguments.");
     public static final Message TOO_MANY_ARGUMENTS = Message.createMessage("commands.usage.too_many_arguments",
-            "Too many arguments.");
-    public static final Message UNKNOWN_FLAG = Message.createMessage("commands.usage.unknown_flag", "Unknown flag: %s");
-    public static final Message USAGE_ERROR = Message.createMessage("commands.usage.usage_error", "Usage error...");
+            Theme.ERROR + "Too many arguments.");
+    public static final Message UNKNOWN_FLAG = Message.createMessage("commands.usage.unknown_flag", Theme.ERROR + "Unknown flag: " + Theme.VALUE + "%s");
+    public static final Message USAGE_ERROR = Message.createMessage("commands.usage.usage_error", Theme.ERROR + "Usage error...");
 
     public static final Message VALUE_FLAG_ALREADY_GIVEN = Message.createMessage("commands.usage.value_flag_already_given",
-            "Value flag '%s' already given");
+            Theme.ERROR + "Value flag '" + Theme.VALUE + "%s" + Theme.ERROR + "' already given");
     public static final Message NO_VALUE_FOR_VALUE_FLAG = Message.createMessage("commands.usage.must_specify_value_for_value_flag",
-            "No value specified for the '-%s' flag.");
+            Theme.ERROR + "No value specified for the '" + Theme.VALUE + "-%s" + Theme.ERROR + "' flag.");
 
     /**
      * Returns a list of strings detailing the usage of the given command.

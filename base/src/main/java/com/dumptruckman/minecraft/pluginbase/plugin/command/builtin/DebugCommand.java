@@ -7,6 +7,7 @@ import com.dumptruckman.minecraft.pluginbase.command.CommandContext;
 import com.dumptruckman.minecraft.pluginbase.command.CommandInfo;
 import com.dumptruckman.minecraft.pluginbase.messages.Message;
 import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
+import com.dumptruckman.minecraft.pluginbase.messages.Theme;
 import com.dumptruckman.minecraft.pluginbase.messages.messaging.SendablePluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.permission.Perm;
@@ -24,7 +25,7 @@ import java.util.List;
 @CommandInfo(
         primaryAlias = "debug",
         desc = "Turns debug mode on/off",
-        usage = "&6[1|2|3|off]",
+        usage = Theme.OPT_ARG + "[1|2|3|off]",
         max = 1
 )
 public class DebugCommand extends BaseBuiltInCommand {
@@ -33,12 +34,12 @@ public class DebugCommand extends BaseBuiltInCommand {
     public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.debug").usePluginName().commandPermission()
             .desc("Spams the console a bunch.").build();
 
-    public final static Message DEBUG_HELP = Message.createMessage("cmd.debug.help", "Enables or disable debug mode."
-            + "When enabled the console will be spammed with lots of information useful for helping developers debug.");
-    public final static Message DEBUG_SET = Message.createMessage("cmd.debug.set", "Debug mode is &2%s");
-    public final static Message DEBUG_DISABLED = Message.createMessage("cmd.debug.off", "Debug mode is &cOFF");
+    public final static Message DEBUG_HELP = Message.createMessage("cmd.debug.help", Theme.HELP + "Enables or disable debug mode."
+            + "  When enabled the console will be spammed with lots of information useful for helping developers debug.");
+    public final static Message DEBUG_SET = Message.createMessage("cmd.debug.set", Theme.SUCCESS + "Debug mode is " + Theme.VALUE + "%s");
+    public final static Message DEBUG_DISABLED = Message.createMessage("cmd.debug.off", Theme.SUCCESS + "Debug mode is " + Theme.VALUE + Theme.IMPORTANT + "OFF");
     public final static Message INVALID_DEBUG = Message.createMessage("debug.invalid",
-            "&fInvalid debug level.  Please use number 0-3.  &b(3 being many many messages!)");
+            Theme.ERROR + "Invalid debug level.  Please use number 0-3.  " + Theme.INFO + "(3 being many many messages!)");
 
     private static final List<String> STATIC_KEYS = new ArrayList<String>();
 
