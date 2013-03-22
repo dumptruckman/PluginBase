@@ -14,7 +14,7 @@
     </PLAIN>
     <IMPORTANT>
         <tag>!</tag>
-        <color>BOLD</color>
+        <style>BOLD</style>
     </IMPORTANT>
     <HELP>
         <tag>h</tag>
