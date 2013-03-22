@@ -12,4 +12,20 @@
         <tag>.</tag>
         <color>RESET</color>
     </PLAIN>
+    <IMPORTANT>
+        <tag>!</tag>
+        <color>BOLD</color>
+    </IMPORTANT>
+    <HELP>
+        <tag>h</tag>
+        <color>WHITE</color>
+    </HELP>
+    <INFO>
+        <tag>i</tag>
+        <color>YELLOW</color>
+    </INFO>
+    <VALUE>
+        <tag>v</tag>
+        <color>DARK_GREEN</color>
+    </VALUE>
 </theme>

@@ -14,6 +14,10 @@ public enum Theme {
     SUCCESS('+', ChatColor.GREEN),
     ERROR('-', ChatColor.RED),
     PLAIN('.', ChatColor.RESET),
+    IMPORTANT('!', ChatColor.BOLD),
+    HELP('h', ChatColor.WHITE),
+    INFO('i', ChatColor.YELLOW),
+    VALUE('v', ChatColor.DARK_GREEN),
     ;
 
     @NotNull
