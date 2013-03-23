@@ -45,6 +45,9 @@
             <properties>
                 <project.build.number>${env.BUILD_NUMBER}</project.build.number>
             </properties>
+            <modules>
+                <module>javadoc</module>
+            </modules>
         </profile>
     </profiles>
 
@@ -63,7 +66,7 @@
         <module>base</module>
         <module>bukkit</module>
         <module>testbukkitplugin</module>
-        <module>javadoc</module>
+        <!--module>javadoc</module-->
     </modules>
 
     <distributionManagement>
