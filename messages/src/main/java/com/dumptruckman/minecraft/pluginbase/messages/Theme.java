@@ -150,7 +150,10 @@ public enum Theme {
         return result.isEmpty() ? ChatColor.RESET.toString() : result;
     }
 
-    private static final char THEME_MARKER = '$';
+    /**
+     * The character that indicates a theme tag is being used.
+     */
+    public static final char THEME_MARKER = '$';
 
     @NotNull
     static String parseMessage(@NotNull final String message) {
