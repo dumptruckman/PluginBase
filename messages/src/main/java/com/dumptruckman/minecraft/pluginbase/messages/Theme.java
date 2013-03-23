@@ -154,13 +154,18 @@ public enum Theme {
      * The character that indicates a theme tag is being used.
      */
     public static final char THEME_MARKER = '$';
+    /**
+     * The character that represents the following {@link #THEME_MARKER} is not actually a theme.
+     */
+    public static final char THEME_ESCAPE_CHAR = '\\';
 
     @NotNull
     static String parseMessage(@NotNull final String message) {
         final StringBuilder buffer = new StringBuilder(message.length() + 10);
+        char previousChar = ' ';
         for (int i = 0; i < message.length() - 1; i++) {
             final char currentChar = message.charAt(i);
-            if (currentChar == THEME_MARKER) {
+            if (currentChar == THEME_MARKER && previousChar != THEME_ESCAPE_CHAR) {
                 final String color = tagMap.get(message.charAt(i + 1));
                 if (color != null) {
                     buffer.append(color);
@@ -171,6 +176,7 @@ public enum Theme {
             } else {
                 buffer.append(currentChar);
             }
+            previousChar = currentChar;
         }
         if (!message.isEmpty()) {
             buffer.append(message.charAt(message.length() - 1));
