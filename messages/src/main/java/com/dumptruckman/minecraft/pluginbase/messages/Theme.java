@@ -129,7 +129,7 @@ public enum Theme {
             }
 
             // We have to have found a color and tag to care about the theme in the xml
-            if ((color != null || style != null) && tag != null) {
+            if ((color != null || style != null) && tag != null && !tagMap.containsKey(tag)) {
                 tagMap.put(tag, getColor(color, style));
                 if (applicableTheme != null) {
                     themeSet.remove(applicableTheme);
