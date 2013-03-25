@@ -14,6 +14,7 @@ import java.util.Map;
 public enum Theme {
     SUCCESS('+', ChatColor.GREEN),
     ERROR('-', ChatColor.RED),
+    FAILURE('^', ChatColor.RED),
     PLAIN('.', ChatColor.RESET),
     IMPORTANT('!', null, ChatColor.BOLD),
     IMPORTANT2('*', null, ChatColor.ITALIC),
@@ -25,12 +26,18 @@ public enum Theme {
     DO_THIS('~', ChatColor.BLUE),
     VALUE('v', ChatColor.DARK_GREEN),
     TITLE('t', ChatColor.DARK_AQUA),
+    PLEASE_WAIT('w', ChatColor.GRAY),
 
     CMD_USAGE('c', ChatColor.WHITE),
     CMD_FLAG('f', ChatColor.GOLD, ChatColor.ITALIC),
     OPT_ARG('o', ChatColor.GOLD),
     REQ_ARG('r', ChatColor.GREEN),
     CMD_HIGHLIGHT('C', null, ChatColor.BOLD),
+
+    HEADER('=', ChatColor.LIGHT_PURPLE),
+    LIST_ODD(':', ChatColor.WHITE),
+    LIST_EVEN(';', ChatColor.YELLOW),
+
     ;
 
     @NotNull
@@ -141,7 +148,9 @@ public enum Theme {
 
         // Now we iterate over any of the remaining enum elements to add them as defaults.
         for (final Theme theme : themeSet) {
-            tagMap.put(theme.tag, getColor(theme.color, theme.style));
+            if (!tagMap.containsKey(theme.tag)) {
+                tagMap.put(theme.tag, getColor(theme.color, theme.style));
+            }
         }
     }
 
