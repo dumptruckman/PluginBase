@@ -27,6 +27,7 @@ public enum Theme {
     VALUE('v', ChatColor.DARK_GREEN),
     TITLE('t', ChatColor.DARK_AQUA),
     PLEASE_WAIT('w', ChatColor.GRAY),
+    QUESTION('?', ChatColor.DARK_PURPLE),
 
     CMD_USAGE('c', ChatColor.WHITE),
     CMD_FLAG('f', ChatColor.GOLD, ChatColor.ITALIC),
