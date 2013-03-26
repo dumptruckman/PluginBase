@@ -14,7 +14,7 @@ import java.util.Map;
 public enum Theme {
     SUCCESS('+', ChatColor.GREEN),
     ERROR('-', ChatColor.RED),
-    FAILURE('^', ChatColor.RED),
+    INVALID('^', ChatColor.RED),
     PLAIN('.', ChatColor.RESET),
     IMPORTANT('!', null, ChatColor.BOLD),
     IMPORTANT2('*', null, ChatColor.ITALIC),
