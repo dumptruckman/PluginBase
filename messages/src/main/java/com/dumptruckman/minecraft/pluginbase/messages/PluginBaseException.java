@@ -38,7 +38,7 @@ public class PluginBaseException extends Exception {
      *
      * @param languageMessage the bundled message to use for this exception.
      */
-    public PluginBaseException(@NotNull final BundledMessage languageMessage, @NotNull final Throwable throwable) {
+    public PluginBaseException(@NotNull final BundledMessage languageMessage, @Nullable final Throwable throwable) {
         super(getUnbundledDefaultMessage(languageMessage), throwable);
         if (throwable instanceof PluginBaseException) {
             this.cause = (PluginBaseException) throwable;
@@ -54,7 +54,7 @@ public class PluginBaseException extends Exception {
      * @param languageMessage the bundled message to use for this exception.
      * @param cause the cause exception.
      */
-    public PluginBaseException(@NotNull final BundledMessage languageMessage, @NotNull final PluginBaseException cause) {
+    public PluginBaseException(@NotNull final BundledMessage languageMessage, @Nullable final PluginBaseException cause) {
         this(languageMessage, (Throwable) cause);
         this.cause = cause;
     }
