@@ -4,6 +4,8 @@ import com.dumptruckman.minecraft.pluginbase.plugin.BukkitPlugin;
 import com.dumptruckman.minecraft.pluginbase.util.Logging;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,53 +23,37 @@ import java.util.Set;
 /**
  * Commented Yaml implementation of ConfigBase.
  */
-public abstract class AbstractYamlConfig<C> implements Config {
+public abstract class AbstractFileConfig<C> implements Config {
 
-    private CommentedYamlConfiguration config;
+    private final FileConfiguration config;
+    private final File configFile;
     private BukkitPlugin plugin;
     private Entries entries;
     private boolean doComments;
 
-    public AbstractYamlConfig(BukkitPlugin plugin, boolean doComments, boolean autoDefaults, File configFile, Class<? extends C>... configClasses) throws IOException {
+    public AbstractFileConfig(BukkitPlugin plugin, boolean doComments, boolean autoDefaults, File configFile, FileConfiguration config, Class<? extends C>... configClasses) throws IOException {
         if (plugin == null) {
             throw new IllegalArgumentException("plugin may not be null!");
         }
-        if (configFile == null) {
-            throw new IllegalArgumentException("configFile may not be null!");
-        }
-        if (configFile.isDirectory()) {
-            throw new IllegalArgumentException("configFile may NOT be directory!");
-        }
-        if (!configFile.getName().endsWith(".yml")) {
-            throw new IllegalArgumentException("configFile MUST be yaml!");
-        }
+        this.config = config;
+        this.configFile = configFile;
         this.doComments = doComments;
         entries = new Entries(configClasses);
         this.plugin = plugin;
-        // Make the data folders
-        if (configFile.getParent() != null) {
-            if (configFile.getParentFile().mkdirs()) {
-                Logging.fine("Created folder for config file.");
-            }
-        }
-
-        // Check if the config file exists.  If not, create it.
-        if (!configFile.exists()) {
-            if (configFile.createNewFile()) {
-                Logging.fine("Created config file: " + configFile.getAbsolutePath());
-            }
-        }
 
         // Load the configuration file into memory
-        config = new CommentedYamlConfiguration(configFile, doComments);
-        config.load();
+        try {
+            this.config.load(configFile);
+        } catch (InvalidConfigurationException e) {
+            throw new IOException(e);
+        }
 
         // Sets defaults config values
         if (autoDefaults) {
             this.setDefaults();
         }
         
-        config.getConfig().options().header(getHeader());
+        this.config.options().header(getHeader());
 
         // Saves the configuration from memory to file
         save();
@@ -234,20 +220,26 @@ public abstract class AbstractYamlConfig<C> implements Config {
     }
 
     protected Configuration getConfig() {
-        return this.config.getConfig();
+        return this.config;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void save() {
-        if (doComments) {
+    public boolean save() {
+        if (doComments && config instanceof CommentedYamlConfiguration) {
+            CommentedYamlConfiguration config = (CommentedYamlConfiguration) this.config;
             for (ConfigEntry path : entries.entries) {
-                config.addComment(path.getName(), path.getComments());
+                config.addComments(path.getName(), path.getComments());
             }
         }
-        this.config.save();
+        try {
+            this.config.save(configFile);
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
     
     protected String getHeader() {

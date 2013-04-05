@@ -8,7 +8,7 @@ public interface Config {
     /**
      * Convenience method for saving the config to disk.
      */
-    void save();
+    boolean save();
     
     <T> T get(ConfigEntry<T> entry) throws IllegalArgumentException;
     

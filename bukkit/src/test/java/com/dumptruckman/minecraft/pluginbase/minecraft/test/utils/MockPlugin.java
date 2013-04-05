@@ -27,7 +27,11 @@ public class MockPlugin extends AbstractBukkitPlugin<MockConfig> {
 
     @Override
     protected MockConfig newConfigInstance() throws IOException {
-        return new MockConfig(this, true, new File(getDataFolder(), "config.yml"), MockConfig.class);
+        File file = new File(getDataFolder(), "config.yml");
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        return new MockConfig(this, true, file, MockConfig.class);
     }
 
     public List<String> dumpVersionInfo() {
