@@ -6,6 +6,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,17 +36,21 @@ public abstract class AbstractFileConfig<C> implements Config {
         if (plugin == null) {
             throw new IllegalArgumentException("plugin may not be null!");
         }
-        this.config = config;
         this.configFile = configFile;
         this.doComments = doComments;
         entries = new Entries(configClasses);
         this.plugin = plugin;
 
         // Load the configuration file into memory
-        try {
-            this.config.load(configFile);
-        } catch (InvalidConfigurationException e) {
-            throw new IOException(e);
+        if (config instanceof YamlConfiguration) {
+            this.config = CommentedYamlConfiguration.loadConfiguration(configFile);
+        } else {
+            this.config = config;
+            try {
+                this.config.load(configFile);
+            } catch (InvalidConfigurationException e) {
+                throw new IOException(e);
+            }
         }
 
         // Sets defaults config values
