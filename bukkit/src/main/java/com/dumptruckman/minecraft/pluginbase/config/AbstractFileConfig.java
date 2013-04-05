@@ -43,7 +43,7 @@ public abstract class AbstractFileConfig<C> implements Config {
 
         // Load the configuration file into memory
         if (config instanceof YamlConfiguration) {
-            this.config = CommentedYamlConfiguration.loadConfiguration(configFile);
+            this.config = CommentedYamlConfiguration.loadCommentedConfiguration(configFile, doComments);
         } else {
             this.config = config;
             try {
