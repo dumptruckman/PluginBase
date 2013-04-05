@@ -1,11 +1,16 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.config;
 
-import org.bukkit.configuration.file.FileConfiguration;
+import com.dumptruckman.minecraft.pluginbase.util.Logging;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -20,63 +26,52 @@ import java.util.List;
 /**
  * A Configuration wrapper class that allows for comments to be applied to the config paths.
  */
-class CommentedYamlConfiguration {
+class CommentedYamlConfiguration extends YamlConfiguration {
 
-    private HashMap<String, String> comments;
-    private File file;
-    private FileConfiguration config = null;
-    private boolean doComments;
+    private final HashMap<String, String> comments = new HashMap<String, String>();;
+    private final boolean doComments;
 
-    public CommentedYamlConfiguration(File file, boolean doComments) {
-        super();
-        comments = new HashMap<String, String>();
-        this.file = file;
+    CommentedYamlConfiguration(final boolean doComments) {
         this.doComments = doComments;
     }
 
-    /**
-     * Loads this Configuration object into memory.
-     *
-     * @throws Exception If anything goes wrong while loading this Configuration object into memory.
-     */
-    public void load() {
-        config = YamlConfiguration.loadConfiguration(file);
-    }
+    static CommentedYamlConfiguration loadCommentedConfiguration(final File file, final boolean doComments) throws IOException {
+        CommentedYamlConfiguration config;
+        try {
+            config = new EncodedYamlConfiguration("UTF-8", doComments);
+        } catch (UnsupportedEncodingException e) {
+            Logging.warning("Could not create UTF-8 configuration.  Special/Foreign characters may not be saved.");
+            config = new CommentedYamlConfiguration(doComments);
+        }
 
-    /**
-     * @return The underlying configuration object.
-     */
-    public FileConfiguration getConfig() {
-        return this.config;
+        try {
+            config.load(file);
+        } catch (FileNotFoundException e) {
+            throw new IOException(e);
+        } catch (InvalidConfigurationException e) {
+            throw new IOException(e);
+        }
+
+        return config;
     }
 
     /**
      * Saves the file as per normal for YamlConfiguration and then parses the file and inserts
      * comments where necessary.
-     *
-     * @return True if succesful.
      */
-    public boolean save() {
-        boolean saved = true;
-        // Save the config just like normal
-        try {
-            config.save(file);
-        } catch (Exception e) {
-            saved = false;
-        }
-
-        if (!doComments) {
-            return saved;
-        }
-
+    private void _save(final File file) throws IOException {
         // if there's comments to add and it saved fine, we need to add comments
-        if (!comments.isEmpty() && saved) {
+        if (doComments && !comments.isEmpty()) {
             // String array of each line in the config file
             String[] yamlContents =
                     this.convertFileToString(file).split("[" + System.getProperty("line.separator") + "]");
 
+            String header = options().header();
+            if (header == null) {
+                header = "";
+            }
             // This will hold the entire newly formatted config
-            StringBuilder newContents = new StringBuilder(config.options().header()).append(System.getProperty("line.separator")).append(System.getProperty("line.separator"));
+            StringBuilder newContents = new StringBuilder(header).append(System.getProperty("line.separator")).append(System.getProperty("line.separator"));
             // This holds the current path the lines are at in the config
             StringBuilder currentPath = new StringBuilder();
             // This tells if the specified path has already been commented
@@ -199,14 +194,9 @@ class CommentedYamlConfiguration {
                 newContents = newContents.replaceFirst(System.getProperty("line.separator"), "");
             }
             */
-            try {
-                // Write the string to the config file
-                this.stringToFile(newContents.toString(), file);
-            } catch (IOException e) {
-                saved = false;
-            }
+            // Write the string to the config file
+            this.stringToFile(newContents.toString(), file);
         }
-        return saved;
     }
 
     /**
@@ -215,7 +205,7 @@ class CommentedYamlConfiguration {
      * @param path         Configuration path to add comment.
      * @param commentLines Comments to add.  One String per line.
      */
-    public void addComment(String path, List<String> commentLines) {
+    public void addComments(final String path, final List<String> commentLines) {
         StringBuilder commentstring = new StringBuilder();
         String leadingSpaces = "";
         for (int n = 0; n < path.length(); n++) {
@@ -225,6 +215,9 @@ class CommentedYamlConfiguration {
         }
         for (String line : commentLines) {
             if (!line.isEmpty()) {
+                if (line.charAt(0) != '#') {
+                    line = "# " + line;
+                }
                 line = leadingSpaces + line;
             } else {
                 line = " ";
@@ -305,5 +298,10 @@ class CommentedYamlConfiguration {
             }
         }
     }
-}
 
+    @Override
+    public void save(final File file) throws IOException {
+        super.save(file);
+        _save(file);
+    }
+}
