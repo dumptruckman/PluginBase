@@ -10,6 +10,7 @@ import com.dumptruckman.minecraft.pluginbase.properties.builders.NullPropertyBui
 import com.dumptruckman.minecraft.pluginbase.properties.builders.PropertyBuilder;
 import com.dumptruckman.minecraft.pluginbase.properties.builders.SimplePropertyBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
@@ -44,7 +45,7 @@ public final class PropertyFactory extends PropertyBuilder {
      */
     public static <T> SimplePropertyBuilder<T> newProperty(@NotNull final Class<T> type,
                                                            @NotNull final String name,
-                                                           @NotNull final T def) {
+                                                           @Nullable final T def) {
         return newSimplePropertyBuilder(type, name, def);
     }
 

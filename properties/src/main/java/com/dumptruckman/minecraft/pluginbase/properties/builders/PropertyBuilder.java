@@ -6,6 +6,7 @@ package com.dumptruckman.minecraft.pluginbase.properties.builders;
 import com.dumptruckman.minecraft.pluginbase.properties.NestedProperties;
 import com.dumptruckman.minecraft.pluginbase.properties.Property;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +80,7 @@ public abstract class PropertyBuilder<T> {
     @NotNull
     protected static <T> SimplePropertyBuilder<T> newSimplePropertyBuilder(@NotNull final Class<T> type,
                                                                            @NotNull final String name,
-                                                                           @NotNull final T def) {
+                                                                           @Nullable final T def) {
         return new SimplePropertyBuilder<T>(type, name, def);
     }
 
