@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
 
+import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.messages.PluginBaseException;
 import com.dumptruckman.minecraft.pluginbase.properties.Properties;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 /**
  * Optionally commented Yaml implementation of Properties.
@@ -151,7 +153,14 @@ public class YamlProperties extends AbstractFileProperties implements Properties
     /** {@inheritDoc} */
     @Override
     public void flush() throws PluginBaseException {
-        CommentedYamlConfiguration newConfig = new CommentedYamlConfiguration(doComments);
+        CommentedYamlConfiguration newConfig;
+        try {
+            newConfig = new EncodedYamlConfiguration("UTF-8", doComments);
+        } catch (UnsupportedEncodingException e) {
+            Logging.warning("Could not create UTF-8 configuration.  Special/Foreign characters may not be saved.");
+            newConfig = new CommentedYamlConfiguration(doComments);
+        }
+
         newConfig.options().header(getHeader());
         serializeAll(newConfig);
         if (doComments) {

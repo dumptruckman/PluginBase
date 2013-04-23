@@ -4,12 +4,17 @@
 package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
 
 import com.google.common.io.Files;
+import org.apache.commons.lang.Validate;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -27,6 +32,27 @@ class EncodedYamlConfiguration extends CommentedYamlConfiguration {
 
     EncodedYamlConfiguration(@NotNull final String charset, final boolean doComments) throws UnsupportedEncodingException, IllegalCharsetNameException {
         this(Charset.forName(charset), doComments);
+    }
+
+    @Override
+    public void load(@NotNull final InputStream stream) throws IOException, InvalidConfigurationException {
+        Validate.notNull(stream, "Stream cannot be null");
+
+        InputStreamReader reader = new InputStreamReader(stream, charset);
+        StringBuilder builder = new StringBuilder();
+        BufferedReader input = new BufferedReader(reader);
+
+        try {
+            String line;
+            while ((line = input.readLine()) != null) {
+                builder.append(line);
+                builder.append('\n');
+            }
+        } finally {
+            input.close();
+        }
+
+        loadFromString(builder.toString());
     }
 
     @Override
