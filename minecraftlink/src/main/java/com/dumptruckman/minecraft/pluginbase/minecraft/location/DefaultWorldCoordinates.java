@@ -84,4 +84,18 @@ class DefaultWorldCoordinates implements EntityCoordinates, BlockCoordinates {
     public void subtract(final int x, final int y, final int z) {
         subtract((double) x, (double) y, (double) z);
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final DefaultWorldCoordinates that = (DefaultWorldCoordinates) o;
+        return parent.equals(that.parent) && world.equals(that.world);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * world.hashCode() + parent.hashCode();
+    }
 }
