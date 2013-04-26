@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.minecraft.location;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A helper class for creating and copying a variety of location designating objects.
@@ -95,5 +96,20 @@ public class Locations {
             return getImmutableCoordinates(coords.getX(), coords.getY(), coords.getZ());
         }
         return getCoordinates(coords.getX(), coords.getY(), coords.getZ());
+    }
+
+    public static boolean equal(@Nullable final Coordinates a, @Nullable final Coordinates b) {
+        return ((a == null) && (b == null)) || ((a != null) && (b != null)
+                && (a.getX() == b.getX()) && (a.getY() == b.getY()) && (a.getZ() == b.getZ()));
+    }
+
+    public static boolean equal(@Nullable final FacingCoordinates a, @Nullable final FacingCoordinates b) {
+        return equal((Coordinates) a, (Coordinates) b)
+                && ((a == null) || ((a.getPitch() == b.getPitch()) && (a.getYaw() == b.getYaw())));
+    }
+
+    public static boolean equal(@Nullable final EntityCoordinates a, @Nullable final EntityCoordinates b) {
+        return equal((FacingCoordinates) a, (FacingCoordinates) b)
+                && ((a == null) || ((a.getWorld().equals(b.getWorld()))));
     }
 }

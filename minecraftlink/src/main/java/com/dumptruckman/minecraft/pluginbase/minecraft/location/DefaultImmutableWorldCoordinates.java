@@ -84,4 +84,18 @@ class DefaultImmutableWorldCoordinates implements EntityCoordinates, BlockCoordi
     public void subtract(final int x, final int y, final int z) {
         throw new UnsupportedOperationException();
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final DefaultImmutableWorldCoordinates that = (DefaultImmutableWorldCoordinates) o;
+        return parent.equals(that.parent) && world.equals(that.world);
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * world.hashCode() + parent.hashCode();
+    }
 }
