@@ -1,5 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.minecraft.location;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Represents a point in 3-dimensional space that also has a pitch and yaw, or facing, value.
  */
@@ -22,4 +24,16 @@ public interface FacingCoordinates extends Coordinates {
      * @return the yaw of the facing.
      */
     float getYaw();
+
+    /** {@inheritDoc} */
+    @Override
+    MutableFacingCoordinates mutableCopy();
+
+    /** {@inheritDoc} */
+    @Override
+    FacingCoordinates immutableCopy();
+
+    /** {@inheritDoc} */
+    @Override
+    FacingCoordinates getMidpoint(@NotNull final Coordinates o);
 }

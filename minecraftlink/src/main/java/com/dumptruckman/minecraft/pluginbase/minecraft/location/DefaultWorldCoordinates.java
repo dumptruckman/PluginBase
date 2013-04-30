@@ -2,100 +2,90 @@ package com.dumptruckman.minecraft.pluginbase.minecraft.location;
 
 import org.jetbrains.annotations.NotNull;
 
-class DefaultWorldCoordinates implements EntityCoordinates, BlockCoordinates {
-
-    private static int coordToBlock(final double coord) {
-        final int floor = (int) coord;
-        return floor == coord ? floor : floor - (int) (Double.doubleToRawLongBits(coord) >>> 63);
-    }
+class DefaultWorldCoordinates extends DefaultCoordinates implements EntityCoordinates, BlockCoordinates {
 
     @NotNull
-    private String world;
+    private final String world;
 
-    @NotNull final FacingCoordinates parent;
+    private final int blockX;
+    private final int blockY;
+    private final int blockZ;
 
-    DefaultWorldCoordinates(@NotNull final String world, @NotNull FacingCoordinates parent) {
+    DefaultWorldCoordinates(@NotNull final String world, final double x, final double y, final double z, final float pitch, final float yaw) {
+        super(x, y, z, pitch, yaw);
         this.world = world;
-        this.parent = parent;
+        this.blockX = super.getBlockX();
+        this.blockY = super.getBlockY();
+        this.blockZ = super.getBlockZ();
     }
 
+    /** {@inheritDoc} */
     @NotNull
     @Override
     public String getWorld() {
         return world;
     }
 
-    @Override
-    public double getX() {
-        return parent.getX();
-    }
-
-    @Override
-    public double getY() {
-        return parent.getY();
-    }
-
-    @Override
-    public double getZ() {
-        return parent.getZ();
-    }
-
+    /** {@inheritDoc} */
     @Override
     public int getBlockX() {
-        return coordToBlock(getX());
+        return blockX;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getBlockY() {
-        return coordToBlock(getY());
+        return blockY;
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getBlockZ() {
-        return coordToBlock(getZ());
+        return blockZ;
     }
 
-    @Override
-    public float getPitch() {
-        return parent.getPitch();
-    }
-
-    @Override
-    public float getYaw() {
-        return parent.getYaw();
-    }
-
-    @Override
-    public void add(final double x, final double y, final double z) {
-        parent.add(x, y, z);
-    }
-
-    @Override
-    public void subtract(final double x, final double y, final double z) {
-        parent.subtract(x, y, z);
-    }
-
-    @Override
-    public void add(final int x, final int y, final int z) {
-        add((double) x, (double) y, (double) z);
-    }
-
-    @Override
-    public void subtract(final int x, final int y, final int z) {
-        subtract((double) x, (double) y, (double) z);
-    }
-
+    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof DefaultWorldCoordinates)) return false;
 
         final DefaultWorldCoordinates that = (DefaultWorldCoordinates) o;
-        return parent.equals(that.parent) && world.equals(that.world);
+        return super.equals(that) && world.equals(that.world);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        return 31 * world.hashCode() + super.hashCode();
     }
 
     @Override
-    public int hashCode() {
-        return 31 * world.hashCode() + parent.hashCode();
+    public DefaultWorldCoordinates getMidpoint(@NotNull final Coordinates o) {
+        return new DefaultWorldCoordinates(getWorld(), (getX() + o.getX()) / 2, (getY() + o.getY()) / 2, (getZ() + o.getZ()) / 2, getPitch(), getYaw());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DefaultWorldCoordinates immutableCopy() {
+        return new DefaultWorldCoordinates(getWorld(), getX(), getY(), getZ(), getPitch(), getYaw());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DefaultMutableWorldCoordinates mutableCopy() {
+        return new DefaultMutableWorldCoordinates(getWorld(), getX(), getY(), getZ(), getPitch(), getYaw());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DefaultWorldCoordinates clone() {
+        return (DefaultWorldCoordinates) super.clone();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return String.format("DefaultWorldCoordinates {world: %s, x: %s, y: %s, z: %s, pitch: %s, yaw: %s}", getWorld(), getX(), getY(), getZ(), getPitch(), getYaw());
     }
 }

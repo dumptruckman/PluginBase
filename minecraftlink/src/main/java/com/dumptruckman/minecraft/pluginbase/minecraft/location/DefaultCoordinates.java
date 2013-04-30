@@ -1,67 +1,41 @@
 package com.dumptruckman.minecraft.pluginbase.minecraft.location;
 
-class DefaultCoordinates implements Coordinates, FacingCoordinates {
+import org.jetbrains.annotations.NotNull;
 
-    private double x, y, z;
-    private float pitch, yaw;
+class DefaultCoordinates extends Vector implements FacingCoordinates {
+
+    protected final float pitch;
+    protected final float yaw;
 
     DefaultCoordinates(final double x, final double y, final double z, final float pitch, final float yaw) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
+        super(x, y, z);
         this.pitch = pitch;
         this.yaw = yaw;
     }
 
-    @Override
-    public double getX() {
-        return this.x;
-    }
-
-    @Override
-    public double getY() {
-        return this.y;
-    }
-
-    @Override
-    public double getZ() {
-        return this.z;
-    }
-
+    /** {@inheritDoc} */
     @Override
     public float getPitch() {
         return this.pitch;
     }
 
+    /** {@inheritDoc} */
     @Override
     public float getYaw() {
         return this.yaw;
     }
 
-    @Override
-    public void add(final double x, final double y, final double z) {
-        this.x += x;
-        this.y += y;
-        this.z += z;
-    }
-
-    @Override
-    public void subtract(final double x, final double y, final double z) {
-        this.x -= x;
-        this.y -= y;
-        this.z -= z;
-    }
-
+    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof DefaultCoordinates)) return false;
 
-        final DefaultCoordinates that = (DefaultCoordinates) o;
-        return Double.compare(that.x, x) == 0 && Double.compare(that.y, y) == 0 && Double.compare(that.z, z) == 0
-                && Float.compare(that.pitch, pitch) == 0 && Float.compare(that.yaw, yaw) == 0;
+        final DefaultCoordinates other = (DefaultCoordinates) o;
+        return Math.abs(x - other.x) < getEpsilon() && Math.abs(y - other.y) < getEpsilon() && Math.abs(z - other.z) < getEpsilon() && Math.abs(pitch - other.pitch) < getEpsilon() && Math.abs(yaw - other.yaw) < getEpsilon() && (this.getClass().equals(o.getClass()));
     }
 
+    /** {@inheritDoc} */
     @Override
     public int hashCode() {
         int result;
@@ -75,5 +49,35 @@ class DefaultCoordinates implements Coordinates, FacingCoordinates {
         result = 31 * result + (pitch != +0.0f ? Float.floatToIntBits(pitch) : 0);
         result = 31 * result + (yaw != +0.0f ? Float.floatToIntBits(yaw) : 0);
         return result;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DefaultCoordinates getMidpoint(@NotNull final Coordinates o) {
+        return new DefaultCoordinates((getX() + o.getX()) / 2, (getY() + o.getY()) / 2, (getZ() + o.getZ()) / 2, getPitch(), getYaw());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DefaultCoordinates immutableCopy() {
+        return new DefaultCoordinates(getX(), getY(), getZ(), getPitch(), getYaw());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DefaultMutableCoordinates mutableCopy() {
+        return new DefaultMutableCoordinates(getX(), getY(), getZ(), getPitch(), getYaw());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DefaultCoordinates clone() {
+        return (DefaultCoordinates) super.clone();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return String.format("DefaultCoordinates {x: %s, y: %s, z: %s, pitch: %s, yaw: %s}", getX(), getY(), getZ(), getPitch(), getYaw());
     }
 }
