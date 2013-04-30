@@ -74,4 +74,16 @@ public interface MutableBlockCoordinates extends MutableCoordinates, BlockCoordi
     /** {@inheritDoc} */
     @Override
     MutableBlockCoordinates subtract(final double x, final double y, final double z);
+
+    /** {@inheritDoc} */
+    @Override
+    MutableBlockCoordinates mutableCopy();
+
+    /** {@inheritDoc} */
+    @Override
+    BlockCoordinates immutableCopy();
+
+    /** {@inheritDoc} */
+    @Override
+    MutableBlockCoordinates getMidpoint(@NotNull final Coordinates o);
 }
