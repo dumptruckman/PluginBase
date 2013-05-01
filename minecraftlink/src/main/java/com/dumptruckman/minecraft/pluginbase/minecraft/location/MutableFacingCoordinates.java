@@ -7,26 +7,6 @@ import org.jetbrains.annotations.NotNull;
  */
 public interface MutableFacingCoordinates extends MutableCoordinates, FacingCoordinates {
 
-    /** {@inheritDoc} */
-    @Override
-    float getPitch();
-
-    /** {@inheritDoc} */
-    @Override
-    float getYaw();
-
-    /** {@inheritDoc} */
-    @Override
-    MutableFacingCoordinates setX(final double x);
-
-    /** {@inheritDoc} */
-    @Override
-    MutableFacingCoordinates setY(final double y);
-
-    /** {@inheritDoc} */
-    @Override
-    MutableFacingCoordinates setZ(final double z);
-
     /**
      * Sets the pitch of the facing.
      * @param pitch the new pitch for the facing.
@@ -40,6 +20,18 @@ public interface MutableFacingCoordinates extends MutableCoordinates, FacingCoor
      * @return this object.
      */
     MutableFacingCoordinates setYaw(final float yaw);
+
+    /** {@inheritDoc} */
+    @Override
+    MutableFacingCoordinates setX(final double x);
+
+    /** {@inheritDoc} */
+    @Override
+    MutableFacingCoordinates setY(final double y);
+
+    /** {@inheritDoc} */
+    @Override
+    MutableFacingCoordinates setZ(final double z);
 
     /** {@inheritDoc} */
     @Override
@@ -88,4 +80,16 @@ public interface MutableFacingCoordinates extends MutableCoordinates, FacingCoor
     /** {@inheritDoc} */
     @Override
     MutableFacingCoordinates subtract(final double x, final double y, final double z);
+
+    /** {@inheritDoc} */
+    @Override
+    MutableFacingCoordinates mutableCopy();
+
+    /** {@inheritDoc} */
+    @Override
+    FacingCoordinates immutableCopy();
+
+    /** {@inheritDoc} */
+    @Override
+    MutableFacingCoordinates getMidpoint(@NotNull final Coordinates o);
 }

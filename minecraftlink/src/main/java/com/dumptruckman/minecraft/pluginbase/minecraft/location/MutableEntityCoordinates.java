@@ -5,15 +5,19 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Represents a point in 3-dimensional space that also has a pitch and yaw, or facing, value.
  */
-public interface MutableEntityCoordinates extends EntityCoordinates, MutableFacingCoordinates {
+public interface MutableEntityCoordinates extends EntityCoordinates, MutableFacingCoordinates, MutableBlockCoordinates {
 
-    /**
-     * Sets the name of the world for where these coordinates are located.
-     *
-     * @param world the name of the world for where these coordinates are located.
-     * @return this object.
-     */
+    /** {@inheritDoc} */
+    @Override
     MutableEntityCoordinates setWorld(@NotNull final String world);
+
+    /** {@inheritDoc} */
+    @Override
+    MutableEntityCoordinates setPitch(final float pitch);
+
+    /** {@inheritDoc} */
+    @Override
+    MutableEntityCoordinates setYaw(final float yaw);
 
     /** {@inheritDoc} */
     @Override
@@ -26,14 +30,6 @@ public interface MutableEntityCoordinates extends EntityCoordinates, MutableFaci
     /** {@inheritDoc} */
     @Override
     MutableEntityCoordinates setZ(final double z);
-
-    /** {@inheritDoc} */
-    @Override
-    MutableFacingCoordinates setPitch(final float pitch);
-
-    /** {@inheritDoc} */
-    @Override
-    MutableFacingCoordinates setYaw(final float yaw);
 
     /** {@inheritDoc} */
     @Override
@@ -90,4 +86,8 @@ public interface MutableEntityCoordinates extends EntityCoordinates, MutableFaci
     /** {@inheritDoc} */
     @Override
     EntityCoordinates immutableCopy();
+
+    /** {@inheritDoc} */
+    @Override
+    MutableEntityCoordinates getMidpoint(@NotNull final Coordinates o);
 }
