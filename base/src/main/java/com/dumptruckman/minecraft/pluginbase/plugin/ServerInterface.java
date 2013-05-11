@@ -1,6 +1,8 @@
 package com.dumptruckman.minecraft.pluginbase.plugin;
 
+import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
@@ -44,6 +46,14 @@ public interface ServerInterface<P extends PluginBase> {
      */
     @NotNull
     File getServerFolder();
+
+    /**
+     * Gets a player by his name.
+     * @param name The player's name.
+     * @return The player object or {@code null} if the player was not found.
+     */
+    @Nullable
+    BasePlayer getPlayer(String name);
 
     int runTask(@NotNull final P p, @NotNull final Runnable runnable);
 

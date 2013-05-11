@@ -1,8 +1,10 @@
 package com.dumptruckman.minecraft.pluginbase.bukkit;
 
+import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
 import com.dumptruckman.minecraft.pluginbase.plugin.ServerInterface;
 import org.bukkit.Server;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 
@@ -42,6 +44,13 @@ class BukkitServerInterface implements ServerInterface<BukkitPlugin> {
     @Override
     public File getServerFolder() {
         return serverFolder;
+    }
+
+    /** {@inheritDoc} */
+    @Nullable
+    @Override
+    public BasePlayer getPlayer(final String name) {
+        return BukkitTools.wrapPlayer(server.getPlayer(name));
     }
 
     /** {@inheritDoc} */
