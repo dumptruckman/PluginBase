@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.minecraft;
 
 import com.dumptruckman.minecraft.pluginbase.minecraft.location.EntityCoordinates;
+import com.dumptruckman.minecraft.pluginbase.minecraft.location.Vector;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -15,4 +16,16 @@ public interface Entity {
      * @return True if the teleport was successful.
      */
     boolean teleport(@NotNull final EntityCoordinates location);
+
+    /**
+     * Gets this {@link Entity}'s current velocity.
+     * @return This {@link Entity}'s current velocity.
+     */
+    Vector getVelocity();
+
+    /**
+     * Sets this {@link Entity}'s current velocity.
+     * @param v The new velocity.
+     */
+    void setVelocity(Vector v);
 }
