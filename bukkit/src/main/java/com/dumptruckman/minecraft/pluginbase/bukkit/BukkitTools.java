@@ -4,6 +4,7 @@
 package com.dumptruckman.minecraft.pluginbase.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.minecraft.BasePlayer;
+import com.dumptruckman.minecraft.pluginbase.minecraft.location.Vector;
 import com.dumptruckman.minecraft.pluginbase.util.MinecraftTools;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -70,5 +71,29 @@ public class BukkitTools extends MinecraftTools {
             BASE_PLAYER_MAP.put(sender, basePlayer);
         }
         return basePlayer;
+    }
+
+    /**
+     * Converts {@link org.bukkit.util.Vector} objects to
+     * {@link com.dumptruckman.minecraft.pluginbase.minecraft.location.Vector} objects.
+     *
+     * @param v The Bukkit vector.
+     * @return The PluginBase vector.
+     */
+    @NotNull
+    public static Vector convertVector(@NotNull final org.bukkit.util.Vector v) {
+        return new Vector(v.getX(), v.getY(), v.getZ());
+    }
+
+    /**
+     * Converts {@link com.dumptruckman.minecraft.pluginbase.minecraft.location.Vector} objects
+     * to {@link org.bukkit.util.Vector} objects.
+     *
+     * @param v The PluginBase vector.
+     * @return The Bukkit vector.
+     */
+    @NotNull
+    public static org.bukkit.util.Vector convertVector(final Vector v) {
+        return new org.bukkit.util.Vector(v.getX(), v.getY(), v.getZ());
     }
 }
