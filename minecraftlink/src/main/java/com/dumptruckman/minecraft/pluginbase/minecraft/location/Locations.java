@@ -20,6 +20,12 @@ public class Locations {
     }
 
     @NotNull
+    public static FacingCoordinates getFacingCoordinates(@NotNull final Coordinates coords,
+                                                         final float pitch, final float yaw) {
+        return new DefaultCoordinates(coords.getX(), coords.getY(), coords.getZ(), pitch, yaw);
+    }
+
+    @NotNull
     public static FacingCoordinates getFacingCoordinates(final double x, final double y, final double z,
                                                          final float pitch, final float yaw) {
         return new DefaultCoordinates(x, y, z, pitch, yaw);
@@ -32,10 +38,32 @@ public class Locations {
     }
 
     @NotNull
+    public static BlockCoordinates getBlockCoordinates(@NotNull final String world,
+                                                       @NotNull final Coordinates coords) {
+        // using the double coordinate getters instead of the getBlock_() methods because it really
+        // doesn't matter if we do it now or when somebody calls getBlock_() on the returned object
+        return new DefaultWorldCoordinates(world, coords.getX(), coords.getY(), coords.getZ(), 0F, 0F);
+    }
+
+    @NotNull
     public static EntityCoordinates getEntityCoordinates(@NotNull final String world,
                                                          final double x, final double y, final double z,
                                                          final float pitch, final float yaw) {
         return new DefaultWorldCoordinates(world, x, y, z, pitch, yaw);
+    }
+
+    @NotNull
+    public static EntityCoordinates getEntityCoordinates(@NotNull final BlockCoordinates blockCoords,
+                                                         final float pitch, final float yaw) {
+        return new DefaultWorldCoordinates(blockCoords.getWorld(), blockCoords.getX(), blockCoords.getY(),
+                blockCoords.getZ(), pitch, yaw);
+    }
+
+    @NotNull
+    public static EntityCoordinates getEntityCoordinates(@NotNull final String world,
+                                                         @NotNull final FacingCoordinates facingCoords) {
+        return new DefaultWorldCoordinates(world, facingCoords.getX(), facingCoords.getY(), facingCoords.getZ(),
+                facingCoords.getPitch(), facingCoords.getYaw());
     }
 
     @NotNull
