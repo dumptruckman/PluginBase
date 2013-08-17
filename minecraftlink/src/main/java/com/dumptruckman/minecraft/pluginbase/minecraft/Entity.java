@@ -8,6 +8,11 @@ import org.jetbrains.annotations.NotNull;
  * Describes an entity in minecraft which is anything that is not a block or an item in an inventory.
  */
 public interface Entity {
+    /**
+     * @return This entity's current location.
+     */
+    @NotNull
+    EntityCoordinates getLocation();
 
     /**
      * Teleports this entity to the given location.
