@@ -3,6 +3,7 @@ package com.dumptruckman.minecraft.pluginbase.bukkit;
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.minecraft.Entity;
 import com.dumptruckman.minecraft.pluginbase.minecraft.location.EntityCoordinates;
+import com.dumptruckman.minecraft.pluginbase.minecraft.location.Locations;
 import com.dumptruckman.minecraft.pluginbase.minecraft.location.Vector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,6 +24,15 @@ class BukkitPlayer extends AbstractBukkitCommandSender<Player> implements Entity
     @Override
     public boolean isPlayer() {
         return false;
+    }
+
+    /** {@inheritDoc} */
+    @NotNull
+    @Override
+    public EntityCoordinates getLocation() {
+        Location l = getSender().getLocation();
+        return Locations.getEntityCoordinates(l.getWorld().getName(),
+                l.getX(), l.getY(), l.getZ(), l.getPitch(), l.getYaw());
     }
 
     /** {@inheritDoc} */
