@@ -66,6 +66,8 @@
         <module>base</module>
         <module>bukkit</module>
         <module>testbukkitplugin</module>
+        <!--<module>serializable-config-bukkit</module>-->
+        <module>file-comments</module>
         <!--module>javadoc</module-->
     </modules>
 
