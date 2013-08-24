@@ -73,12 +73,6 @@ public class YamlFileCommentInstrumenter {
         }
     }
 
-    private void initializeInstanceVariablesForParsing() {
-        finalFileContents = new StringBuilder();
-        lastYamlPath = new StringBuilder();
-        lastNodeDepth = 0;
-    }
-
     String addCommentsToYamlString(@NotNull final String yamlString) {
         initializeInstanceVariablesForParsing();
         final String[] yamlLines = splitStringByLines(yamlString);
@@ -87,6 +81,12 @@ public class YamlFileCommentInstrumenter {
             finalFileContents.append(instrumentedLine);
         }
         return finalFileContents.toString();
+    }
+
+    private void initializeInstanceVariablesForParsing() {
+        finalFileContents = new StringBuilder();
+        lastYamlPath = new StringBuilder();
+        lastNodeDepth = 0;
     }
 
     private String[] splitStringByLines(final String stringToSplit) {
