@@ -69,7 +69,7 @@ public class Messages {
     @NotNull public final static Message ERROR = Message.createMessage("generic.error", Theme.ERROR + "[ERROR]");
 
     /**
-     * Registers all of the messages in a given class to the localizable object.
+     * Registers all of the messages in a given class and all inner classes to the localizable object.
      * <p/>
      * Messages are defined with the {@link Message} class and should be declared as static and final (constant).
      * Their access modifier is not important and should be set as your needs dictate.
@@ -129,6 +129,10 @@ public class Messages {
                     field.setAccessible(false);
                 }
             }
+        }
+
+        for (Class<?> c : clazz.getDeclaredClasses()) {
+            registerMessages(localizable, c);
         }
     }
 
