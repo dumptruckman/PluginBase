@@ -3,4 +3,4 @@
  * <p/>
  * This is a part of com.dumptruckman.minecraft.pluginbase:Properties-Bukkit.
  */
-package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
+package com.dumptruckman.minecraft.pluginbase.config;

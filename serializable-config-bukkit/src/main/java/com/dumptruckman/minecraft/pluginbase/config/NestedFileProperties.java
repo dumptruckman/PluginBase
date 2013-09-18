@@ -1,4 +1,4 @@
-package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
+package com.dumptruckman.minecraft.pluginbase.config;
 
 import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
 import com.dumptruckman.minecraft.pluginbase.properties.NestedProperties;

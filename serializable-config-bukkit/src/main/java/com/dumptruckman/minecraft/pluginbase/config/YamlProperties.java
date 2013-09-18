@@ -1,7 +1,7 @@
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
-package com.dumptruckman.minecraft.pluginbase.bukkit.properties;
+package com.dumptruckman.minecraft.pluginbase.config;
 
 import com.dumptruckman.minecraft.pluginbase.logging.Logging;
 import com.dumptruckman.minecraft.pluginbase.logging.PluginLogger;
@@ -21,7 +21,7 @@ import java.io.UnsupportedEncodingException;
  * <p/>
  * <b>Do note:</b> Using comments will cause disk writes to take significantly longer than not using them.
  * <p/>
- * See {@link com.dumptruckman.minecraft.pluginbase.bukkit.properties.YamlProperties.Loader} for creating a YamlProperties object.
+ * See {@link YamlProperties.Loader} for creating a YamlProperties object.
  */
 public class YamlProperties extends AbstractFileProperties implements Properties {
 
