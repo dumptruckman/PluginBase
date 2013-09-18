@@ -18,7 +18,7 @@ public class YamlFileCommentInstrumenter {
 
     static final String PATH_SEPARATOR = ".";
     static final char PATH_SEPARATOR_CHAR = PATH_SEPARATOR.charAt(0);
-    static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    static final String LINE_SEPARATOR = "\n";
 
     private final YamlCommentMap commentMap;
     private final int indentLength;
@@ -73,7 +73,7 @@ public class YamlFileCommentInstrumenter {
         }
     }
 
-    String addCommentsToYamlString(@NotNull final String yamlString) {
+    public String addCommentsToYamlString(@NotNull final String yamlString) {
         finalFileContents = new StringBuilder();
         lastYamlPath = new StringBuilder();
         lastNodeDepth = 0;
