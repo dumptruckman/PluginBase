@@ -1,5 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.config.annotation;
 
+import com.dumptruckman.minecraft.pluginbase.config.Serializer;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,6 +15,6 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Serializer {
-    Class<? extends me.main__.util.SerializationConfig.Serializer> value();
+public @interface SerializeWith {
+    Class<? extends Serializer> value();
 }

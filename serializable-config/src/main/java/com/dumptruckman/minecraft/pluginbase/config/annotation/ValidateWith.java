@@ -1,5 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.config.annotation;
 
+import com.dumptruckman.minecraft.pluginbase.config.Validator;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -12,6 +14,6 @@ import java.lang.annotation.Target;
 @Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Validator {
-    Class<? extends me.main__.util.SerializationConfig.Validator> value();
+public @interface ValidateWith {
+    Class<? extends Validator> value();
 }

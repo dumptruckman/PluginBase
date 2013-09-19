@@ -16,5 +16,5 @@ public interface Validator<T> {
      * @return The value the property should be set to.
      * @throws ChangeDeniedException When the property-change was denied.
      */
-    T validateChange(String property, T newValue, T oldValue) throws ChangeDeniedException;
+    //T validateChange(String property, T newValue, T oldValue) throws ChangeDeniedException;
 }
