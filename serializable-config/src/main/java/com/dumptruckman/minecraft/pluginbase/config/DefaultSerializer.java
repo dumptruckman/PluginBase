@@ -58,9 +58,10 @@ class DefaultSerializer implements Serializer<Object> {
 
             // try valueOf
             Method valueOf = type.getMethod("valueOf", String.class);
-            return wantedType.cast(valueOf.invoke(null, serialized));
+            return valueOf.invoke(null, serialized);
         } catch (Exception e) {
-            throw new IllegalPropertyValueException(e);
+            throw new RuntimeException(e);
+            // TODO throw new IllegalPropertyValueException(e);
         }
     }
 }

@@ -26,8 +26,16 @@ public class ConfigSerializer<T> {
         }
         try {
             Constructor constructor = clazz.getDeclaredConstructor();
+            boolean accessible = constructor.isAccessible();
+            if (!accessible) {
+                constructor.setAccessible(true);
+            }
             ConfigSerializer serializer = new ConfigSerializer(constructor.newInstance());
-            return serializer._deserialize(data);
+            Object deserialized = serializer._deserialize(data);
+            if (!accessible) {
+                constructor.setAccessible(false);
+            }
+            return deserialized;
         } catch (InstantiationException e) {
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
@@ -66,7 +74,7 @@ public class ConfigSerializer<T> {
         serializedMap.put(SERIALIZED_KEY, SerializationRegistrar.getAlias(object.getClass()));
         for (Field field : fieldMap) {
             if (field.isPersistable()) {
-                serializeField(field);
+                serializedMap.put(field.getName(), serializeField(field));
             }
         }
         return serializedMap;
