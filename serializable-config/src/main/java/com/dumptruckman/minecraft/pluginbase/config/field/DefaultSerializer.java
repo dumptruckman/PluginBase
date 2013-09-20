@@ -5,7 +5,10 @@ import com.dumptruckman.minecraft.pluginbase.config.SerializationRegistrar;
 import com.dumptruckman.minecraft.pluginbase.config.Serializer;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +49,30 @@ class DefaultSerializer implements Serializer<Object> {
                 if (wantedType.isInstance(serialized)) {
                     return wantedType.cast(serialized);
                 } else {
-                    return wantedType.cast(ConfigSerializer.deserialize((Map<String, Object>) serialized));
+                    if (Modifier.isFinal(wantedType.getModifiers())) {
+                        try {
+                            Constructor constructor = wantedType.getDeclaredConstructor();
+                            boolean accessible = constructor.isAccessible();
+                            if (!accessible) {
+                                constructor.setAccessible(true);
+                            }
+                            Object deserialized = ConfigSerializer.deserializeToObject((Map) serialized, constructor.newInstance());
+                            if (!accessible) {
+                                constructor.setAccessible(false);
+                            }
+                            return deserialized;
+                        } catch (InstantiationException e) {
+                            throw new RuntimeException(e);
+                        } catch (IllegalAccessException e) {
+                            throw new RuntimeException(e);
+                        } catch (NoSuchMethodException e) {
+                            throw new RuntimeException(e);
+                        } catch (InvocationTargetException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        return wantedType.cast(ConfigSerializer.deserialize((Map) serialized));
+                    }
                 }
             } else if (Iterable.class.isAssignableFrom(wantedType) && (serialized instanceof Iterable)) {
                 return wantedType.cast(serialized);
