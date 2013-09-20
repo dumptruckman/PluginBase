@@ -2,6 +2,7 @@ package com.dumptruckman.minecraft.pluginbase.config.field;
 
 import com.dumptruckman.minecraft.pluginbase.config.PropertyAliases;
 import com.dumptruckman.minecraft.pluginbase.config.Serializer;
+import com.dumptruckman.minecraft.pluginbase.config.VirtualProperty;
 import com.dumptruckman.minecraft.pluginbase.config.annotation.SerializeWith;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,7 +65,12 @@ public class Field extends FieldMap {
             field.setAccessible(true);
         }
         try {
-            return field.get(object);
+            if (VirtualProperty.class.isAssignableFrom(field.getType())) {
+                VirtualProperty vProp = (VirtualProperty) field.get(object);
+                return vProp.get();
+            } else {
+                return field.get(object);
+            }
         } catch (IllegalAccessException e) {
             throw new IllegalAccessError("This should never happen.");
         } catch (IllegalArgumentException e) {
@@ -82,7 +88,12 @@ public class Field extends FieldMap {
             field.setAccessible(true);
         }
         try {
-            field.set(object, value);
+            if (VirtualProperty.class.isAssignableFrom(field.getType())) {
+                VirtualProperty vProp = (VirtualProperty) field.get(object);
+                vProp.set(value);
+            } else {
+                field.set(object, value);
+            }
         } catch (IllegalAccessException e) {
             throw new IllegalAccessError("This should never happen.");
         } catch (IllegalArgumentException e) {
