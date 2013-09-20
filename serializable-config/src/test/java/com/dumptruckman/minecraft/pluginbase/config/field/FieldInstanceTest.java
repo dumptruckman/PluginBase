@@ -7,8 +7,9 @@ import com.dumptruckman.minecraft.pluginbase.config.examples.Recursive;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class FieldInstanceTest {
 
@@ -26,8 +27,20 @@ public class FieldInstanceTest {
         FieldInstance fieldInstance = Field.locateField(parent, "achild", "aboolean");
 
         assertNotNull(fieldInstance);
-        assertEquals(true, (Boolean) fieldInstance.getFieldValue());
+        assertTrue((Boolean) fieldInstance.getFieldValue());
         fieldInstance.setFieldValue(false);
-        assertEquals(false, (Boolean) fieldInstance.getFieldValue());
+        assertFalse((Boolean) fieldInstance.getFieldValue());
+    }
+
+    @Test
+    public void testLocateFieldWithAlias() {
+        Child child = new Child(true);
+        Parent parent = new Parent(child);
+        FieldInstance fieldInstance = Field.locateField(parent, "cbool");
+
+        assertNotNull(fieldInstance);
+        assertTrue((Boolean) fieldInstance.getFieldValue());
+        fieldInstance.setFieldValue(false);
+        assertFalse((Boolean) fieldInstance.getFieldValue());
     }
 }

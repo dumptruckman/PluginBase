@@ -1,6 +1,12 @@
 package com.dumptruckman.minecraft.pluginbase.config.examples;
 
+import com.dumptruckman.minecraft.pluginbase.config.PropertyAliases;
+
 public class Parent {
+
+    static {
+        PropertyAliases.createAlias(Parent.class, "cbool", "aChild", "aBoolean");
+    }
 
     private Child aChild;
 

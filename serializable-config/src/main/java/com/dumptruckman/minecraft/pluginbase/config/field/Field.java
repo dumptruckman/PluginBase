@@ -1,5 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.config.field;
 
+import com.dumptruckman.minecraft.pluginbase.config.PropertyAliases;
 import com.dumptruckman.minecraft.pluginbase.config.Serializer;
 import com.dumptruckman.minecraft.pluginbase.config.annotation.SerializeWith;
 import org.jetbrains.annotations.NotNull;
@@ -17,6 +18,12 @@ public class Field extends FieldMap {
     public static FieldInstance locateField(@NotNull Object object, @NotNull String... name) {
         if (name.length == 0) {
             throw new IllegalArgumentException("name cannot be 0 length array.");
+        }
+        if (name.length == 1) {
+            String[] actualName = PropertyAliases.getPropertyName(object.getClass(), name[0]);
+            if (actualName != null) {
+                name = actualName;
+            }
         }
         return new FieldInstance(object, name).locateField();
     }
