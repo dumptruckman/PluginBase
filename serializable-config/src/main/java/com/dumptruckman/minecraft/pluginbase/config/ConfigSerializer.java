@@ -22,7 +22,7 @@ public class ConfigSerializer<T> {
         return serializer.serialize();
     }
 
-    public static Object deserialize(@NotNull Map<String, Object> data) {
+    public static Object deserialize(@NotNull Map data) {
         Class clazz = SerializationRegistrar.getClassByAlias(getClassName(data));
         if (clazz == null) {
             throw new IllegalArgumentException("The given data is does not contain valid serialized data");
@@ -50,7 +50,7 @@ public class ConfigSerializer<T> {
         }
     }
 
-    public static <T> T deserializeToObject(@NotNull Map<String, Object> data, @NotNull T object) {
+    public static <T> T deserializeToObject(@NotNull Map data, @NotNull T object) {
         Class clazz = SerializationRegistrar.getClassByAlias(getClassName(data));
         if (!object.getClass().equals(clazz)) {
             throw new IllegalArgumentException("The given data is not appropriate for " + object.getClass());
@@ -59,7 +59,7 @@ public class ConfigSerializer<T> {
         return serializer._deserialize(data);
     }
 
-    private static String getClassName(Map<String, Object> data) {
+    private static String getClassName(Map data) {
         Object object = data.get(SERIALIZED_KEY);
         if (object == null || !(object instanceof String)) {
             return null;
@@ -88,15 +88,21 @@ public class ConfigSerializer<T> {
         return field.getSerializer().serialize(value);
     }
 
-    private T _deserialize(Map<String, Object> data) {
+    private T _deserialize(Map data) {
         FieldMap fieldMap = FieldMapper.getFieldMap(object.getClass());
-        for (String key : data.keySet()) {
+        for (Object key : data.keySet()) {
             if (key.equals(SERIALIZED_KEY)) {
                 continue;
             }
-            Field field = fieldMap.getField(key);
+            Field field = fieldMap.getField(key.toString());
             if (field != null) {
-                field.setValue(object, field.getSerializer().deserialize(data.get(key), field.getType()));
+                Object currentValue = field.getValue(object);
+                Object newData = data.get(key);
+                if (currentValue != null && newData instanceof Map) {
+                    deserializeToObject((Map) newData, currentValue);
+                } else {
+                    field.setValue(object, field.getSerializer().deserialize(data.get(key), field.getType()));
+                }
             } else {
                 // TODO fail silently or no?
             }
