@@ -98,7 +98,7 @@ public class ConfigSerializer<T> {
             if (field != null) {
                 Object currentValue = field.getValue(object);
                 Object newData = data.get(key);
-                if (currentValue != null && newData instanceof Map) {
+                if (currentValue != null && !(currentValue instanceof Map) && newData instanceof Map) {
                     deserializeToObject((Map) newData, currentValue);
                 } else {
                     field.setValue(object, field.getSerializer().deserialize(data.get(key), field.getType()));
