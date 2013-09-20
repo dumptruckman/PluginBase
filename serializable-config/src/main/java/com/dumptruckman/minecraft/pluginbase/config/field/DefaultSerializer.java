@@ -1,5 +1,8 @@
-package com.dumptruckman.minecraft.pluginbase.config;
+package com.dumptruckman.minecraft.pluginbase.config.field;
 
+import com.dumptruckman.minecraft.pluginbase.config.ConfigSerializer;
+import com.dumptruckman.minecraft.pluginbase.config.SerializationRegistrar;
+import com.dumptruckman.minecraft.pluginbase.config.Serializer;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Method;

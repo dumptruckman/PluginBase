@@ -1,5 +1,6 @@
-package com.dumptruckman.minecraft.pluginbase.config;
+package com.dumptruckman.minecraft.pluginbase.config.field;
 
+import com.dumptruckman.minecraft.pluginbase.config.SerializationRegistrar;
 import com.dumptruckman.minecraft.pluginbase.config.examples.Child;
 import com.dumptruckman.minecraft.pluginbase.config.examples.Parent;
 import com.dumptruckman.minecraft.pluginbase.config.examples.Recursive;

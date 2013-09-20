@@ -1,5 +1,6 @@
-package com.dumptruckman.minecraft.pluginbase.config;
+package com.dumptruckman.minecraft.pluginbase.config.field;
 
+import com.dumptruckman.minecraft.pluginbase.config.SerializationRegistrar;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Modifier;

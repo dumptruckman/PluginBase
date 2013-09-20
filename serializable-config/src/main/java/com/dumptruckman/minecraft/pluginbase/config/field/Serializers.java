@@ -1,4 +1,6 @@
-package com.dumptruckman.minecraft.pluginbase.config;
+package com.dumptruckman.minecraft.pluginbase.config.field;
+
+import com.dumptruckman.minecraft.pluginbase.config.Serializer;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -13,9 +15,8 @@ class Serializers {
         if (serializerMap.containsKey(serializerClass)) {
             return serializerMap.get(serializerClass);
         }
-        Constructor constructor = null;
         try {
-            constructor = serializerClass.getDeclaredConstructor();
+            Constructor constructor = serializerClass.getDeclaredConstructor();
             Serializer serializer = (Serializer) constructor.newInstance();
             serializerMap.put(serializerClass, serializer);
             return serializer;

@@ -1,5 +1,8 @@
 package com.dumptruckman.minecraft.pluginbase.config;
 
+import com.dumptruckman.minecraft.pluginbase.config.field.Field;
+import com.dumptruckman.minecraft.pluginbase.config.field.FieldMap;
+import com.dumptruckman.minecraft.pluginbase.config.field.FieldMapper;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;

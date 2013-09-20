@@ -1,5 +1,6 @@
-package com.dumptruckman.minecraft.pluginbase.config;
+package com.dumptruckman.minecraft.pluginbase.config.field;
 
+import com.dumptruckman.minecraft.pluginbase.config.Serializer;
 import com.dumptruckman.minecraft.pluginbase.config.annotation.SerializeWith;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,6 +12,14 @@ public class Field extends FieldMap {
     @NotNull
     private final java.lang.reflect.Field field;
     private final boolean persistable;
+
+    @Nullable
+    public static FieldInstance locateField(@NotNull Object object, @NotNull String... name) {
+        if (name.length == 0) {
+            throw new IllegalArgumentException("name cannot be 0 length array.");
+        }
+        return new FieldInstance(object, name).locateField();
+    }
 
     Field(@NotNull java.lang.reflect.Field field) {
         this(field, null);
