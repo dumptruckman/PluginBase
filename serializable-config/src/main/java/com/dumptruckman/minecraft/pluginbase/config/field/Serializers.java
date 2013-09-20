@@ -1,7 +1,5 @@
 package com.dumptruckman.minecraft.pluginbase.config.field;
 
-import com.dumptruckman.minecraft.pluginbase.config.Serializer;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;

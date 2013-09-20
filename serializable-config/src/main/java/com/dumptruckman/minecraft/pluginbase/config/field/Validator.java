@@ -1,4 +1,4 @@
-package com.dumptruckman.minecraft.pluginbase.config;
+package com.dumptruckman.minecraft.pluginbase.config.field;
 
 import java.beans.PropertyVetoException;
 

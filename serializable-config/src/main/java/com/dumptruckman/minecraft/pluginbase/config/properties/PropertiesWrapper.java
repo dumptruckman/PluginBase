@@ -1,4 +1,4 @@
-package com.dumptruckman.minecraft.pluginbase.config;
+package com.dumptruckman.minecraft.pluginbase.config.properties;
 
 import com.dumptruckman.minecraft.pluginbase.config.field.Field;
 import com.dumptruckman.minecraft.pluginbase.config.field.FieldInstance;

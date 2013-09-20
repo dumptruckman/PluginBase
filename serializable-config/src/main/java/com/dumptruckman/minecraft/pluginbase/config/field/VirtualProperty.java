@@ -1,4 +1,4 @@
-package com.dumptruckman.minecraft.pluginbase.config;
+package com.dumptruckman.minecraft.pluginbase.config.field;
 
 /**
  * Implemented by helper classes that should represent a <i>virtual</i> property.

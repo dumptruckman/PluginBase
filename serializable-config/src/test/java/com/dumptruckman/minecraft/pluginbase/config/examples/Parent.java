@@ -1,6 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.config.examples;
 
-import com.dumptruckman.minecraft.pluginbase.config.PropertyAliases;
+import com.dumptruckman.minecraft.pluginbase.config.properties.PropertyAliases;
 
 public class Parent {
 

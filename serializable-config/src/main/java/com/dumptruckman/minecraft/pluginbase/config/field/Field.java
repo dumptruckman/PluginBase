@@ -1,11 +1,8 @@
 package com.dumptruckman.minecraft.pluginbase.config.field;
 
-import com.dumptruckman.minecraft.pluginbase.config.PropertyAliases;
-import com.dumptruckman.minecraft.pluginbase.config.Serializer;
-import com.dumptruckman.minecraft.pluginbase.config.Validator;
-import com.dumptruckman.minecraft.pluginbase.config.VirtualProperty;
 import com.dumptruckman.minecraft.pluginbase.config.annotation.SerializeWith;
 import com.dumptruckman.minecraft.pluginbase.config.annotation.ValidateWith;
+import com.dumptruckman.minecraft.pluginbase.config.properties.PropertyAliases;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
