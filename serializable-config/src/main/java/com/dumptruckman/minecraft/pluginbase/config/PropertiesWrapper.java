@@ -23,6 +23,11 @@ public class PropertiesWrapper implements Properties {
         this.fieldMap = FieldMapper.getFieldMap(object.getClass());
     }
 
+    protected PropertiesWrapper() {
+        this.object = this;
+        this.fieldMap = FieldMapper.getFieldMap(object.getClass());
+    }
+
     @Nullable
     @Override
     public Object getProperty(@NotNull String... name) throws NoSuchFieldException, IllegalArgumentException {
