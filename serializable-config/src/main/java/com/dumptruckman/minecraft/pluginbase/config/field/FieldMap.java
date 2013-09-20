@@ -17,12 +17,12 @@ public class FieldMap implements Iterable<Field> {
     }
 
     public boolean hasField(@NotNull String fieldName) {
-        return fieldMap != null && fieldMap.containsKey(fieldName);
+        return fieldMap != null && fieldMap.containsKey(fieldName.toLowerCase());
     }
 
     @Nullable
     public Field getField(@NotNull String fieldName) {
-        return fieldMap == null ? null : fieldMap.get(fieldName);
+        return fieldMap == null ? null : fieldMap.get(fieldName.toLowerCase());
     }
 
     public int size() {

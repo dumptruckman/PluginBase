@@ -23,7 +23,7 @@ public class FieldInstanceTest {
     public void testLocateField() {
         Child child = new Child(true);
         Parent parent = new Parent(child);
-        FieldInstance fieldInstance = Field.locateField(parent, "aChild", "aBoolean");
+        FieldInstance fieldInstance = Field.locateField(parent, "achild", "aboolean");
 
         assertNotNull(fieldInstance);
         assertEquals(true, (Boolean) fieldInstance.getFieldValue());
