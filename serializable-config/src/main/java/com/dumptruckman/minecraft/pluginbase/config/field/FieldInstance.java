@@ -1,5 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.config.field;
 
+import com.dumptruckman.minecraft.pluginbase.config.Validator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,5 +45,9 @@ public class FieldInstance {
 
     public void setFieldValue(Object value) {
         field.setValue(containingObject, value);
+    }
+
+    public Validator getValidator() {
+        return field.getValidator();
     }
 }

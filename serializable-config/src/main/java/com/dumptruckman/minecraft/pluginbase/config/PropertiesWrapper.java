@@ -7,6 +7,8 @@ import com.dumptruckman.minecraft.pluginbase.config.field.FieldMapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.beans.PropertyVetoException;
+
 public class PropertiesWrapper implements Properties {
 
     @NotNull
@@ -39,17 +41,19 @@ public class PropertiesWrapper implements Properties {
     }
 
     @Override
-    public void setProperty(@Nullable Object value, @NotNull String... name) throws NoSuchFieldException, IllegalArgumentException {
+    public void setProperty(@Nullable Object value, @NotNull String... name) throws NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
         FieldInstance field = Field.locateField(object, name);
         if (field == null) {
             throw new NoSuchFieldException("No property by that name exists.");
         }
+        Object oldValue = field.getFieldValue();
+        value = field.getValidator().validateChange(value, oldValue);
         field.setFieldValue(value);
     }
 
     @Nullable
     @Override
-    public Object getPropertyUnsafe(@NotNull String... name) throws IllegalArgumentException {
+    public Object getPropertyUnchecked(@NotNull String... name) throws IllegalArgumentException {
         FieldInstance field = Field.locateField(object, name);
         if (field == null) {
             return null;
@@ -58,10 +62,19 @@ public class PropertiesWrapper implements Properties {
     }
 
     @Override
-    public void setPropertyUnsafe(@Nullable Object value, @NotNull String... name) throws IllegalArgumentException {
+    public boolean setPropertyUnchecked(@Nullable Object value, @NotNull String... name) throws IllegalArgumentException {
         FieldInstance field = Field.locateField(object, name);
         if (field != null) {
-            field.setFieldValue(value);
+            try {
+                Object oldValue = field.getFieldValue();
+                value = field.getValidator().validateChange(value, oldValue);
+                field.setFieldValue(value);
+                return true;
+            } catch (PropertyVetoException e) {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 }

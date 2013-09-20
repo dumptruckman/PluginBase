@@ -2,8 +2,10 @@ package com.dumptruckman.minecraft.pluginbase.config.field;
 
 import com.dumptruckman.minecraft.pluginbase.config.PropertyAliases;
 import com.dumptruckman.minecraft.pluginbase.config.Serializer;
+import com.dumptruckman.minecraft.pluginbase.config.Validator;
 import com.dumptruckman.minecraft.pluginbase.config.VirtualProperty;
 import com.dumptruckman.minecraft.pluginbase.config.annotation.SerializeWith;
+import com.dumptruckman.minecraft.pluginbase.config.annotation.ValidateWith;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,6 +59,14 @@ public class Field extends FieldMap {
             return Serializers.getSerializer(serializeWith.value());
         }
         return Serializers.getSerializer(DefaultSerializer.class);
+    }
+
+    public Validator getValidator() {
+        ValidateWith validateWith = field.getAnnotation(ValidateWith.class);
+        if (validateWith != null) {
+            return Validators.getValidator(validateWith.value());
+        }
+        return Validators.getValidator(DefaultValidator.class);
     }
 
     public Object getValue(@NotNull Object object) {
