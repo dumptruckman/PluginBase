@@ -36,10 +36,12 @@ class DefaultSerializer implements Serializer<Object> {
         } else {
             return String.valueOf(from);
         }
+        // TODO we may need to handle collections differently.
     }
 
     @Override
     public Object deserialize(Object serialized, @NotNull Class<Object> wantedType) throws IllegalArgumentException {
+        // TODO cleanup this method.
         try {
             if (String.class.isAssignableFrom(wantedType)) {
                 return wantedType.cast(serialized);
