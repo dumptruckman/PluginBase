@@ -1,5 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.config.field;
 
+import com.dumptruckman.minecraft.pluginbase.config.annotation.Comment;
+import com.dumptruckman.minecraft.pluginbase.config.annotation.Description;
 import com.dumptruckman.minecraft.pluginbase.config.annotation.SerializeWith;
 import com.dumptruckman.minecraft.pluginbase.config.annotation.ValidateWith;
 import com.dumptruckman.minecraft.pluginbase.config.properties.PropertyAliases;
@@ -114,6 +116,24 @@ public class Field extends FieldMap {
 
     public Class getType() {
         return field.getType();
+    }
+
+    @Nullable
+    public String getDescription() {
+        Description description = field.getAnnotation(Description.class);
+        if (description != null) {
+            return description.value();
+        }
+        return null;
+    }
+
+    @Nullable
+    public String[] getComments() {
+        Comment comment = field.getAnnotation(Comment.class);
+        if (comment != null) {
+            return comment.value();
+        }
+        return null;
     }
 
     @Override
