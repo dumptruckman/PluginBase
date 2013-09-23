@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * Used to define what {@link Serializer} to use to serialize/deserialize the value of a class field to/from
  * its serialized form.
  */
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SerializeWith {
     Class<? extends Serializer> value();

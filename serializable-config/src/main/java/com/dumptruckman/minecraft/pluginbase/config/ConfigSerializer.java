@@ -1,8 +1,11 @@
 package com.dumptruckman.minecraft.pluginbase.config;
 
+import com.dumptruckman.minecraft.pluginbase.config.annotation.SerializeWith;
 import com.dumptruckman.minecraft.pluginbase.config.field.Field;
 import com.dumptruckman.minecraft.pluginbase.config.field.FieldMap;
 import com.dumptruckman.minecraft.pluginbase.config.field.FieldMapper;
+import com.dumptruckman.minecraft.pluginbase.config.field.Serializer;
+import com.dumptruckman.minecraft.pluginbase.config.field.Serializers;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Constructor;
@@ -16,6 +19,7 @@ public class ConfigSerializer<T> {
 
     private T object;
     Map<String, Object> serializedMap;
+    private Serializer serializer = null;
 
     public static Map<String, Object> serialize(@NotNull Object object) {
         ConfigSerializer serializer = new ConfigSerializer(object);
@@ -69,9 +73,20 @@ public class ConfigSerializer<T> {
 
     private ConfigSerializer(T object) {
         this.object = object;
+        SerializeWith serializeWith = object.getClass().getAnnotation(SerializeWith.class);
+        if (serializeWith != null) {
+            serializer = Serializers.getSerializer(serializeWith.value());
+        }
     }
 
     private Map<String, Object> serialize() {
+        if (serializer != null) {
+            try {
+                return (Map<String, Object>) serializer.serialize(object);
+            } catch (ClassCastException e) {
+                throw new RuntimeException("The serializer " + serializer.getClass() + " must serialize to a Map<String, Object> when annotated on a class.", e);
+            }
+        }
         FieldMap fieldMap = FieldMapper.getFieldMap(object.getClass());
         serializedMap = new LinkedHashMap<String, Object>(fieldMap.size() + 1);
         serializedMap.put(SERIALIZED_TYPE_KEY, SerializationRegistrar.getAlias(object.getClass()));
@@ -89,6 +104,9 @@ public class ConfigSerializer<T> {
     }
 
     private T _deserialize(Map data) {
+        if (serializer != null) {
+            return (T) serializer.deserialize(data, object.getClass());
+        }
         FieldMap fieldMap = FieldMapper.getFieldMap(object.getClass());
         for (Object key : data.keySet()) {
             if (key.equals(SERIALIZED_TYPE_KEY)) {

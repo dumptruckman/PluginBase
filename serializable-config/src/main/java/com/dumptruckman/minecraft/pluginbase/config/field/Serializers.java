@@ -5,11 +5,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-class Serializers {
+public enum Serializers {
+    ;
 
     private static Map<Class<? extends Serializer>, Serializer> serializerMap = new HashMap<Class<? extends Serializer>, Serializer>();
 
-    static Serializer getSerializer(Class<? extends Serializer> serializerClass) {
+    public static Serializer getSerializer(Class<? extends Serializer> serializerClass) {
         if (serializerMap.containsKey(serializerClass)) {
             return serializerMap.get(serializerClass);
         }
