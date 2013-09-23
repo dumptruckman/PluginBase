@@ -22,12 +22,12 @@ import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.logging.Level;
 
-public abstract class BukkitConfig extends FileConfiguration {
+public abstract class BukkitConfiguration extends FileConfiguration {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     /**
-     * Creates a new {@link YamlConfig}, loading from the given file.
+     * Creates a new {@link YamlConfiguration}, loading from the given file.
      * <p>
      * Any errors loading the Configuration will be logged and then ignored.
      * If the specified input is not a valid config, a blank config will be returned.
@@ -36,10 +36,10 @@ public abstract class BukkitConfig extends FileConfiguration {
      * @return Resulting configuration
      * @throws IllegalArgumentException Thrown if file is null
      */
-    public static YamlConfig loadYamlConfig(File file) {
+    public static YamlConfiguration loadYamlConfig(File file) {
         Validate.notNull(file, "File cannot be null");
 
-        YamlConfig config = new YamlConfig();
+        YamlConfiguration config = new YamlConfiguration();
 
         try {
             config.load(file);
@@ -54,7 +54,7 @@ public abstract class BukkitConfig extends FileConfiguration {
     }
 
     /**
-     * Creates a new {@link YamlConfig}, loading from the given stream.
+     * Creates a new {@link YamlConfiguration}, loading from the given stream.
      * <p>
      * Any errors loading the Configuration will be logged and then ignored.
      * If the specified input is not a valid config, a blank config will be returned.
@@ -63,10 +63,10 @@ public abstract class BukkitConfig extends FileConfiguration {
      * @return Resulting configuration
      * @throws IllegalArgumentException Thrown if stream is null
      */
-    public static YamlConfig loadYamlConfig(InputStream stream) {
+    public static YamlConfiguration loadYamlConfig(InputStream stream) {
         Validate.notNull(stream, "Stream cannot be null");
 
-        YamlConfig config = new YamlConfig();
+        YamlConfiguration config = new YamlConfiguration();
 
         try {
             config.load(stream);

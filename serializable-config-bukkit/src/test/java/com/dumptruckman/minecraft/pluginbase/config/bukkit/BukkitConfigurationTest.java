@@ -22,13 +22,13 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public abstract class BukkitConfigTest extends MemoryConfigurationTest {
+public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
 
     @Rule
     public TemporaryFolder testFolder = new TemporaryFolder();
 
     @Override
-    public abstract BukkitConfig getConfig();
+    public abstract BukkitConfiguration getConfig();
 
     public abstract String getTestValuesString();
 
@@ -224,7 +224,7 @@ public abstract class BukkitConfigTest extends MemoryConfigurationTest {
     public void testGetToObject() throws Exception {
         Child child = new Child(true);
         Parent parent = new Parent(child);
-        BukkitConfig config = getConfig();
+        BukkitConfiguration config = getConfig();
         config.set("test", parent);
         String yamlString = config.saveToString();
         List<String> lines = new ArrayList<String>(Arrays.asList(yamlString.split("\n")));

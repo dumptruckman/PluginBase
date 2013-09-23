@@ -7,11 +7,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class YamlConfigTest extends BukkitConfigTest {
+public class YamlConfigurationTest extends BukkitConfigurationTest {
 
     @Override
-    public YamlConfig getConfig() {
-        return new YamlConfig();
+    public YamlConfiguration getConfig() {
+        return new YamlConfiguration();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class YamlConfigTest extends BukkitConfigTest {
 
     @Test
     public void testSaveToStringWithIndent() {
-        YamlConfig config = getConfig();
+        YamlConfiguration config = getConfig();
         config.options().indent(9);
 
         config.set("section.key", 1);
@@ -62,7 +62,7 @@ public class YamlConfigTest extends BukkitConfigTest {
     public void testYamlSerializableConfigBasic() {
         Child child = new Child(true);
         Parent parent = new Parent(child);
-        YamlConfig yamlConfig = getConfig();
+        YamlConfiguration yamlConfig = getConfig();
         yamlConfig.set("test", parent);
         String yamlString = yamlConfig.saveToString();
         yamlConfig = getConfig();

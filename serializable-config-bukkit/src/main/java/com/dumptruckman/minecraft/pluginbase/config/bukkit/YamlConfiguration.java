@@ -1,5 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.config.bukkit;
 
+import com.dumptruckman.minecraft.pluginbase.comments.yaml.YamlFileCommentInstrumenter;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,7 +16,7 @@ import java.util.Map;
  * An implementation of {@link Configuration} which saves all files in Yaml.
  * Note that this implementation is not synchronized.
  */
-public class YamlConfig extends BukkitConfig {
+public class YamlConfiguration extends BukkitConfiguration {
     protected static final String COMMENT_PREFIX = "# ";
     protected static final String BLANK_CONFIG = "{}\n";
     private final DumperOptions yamlOptions = new DumperOptions();
@@ -33,6 +34,11 @@ public class YamlConfig extends BukkitConfig {
 
         if (dump.equals(BLANK_CONFIG)) {
             dump = "";
+        }
+
+        if (options().comments()) {
+            YamlFileCommentInstrumenter commentInstrumenter = YamlFileCommentInstrumenter.createCommentInstrumenter(options().indent());
+            commentInstrumenter.setCommentsForPath();
         }
 
         return header + dump;
@@ -110,8 +116,8 @@ public class YamlConfig extends BukkitConfig {
         if (options().copyHeader()) {
             Configuration def = getDefaults();
 
-            if ((def != null) && (def instanceof BukkitConfig)) {
-                BukkitConfig filedefaults = (BukkitConfig) def;
+            if ((def != null) && (def instanceof BukkitConfiguration)) {
+                BukkitConfiguration filedefaults = (BukkitConfiguration) def;
                 String defaultsHeader = filedefaults.buildHeader();
 
                 if ((defaultsHeader != null) && (defaultsHeader.length() > 0)) {
@@ -142,11 +148,11 @@ public class YamlConfig extends BukkitConfig {
     }
 
     @Override
-    public YamlConfigOptions options() {
+    public YamlConfigurationOptions options() {
         if (options == null) {
-            options = new YamlConfigOptions(this);
+            options = new YamlConfigurationOptions(this);
         }
 
-        return (YamlConfigOptions) options;
+        return (YamlConfigurationOptions) options;
     }
 }
