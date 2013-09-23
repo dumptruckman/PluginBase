@@ -4,6 +4,7 @@ import com.dumptruckman.minecraft.pluginbase.config.annotation.SerializableAs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -70,5 +71,9 @@ public class SerializationRegistrar {
         }
 
         return clazz.getName();
+    }
+
+    public static Set<Class> getRegisteredClasses() {
+        return Collections.unmodifiableSet(serializationEligibleClasses);
     }
 }

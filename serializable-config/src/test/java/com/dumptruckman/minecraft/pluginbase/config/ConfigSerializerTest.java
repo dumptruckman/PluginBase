@@ -23,7 +23,7 @@ public class ConfigSerializerTest {
     public void testSerialize() throws Exception {
         Child child = new Child(true);
         Parent parent = new Parent(child);
-        assertEquals("{!!!!=com.dumptruckman.minecraft.pluginbase.config.examples.Parent, aChild={!!!!=com.dumptruckman.minecraft.pluginbase.config.examples.Child, aBoolean=true}}", ConfigSerializer.serialize(parent).toString());
+        assertEquals("{" + ConfigSerializer.SERIALIZED_TYPE_KEY + "=com.dumptruckman.minecraft.pluginbase.config.examples.Parent, aChild={" + ConfigSerializer.SERIALIZED_TYPE_KEY + "=com.dumptruckman.minecraft.pluginbase.config.examples.Child, aBoolean=true}}", ConfigSerializer.serialize(parent).toString());
     }
 
     @Test

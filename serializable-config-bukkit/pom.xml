@@ -18,14 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Logging</artifactId>
-            <version>${project.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Properties</artifactId>
+            <artifactId>Serializable-Config</artifactId>
             <version>${project.version}</version>
             <type>jar</type>
             <scope>compile</scope>

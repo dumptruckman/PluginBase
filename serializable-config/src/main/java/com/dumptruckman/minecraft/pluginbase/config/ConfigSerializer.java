@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class ConfigSerializer<T> {
 
-    public static final String SERIALIZED_KEY = "!!!!";
+    public static final String SERIALIZED_TYPE_KEY = "=$$=";
 
     private T object;
     Map<String, Object> serializedMap;
@@ -60,7 +60,7 @@ public class ConfigSerializer<T> {
     }
 
     private static String getClassName(Map data) {
-        Object object = data.get(SERIALIZED_KEY);
+        Object object = data.get(SERIALIZED_TYPE_KEY);
         if (object == null || !(object instanceof String)) {
             return null;
         }
@@ -74,7 +74,7 @@ public class ConfigSerializer<T> {
     private Map<String, Object> serialize() {
         FieldMap fieldMap = FieldMapper.getFieldMap(object.getClass());
         serializedMap = new LinkedHashMap<String, Object>(fieldMap.size() + 1);
-        serializedMap.put(SERIALIZED_KEY, SerializationRegistrar.getAlias(object.getClass()));
+        serializedMap.put(SERIALIZED_TYPE_KEY, SerializationRegistrar.getAlias(object.getClass()));
         for (Field field : fieldMap) {
             if (field.isPersistable()) {
                 serializedMap.put(field.getName(), serializeField(field));
@@ -91,7 +91,7 @@ public class ConfigSerializer<T> {
     private T _deserialize(Map data) {
         FieldMap fieldMap = FieldMapper.getFieldMap(object.getClass());
         for (Object key : data.keySet()) {
-            if (key.equals(SERIALIZED_KEY)) {
+            if (key.equals(SERIALIZED_TYPE_KEY)) {
                 continue;
             }
             Field field = fieldMap.getField(key.toString());
