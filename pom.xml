@@ -18,7 +18,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.number>UNKNOWN</project.build.number>
-        <bukkit.version>1.4.7-R1.0</bukkit.version>
+        <bukkit.version>1.6.2-R1.0</bukkit.version>
     </properties>
 
     <ciManagement>
