@@ -10,7 +10,27 @@ public class Child {
         this.aBoolean = aBoolean;
     }
 
+    @Override
     public boolean equals(Object o) {
-        return o instanceof Child && ((Child) o).aBoolean == this.aBoolean;
+        if (this == o) return true;
+        if (!(o instanceof Child)) return false;
+
+        final Child child = (Child) o;
+
+        if (aBoolean != child.aBoolean) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return (aBoolean ? 1 : 0);
+    }
+
+    @Override
+    public String toString() {
+        return "Child{" +
+                "aBoolean=" + aBoolean +
+                '}';
     }
 }

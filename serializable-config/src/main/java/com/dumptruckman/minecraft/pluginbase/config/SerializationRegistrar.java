@@ -10,7 +10,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class SerializationRegistrar {
+public enum SerializationRegistrar {
+    ;
 
     private static Set<Class> serializationEligibleClasses = new HashSet<Class>();
     private static Map<String, Class> aliases = new HashMap<String, Class>();

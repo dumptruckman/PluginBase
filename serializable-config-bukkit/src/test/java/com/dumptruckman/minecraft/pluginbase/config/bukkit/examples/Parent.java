@@ -21,4 +21,11 @@ public final class Parent {
     public boolean equals(Object o) {
         return o instanceof Parent && ((Parent) o).aChild.equals(this.aChild);
     }
+
+    @Override
+    public String toString() {
+        return "Parent{" +
+                "aChild=" + aChild +
+                '}';
+    }
 }

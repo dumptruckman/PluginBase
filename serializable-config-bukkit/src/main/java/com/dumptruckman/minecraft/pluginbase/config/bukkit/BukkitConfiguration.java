@@ -120,8 +120,9 @@ public abstract class BukkitConfiguration extends FileConfiguration {
 
     @NotNull
     public <T> T getToObject(@NotNull String path, @NotNull T object) {
-        Object o = get(path);
+        Object o = getValues(true);
         if (o instanceof ConfigurationSection) {
+            System.out.println("convert");
             o = ((ConfigurationSection) o).getValues(true);
         }
         if (object instanceof Map && o instanceof Map && !object.equals(o)) {

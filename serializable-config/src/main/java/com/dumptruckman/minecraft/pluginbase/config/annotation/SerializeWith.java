@@ -1,6 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.config.annotation;
 
-import com.dumptruckman.minecraft.pluginbase.config.field.Serializer;
+import com.dumptruckman.minecraft.pluginbase.config.serializers.Serializer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

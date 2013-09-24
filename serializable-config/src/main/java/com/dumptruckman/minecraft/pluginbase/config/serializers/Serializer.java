@@ -1,6 +1,9 @@
-package com.dumptruckman.minecraft.pluginbase.config.field;
+package com.dumptruckman.minecraft.pluginbase.config.serializers;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Map;
 
 /**
  * Implemented by helper classes that are used to serialize objects.
@@ -24,7 +27,11 @@ public interface Serializer<T> {
      * @param from the object to serialize.
      * @return the serialized form of the object.
      */
-    Object serialize(T from);
+    @NotNull
+    Object serialize(@Nullable T from);
+
+    @NotNull
+    Map<String, Object> serializeRegisteredType(@NotNull Object object);
 
     /**
      * Transforms the specified object to the type specified by wantedType.
@@ -43,5 +50,8 @@ public interface Serializer<T> {
      * @return The deserialized form of the serialized object.
      * @throws IllegalArgumentException if the serialized object's type is not deserializable.
      */
-    T deserialize(Object serialized, @NotNull Class<T> wantedType) throws IllegalArgumentException;
+    @NotNull
+    T deserialize(@NotNull Object serialized, @NotNull Class wantedType) throws IllegalArgumentException;
+
+    T deserializeToObject(@NotNull Map data, @NotNull T object);
 }

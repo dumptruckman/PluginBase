@@ -16,7 +16,27 @@ public class Parent {
         this.aChild = aChild;
     }
 
+    @Override
     public boolean equals(Object o) {
-        return o instanceof Parent && ((Parent) o).aChild.equals(this.aChild);
+        if (this == o) return true;
+        if (!(o instanceof Parent)) return false;
+
+        final Parent parent = (Parent) o;
+
+        if (!aChild.equals(parent.aChild)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return aChild.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Parent{" +
+                "aChild=" + aChild +
+                '}';
     }
 }

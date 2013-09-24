@@ -16,4 +16,11 @@ public final class Child {
     public boolean equals(Object o) {
         return o instanceof Child && ((Child) o).aBoolean == this.aBoolean;
     }
+
+    @Override
+    public String toString() {
+        return "Child{" +
+                "aBoolean=" + aBoolean +
+                '}';
+    }
 }
