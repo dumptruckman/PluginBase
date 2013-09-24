@@ -6,6 +6,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class YamlConfigurationTest extends BukkitConfigurationTest {
 
@@ -59,7 +60,7 @@ public class YamlConfigurationTest extends BukkitConfigurationTest {
     }
 
     @Test
-    public void testYamlSerializableConfigBasic() {
+    public void testYamlSerializableConfigBasic() throws Exception {
         Child child = new Child(true);
         Parent parent = new Parent(child);
         YamlConfiguration yamlConfig = getConfig();
@@ -72,5 +73,18 @@ public class YamlConfigurationTest extends BukkitConfigurationTest {
             throw new RuntimeException(e);
         }
         assertEquals(parent, yamlConfig.get("test"));
+    }
+
+    @Test
+    public void testCommentInstrumentation() throws Exception {
+        Child child = new Child(true);
+        Parent parent = new Parent(child);
+        YamlConfiguration yamlConfig = getConfig();
+        yamlConfig.set("test", parent);
+        yamlConfig.options().comments(true);
+        String yamlString = yamlConfig.saveToString();
+        assertTrue(yamlString.contains("# Test comment 1"));
+        assertTrue(yamlString.contains("# Test comment 2"));
+        assertTrue(yamlString.contains("# Test boolean comments"));
     }
 }

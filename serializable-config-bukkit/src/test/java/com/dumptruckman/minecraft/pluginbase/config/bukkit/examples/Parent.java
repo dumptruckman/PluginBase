@@ -1,5 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.config.bukkit.examples;
 
+import com.dumptruckman.minecraft.pluginbase.config.annotation.Comment;
 import com.dumptruckman.minecraft.pluginbase.config.properties.PropertyAliases;
 
 public final class Parent {
@@ -8,6 +9,7 @@ public final class Parent {
         PropertyAliases.createAlias(Parent.class, "cbool", "aChild", "aBoolean");
     }
 
+    @Comment({"# Test comment 1", "Test comment 2"})
     private Child aChild;
 
     private Parent() { }

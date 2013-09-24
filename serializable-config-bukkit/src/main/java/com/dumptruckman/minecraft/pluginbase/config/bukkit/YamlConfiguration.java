@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.config.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.comments.yaml.YamlFileCommentInstrumenter;
+import com.dumptruckman.minecraft.pluginbase.config.bukkit.comments.CommentsMapper;
 import org.apache.commons.lang.Validate;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
@@ -37,8 +38,8 @@ public class YamlConfiguration extends BukkitConfiguration {
         }
 
         if (options().comments()) {
-            YamlFileCommentInstrumenter commentInstrumenter = YamlFileCommentInstrumenter.createCommentInstrumenter(options().indent());
-            commentInstrumenter.setCommentsForPath();
+            YamlFileCommentInstrumenter commentInstrumenter = CommentsMapper.getCommentInstrumenter(this);
+            dump = commentInstrumenter.addCommentsToYamlString(dump);
         }
 
         return header + dump;
