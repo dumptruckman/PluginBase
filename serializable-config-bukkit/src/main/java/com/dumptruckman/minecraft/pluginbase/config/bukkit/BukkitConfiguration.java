@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.config.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.config.ConfigSerializer;
+import com.dumptruckman.minecraft.pluginbase.config.SerializationRegistrar;
 import com.google.common.io.Files;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -8,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -19,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -118,24 +121,60 @@ public abstract class BukkitConfiguration extends FileConfiguration {
     @Override
     protected abstract String buildHeader();
 
-    @NotNull
+    /**
+     * Retrieves the object data at the specified path and attempts to insert it into the given object, if possible.
+     * <p/>
+     * If the specified path contains an object of the same type as the given object, the object at the specified path
+     * will be returned.
+     * <p/>
+     * If the specified path contains valid data for filling the given object, this will be done and the data the
+     * specified path will be replaced by the given object.
+     *
+     * @param path The path to retrieve data from.
+     * @param object The object to insert the data into.
+     * @param <T> The object's type.
+     * @return An object from the specified path or made from data at the specified path.  If there is nothing at the
+     * specified path or the data cannot be parsed into the correct type of object, null will be returned.
+     */
+    @Nullable
     public <T> T getToObject(@NotNull String path, @NotNull T object) {
-        Object o = getValues(true);
+        Object o = get(path);
+        if (o != null && o.getClass().equals(object.getClass())) {
+            return (T) o;
+        }
         if (o instanceof ConfigurationSection) {
-            System.out.println("convert");
-            o = ((ConfigurationSection) o).getValues(true);
+            o = convertSectionToMap((ConfigurationSection) o);
         }
-        if (object instanceof Map && o instanceof Map && !object.equals(o)) {
-            ((Map) object).clear();
-            ((Map) object).putAll((Map) o);
-            return object;
-        }
-        if (o instanceof Map) {
-            return ConfigSerializer.deserializeToObject((Map) o, object);
-        } else if (o != null && o.getClass().equals(object.getClass())) {
-            return ConfigSerializer.deserializeToObject(ConfigSerializer.serialize(o), object);
+        if (SerializationRegistrar.isClassRegistered(object.getClass()) && o instanceof Map) {
+            try {
+                object = (T) ConfigSerializer.deserializeToObject((Map) o, object);
+                set(path, object);
+                return object;
+            } catch (Exception e) {
+                return null;
+            }
+        } else if (object.getClass().isInstance(o)) {
+            return (T) o;
         } else {
-            return object;
+            return null;
         }
+    }
+
+    private Map convertSectionToMap(@NotNull ConfigurationSection section) {
+        Map<String, Object> values = section.getValues(false);
+        Map<String, Object> result = new LinkedHashMap<String, Object>(values.size());
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            int lastSeparatorIndex = key.lastIndexOf(options().pathSeparator());
+            if (lastSeparatorIndex >= 0) {
+                key = key.substring(lastSeparatorIndex + 1, key.length());
+            }
+            if (value instanceof ConfigurationSection) {
+                value = convertSectionToMap((ConfigurationSection) value);
+            }
+            result.put(key, value);
+        }
+        return result;
     }
 }

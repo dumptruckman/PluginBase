@@ -3,7 +3,6 @@ package com.dumptruckman.minecraft.pluginbase.config.bukkit;
 import com.dumptruckman.minecraft.pluginbase.config.ConfigSerializer;
 import com.dumptruckman.minecraft.pluginbase.config.bukkit.examples.Child;
 import com.dumptruckman.minecraft.pluginbase.config.bukkit.examples.Parent;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.junit.Rule;
 import org.junit.Test;
@@ -236,13 +235,8 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
             }
         }
         yamlString = builder.toString();
-        System.out.println(yamlString);
         config = getConfig();
-        try {
-            config.loadFromString(yamlString);
-        } catch (InvalidConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        config.loadFromString(yamlString);
         assertFalse(parent.equals(config.get("test")));
         assertEquals(parent, config.getToObject("test", new Parent(new Child(false))));
     }
