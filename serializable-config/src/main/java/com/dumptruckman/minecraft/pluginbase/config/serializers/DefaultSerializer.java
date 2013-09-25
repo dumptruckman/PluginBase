@@ -49,9 +49,9 @@ public class DefaultSerializer implements Serializer<Object> {
             return serializeMap((Map) object);
         } else if (object instanceof Collection) {
             return serializeCollection((Collection) object);
-        } else if (object instanceof Iterable) {
+        } /* else if (object instanceof Iterable) {
             return serializeIterable((Iterable) object);
-        } else {
+        } */ else {
             return String.valueOf(object);
         }
     }
@@ -108,11 +108,10 @@ public class DefaultSerializer implements Serializer<Object> {
     @NotNull
     @Override
     public Object deserialize(@NotNull Object serialized, @NotNull Class wantedType) throws IllegalArgumentException {
-        System.out.println("Deserializing " + serialized.getClass() + " to " + wantedType);
         if (PRIMITIVE_WRAPPER_MAP.containsKey(wantedType)) {
             wantedType = PRIMITIVE_WRAPPER_MAP.get(wantedType);
         }
-        if (wantedType.isInstance(serialized)) {
+        if (wantedType.equals(serialized.getClass())) {
             return serialized;
         }
         if (SerializationRegistrar.isClassRegistered(wantedType)) {
@@ -210,32 +209,44 @@ public class DefaultSerializer implements Serializer<Object> {
     }
 
     protected Object deserializeFieldToObject(@NotNull Field field, @NotNull Object data, @NotNull Object object) {
-        System.out.println("Deserializing " + field + " to " + object + " with data " + data);
         return field.getSerializer().deserializeToObject((Map) data, object);
     }
 
     protected Object deserializeField(Field field, Object data) {
-        System.out.println("Deserializing " + field + " with data " + data);
         return field.getSerializer().deserialize(data, field.getType());
     }
 
     protected Object deserializeCollection(@NotNull Collection data, @NotNull Class<? extends Collection> wantedType) {
-        Collection collection;
-        try {
-            Object[] paramValues = new Object[] {data.size()};
-            collection = createInstance(wantedType, SIZE_PARAM_TYPE_ARRAY, paramValues);
-        } catch (RuntimeException e) {
-            if (e.getCause() instanceof NoSuchMethodException) {
-                collection = createInstance(wantedType);
-            } else {
-                throw e;
-            }
-        }
-        System.out.println("Deserializing collection " + data + " to " + collection.getClass());
+        Collection collection = createCollection(wantedType, data.size());
         for (Object object : data) {
             collection.add(deserializeUnknownType(object));
         }
         return collection;
+    }
+
+    protected Collection createCollection(Class<? extends Collection> wantedType, int size) {
+        if (wantedType.isInterface()) {
+            return new ArrayList(size);
+        } else {
+            try {
+                Object[] paramValues = new Object[] { size };
+                return createInstance(wantedType, SIZE_PARAM_TYPE_ARRAY, paramValues);
+            } catch (RuntimeException e) {
+                if (e.getCause() instanceof NoSuchMethodException) {
+                    try {
+                        return createInstance(wantedType);
+                    } catch (RuntimeException e1) {
+                        if (e1.getCause() instanceof NoSuchMethodException) {
+                            return new ArrayList(size);
+                        } else {
+                            throw e;
+                        }
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
     }
 
     protected Object deserializeUnknownType(Object object) {
@@ -258,20 +269,35 @@ public class DefaultSerializer implements Serializer<Object> {
         if (data.containsKey(ConfigSerializer.SERIALIZED_TYPE_KEY)) {
             return ConfigSerializer.deserialize(data);
         }
-        Map map;
-        try {
-            Object[] paramValues = new Object[] {data.size()};
-            map = createInstance(wantedType, SIZE_PARAM_TYPE_ARRAY, paramValues);
-        } catch (RuntimeException e) {
-            if (e.getCause() instanceof NoSuchMethodException) {
-                map = createInstance(wantedType);
-            } else {
-                throw e;
-            }
-        }
+        Map map = createMap(wantedType, data.size());
         for (Map.Entry entry : data.entrySet()) {
             map.put(deserializeUnknownType(entry.getKey()), deserializeUnknownType(entry.getValue()));
         }
         return map;
+    }
+
+    protected Map createMap(Class<? extends Map> wantedType, int size) {
+        if (wantedType.isInterface()) {
+            return new LinkedHashMap(size);
+        } else {
+            try {
+                Object[] paramValues = new Object[] { size };
+                return createInstance(wantedType, SIZE_PARAM_TYPE_ARRAY, paramValues);
+            } catch (RuntimeException e) {
+                if (e.getCause() instanceof NoSuchMethodException) {
+                    try {
+                        return createInstance(wantedType);
+                    } catch (RuntimeException e1) {
+                        if (e1.getCause() instanceof NoSuchMethodException) {
+                            return new LinkedHashMap(size);
+                        } else {
+                            throw e;
+                        }
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
     }
 }
