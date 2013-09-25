@@ -1,6 +1,7 @@
 package com.dumptruckman.minecraft.pluginbase.config.field;
 
 import com.dumptruckman.minecraft.pluginbase.config.SerializationRegistrar;
+import com.dumptruckman.minecraft.pluginbase.config.annotation.IgnoreParentFields;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Modifier;
@@ -54,6 +55,9 @@ public class FieldMapper {
 
     private java.lang.reflect.Field[] collectAllFieldsForClass(Class clazz) {
         java.lang.reflect.Field[] declaredFields = clazz.getDeclaredFields();
+        if (clazz.getAnnotation(IgnoreParentFields.class) != null) {
+            return declaredFields;
+        }
         Class superClass = clazz.getSuperclass();
         if (superClass != null) {
             java.lang.reflect.Field[] superFields = collectAllFieldsForClass(superClass);
