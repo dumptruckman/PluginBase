@@ -1,5 +1,6 @@
 package com.dumptruckman.minecraft.pluginbase.config.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -12,6 +13,7 @@ import java.lang.annotation.Target;
  * This value will be stored in the configuration so that the configuration deserialization
  * can determine what type it is.
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface SerializableAs {
