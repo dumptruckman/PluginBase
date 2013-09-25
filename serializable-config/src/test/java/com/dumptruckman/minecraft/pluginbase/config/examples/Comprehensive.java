@@ -1,14 +1,27 @@
 package com.dumptruckman.minecraft.pluginbase.config.examples;
 
+import com.dumptruckman.minecraft.pluginbase.config.annotation.Comment;
+import com.dumptruckman.minecraft.pluginbase.config.annotation.Description;
+import com.dumptruckman.minecraft.pluginbase.config.annotation.SerializeWith;
+import com.dumptruckman.minecraft.pluginbase.config.annotation.ValidateWith;
+import com.dumptruckman.minecraft.pluginbase.config.field.Validator;
+import com.dumptruckman.minecraft.pluginbase.config.properties.PropertiesWrapper;
+import com.dumptruckman.minecraft.pluginbase.config.serializers.CustomSerializer2;
+
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Comprehensive {
+public class Comprehensive extends PropertiesWrapper {
 
     public static final int A_INT = 200;
+    public static final String A_INT_DESCRIPTION = "Just some int";
+    public static final String A_INT_COMMENT_1 = "Just some int";
+    public static final String A_INT_COMMENT_2 = "Really.";
+    public static final String[] A_INT_COMMENTS = {A_INT_COMMENT_1, A_INT_COMMENT_2};
     public static final int T_INT = 5;
     public static final String NAME = "Comprehensive";
     public static final List<String> WORD_LIST = new ArrayList<String>();
@@ -18,6 +31,7 @@ public class Comprehensive {
     public static final Parent PARENT = new Parent(CHILD);
     public static final List<Object> RANDOM_LIST = new ArrayList<Object>();
     public static final Map<String, Object> STRING_OBJECT_MAP = new HashMap<String, Object>();
+    public static final Custom CUSTOM = new Custom("Custom");
 
     static {
         WORD_LIST.add("test");
@@ -36,14 +50,27 @@ public class Comprehensive {
         RANDOM_LIST.add(STRING_OBJECT_MAP);
     }
 
+    private static class NameValidator implements Validator {
+        @Override
+        public Object validateChange(Object newValue, Object oldValue) throws PropertyVetoException {
+            if (newValue.toString())
+        }
+    }
+
+    @Description(A_INT_DESCRIPTION)
+    @Comment({A_INT_COMMENT_1, A_INT_COMMENT_2})
     public int aInt = A_INT;
     public transient int tInt = T_INT;
+    @ValidateWith()
     public String name = NAME;
     public List<String> wordList = new ArrayList<String>(WORD_LIST);
     public List<String> wordList2 = new ArrayList<String>(WORD_LIST_2);
     public List<List<String>> listList = new ArrayList<List<String>>(LIST_LIST);
     public List<Object> randomList = new ArrayList<Object>(RANDOM_LIST);
     public Map<String, Object> stringObjectMap = new HashMap<String, Object>(STRING_OBJECT_MAP);
+    public Custom custom = new Custom(CUSTOM.name);
+    @SerializeWith(CustomSerializer2.class)
+    public Custom custom2 = new Custom(CUSTOM.name);
 
     @Override
     public boolean equals(Object o) {
@@ -54,6 +81,8 @@ public class Comprehensive {
 
         if (aInt != that.aInt) return false;
         if (tInt != that.tInt) return false;
+        if (!custom.equals(that.custom)) return false;
+        if (!custom2.equals(that.custom2)) return false;
         if (!listList.equals(that.listList)) return false;
         if (!name.equals(that.name)) return false;
         if (!randomList.equals(that.randomList)) return false;
@@ -74,6 +103,8 @@ public class Comprehensive {
         result = 31 * result + listList.hashCode();
         result = 31 * result + randomList.hashCode();
         result = 31 * result + stringObjectMap.hashCode();
+        result = 31 * result + custom.hashCode();
+        result = 31 * result + custom2.hashCode();
         return result;
     }
 
@@ -88,6 +119,8 @@ public class Comprehensive {
                 ", listList=" + listList +
                 ", randomList=" + randomList +
                 ", stringObjectMap=" + stringObjectMap +
+                ", custom=" + custom +
+                ", custom2=" + custom2 +
                 '}';
     }
 }

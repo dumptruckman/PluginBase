@@ -8,6 +8,7 @@ import com.dumptruckman.minecraft.pluginbase.config.field.FieldMapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.beans.PropertyVetoException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,7 +41,22 @@ public class DefaultSerializer implements Serializer<Object> {
         PRIMITIVE_WRAPPER_MAP = Collections.unmodifiableMap(map);
     }
 
-    @NotNull
+    /**
+     * Transforms the specified object of type {@code T} to a type recognized by a configuration.
+     * <p/>
+     * Types typically recognized by configuration include:
+     * <ul>
+     *     <li>all primitives and their wrapper classes</li>
+     *     <li>{@link String}</li>
+     *     <li>{@link java.util.List} of primitives or {@link String}</li>
+     *     <li>{@link java.util.Map} of primitives or {@link String}</li>
+     *     <li>arrays of primitives or {@link String}</li>
+     * </ul>
+     *
+     * @param object the object to serialize.
+     * @return the serialized form of the object.
+     */
+    @Nullable
     @Override
     public Object serialize(@Nullable Object object) {
         if (object != null && SerializationRegistrar.isClassRegistered(object.getClass())) {
@@ -57,6 +73,7 @@ public class DefaultSerializer implements Serializer<Object> {
     }
 
     @NotNull
+    @Override
     public Map<String, Object> serializeRegisteredType(@NotNull Object object) {
         if (!SerializationRegistrar.isClassRegistered(object.getClass())) {
             throw new IllegalArgumentException(object.getClass() + " is not registered for serialization.");
@@ -72,10 +89,14 @@ public class DefaultSerializer implements Serializer<Object> {
         return serializedMap;
     }
 
-    @NotNull
+    @Nullable
     protected Object serializeField(@NotNull Object object, @NotNull Field field) {
         Object value = field.getValue(object);
-        return field.getSerializer().serialize(value);
+        Serializer serializer = field.getSerializer();
+        if (SerializationRegistrar.isClassRegistered(value.getClass())) {
+            return serializer.serializeRegisteredType(value);
+        }
+        return serializer.serialize(value);
     }
 
     @NotNull
@@ -196,7 +217,11 @@ public class DefaultSerializer implements Serializer<Object> {
                 } else {
                     fieldValue = deserializeField(field, serializedFieldData);
                 }
-                field.setValue(object, fieldValue);
+                try {
+                    field.setValue(object, fieldValue);
+                } catch (PropertyVetoException e) {
+                    e.printStackTrace();
+                }
             } else {
                 // TODO fail silently or no?
             }
@@ -209,11 +234,13 @@ public class DefaultSerializer implements Serializer<Object> {
     }
 
     protected Object deserializeFieldToObject(@NotNull Field field, @NotNull Object data, @NotNull Object object) {
-        return field.getSerializer().deserializeToObject((Map) data, object);
+        Serializer serializer = field.getSerializer();
+        return serializer.deserializeToObject((Map) data, object);
     }
 
     protected Object deserializeField(Field field, Object data) {
-        return field.getSerializer().deserialize(data, field.getType());
+        Serializer serializer = field.getSerializer();
+        return serializer.deserialize(data, field.getType());
     }
 
     protected Object deserializeCollection(@NotNull Collection data, @NotNull Class<? extends Collection> wantedType) {

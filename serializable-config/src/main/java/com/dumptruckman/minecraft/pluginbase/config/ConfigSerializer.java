@@ -4,6 +4,7 @@ import com.dumptruckman.minecraft.pluginbase.config.annotation.SerializeWith;
 import com.dumptruckman.minecraft.pluginbase.config.serializers.Serializer;
 import com.dumptruckman.minecraft.pluginbase.config.serializers.Serializers;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -12,6 +13,7 @@ public enum ConfigSerializer {
 
     public static final String SERIALIZED_TYPE_KEY = "=$$=";
 
+    @NotNull
     public static Map<String, Object> serialize(@NotNull Object object) {
         if (!SerializationRegistrar.isClassRegistered(object.getClass())) {
             throw new IllegalArgumentException(object.getClass() + " is not registered for serialization.");
@@ -19,6 +21,7 @@ public enum ConfigSerializer {
         return getSerializer(object.getClass()).serializeRegisteredType(object);
     }
 
+    @NotNull
     public static Object deserialize(@NotNull Map data) {
         Class<?> clazz = getClassFromSerializedData(data);
         if (clazz == null) {
@@ -27,6 +30,7 @@ public enum ConfigSerializer {
         return getSerializer(clazz).deserialize(data, clazz);
     }
 
+    @NotNull
     public static Object deserializeToObject(@NotNull Map data, @NotNull Object object) {
         Class<?> clazz = object.getClass();
         if (!SerializationRegistrar.isClassRegistered(clazz)) {
@@ -35,6 +39,7 @@ public enum ConfigSerializer {
         return getSerializer(clazz).deserializeToObject(data, object);
     }
 
+    @NotNull
     private static Serializer getSerializer(Class<?> clazz) {
         SerializeWith serializeWith = clazz.getAnnotation(SerializeWith.class);
         if (serializeWith != null) {
@@ -44,6 +49,7 @@ public enum ConfigSerializer {
         }
     }
 
+    @Nullable
     public static Class getClassFromSerializedData(Map data) {
         Object object = data.get(SERIALIZED_TYPE_KEY);
         if (object == null || !(object instanceof String)) {

@@ -3,6 +3,8 @@ package com.dumptruckman.minecraft.pluginbase.config.field;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.beans.PropertyVetoException;
+
 public class FieldInstance {
 
     private Object containingObject;
@@ -42,7 +44,7 @@ public class FieldInstance {
         return field.getValue(containingObject);
     }
 
-    public void setFieldValue(Object value) {
+    public void setFieldValue(Object value) throws PropertyVetoException {
         field.setValue(containingObject, value);
     }
 

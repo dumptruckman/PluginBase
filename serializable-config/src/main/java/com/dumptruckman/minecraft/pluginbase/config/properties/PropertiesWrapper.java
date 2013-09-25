@@ -2,8 +2,6 @@ package com.dumptruckman.minecraft.pluginbase.config.properties;
 
 import com.dumptruckman.minecraft.pluginbase.config.field.Field;
 import com.dumptruckman.minecraft.pluginbase.config.field.FieldInstance;
-import com.dumptruckman.minecraft.pluginbase.config.field.FieldMap;
-import com.dumptruckman.minecraft.pluginbase.config.field.FieldMapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,9 +10,7 @@ import java.beans.PropertyVetoException;
 public class PropertiesWrapper implements Properties {
 
     @NotNull
-    private Object object;
-    @NotNull
-    private FieldMap fieldMap;
+    private transient Object object;
 
     public static Properties wrapObject(@NotNull Object object) {
         return new PropertiesWrapper(object);
@@ -22,12 +18,10 @@ public class PropertiesWrapper implements Properties {
 
     private PropertiesWrapper(@NotNull Object object) {
         this.object = object;
-        this.fieldMap = FieldMapper.getFieldMap(object.getClass());
     }
 
     protected PropertiesWrapper() {
         this.object = this;
-        this.fieldMap = FieldMapper.getFieldMap(object.getClass());
     }
 
     @Nullable
@@ -77,4 +71,6 @@ public class PropertiesWrapper implements Properties {
             return false;
         }
     }
+
+
 }
