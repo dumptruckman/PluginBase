@@ -18,18 +18,19 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.number>UNKNOWN</project.build.number>
+        <!-- Bukkit Version -->
         <bukkit.version>1.6.2-R1.0</bukkit.version>
         <!-- PluginBase Version -->
         <pluginbase.version>1.5-SNAPSHOT</pluginbase.version>
         <!-- PluginBase Module Versions -->
         <plugin.version>${pluginbase.version}</plugin.version>
-        <bukkitplugin.version>${pluginbase.version}</bukkitplugin.version>
+        <plugin-bukkit.version>${pluginbase.version}</plugin-bukkit.version>
         <commands.version>0.1-SNAPSHOT</commands.version>
         <file-comments.version>0.1-SNAPSHOT</file-comments.version>
         <logging.version>0.1-SNAPSHOT</logging.version>
         <messages.version>0.1-SNAPSHOT</messages.version>
         <messaging.version>0.1-SNAPSHOT</messaging.version>
-        <minecraftlink.version>0.1-SNAPSHOT</minecraftlink.version>
+        <minecraft-link.version>0.1-SNAPSHOT</minecraft-link.version>
         <permissions.version>0.1-SNAPSHOT</permissions.version>
         <permissions-bukkit.version>0.1-SNAPSHOT</permissions-bukkit.version>
         <properties.version>0.1-SNAPSHOT</properties.version>
@@ -86,11 +87,11 @@
         <module>permissions-bukkit</module>
         <module>properties</module>
         <module>properties-bukkit</module>
-        <module>minecraftlink</module>
+        <module>minecraft-link</module>
         <module>commands</module>
         <module>utilities</module>
-        <module>base</module>
-        <module>bukkit</module>
+        <module>plugin</module>
+        <module>plugin-bukkit</module>
         <module>testbukkitplugin</module>
         <module>serializable-config</module>
         <module>serializable-config-bukkit</module>

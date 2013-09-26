@@ -6,78 +6,44 @@
         <artifactId>PluginBase</artifactId>
         <version>1.5-SNAPSHOT</version>
     </parent>
-    <artifactId>Plugin</artifactId>
-    <version>${plugin.version}</version>
+    <artifactId>Plugin-Bukkit</artifactId>
+    <version>${plugin-bukkit.version}</version>
 
     <repositories>
         <repository>
-            <id>mcstats</id>
-            <url>http://repo.mcstats.org/content/repositories/snapshots</url>
+            <id>bukkit</id>
+            <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Logging</artifactId>
-            <version>${logging.version}</version>
+            <artifactId>Plugin</artifactId>
+            <version>${plugin.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Utilities</artifactId>
-            <version>${utilities.version}</version>
+            <artifactId>Permissions-Bukkit</artifactId>
+            <version>${permissions-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Permissions</artifactId>
-            <version>${permissions.version}</version>
+            <artifactId>Properties-Bukkit</artifactId>
+            <version>${properties-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Messaging</artifactId>
-            <version>${messaging.version}</version>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>${bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Properties</artifactId>
-            <version>${properties.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>MinecraftLink</artifactId>
-            <version>${minecraftlink.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Commands</artifactId>
-            <version>${commands.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mcstats</groupId>
-            <artifactId>metrics</artifactId>
-            <version>1.1-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.bukkit</groupId>
-                    <artifactId>bukkit</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
 
@@ -92,10 +58,12 @@
                 <groupId>com.electriccloud</groupId>
                 <artifactId>javac2-maven-plugin</artifactId>
             </plugin>
+            <!-- Jar Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
             </plugin>
+            <!-- Maven Source Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -103,6 +71,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/TestBasics.java</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -114,7 +87,6 @@
                 <version>1.5</version>
                 <executions>
                     <execution>
-                        <id>pluginbase-reqs</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
@@ -122,13 +94,10 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Logging</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Utilities</include>
-                                    <include>org.apache.commons:commons-io</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Messaging</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Properties</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:MinecraftLink</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Commands</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Plugin</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Properties-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Permissions-Bukkit</include>
+                                    <include>org.mcstats:metrics</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

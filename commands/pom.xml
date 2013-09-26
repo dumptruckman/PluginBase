@@ -40,8 +40,8 @@
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>MinecraftLink</artifactId>
-            <version>${minecraftlink.version}</version>
+            <artifactId>Minecraft-Link</artifactId>
+            <version>${minecraft-link.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

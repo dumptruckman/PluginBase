@@ -20,8 +20,8 @@
         <!-- Start of PluginBase Dependency -->
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>BukkitPlugin</artifactId>
-            <version>${bukkitplugin.version}</version>
+            <artifactId>Plugin-Bukkit</artifactId>
+            <version>${plugin-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -75,7 +75,7 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>com.dumptruckman.minecraft.pluginbase:BukkitPlugin</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Plugin-Bukkit</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
