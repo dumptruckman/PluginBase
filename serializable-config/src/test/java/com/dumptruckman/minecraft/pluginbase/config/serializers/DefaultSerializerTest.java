@@ -1,26 +1,19 @@
 package com.dumptruckman.minecraft.pluginbase.config.serializers;
 
-import com.dumptruckman.minecraft.pluginbase.config.SerializationRegistrar;
-import com.dumptruckman.minecraft.pluginbase.config.examples.Child;
+import com.dumptruckman.minecraft.pluginbase.config.TestBase;
 import com.dumptruckman.minecraft.pluginbase.config.examples.Comprehensive;
-import com.dumptruckman.minecraft.pluginbase.config.examples.Custom;
-import com.dumptruckman.minecraft.pluginbase.config.examples.Parent;
 import com.dumptruckman.minecraft.pluginbase.config.examples.Unknown;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class DefaultSerializerTest {
+public class DefaultSerializerTest extends TestBase {
 
     Serializer<Object> serializer;
 
     @Before
     public void setUp() throws Exception {
-        SerializationRegistrar.registerClass(Parent.class);
-        SerializationRegistrar.registerClass(Child.class);
-        SerializationRegistrar.registerClass(Comprehensive.class);
-        SerializationRegistrar.registerClass(Custom.class);
         serializer = new DefaultSerializer();
     }
 

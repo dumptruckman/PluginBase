@@ -40,11 +40,12 @@ public class FieldInstance {
         return this;
     }
 
-    public Object getFieldValue() {
+    @Nullable
+    public Object getValue() {
         return field.getValue(containingObject);
     }
 
-    public void setFieldValue(Object value) throws PropertyVetoException {
+    public void setValue(@Nullable Object value) throws PropertyVetoException {
         field.setValue(containingObject, value);
     }
 

@@ -12,7 +12,7 @@ public class CustomSerializer implements Serializer<Custom> {
     @Nullable
     @Override
     public Object serialize(@Nullable Object object) {
-        return object != null ? serializeRegisteredType(object) : null;
+        return object instanceof Custom ? serializeRegisteredType((Custom) object) : null;
     }
 
     @NotNull

@@ -5,7 +5,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-class Validators {
+enum Validators {
+    ;
 
     private static Map<Class<? extends Validator>, Validator> validatorMap = new HashMap<Class<? extends Validator>, Validator>();
 
@@ -13,8 +14,14 @@ class Validators {
         if (validatorMap.containsKey(validatorClass)) {
             return validatorMap.get(validatorClass);
         }
+        Constructor constructor = null;
+        boolean accessible = true;
         try {
-            Constructor constructor = validatorClass.getDeclaredConstructor();
+            constructor = validatorClass.getDeclaredConstructor();
+            accessible = constructor.isAccessible();
+            if (!accessible) {
+                constructor.setAccessible(true);
+            }
             Validator validator = (Validator) constructor.newInstance();
             validatorMap.put(validatorClass, validator);
             return validator;
@@ -26,6 +33,10 @@ class Validators {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
+        } finally {
+            if (constructor != null && !accessible) {
+                constructor.setAccessible(accessible);
+            }
         }
     }
 }

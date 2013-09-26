@@ -78,6 +78,7 @@ public class Field extends FieldMap {
         return null;
     }
 
+    @Nullable
     public Object getValue(@NotNull Object object) {
         boolean accessible = field.isAccessible();
         if (!accessible) {
@@ -101,7 +102,7 @@ public class Field extends FieldMap {
         }
     }
 
-    public void setValue(@NotNull Object object, Object value) throws PropertyVetoException {
+    public void setValue(@NotNull Object object, @Nullable Object value) throws PropertyVetoException {
         boolean accessible = field.isAccessible();
         if (!accessible) {
             field.setAccessible(true);
@@ -129,7 +130,7 @@ public class Field extends FieldMap {
         }
     }
 
-    private void setVirtualProperty(@NotNull VirtualProperty vProp, Object value) throws PropertyVetoException {
+    private void setVirtualProperty(@NotNull VirtualProperty vProp, @Nullable Object value) throws PropertyVetoException {
         Validator validator = getValidator();
         if (validator != null) {
             vProp.set(validator.validateChange(value, vProp.get()));
@@ -138,7 +139,7 @@ public class Field extends FieldMap {
         }
     }
 
-    private void setProperty(@NotNull Object object, Object value) throws IllegalAccessException, PropertyVetoException {
+    private void setProperty(@NotNull Object object, @Nullable Object value) throws IllegalAccessException, PropertyVetoException {
         Validator validator = getValidator();
         if (validator != null) {
             field.set(object, validator.validateChange(value, field.get(object)));

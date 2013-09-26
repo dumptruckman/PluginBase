@@ -1,27 +1,19 @@
 package com.dumptruckman.minecraft.pluginbase.config.properties;
 
-import com.dumptruckman.minecraft.pluginbase.config.SerializationRegistrar;
-import com.dumptruckman.minecraft.pluginbase.config.examples.Child;
+import com.dumptruckman.minecraft.pluginbase.config.TestBase;
 import com.dumptruckman.minecraft.pluginbase.config.examples.Comprehensive;
 import com.dumptruckman.minecraft.pluginbase.config.examples.Custom;
-import com.dumptruckman.minecraft.pluginbase.config.examples.Parent;
-import com.dumptruckman.minecraft.pluginbase.config.examples.Recursive;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class PropertiesWrapperTest {
+public class PropertiesWrapperTest extends TestBase {
 
     Comprehensive comprehensive;
 
     @Before
     public void setUp() throws Exception {
-        SerializationRegistrar.registerClass(Recursive.class);
-        SerializationRegistrar.registerClass(Parent.class);
-        SerializationRegistrar.registerClass(Child.class);
-        SerializationRegistrar.registerClass(Comprehensive.class);
-        SerializationRegistrar.registerClass(Custom.class);
         comprehensive = new Comprehensive();
     }
 
@@ -135,5 +127,21 @@ public class PropertiesWrapperTest {
         Custom custom = new Custom("custom");
         Properties properties = PropertiesWrapper.wrapObject(custom);
         assertEquals(custom.name, properties.getProperty("name"));
+    }
+
+    @Test
+    public void testGetPropertyAlias() throws Exception {
+        assertEquals(comprehensive.custom.name, comprehensive.getProperty("cname"));
+    }
+
+    @Test(expected = NoSuchFieldException.class)
+    public void testGetPropertyFakeAlias() throws Exception {
+        comprehensive.getProperty("bname");
+    }
+
+    @Test(expected = NoSuchFieldException.class)
+    public void testGetPropertyBadAlias() throws Exception {
+        PropertyAliases.createAlias(Comprehensive.class, "testing", "custom", "test");
+        comprehensive.getProperty("testing");
     }
 }

@@ -31,7 +31,7 @@ public class PropertiesWrapper implements Properties {
         if (field == null) {
             throw new NoSuchFieldException("No property by that name exists.");
         }
-        return field.getFieldValue();
+        return field.getValue();
     }
 
     @Override
@@ -40,9 +40,7 @@ public class PropertiesWrapper implements Properties {
         if (field == null) {
             throw new NoSuchFieldException("No property by that name exists.");
         }
-        Object oldValue = field.getFieldValue();
-        value = field.getValidator().validateChange(value, oldValue);
-        field.setFieldValue(value);
+        field.setValue(value);
     }
 
     @Nullable
@@ -52,7 +50,7 @@ public class PropertiesWrapper implements Properties {
         if (field == null) {
             return null;
         }
-        return field.getFieldValue();
+        return field.getValue();
     }
 
     @Override
@@ -60,9 +58,7 @@ public class PropertiesWrapper implements Properties {
         FieldInstance field = Field.locateField(object, name);
         if (field != null) {
             try {
-                Object oldValue = field.getFieldValue();
-                value = field.getValidator().validateChange(value, oldValue);
-                field.setFieldValue(value);
+                field.setValue(value);
                 return true;
             } catch (PropertyVetoException e) {
                 return false;

@@ -1,7 +1,10 @@
 package com.dumptruckman.minecraft.pluginbase.config.examples;
 
+import com.dumptruckman.minecraft.pluginbase.config.annotation.Comment;
+
 public class Child {
 
+    @Comment("# Test boolean comments")
     private boolean aBoolean;
 
     private Child() { }

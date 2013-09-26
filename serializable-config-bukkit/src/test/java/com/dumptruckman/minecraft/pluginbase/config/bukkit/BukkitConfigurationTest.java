@@ -1,8 +1,8 @@
 package com.dumptruckman.minecraft.pluginbase.config.bukkit;
 
 import com.dumptruckman.minecraft.pluginbase.config.ConfigSerializer;
-import com.dumptruckman.minecraft.pluginbase.config.bukkit.examples.Child;
-import com.dumptruckman.minecraft.pluginbase.config.bukkit.examples.Parent;
+import com.dumptruckman.minecraft.pluginbase.config.examples.Child;
+import com.dumptruckman.minecraft.pluginbase.config.examples.Parent;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.junit.Rule;
 import org.junit.Test;

@@ -6,7 +6,9 @@ import com.dumptruckman.minecraft.pluginbase.config.annotation.SerializeWith;
 import com.dumptruckman.minecraft.pluginbase.config.annotation.ValidateWith;
 import com.dumptruckman.minecraft.pluginbase.config.field.Validator;
 import com.dumptruckman.minecraft.pluginbase.config.properties.PropertiesWrapper;
+import com.dumptruckman.minecraft.pluginbase.config.properties.PropertyAliases;
 import com.dumptruckman.minecraft.pluginbase.config.serializers.CustomSerializer2;
+import org.jetbrains.annotations.Nullable;
 
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
@@ -48,12 +50,18 @@ public class Comprehensive extends PropertiesWrapper {
         STRING_OBJECT_MAP.put("String", "String");
         STRING_OBJECT_MAP.put("list", WORD_LIST);
         RANDOM_LIST.add(STRING_OBJECT_MAP);
+        PropertyAliases.createAlias(Comprehensive.class, "cname", "custom", "name");
     }
 
-    private static class NameValidator implements Validator {
+    public static class NameValidator implements Validator {
+        @Nullable
         @Override
-        public Object validateChange(Object newValue, Object oldValue) throws PropertyVetoException {
-            if (newValue.toString())
+        public Object validateChange(@Nullable Object newValue, @Nullable Object oldValue) throws PropertyVetoException {
+            if (newValue instanceof String && ((String) newValue).length() >= 4) {
+                return newValue;
+            } else {
+                return oldValue;
+            }
         }
     }
 
@@ -61,7 +69,7 @@ public class Comprehensive extends PropertiesWrapper {
     @Comment({A_INT_COMMENT_1, A_INT_COMMENT_2})
     public int aInt = A_INT;
     public transient int tInt = T_INT;
-    @ValidateWith()
+    @ValidateWith(NameValidator.class)
     public String name = NAME;
     public List<String> wordList = new ArrayList<String>(WORD_LIST);
     public List<String> wordList2 = new ArrayList<String>(WORD_LIST_2);

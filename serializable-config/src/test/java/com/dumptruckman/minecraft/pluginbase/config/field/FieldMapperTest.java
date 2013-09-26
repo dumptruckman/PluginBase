@@ -1,28 +1,17 @@
 package com.dumptruckman.minecraft.pluginbase.config.field;
 
-import com.dumptruckman.minecraft.pluginbase.config.SerializationRegistrar;
+import com.dumptruckman.minecraft.pluginbase.config.TestBase;
 import com.dumptruckman.minecraft.pluginbase.config.examples.Child;
 import com.dumptruckman.minecraft.pluginbase.config.examples.Comprehensive;
-import com.dumptruckman.minecraft.pluginbase.config.examples.Custom;
 import com.dumptruckman.minecraft.pluginbase.config.examples.Parent;
 import com.dumptruckman.minecraft.pluginbase.config.examples.Recursive;
 import com.dumptruckman.minecraft.pluginbase.config.serializers.CustomSerializer;
 import com.dumptruckman.minecraft.pluginbase.config.serializers.CustomSerializer2;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class FieldMapperTest {
-
-    @Before
-    public void setUp() throws Exception {
-        SerializationRegistrar.registerClass(Recursive.class);
-        SerializationRegistrar.registerClass(Parent.class);
-        SerializationRegistrar.registerClass(Child.class);
-        SerializationRegistrar.registerClass(Comprehensive.class);
-        SerializationRegistrar.registerClass(Custom.class);
-    }
+public class FieldMapperTest extends TestBase {
 
     @Test
     public void testRecursiveProtection() {

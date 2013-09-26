@@ -1,11 +1,8 @@
 package com.dumptruckman.minecraft.pluginbase.config.bukkit;
 
-import com.dumptruckman.minecraft.pluginbase.config.SerializationRegistrar;
-import com.dumptruckman.minecraft.pluginbase.config.bukkit.examples.Child;
-import com.dumptruckman.minecraft.pluginbase.config.bukkit.examples.Parent;
+import com.dumptruckman.minecraft.pluginbase.config.TestBase;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.util.Vector;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -19,13 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public abstract class ConfigurationTest {
-
-    @Before
-    public void setUp() throws Exception {
-        SerializationRegistrar.registerClass(Parent.class);
-        SerializationRegistrar.registerClass(Child.class);
-    }
+public abstract class ConfigurationTest extends TestBase {
 
     public abstract Configuration getConfig();
 
