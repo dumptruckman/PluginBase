@@ -4,13 +4,13 @@ import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.Description;
 import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.annotation.ValidateWith;
+import pluginbase.config.field.PropertyVetoException;
 import pluginbase.config.field.Validator;
 import pluginbase.config.properties.PropertiesWrapper;
 import pluginbase.config.properties.PropertyAliases;
 import pluginbase.config.serializers.CustomSerializer2;
 import org.jetbrains.annotations.Nullable;
 
-import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

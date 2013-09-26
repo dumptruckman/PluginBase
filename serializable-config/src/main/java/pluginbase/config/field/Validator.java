@@ -2,8 +2,6 @@ package pluginbase.config.field;
 
 import org.jetbrains.annotations.Nullable;
 
-import java.beans.PropertyVetoException;
-
 public interface Validator<T> {
 
     @Nullable

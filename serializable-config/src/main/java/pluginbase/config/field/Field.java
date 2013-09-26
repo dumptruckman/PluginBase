@@ -10,7 +10,6 @@ import pluginbase.config.serializers.Serializers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.beans.PropertyVetoException;
 import java.lang.reflect.Modifier;
 
 public class Field extends FieldMap {

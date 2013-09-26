@@ -19,8 +19,8 @@
     <dependencies>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Logging</artifactId>
-            <version>${logging.version}</version>
+            <artifactId>Messaging</artifactId>
+            <version>${messaging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
