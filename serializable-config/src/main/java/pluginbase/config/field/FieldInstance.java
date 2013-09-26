@@ -3,8 +3,6 @@ package pluginbase.config.field;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.beans.PropertyVetoException;
-
 public class FieldInstance {
 
     private Object containingObject;

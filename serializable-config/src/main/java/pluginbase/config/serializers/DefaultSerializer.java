@@ -7,8 +7,8 @@ import pluginbase.config.field.FieldMap;
 import pluginbase.config.field.FieldMapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.config.field.PropertyVetoException;
 
-import java.beans.PropertyVetoException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
