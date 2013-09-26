@@ -53,6 +53,7 @@ public class DefaultSerializer implements Serializer<Object> {
      *     <li>arrays of primitives or {@link String}</li>
      * </ul>
      *
+     *
      * @param object the object to serialize.
      * @return the serialized form of the object.
      */

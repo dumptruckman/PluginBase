@@ -13,7 +13,7 @@ import java.util.Map;
 public interface Serializer<T> {
 
     @Nullable
-    Object serialize(@Nullable T object);
+    Object serialize(@Nullable Object object);
 
     @NotNull
     Map<String, Object> serializeRegisteredType(@NotNull T object);
