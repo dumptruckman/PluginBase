@@ -4,8 +4,7 @@ import pluginbase.config.field.Field;
 import pluginbase.config.field.FieldInstance;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.beans.PropertyVetoException;
+import pluginbase.config.field.PropertyVetoException;
 
 public class PropertiesWrapper implements Properties {
 

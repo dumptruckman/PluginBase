@@ -2,8 +2,7 @@ package pluginbase.config.properties;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.beans.PropertyVetoException;
+import pluginbase.config.field.PropertyVetoException;
 
 public interface Properties {
 
