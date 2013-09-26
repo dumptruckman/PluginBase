@@ -39,6 +39,13 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Serializable-Config-Bukkit</artifactId>
+            <version>${serializable-config-bukkit.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>${bukkit.version}</version>
@@ -97,6 +104,8 @@
                                     <include>com.dumptruckman.minecraft.pluginbase:Plugin</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Properties-Bukkit</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Permissions-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Serializable-Config-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:File-Comments</include>
                                     <include>org.mcstats:metrics</include>
                                 </includes>
                             </artifactSet>

@@ -8,8 +8,10 @@ import pluginbase.command.CommandProvider;
 import pluginbase.database.SQLDatabase;
 import pluginbase.logging.LoggablePlugin;
 import pluginbase.logging.PluginLogger;
+import pluginbase.messages.PluginBaseException;
 import pluginbase.messages.messaging.Messager;
 import pluginbase.messages.messaging.Messaging;
+import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.properties.Properties;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -25,13 +27,10 @@ import java.util.List;
  */
 public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
 
-    /**
-     * Gets the config of this plugin.
-     *
-     * @return the Properties object which contains settings for this plugin.
-     */
     @NotNull
-    Properties config();
+    Settings getSettings();
+
+    void saveConfig();
 
     /**
      * Gets the info object for this plugin.

@@ -93,15 +93,12 @@ public class DebugCommand extends BaseBuiltInCommand {
             if (debugLevel > 3 || debugLevel < 0) {
                 getMessager().message(sender, INVALID_DEBUG);
             } else {
-                getPlugin().config().set(BaseConfig.DEBUG_MODE, debugLevel);
-                getPlugin().getLog().setDebugLevel(getPlugin().config().get(BaseConfig.DEBUG_MODE));
                 try {
-                    getPlugin().config().flush();
-                } catch (PluginBaseException e) {
-                    if (!(e instanceof SendablePluginBaseException)) {
-                        e = new SendablePluginBaseException(e);
-                    }
-                    ((SendablePluginBaseException) e).sendException(getMessager(), sender);
+                    getPlugin().getSettings().setDebugLevel(debugLevel);
+                    getPlugin().getLog().setDebugLevel(getPlugin().getSettings().getDebugLevel());
+                    getPlugin().saveSettings();
+                } catch (SendablePluginBaseException e) {
+                    e.sendException(getMessager(), sender);
                 }
             }
         }
@@ -110,10 +107,10 @@ public class DebugCommand extends BaseBuiltInCommand {
     }
 
     private void displayDebugMode(PluginBase p, BasePlayer sender) {
-        if (p.config().get(BaseConfig.DEBUG_MODE) == 0) {
+        if (p.getSettings().getDebugLevel() == 0) {
             p.getMessager().message(sender, DEBUG_DISABLED, sender);
         } else {
-            p.getMessager().message(sender, DEBUG_SET, p.config().get(BaseConfig.DEBUG_MODE).toString());
+            p.getMessager().message(sender, DEBUG_SET, p.getSettings().getDebugLevel());
             getPlugin().getLog().fine("%s debug ENABLED", p.getPluginInfo().getName());
         }
     }

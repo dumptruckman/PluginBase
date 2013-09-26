@@ -1,56 +1,54 @@
 package pluginbase.util;
 
-import pluginbase.bukkit.properties.YamlProperties;
-import pluginbase.logging.Logging;
-import pluginbase.messages.PluginBaseException;
-import pluginbase.plugin.BaseConfig;
-import pluginbase.properties.ListProperty;
-import pluginbase.properties.MappedProperty;
-import pluginbase.properties.NestedProperties;
-import pluginbase.properties.NestedProperty;
-import pluginbase.properties.NullProperty;
-import pluginbase.properties.PropertyFactory;
-import pluginbase.properties.SimpleProperty;
+import pluginbase.config.annotation.Comment;
+import pluginbase.config.annotation.Name;
+import pluginbase.plugin.PluginBase;
+import pluginbase.plugin.Settings;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-public class MockConfig extends YamlProperties implements BaseConfig {
-    
-    public static final SimpleProperty<Boolean> TEST = PropertyFactory.newProperty(Boolean.class, "test", true)
-            .comment("# ===[ PluginBase Test ]===").build();
-    public static final NullProperty SETTINGS = PropertyFactory.newNullProperty("settings")
-            .comment("# ===[ PluginBase Settings ]===").build();
-    
-    public static final MappedProperty<Integer> SPECIFIC_TEST = PropertyFactory.newMappedProperty(Integer.class, "specific_test")
-            .build();
+@Comment("===[ PluginBase Settings ]===")
+public class MockConfig extends Settings {
 
-    public static final ListProperty<Integer> LIST_TEST = PropertyFactory.newListProperty(Integer.class, "list_test", new LinkedList<Integer>())
-            .build();
+    @Comment("===[ PluginBase Test ]===")
+    public boolean test = true;
 
-    public static final NestedProperty<Nested> NESTED_TEST = PropertyFactory.newNestedProperty(Nested.class, "nested").comment("# ababadfga").build();
-    
-    public MockConfig(boolean doComments, File configFile) throws PluginBaseException {
-        super(Logging.getLogger(), doComments, true, configFile, MockConfig.class, BaseConfig.class);
+    @Name("specific_test")
+    public Map<String, Integer> specificTest = new HashMap<String, Integer>();
+
+    @Name("list_test")
+    public List<Integer> listTest = new LinkedList<Integer>();
+
+    @Comment("ababadfga")
+    public Nested nested = new Nested();
+
+    public MockConfig(@NotNull PluginBase plugin) {
+        super(plugin);
     }
 
-    @NotNull
-    @Override
-    protected String getHeader() {
-        return "# ===[ PluginBase Config ]===";
-    }
+    public static class Nested {
 
-    public static interface Nested extends NestedProperties {
+        @Comment("# TEADFA")
+        @Name("double_nested")
+        public DoubleNested nestedTest = new DoubleNested();
 
-        public static final NestedProperty<DoubleNested> NESTED_TEST = PropertyFactory.newNestedProperty(DoubleNested.class, "double_nested").comment("# TEADFA").build();
+        @Comment("# ===[ Nested Test ]===")
+        @Name("nested_test")
+        public boolean test = true;
 
-        public static final SimpleProperty<Boolean> TEST = PropertyFactory.newProperty(Boolean.class, "nested_test", true)
-                .comment("# ===[ Nested Test ]===").build();
+        private Nested() { }
 
-        public static interface DoubleNested extends NestedProperties {
-            public static final SimpleProperty<Boolean> TEST = PropertyFactory.newProperty(Boolean.class, "double_nested_test", true)
-                    .comment("# ===[ Double Nested Test ]===").build();
+        public static class DoubleNested {
+
+            @Comment("# ===[ Double Nested Test ]===")
+            @Name("double_nested_test")
+            public boolean test = true;
+
+            private DoubleNested() { }
         }
     }
 }

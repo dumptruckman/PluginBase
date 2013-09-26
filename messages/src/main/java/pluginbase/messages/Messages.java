@@ -68,6 +68,11 @@ public class Messages {
     /** A message of general error */
     @NotNull public final static Message ERROR = Message.createMessage("generic.error", Theme.ERROR + "[ERROR]");
 
+    /** A message of general loading error */
+    @NotNull public final static Message COULD_NOT_LOAD = Message.createMessage("generic.could_not_load", "Could not load: %s");
+    /** A message of general loading error */
+    @NotNull public final static Message COULD_NOT_SAVE = Message.createMessage("generic.could_not_save", "Could not save: %s");
+
     /**
      * Registers all of the messages in a given class and all inner classes to the localizable object.
      * <p/>

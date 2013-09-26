@@ -67,7 +67,7 @@ public class FieldMapper {
                 } else {
                     localField = new Field(field);
                 }
-                resultMap.put(field.getName().toLowerCase(), localField);
+                resultMap.put(localField.getName().toLowerCase(), localField);
             }
         }
         return resultMap;

@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.bukkit;
 
+import pluginbase.bukkit.config.BukkitConfiguration;
+import pluginbase.bukkit.config.YamlConfiguration;
 import pluginbase.bukkit.permission.BukkitPermFactory;
 import pluginbase.bukkit.properties.YamlProperties;
 import pluginbase.command.Command;
@@ -16,13 +18,16 @@ import pluginbase.database.SQLConfig;
 import pluginbase.database.SQLDatabase;
 import pluginbase.database.SQLite;
 import pluginbase.logging.PluginLogger;
+import pluginbase.messages.Message;
+import pluginbase.messages.Messages;
 import pluginbase.messages.PluginBaseException;
+import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.PermFactory;
-import pluginbase.plugin.BaseConfig;
 import pluginbase.plugin.PluginBase;
 import pluginbase.plugin.PluginInfo;
 import pluginbase.plugin.ServerInterface;
+import pluginbase.plugin.Settings;
 import pluginbase.plugin.command.builtin.ConfirmCommand;
 import pluginbase.plugin.command.builtin.DebugCommand;
 import pluginbase.plugin.command.builtin.InfoCommand;
@@ -51,13 +56,16 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private final BukkitPluginInfo pluginInfo = new BukkitPluginInfo(this);
 
     private ServerInterface<BukkitPlugin> serverInterface;
-    private Properties config = null;
+    private Settings settings = null;
     private BukkitMessager messager = null;
     private CommandHandler commandHandler = null;
     private SQLDatabase db = null;
     private Properties sqlConfig = null;
     private Metrics metrics = null;
     private PluginLogger logger;
+
+    private final File configFile = new File("config.yml");
+    private BukkitConfiguration config = null;
 
     /**
      * Override this method if you wish for your permissions to start with something other than the plugin name
@@ -122,18 +130,18 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         // Sets up the plugin database if configured.
         setupDB();
         // Loads the configuration.
-        setupConfig();
+        Settings settings = setupConfig();
         // Setup our base commands.
-        setupCommands();
+        setupCommands(settings);
         // Setup the plugin messager.
-        setupMessager();
+        setupMessager(settings.getLanguageSettings());
 
         // Do any important first run stuff here.
-        if (config() != null && config().get(BaseConfig.FIRST_RUN)) {
+        if (getSettings() != null && getSettings().isFirstRun()) {
             firstRun();
-            config().set(BaseConfig.FIRST_RUN, false);
+            getSettings().setFirstRun(false);
             try {
-                config().flush();
+                saveSettings();
             } catch (PluginBaseException e) {
                 e.printStackTrace();
                 getLog().severe("Cannot save config on startup.  Terminating plugin.");
@@ -197,25 +205,31 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      * @throws PluginBaseException in case anything goes wrong during config initialization/loading.
      */
     @NotNull
-    protected abstract Properties getNewConfig() throws PluginBaseException;
+    protected Settings getDefaultSettings() {
+        return new Settings(this);
+    }
 
-    private void setupConfig() {
+    protected File getConfigurationFile() {
+        return configFile;
+    }
+
+    private Settings setupConfig() {
         try {
-            if (this.config == null) {
-                this.config = getNewConfig();
-            } else {
-                this.config.reload();
+            config = BukkitConfiguration.loadYamlConfig(getConfigurationFile());
+            Settings defaults = getDefaultSettings();
+            settings = config.getToObject("settings", defaults);
+            if (settings == null) {
+                settings = defaults;
             }
             getLog().fine("Loaded config file!");
         } catch (PluginBaseException e) {  // Catch errors loading the config file and exit out if found.
             getLog().severe("Error loading config file!");
             e.logException(getLog(), Level.SEVERE);
             Bukkit.getPluginManager().disablePlugin(this);
-            return;
+            return null;
         }
-        if (config() != null) {
-            getLog().setDebugLevel(config().get(BaseConfig.DEBUG_MODE));
-        }
+        getLog().setDebugLevel(getSettings().getDebugLevel());
+        return settings;
     }
 
     private void _registerMessages() {
@@ -227,8 +241,8 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      */
     protected void registerMessages() { }
 
-    private void setupMessager() {
-        this.messager = BukkitMessager.loadMessagerWithMessages(this, new File(getDataFolder(), config().get(BaseConfig.LANGUAGE_FILE)), config().get(BaseConfig.LOCALE));
+    private void setupMessager(Settings.Language languageSettings) {
+        this.messager = BukkitMessager.loadMessagerWithMessages(this, new File(getDataFolder(), languageSettings.getLanguageFile()), languageSettings.getLocale());
     }
 
     /**
@@ -247,8 +261,8 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      */
     public final void reloadConfig() {
         setupDB();
-        setupConfig();
-        setupMessager();
+        Settings settings = setupConfig();
+        setupMessager(settings.getLanguageSettings());
         onReloadConfig();
     }
 
@@ -269,11 +283,9 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         return null;
     }
 
-    private void setupCommands() {
+    private void setupCommands(@NotNull Settings settings) {
         registerCommand(InfoCommand.class);
-        if (config() != null) {
-            registerCommand(DebugCommand.class);
-        }
+        registerCommand(DebugCommand.class);
         registerCommand(ReloadCommand.class);
         registerCommand(VersionCommand.class);
         if (useQueuedCommands()) {
@@ -336,11 +348,38 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         return this.commandHandler;
     }
 
+    @Override
+    public BukkitConfiguration getConfig() {
+        if (config == null) {
+            reloadConfig();
+        }
+        return config;
+    }
+
     /** {@inheritDoc} */
     @NotNull
     @Override
-    public Properties config() {
-        return this.config;
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void saveConfig() {
+        try {
+            saveSettings();
+        } catch (PluginBaseException e) {
+            e.logException(getLog(), Level.SEVERE);
+        }
+    }
+
+    private void saveSettings() throws SendablePluginBaseException {
+        YamlConfiguration config = new YamlConfiguration();
+        config.set("settings", settings);
+        File configFile = getConfigurationFile();
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            new PluginBaseException(e).logException(getLog(), Level.WARNING);
+        }
     }
 
     /** {@inheritDoc} */

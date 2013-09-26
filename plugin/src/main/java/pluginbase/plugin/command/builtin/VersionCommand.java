@@ -110,8 +110,8 @@ public class VersionCommand extends BaseBuiltInCommand {
         buffer.add(getMessager().getLocalizedMessage(VERSION_PLUGIN_VERSION, getPlugin().getPluginInfo().getName(), getPlugin().getPluginInfo().getVersion()));
         buffer.add(getMessager().getLocalizedMessage(VERSION_SERVER_NAME, getPlugin().getServerInterface().getName()));
         buffer.add(getMessager().getLocalizedMessage(VERSION_SERVER_VERSION, getPlugin().getServerInterface().getVersion()));
-        buffer.add(getMessager().getLocalizedMessage(VERSION_LANG_FILE, getPlugin().config().get(BaseConfig.LANGUAGE_FILE)));
-        buffer.add(getMessager().getLocalizedMessage(VERSION_DEBUG_MODE, getPlugin().config().get(BaseConfig.DEBUG_MODE)));
+        buffer.add(getMessager().getLocalizedMessage(VERSION_LANG_FILE, getPlugin().getSettings().getLanguageSettings().getLanguageFile()));
+        buffer.add(getMessager().getLocalizedMessage(VERSION_DEBUG_MODE, getPlugin().getSettings().getDebugLevel()));
 
         final List<String> versionInfoDump = getPlugin().dumpVersionInfo();
         if (versionInfoDump != null) {

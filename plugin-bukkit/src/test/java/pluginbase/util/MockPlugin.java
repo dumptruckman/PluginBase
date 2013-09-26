@@ -3,6 +3,7 @@ package pluginbase.util;
 import pluginbase.bukkit.AbstractBukkitPlugin;
 import pluginbase.bukkit.properties.YamlProperties;
 import pluginbase.messages.PluginBaseException;
+import pluginbase.plugin.Settings;
 import pluginbase.properties.Properties;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,8 +41,14 @@ public class MockPlugin extends AbstractBukkitPlugin {
 
     @NotNull
     @Override
-    protected Properties getNewConfig() throws PluginBaseException {
-        return new YamlProperties.Loader(getLog(), new File(getDataFolder(), "config.yml"), MockConfig.class).load();
+    protected MockConfig getDefaultSettings() {
+        return new MockConfig(this);
+    }
+
+    @NotNull
+    @Override
+    public MockConfig getSettings() {
+        return (MockConfig) super.getSettings();
     }
 
     @Override

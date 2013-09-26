@@ -9,7 +9,10 @@ package pluginbase;
 
 import pluginbase.bukkit.AbstractBukkitPlugin;
 import pluginbase.bukkit.CommandUtil;
+import pluginbase.config.serializers.Serializers;
 import pluginbase.plugin.BaseConfig;
+import pluginbase.plugin.Settings;
+import pluginbase.plugin.Settings.Language;
 import pluginbase.util.MockConfig;
 import pluginbase.util.MockMessages;
 import pluginbase.util.MockPlugin;
@@ -69,9 +72,9 @@ public class TestBasics {
         serverDirectory.mkdirs();
 
         // Assert debug mode is off
-        Assert.assertEquals(0, (int) myPlugin.config().get(BaseConfig.DEBUG_MODE));
+        Assert.assertEquals(0, (int) myPlugin.getSettings().getDebugLevel());
 
-        Assert.assertFalse(myPlugin.config().get(BaseConfig.FIRST_RUN));
+        Assert.assertFalse(myPlugin.getSettings().isFirstRun());
 
         // Send the debug command.
         CommandUtil.runCommand(plugin, mockCommandSender, "pb debug", "3");
@@ -89,21 +92,23 @@ public class TestBasics {
 
         CommandUtil.runCommand(plugin, mockCommandSender, "pb version", "-p");
 
-        Assert.assertFalse(myPlugin.config().get(BaseConfig.FIRST_RUN));
+        Assert.assertFalse(myPlugin.getSettings().isFirstRun()));
 
-        Assert.assertEquals(3, (int) myPlugin.config().get(BaseConfig.DEBUG_MODE));
+        Assert.assertEquals(3, (int) myPlugin.getSettings().getDebugLevel());
         
         myPlugin.getMessager().message(myPlugin.wrapSender(mockCommandSender), MockMessages.TEST_MESSAGE, "And a test arg");
 
-        Assert.assertEquals(BaseConfig.LOCALE.getDefaultSerializer().serialize(BaseConfig.LOCALE.getDefault()).toString(), myPlugin.config().get(BaseConfig.LOCALE).toString());
+        Assert.assertEquals(Serializers.getSerializer(Language.LocaleSerializer.class).serialize(BaseConfig.LOCALE.getDefault()), myPlugin.getSettings().getLanguageSettings().getLocale());
         
-        myPlugin.config().set(BaseConfig.LOCALE, Locale.CANADA);
+        myPlugin.getSettings().getLanguageSettings().setLocale(Locale.CANADA);
 
-        Assert.assertEquals(Locale.CANADA, myPlugin.config().get(BaseConfig.LOCALE));
+        Assert.assertEquals(Locale.CANADA, myPlugin.getSettings().getLanguageSettings().getLocale());
         
-        myPlugin.config().flush();
-        
-        Assert.assertEquals(MockConfig.SPECIFIC_TEST.getNewTypeMap(), myPlugin.config().get(MockConfig.SPECIFIC_TEST));
+        myPlugin.saveConfig();
+
+        MockConfig defaults = new MockConfig(myPlugin);
+
+        Assert.assertEquals(defaults.specificTest, myPlugin.getConfig().get("specific_test"));
         Map<String, Integer> testMap = myPlugin.config().get(MockConfig.SPECIFIC_TEST);
         Assert.assertEquals(null, testMap.get("test1"));
         testMap.put("test1", 25);

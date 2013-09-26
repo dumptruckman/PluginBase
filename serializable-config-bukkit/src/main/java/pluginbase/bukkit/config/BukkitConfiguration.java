@@ -3,14 +3,15 @@ package pluginbase.bukkit.config;
 import pluginbase.config.ConfigSerializer;
 import pluginbase.config.SerializationRegistrar;
 import com.google.common.io.Files;
-import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.config.field.FieldMapper;
+import pluginbase.messages.Message;
+import pluginbase.messages.Messages;
+import pluginbase.messages.messaging.SendablePluginBaseException;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -41,18 +42,18 @@ public abstract class BukkitConfiguration extends FileConfiguration {
      * @return Resulting configuration
      * @throws IllegalArgumentException Thrown if file is null
      */
-    public static YamlConfiguration loadYamlConfig(File file) {
-        Validate.notNull(file, "File cannot be null");
+    public static YamlConfiguration loadYamlConfig(@NotNull File file) throws SendablePluginBaseException {
 
         YamlConfiguration config = new YamlConfiguration();
 
         try {
             config.load(file);
         } catch (FileNotFoundException ex) {
+            throw new SendablePluginBaseException(Message.bundleMessage(Messages.COULD_NOT_LOAD, file), ex);
         } catch (IOException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Cannot load " + file, ex);
+            throw new SendablePluginBaseException(Message.bundleMessage(Messages.COULD_NOT_LOAD, file), ex);
         } catch (InvalidConfigurationException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Cannot load " + file , ex);
+            throw new SendablePluginBaseException(Message.bundleMessage(Messages.COULD_NOT_LOAD, file), ex);
         }
 
         return config;
@@ -68,17 +69,15 @@ public abstract class BukkitConfiguration extends FileConfiguration {
      * @return Resulting configuration
      * @throws IllegalArgumentException Thrown if stream is null
      */
-    public static YamlConfiguration loadYamlConfig(InputStream stream) {
-        Validate.notNull(stream, "Stream cannot be null");
-
+    public static YamlConfiguration loadYamlConfig(@NotNull InputStream stream) throws SendablePluginBaseException {
         YamlConfiguration config = new YamlConfiguration();
 
         try {
             config.load(stream);
         } catch (IOException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Cannot load configuration from stream", ex);
+            throw new SendablePluginBaseException(Message.bundleMessage(Messages.COULD_NOT_LOAD, stream), ex);
         } catch (InvalidConfigurationException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, "Cannot load configuration from stream", ex);
+            throw new SendablePluginBaseException(Message.bundleMessage(Messages.COULD_NOT_LOAD, stream), ex);
         }
 
         return config;
@@ -169,8 +168,13 @@ public abstract class BukkitConfiguration extends FileConfiguration {
     @Nullable
     public <T> T getToObject(@NotNull String path, @NotNull T destination) {
         T source = getAs(path, (Class<T>) destination.getClass());
+        if (destination.equals(source)) {
+            return destination;
+        }
         if (source != null) {
-            return FieldMapper.mapFields(source, destination);
+            destination = FieldMapper.mapFields(source, destination);
+            set(path, destination);
+            return destination;
         } else {
             return null;
         }

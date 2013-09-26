@@ -2,6 +2,7 @@ package pluginbase.config.field;
 
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.Description;
+import pluginbase.config.annotation.Name;
 import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.annotation.ValidateWith;
 import pluginbase.config.properties.PropertyAliases;
@@ -17,6 +18,7 @@ public class Field extends FieldMap {
     @NotNull
     private final java.lang.reflect.Field field;
     private final boolean persistable;
+    private final String name;
 
     @Nullable
     public static FieldInstance getInstance(@NotNull Object object, @NotNull String... name) {
@@ -40,10 +42,19 @@ public class Field extends FieldMap {
         super(children == null ? null : children.fieldMap);
         this.field = field;
         persistable = !Modifier.isTransient(field.getModifiers());
+        Name name = field.getAnnotation(Name.class);
+        if (name == null) {
+            name = field.getType().getAnnotation(Name.class);
+        }
+        if (name != null) {
+            this.name = name.value();
+        } else {
+            this.name = field.getName();
+        }
     }
 
     public String getName() {
-        return field.getName();
+        return name;
     }
 
     public boolean hasChildFields() {
