@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * A description for a property which <em>may</em> be used to describe the property to an end user.
  */
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Description {
     String value();

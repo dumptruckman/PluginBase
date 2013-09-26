@@ -159,6 +159,11 @@ public class Field extends FieldMap {
         Description description = field.getAnnotation(Description.class);
         if (description != null) {
             return description.value();
+        } else {
+            description = field.getType().getAnnotation(Description.class);
+            if (description != null) {
+                return description.value();
+            }
         }
         return null;
     }
@@ -168,6 +173,11 @@ public class Field extends FieldMap {
         Comment comment = field.getAnnotation(Comment.class);
         if (comment != null) {
             return comment.value();
+        } else {
+            comment = field.getType().getAnnotation(Comment.class);
+            if (comment != null) {
+                return comment.value();
+            }
         }
         return null;
     }

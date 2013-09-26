@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * <p/>
  * Use multiple {@link String}s to have multi-lined comments.
  */
-@Target(ElementType.FIELD)
+@Target({ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Comment {
     String[] value();
