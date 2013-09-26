@@ -86,7 +86,7 @@ public class Field extends FieldMap {
         try {
             if (VirtualProperty.class.isAssignableFrom(field.getType())) {
                 VirtualProperty vProp = (VirtualProperty) field.get(object);
-                return vProp.get();
+                return vProp != null ? vProp.get() : null;
             } else {
                 return field.get(object);
             }
@@ -129,7 +129,10 @@ public class Field extends FieldMap {
         }
     }
 
-    private void setVirtualProperty(@NotNull VirtualProperty vProp, @Nullable Object value) throws PropertyVetoException {
+    private void setVirtualProperty(@Nullable VirtualProperty vProp, @Nullable Object value) throws PropertyVetoException {
+        if (vProp == null) {
+            return;
+        }
         Validator validator = getValidator();
         if (validator != null) {
             vProp.set(validator.validateChange(value, vProp.get()));
