@@ -5,12 +5,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
-enum Validators {
+public enum Validators {
     ;
 
     private static Map<Class<? extends Validator>, Validator> validatorMap = new HashMap<Class<? extends Validator>, Validator>();
 
-    static Validator getValidator(Class<? extends Validator> validatorClass) {
+    public static Validator getValidator(Class<? extends Validator> validatorClass) {
         if (validatorMap.containsKey(validatorClass)) {
             return validatorMap.get(validatorClass);
         }
