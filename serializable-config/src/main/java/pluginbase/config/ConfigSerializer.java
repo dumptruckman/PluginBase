@@ -13,30 +13,34 @@ public enum ConfigSerializer {
 
     public static final String SERIALIZED_TYPE_KEY = "=$$=";
 
-    @NotNull
-    public static Map<String, Object> serialize(@NotNull Object object) {
+    @Nullable
+    public static Object serialize(@NotNull Object object) {
         if (!SerializationRegistrar.isClassRegistered(object.getClass())) {
             throw new IllegalArgumentException(object.getClass() + " is not registered for serialization.");
         }
-        return getSerializer(object.getClass()).serializeRegisteredType(object);
+        return getSerializer(object.getClass()).serialize(object);
     }
 
-    @NotNull
-    public static Object deserialize(@NotNull Map data) {
-        Class<?> clazz = getClassFromSerializedData(data);
-        if (clazz == null) {
-            throw new IllegalArgumentException("The given data is not valid for type " + data.get(SERIALIZED_TYPE_KEY));
+    @Nullable
+    public static Object deserialize(@Nullable Object data) {
+        if (data instanceof Map) {
+            Map map = (Map) data;
+            Class<?> clazz = getClassFromSerializedData(map);
+            if (clazz == null) {
+                throw new IllegalArgumentException("The given data is not valid for type " + map.get(SERIALIZED_TYPE_KEY));
+            }
+            return deserializeAs(data, clazz);
+        } else {
+            throw new IllegalArgumentException("The given data must be a Map");
         }
-        return getSerializer(clazz).deserialize(data, clazz);
     }
 
     @NotNull
-    public static Object deserializeToObject(@NotNull Map data, @NotNull Object object) {
-        Class<?> clazz = object.getClass();
+    public static <T> T deserializeAs(@NotNull Object data, @NotNull Class<T> clazz) {
         if (!SerializationRegistrar.isClassRegistered(clazz)) {
-            throw new IllegalArgumentException(object.getClass() + " is not registered for serialization.");
+            throw new IllegalArgumentException(clazz + " is not registered for serialization.");
         }
-        return getSerializer(clazz).deserializeToObject(data, object);
+        return (T) getSerializer(clazz).deserialize(data, clazz);
     }
 
     @NotNull

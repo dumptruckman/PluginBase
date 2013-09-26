@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 
 public class DefaultSerializerTest extends TestBase {
 
-    Serializer<Object> serializer;
+    Serializer serializer;
 
     @Before
     public void setUp() throws Exception {
@@ -20,7 +20,7 @@ public class DefaultSerializerTest extends TestBase {
     @Test
     public void testSerializeDeserializeComprehensive() throws Exception {
         Comprehensive comprehensive = new Comprehensive();
-        Object serializedForm = serializer.serializeRegisteredType(comprehensive);
+        Object serializedForm = serializer.serialize(comprehensive);
         Comprehensive deserializedForm = (Comprehensive) serializer.deserialize(serializedForm, Comprehensive.class);
         assertEquals(comprehensive, deserializedForm);
     }
@@ -29,7 +29,7 @@ public class DefaultSerializerTest extends TestBase {
     public void testSerializeDeserializeComprehensiveNullKeyMap() throws Exception {
         Comprehensive comprehensive = new Comprehensive();
         comprehensive.stringObjectMap.put(null, "something");
-        Object serializedForm = serializer.serializeRegisteredType(comprehensive);
+        Object serializedForm = serializer.serialize(comprehensive);
         Comprehensive deserializedForm = (Comprehensive) serializer.deserialize(serializedForm, Comprehensive.class);
         assertFalse(comprehensive.equals(deserializedForm));
     }
@@ -38,19 +38,13 @@ public class DefaultSerializerTest extends TestBase {
     public void testSerializeDeserializeComprehensiveNullValueMap() throws Exception {
         Comprehensive comprehensive = new Comprehensive();
         comprehensive.stringObjectMap.put("something", null);
-        Object serializedForm = serializer.serializeRegisteredType(comprehensive);
+        Object serializedForm = serializer.serialize(comprehensive);
         Comprehensive deserializedForm = (Comprehensive) serializer.deserialize(serializedForm, Comprehensive.class);
         assertFalse(comprehensive.equals(deserializedForm));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testSerializeUnknownObject() throws Exception {
-        boolean thrown = false;
-        try {
-            serializer.serializeRegisteredType(new Unknown());
-        } catch (IllegalArgumentException e) {
-            thrown = true;
-        }
-        assertTrue(thrown);
+        serializer.serialize(new Unknown());
     }
 }

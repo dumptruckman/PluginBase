@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -122,38 +123,42 @@ public abstract class BukkitConfiguration extends FileConfiguration {
     protected abstract String buildHeader();
 
     /**
-     * Retrieves the object data at the specified path and attempts to insert it into the given object, if possible.
+     * Retrieves the object data at the specified path and attempts to insert it into an object of the given type, if
+     * possible.
      * <p/>
-     * If the specified path contains an object of the same type as the given object, the object at the specified path
-     * will be returned.
+     * If the specified path contains an object of the given type, the object at the specified path will be returned.
      * <p/>
-     * If the specified path contains valid data for filling the given object, this will be done and the data the
-     * specified path will be replaced by the given object.
+     * If the specified path contains valid data for filling an object of the given type, this will be done and the data
+     * at the specified path will be replaced by the returned object.
      *
      * @param path The path to retrieve data from.
-     * @param object The object to insert the data into.
+     * @param clazz The type of object expected from the given data.
      * @param <T> The object's type.
      * @return An object from the specified path or made from data at the specified path.  If there is nothing at the
      * specified path or the data cannot be parsed into the correct type of object, null will be returned.
      */
+
     @Nullable
-    public <T> T getToObject(@NotNull String path, @NotNull T object) {
+    public <T> T getAs(@NotNull String path, @NotNull Class<T> clazz) {
         Object o = get(path);
-        if (o != null && o.getClass().equals(object.getClass())) {
+        if (o != null && o.getClass().equals(clazz)) {
             return (T) o;
         }
         if (o instanceof ConfigurationSection) {
             o = convertSectionToMap((ConfigurationSection) o);
         }
-        if (SerializationRegistrar.isClassRegistered(object.getClass()) && o instanceof Map) {
+        if (o instanceof List) {
+            o = convertList((List) o);
+        }
+        if (o != null && SerializationRegistrar.isClassRegistered(clazz)) {
             try {
-                object = (T) ConfigSerializer.deserializeToObject((Map) o, object);
+                T object = (T) ConfigSerializer.deserializeAs(o, clazz);
                 set(path, object);
                 return object;
             } catch (Exception e) {
                 return null;
             }
-        } else if (object.getClass().isInstance(o)) {
+        } else if (clazz.isInstance(o)) {
             return (T) o;
         } else {
             return null;
@@ -176,5 +181,15 @@ public abstract class BukkitConfiguration extends FileConfiguration {
             result.put(key, value);
         }
         return result;
+    }
+
+    private List convertList(@NotNull List list) {
+        for (int i = 0; i < list.size(); i++) {
+            Object o = list.get(i);
+            if (o instanceof ConfigurationSection) {
+                list.set(i, convertSectionToMap((ConfigurationSection) o));
+            }
+        }
+        return list;
     }
 }

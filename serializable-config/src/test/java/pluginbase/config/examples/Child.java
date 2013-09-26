@@ -2,7 +2,7 @@ package pluginbase.config.examples;
 
 import pluginbase.config.annotation.Comment;
 
-public class Child {
+public final class Child {
 
     @Comment("# Test boolean comments")
     private boolean aBoolean;

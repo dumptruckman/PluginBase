@@ -3,7 +3,7 @@ package pluginbase.config.examples;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.properties.PropertyAliases;
 
-public class Parent {
+public final class Parent {
 
     static {
         PropertyAliases.createAlias(Parent.class, "cbool", "aChild", "aBoolean");

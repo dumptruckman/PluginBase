@@ -23,7 +23,7 @@ public class ConfigSerializerTest extends TestBase {
     public void testDeserialize() throws Exception {
         Child child = new Child(true);
         Parent parent = new Parent(child);
-        Map<String, Object> data = ConfigSerializer.serialize(parent);
+        Object data = ConfigSerializer.serialize(parent);
         Object deserialized = ConfigSerializer.deserialize(data);
         assertEquals(parent, deserialized);
     }

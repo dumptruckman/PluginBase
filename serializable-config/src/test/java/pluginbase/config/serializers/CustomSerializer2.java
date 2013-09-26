@@ -11,30 +11,23 @@ public class CustomSerializer2 implements Serializer<Custom> {
 
     @Nullable
     @Override
-    public Object serialize(@Nullable Object object) {
-        return object instanceof Custom ? serializeRegisteredType((Custom) object) : null;
-    }
-
-    @NotNull
-    @Override
-    public Map<String, Object> serializeRegisteredType(@NotNull Custom object) {
-        Map<String, Object> result = new HashMap<String, Object>(1);
-        result.put("name", object.name);
-        return result;
-    }
-
-    @NotNull
-    @Override
-    public Custom deserialize(@NotNull Object serialized, @NotNull Class wantedType) throws IllegalArgumentException {
-        if (serialized instanceof Map) {
-            return deserializeToObject((Map) serialized, new Custom(""));
+    public Object serialize(@Nullable Custom object) {
+        if (object == null) {
+            return null;
         } else {
-            throw new IllegalArgumentException("serialized form must be a map");
+            Map<String, Object> result = new HashMap<String, Object>(1);
+            result.put("name", object.name);
+            return result;
         }
     }
 
+    @Nullable
     @Override
-    public Custom deserializeToObject(@NotNull Map data, @NotNull Custom object) {
-        return new Custom(data.get("name").toString());
+    public Custom deserialize(@Nullable Object serialized, @NotNull Class wantedType) throws IllegalArgumentException {
+        if (serialized instanceof Map) {
+            return new Custom(((Map) serialized).get("name").toString());
+        } else {
+            throw new IllegalArgumentException("serialized form must be a map");
+        }
     }
 }

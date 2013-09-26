@@ -13,10 +13,7 @@ import java.util.Map;
 public interface Serializer<T> {
 
     @Nullable
-    Object serialize(@Nullable Object object);
-
-    @NotNull
-    Map<String, Object> serializeRegisteredType(@NotNull T object);
+    Object serialize(@Nullable T object);
 
     /**
      * Transforms the specified object to the type specified by wantedType.
@@ -35,8 +32,6 @@ public interface Serializer<T> {
      * @return The deserialized form of the serialized object.
      * @throws IllegalArgumentException if the serialized object's type is not deserializable.
      */
-    @NotNull
-    T deserialize(@NotNull Object serialized, @NotNull Class wantedType) throws IllegalArgumentException;
-
-    T deserializeToObject(@NotNull Map data, @NotNull T object);
+    @Nullable
+    T deserialize(@Nullable Object serialized, @NotNull Class<T> wantedType) throws IllegalArgumentException;
 }

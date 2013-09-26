@@ -60,22 +60,29 @@ public class DefaultSerializer implements Serializer<Object> {
     @Nullable
     @Override
     public Object serialize(@Nullable Object object) {
-        if (object != null && SerializationRegistrar.isClassRegistered(object.getClass())) {
+        if (object == null) {
+            return null;
+        }
+        if (SerializationRegistrar.isClassRegistered(object.getClass())) {
             return serializeRegisteredType(object);
         } else if (object instanceof Map) {
             return serializeMap((Map) object);
         } else if (object instanceof Collection) {
             return serializeCollection((Collection) object);
-        } /* else if (object instanceof Iterable) {
-            return serializeIterable((Iterable) object);
-        } */ else {
+        } else if (object instanceof Enum) {
+            return ((Enum) object).name();
+        } else if (object instanceof String
+                || PRIMITIVE_WRAPPER_MAP.containsKey(object.getClass())
+                || PRIMITIVE_WRAPPER_MAP.containsValue(object.getClass())) {
             return String.valueOf(object);
+        } else {
+            throw new IllegalArgumentException(object.getClass() + " is not registered for serialization.");
         }
     }
 
     @NotNull
-    @Override
-    public Map<String, Object> serializeRegisteredType(@NotNull Object object) {
+    //@Override
+    protected Map<String, Object> serializeRegisteredType(@NotNull Object object) {
         if (!SerializationRegistrar.isClassRegistered(object.getClass())) {
             throw new IllegalArgumentException(object.getClass() + " is not registered for serialization.");
         }
@@ -94,9 +101,6 @@ public class DefaultSerializer implements Serializer<Object> {
     protected Object serializeField(@NotNull Object object, @NotNull Field field) {
         Object value = field.getValue(object);
         Serializer serializer = field.getSerializer();
-        if (SerializationRegistrar.isClassRegistered(value.getClass())) {
-            return serializer.serializeRegisteredType(value);
-        }
         return serializer.serialize(value);
     }
 
@@ -214,7 +218,7 @@ public class DefaultSerializer implements Serializer<Object> {
                 Object fieldValue = field.getValue(object);
                 Object serializedFieldData = data.get(key);
                 if (isEligibleForDeserializationToObject(serializedFieldData, fieldValue)) {
-                    fieldValue = deserializeFieldToObject(field, serializedFieldData, fieldValue);
+                    fieldValue = deserializeFieldAs(field, serializedFieldData, fieldValue.getClass());
                 } else {
                     fieldValue = deserializeField(field, serializedFieldData);
                 }
@@ -234,9 +238,9 @@ public class DefaultSerializer implements Serializer<Object> {
         return object != null && SerializationRegistrar.isClassRegistered(object.getClass()) && data instanceof Map;
     }
 
-    protected Object deserializeFieldToObject(@NotNull Field field, @NotNull Object data, @NotNull Object object) {
+    protected Object deserializeFieldAs(@NotNull Field field, @NotNull Object data, @NotNull Class asClass) {
         Serializer serializer = field.getSerializer();
-        return serializer.deserializeToObject((Map) data, object);
+        return serializer.deserialize((Map) data, asClass);
     }
 
     protected Object deserializeField(Field field, Object data) {

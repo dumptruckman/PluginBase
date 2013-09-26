@@ -238,6 +238,6 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
         config = getConfig();
         config.loadFromString(yamlString);
         assertFalse(parent.equals(config.get("test")));
-        assertEquals(parent, config.getToObject("test", new Parent(new Child(false))));
+        assertEquals(parent, config.getAs("test", Parent.class));
     }
 }
