@@ -1,0 +1,31 @@
+package pluginbase.util;
+
+import org.bukkit.command.CommandSender;
+
+import java.util.List;
+
+public class MockQueuedCommand {//extends QueuedPluginCommand<MockPlugin> {
+
+    public static boolean TEST = false;
+
+    public MockQueuedCommand(MockPlugin plugin) {
+        //super(plugin);
+        //addPrefixedKey(" test");
+        //setPermission(new Permission("test"));
+    }
+
+    //@Override
+    public void preConfirm(CommandSender sender, List<String> args) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    //@Override
+    public void onConfirm(CommandSender sender, List<String> args) {
+        TEST = true;
+    }
+
+    //@Override
+    public void onExpire(CommandSender sender, List<String> args) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+}
