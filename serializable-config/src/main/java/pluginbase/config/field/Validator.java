@@ -4,8 +4,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.beans.PropertyVetoException;
 
-public interface Validator {
+public interface Validator<T> {
 
     @Nullable
-    Object validateChange(@Nullable Object newValue, @Nullable Object oldValue) throws PropertyVetoException;
+    T validateChange(@Nullable T newValue, @Nullable T oldValue) throws PropertyVetoException;
 }

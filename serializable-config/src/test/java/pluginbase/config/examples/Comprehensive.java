@@ -53,11 +53,11 @@ public class Comprehensive extends PropertiesWrapper {
         PropertyAliases.createAlias(Comprehensive.class, "cname", "custom", "name");
     }
 
-    public static class NameValidator implements Validator {
+    public static class NameValidator implements Validator<String> {
         @Nullable
         @Override
-        public Object validateChange(@Nullable Object newValue, @Nullable Object oldValue) throws PropertyVetoException {
-            if (newValue instanceof String && ((String) newValue).length() >= 4) {
+        public String validateChange(@Nullable String newValue, @Nullable String oldValue) throws PropertyVetoException {
+            if (newValue != null && newValue.length() >= 4) {
                 return newValue;
             } else {
                 return oldValue;
