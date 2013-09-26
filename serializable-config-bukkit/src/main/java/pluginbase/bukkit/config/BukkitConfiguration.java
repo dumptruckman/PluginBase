@@ -166,7 +166,8 @@ public abstract class BukkitConfiguration extends FileConfiguration {
         }
     }
 
-    @Nullable <T> T getToObject(@NotNull String path, @NotNull T destination) {
+    @Nullable
+    public <T> T getToObject(@NotNull String path, @NotNull T destination) {
         T source = getAs(path, (Class<T>) destination.getClass());
         if (source != null) {
             return FieldMapper.mapFields(source, destination);
