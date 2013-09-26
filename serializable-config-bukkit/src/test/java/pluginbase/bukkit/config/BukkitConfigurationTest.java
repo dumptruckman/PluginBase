@@ -220,7 +220,7 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
     }
 
     @Test
-    public void testGetToObject() throws Exception {
+    public void testGetAs() throws Exception {
         Child child = new Child(true);
         Parent parent = new Parent(child);
         BukkitConfiguration config = getConfig();
@@ -239,5 +239,27 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
         config.loadFromString(yamlString);
         assertFalse(parent.equals(config.get("test")));
         assertEquals(parent, config.getAs("test", Parent.class));
+    }
+
+    @Test
+    public void testGetToObject() throws Exception {
+        Child child = new Child(true);
+        Parent parent = new Parent(child);
+        BukkitConfiguration config = getConfig();
+        config.set("test", parent);
+        String yamlString = config.saveToString();
+        List<String> lines = new ArrayList<String>(Arrays.asList(yamlString.split("\n")));
+        StringBuilder builder = new StringBuilder();
+        for (String line : lines) {
+            if (!line.contains(ConfigSerializer.SERIALIZED_TYPE_KEY)) {
+                builder.append(line);
+                builder.append("\n");
+            }
+        }
+        yamlString = builder.toString();
+        config = getConfig();
+        config.loadFromString(yamlString);
+        assertFalse(parent.equals(config.get("test")));
+        assertEquals(parent, config.getToObject("test", new Parent(new Child(false))));
     }
 }

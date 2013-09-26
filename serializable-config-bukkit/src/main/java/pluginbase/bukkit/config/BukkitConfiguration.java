@@ -10,6 +10,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.config.field.FieldMapper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -160,6 +161,15 @@ public abstract class BukkitConfiguration extends FileConfiguration {
             }
         } else if (clazz.isInstance(o)) {
             return (T) o;
+        } else {
+            return null;
+        }
+    }
+
+    @Nullable <T> T getToObject(@NotNull String path, @NotNull T destination) {
+        T source = getAs(path, (Class<T>) destination.getClass());
+        if (source != null) {
+            return FieldMapper.mapFields(source, destination);
         } else {
             return null;
         }
