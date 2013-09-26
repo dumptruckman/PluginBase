@@ -7,6 +7,7 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Serializable-Config</artifactId>
+    <version>${serializable-config.version}</version>
 
     <repositories>
         <repository>
@@ -19,7 +20,7 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Logging</artifactId>
-            <version>${project.version}</version>
+            <version>${logging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

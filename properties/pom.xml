@@ -7,19 +7,20 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Properties</artifactId>
+    <version>${properties.version}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Logging</artifactId>
-            <version>${project.version}</version>
+            <version>${logging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Messages</artifactId>
-            <version>${project.version}</version>
+            <version>${messages.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

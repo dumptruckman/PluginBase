@@ -7,12 +7,13 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Messages</artifactId>
+    <version>${messages.version}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Logging</artifactId>
-            <version>${project.version}</version>
+            <version>${logging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

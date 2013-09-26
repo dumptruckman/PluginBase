@@ -7,26 +7,27 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>MinecraftLink</artifactId>
+    <version>${minecraftlink.version}</version>
 
     <dependencies>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Logging</artifactId>
-            <version>${project.version}</version>
+            <version>${logging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Messaging</artifactId>
-            <version>${project.version}</version>
+            <version>${messaging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Permissions</artifactId>
-            <version>${project.version}</version>
+            <version>${permissions.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

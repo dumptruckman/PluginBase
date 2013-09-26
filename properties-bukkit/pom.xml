@@ -7,6 +7,7 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Properties-Bukkit</artifactId>
+    <version>${properties-bukkit.version}</version>
 
     <repositories>
         <repository>
@@ -19,14 +20,14 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Logging</artifactId>
-            <version>${project.version}</version>
+            <version>${logging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Properties</artifactId>
-            <version>${project.version}</version>
+            <version>${properties.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

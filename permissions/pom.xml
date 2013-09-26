@@ -7,6 +7,7 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Permissions</artifactId>
+    <version>${permissions.version}</version>
 
     <build>
         <defaultGoal>clean package</defaultGoal>

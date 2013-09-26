@@ -7,6 +7,7 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>TestBukkitPlugin</artifactId>
+    <version>${testbukkitplugin.version}</version>
 
     <repositories>
         <repository>
@@ -20,7 +21,7 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>BukkitPlugin</artifactId>
-            <version>${project.version}</version>
+            <version>${bukkitplugin.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
