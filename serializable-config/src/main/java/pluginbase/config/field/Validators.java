@@ -10,7 +10,7 @@ public enum Validators {
 
     private static Map<Class<? extends Validator>, Validator> validatorMap = new HashMap<Class<? extends Validator>, Validator>();
 
-    public static <T> Validator<T> getValidator(Class<? extends Validator<T>> validatorClass) {
+    public static <T, V extends Validator<T>> Validator<T> getValidator(Class<V> validatorClass) {
         if (validatorMap.containsKey(validatorClass)) {
             return validatorMap.get(validatorClass);
         }
