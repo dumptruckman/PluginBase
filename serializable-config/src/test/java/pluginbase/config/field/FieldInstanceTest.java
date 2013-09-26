@@ -13,7 +13,7 @@ public class FieldInstanceTest extends TestBase {
     public void testLocateField() throws Exception {
         Child child = new Child(true);
         Parent parent = new Parent(child);
-        FieldInstance fieldInstance = Field.locateField(parent, "achild", "aboolean");
+        FieldInstance fieldInstance = Field.getInstance(parent, "achild", "aboolean");
 
         assertNotNull(fieldInstance);
         assertTrue((Boolean) fieldInstance.getValue());
@@ -25,7 +25,7 @@ public class FieldInstanceTest extends TestBase {
     public void testLocateFieldWithAlias() throws Exception {
         Child child = new Child(true);
         Parent parent = new Parent(child);
-        FieldInstance fieldInstance = Field.locateField(parent, "cbool");
+        FieldInstance fieldInstance = Field.getInstance(parent, "cbool");
 
         assertNotNull(fieldInstance);
         assertTrue((Boolean) fieldInstance.getValue());

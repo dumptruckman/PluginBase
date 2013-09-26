@@ -19,7 +19,7 @@ public class Field extends FieldMap {
     private final boolean persistable;
 
     @Nullable
-    public static FieldInstance locateField(@NotNull Object object, @NotNull String... name) {
+    public static FieldInstance getInstance(@NotNull Object object, @NotNull String... name) {
         if (name.length == 0) {
             throw new IllegalArgumentException("name cannot be 0 length array.");
         }

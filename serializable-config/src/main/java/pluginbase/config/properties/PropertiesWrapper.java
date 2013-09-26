@@ -27,7 +27,7 @@ public class PropertiesWrapper implements Properties {
     @Nullable
     @Override
     public Object getProperty(@NotNull String... name) throws NoSuchFieldException, IllegalArgumentException {
-        FieldInstance field = Field.locateField(object, name);
+        FieldInstance field = Field.getInstance(object, name);
         if (field == null) {
             throw new NoSuchFieldException("No property by that name exists.");
         }
@@ -36,7 +36,7 @@ public class PropertiesWrapper implements Properties {
 
     @Override
     public void setProperty(@Nullable Object value, @NotNull String... name) throws NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
-        FieldInstance field = Field.locateField(object, name);
+        FieldInstance field = Field.getInstance(object, name);
         if (field == null) {
             throw new NoSuchFieldException("No property by that name exists.");
         }
@@ -46,7 +46,7 @@ public class PropertiesWrapper implements Properties {
     @Nullable
     @Override
     public Object getPropertyUnchecked(@NotNull String... name) throws IllegalArgumentException {
-        FieldInstance field = Field.locateField(object, name);
+        FieldInstance field = Field.getInstance(object, name);
         if (field == null) {
             return null;
         }
@@ -55,7 +55,7 @@ public class PropertiesWrapper implements Properties {
 
     @Override
     public boolean setPropertyUnchecked(@Nullable Object value, @NotNull String... name) throws IllegalArgumentException {
-        FieldInstance field = Field.locateField(object, name);
+        FieldInstance field = Field.getInstance(object, name);
         if (field != null) {
             try {
                 field.setValue(value);
