@@ -9,7 +9,7 @@ public interface Properties {
     @Nullable
     Object getProperty(@NotNull String... name) throws NoSuchFieldException, IllegalArgumentException;
 
-    void setProperty(@Nullable Object value, @NotNull String... name) throws NoSuchFieldException, PropertyVetoException, IllegalArgumentException;
+    void setProperty(@Nullable Object value, @NotNull String... name) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException;
 
     @Nullable
     Object getPropertyUnchecked(@NotNull String... name) throws IllegalArgumentException;

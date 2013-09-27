@@ -2,6 +2,7 @@ package pluginbase.config.examples;
 
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.Description;
+import pluginbase.config.annotation.Immutable;
 import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.annotation.ValidateWith;
 import pluginbase.config.field.PropertyVetoException;
@@ -76,9 +77,12 @@ public class Comprehensive extends PropertiesWrapper {
     public List<List<String>> listList = new ArrayList<List<String>>(LIST_LIST);
     public List<Object> randomList = new ArrayList<Object>(RANDOM_LIST);
     public Map<String, Object> stringObjectMap = new HashMap<String, Object>(STRING_OBJECT_MAP);
-    public Custom custom = new Custom(CUSTOM.name);
+    public final Custom custom = new Custom(CUSTOM.name);
     @SerializeWith(CustomSerializer2.class)
     public Custom custom2 = new Custom(CUSTOM.name);
+    @Immutable
+    public Custom custom3 = new Custom(CUSTOM.name);
+    public final String finalString = NAME;
 
     @Override
     public boolean equals(Object o) {
@@ -97,6 +101,8 @@ public class Comprehensive extends PropertiesWrapper {
         if (!stringObjectMap.equals(that.stringObjectMap)) return false;
         if (!wordList.equals(that.wordList)) return false;
         if (!wordList2.equals(that.wordList2)) return false;
+        if (!custom3.equals(that.custom3)) return false;
+        if (!finalString.equals(that.finalString)) return false;
 
         return true;
     }
@@ -129,6 +135,8 @@ public class Comprehensive extends PropertiesWrapper {
                 ", stringObjectMap=" + stringObjectMap +
                 ", custom=" + custom +
                 ", custom2=" + custom2 +
+                ", custom3=" + custom3 +
+                ", finalString='" + finalString + '\'' +
                 '}';
     }
 }

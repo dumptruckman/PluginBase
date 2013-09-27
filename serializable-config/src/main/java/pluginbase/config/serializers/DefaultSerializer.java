@@ -223,7 +223,7 @@ public class DefaultSerializer implements Serializer<Object> {
                     fieldValue = deserializeField(field, serializedFieldData);
                 }
                 try {
-                    field.setValue(object, fieldValue);
+                    field.forceSet(object, fieldValue);
                 } catch (PropertyVetoException e) {
                     e.printStackTrace();
                 }
