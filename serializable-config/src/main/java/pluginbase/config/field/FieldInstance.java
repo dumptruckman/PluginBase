@@ -50,4 +50,8 @@ public class FieldInstance {
     public Validator getValidator() {
         return field.getValidator();
     }
+
+    public boolean isFinal() {
+        return field.isFinal();
+    }
 }

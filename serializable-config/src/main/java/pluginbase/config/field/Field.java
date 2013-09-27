@@ -67,7 +67,7 @@ public class Field extends FieldMap {
         return persistable;
     }
 
-    public boolean isMutable() {
+    public boolean isFinal() {
         return mutable;
     }
 
@@ -119,7 +119,7 @@ public class Field extends FieldMap {
     }
 
     public void setValue(@NotNull Object object, @Nullable Object value) throws PropertyVetoException {
-        if (!isMutable()) {
+        if (isFinal()) {
             return;
         }
         boolean accessible = field.isAccessible();

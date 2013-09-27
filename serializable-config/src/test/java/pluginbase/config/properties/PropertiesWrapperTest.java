@@ -129,6 +129,12 @@ public class PropertiesWrapperTest extends TestBase {
         assertEquals(custom.name, properties.getProperty("name"));
     }
 
+    @Test(expected = IllegalAccessException.class)
+    public void testSetPropertyFinalField() throws Exception {
+        Comprehensive comp = new Comprehensive();
+        comp.setProperty(new Custom("a"), "custom");
+    }
+
     @Test
     public void testGetPropertyAlias() throws Exception {
         assertEquals(comprehensive.custom.name, comprehensive.getProperty("cname"));
