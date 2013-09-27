@@ -52,6 +52,6 @@ public class FieldInstance {
     }
 
     public boolean isFinal() {
-        return field.isFinal();
+        return field.isImmutable();
     }
 }

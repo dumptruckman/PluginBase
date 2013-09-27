@@ -150,4 +150,9 @@ public class PropertiesWrapperTest extends TestBase {
         PropertyAliases.createAlias(Comprehensive.class, "testing", "custom", "test");
         comprehensive.getProperty("testing");
     }
+
+    @Test(expected = IllegalAccessException.class)
+    public void testSetPropertyFinal() throws Exception {
+        comprehensive.setProperty("newValue", "finalString");
+    }
 }
