@@ -34,10 +34,13 @@ public class PropertiesWrapper implements Properties {
     }
 
     @Override
-    public void setProperty(@Nullable Object value, @NotNull String... name) throws NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
+    public void setProperty(@Nullable Object value, @NotNull String... name) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
         FieldInstance field = Field.getInstance(object, name);
         if (field == null) {
             throw new NoSuchFieldException("No property by that name exists.");
+        }
+        if (field.isFinal()) {
+            throw new IllegalAccessException("You may not modify this property.");
         }
         field.setValue(value);
     }
@@ -66,6 +69,4 @@ public class PropertiesWrapper implements Properties {
             return false;
         }
     }
-
-
 }
