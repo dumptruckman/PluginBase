@@ -7,6 +7,9 @@
 
 package pluginbase.util;
 
+import org.bukkit.craftbukkit.v1_6_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_6_R2.help.SimpleHelpMap;
+import org.bukkit.help.HelpMap;
 import pluginbase.bukkit.AbstractBukkitPlugin;
 import pluginbase.bukkit.BukkitHelper;
 import pluginbase.messages.Messages;
@@ -132,6 +135,10 @@ public class TestInstanceCreator {
                 }
             });
 
+            CraftServer mockCraftServer = PowerMockito.mock(CraftServer.class);
+            HelpMap helpMap = new SimpleHelpMap(mockCraftServer);
+            when(mockServer.getHelpMap()).thenReturn(helpMap);
+
             doReturn(BukkitHelper.getServerInterface(mockServer)).when(plugin).getServerInterface();
 
             // Make some fake folders to fool the fake MV into thinking these worlds exist
@@ -149,7 +156,6 @@ public class TestInstanceCreator {
             PluginManager mockPluginManager = Mockito.spy(new SimplePluginManager(mockServer, new SimpleCommandMap(mockServer)));
             when(mockPluginManager.getPlugins()).thenReturn(plugins);
             when(mockPluginManager.getPlugin("PluginBase")).thenReturn(plugin);
-            when(mockPluginManager.getPermission(anyString())).thenReturn(null);
             doAnswer(new Answer() {
                 @Override
                 public Object answer(InvocationOnMock invocationOnMock) throws Throwable {

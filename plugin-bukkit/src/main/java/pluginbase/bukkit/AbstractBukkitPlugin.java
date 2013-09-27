@@ -6,7 +6,6 @@ package pluginbase.bukkit;
 import pluginbase.bukkit.config.BukkitConfiguration;
 import pluginbase.bukkit.config.YamlConfiguration;
 import pluginbase.bukkit.permission.BukkitPermFactory;
-import pluginbase.bukkit.properties.YamlProperties;
 import pluginbase.command.Command;
 import pluginbase.command.CommandException;
 import pluginbase.command.CommandHandler;
@@ -14,12 +13,10 @@ import pluginbase.command.CommandInfo;
 import pluginbase.command.CommandUsageException;
 import pluginbase.command.QueuedCommand;
 import pluginbase.database.MySQL;
-import pluginbase.database.SQLConfig;
 import pluginbase.database.SQLDatabase;
+import pluginbase.database.SQLSettings;
 import pluginbase.database.SQLite;
 import pluginbase.logging.PluginLogger;
-import pluginbase.messages.Message;
-import pluginbase.messages.Messages;
 import pluginbase.messages.PluginBaseException;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
@@ -33,7 +30,6 @@ import pluginbase.plugin.command.builtin.DebugCommand;
 import pluginbase.plugin.command.builtin.InfoCommand;
 import pluginbase.plugin.command.builtin.ReloadCommand;
 import pluginbase.plugin.command.builtin.VersionCommand;
-import pluginbase.properties.Properties;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -56,16 +52,19 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private final BukkitPluginInfo pluginInfo = new BukkitPluginInfo(this);
 
     private ServerInterface<BukkitPlugin> serverInterface;
-    private Settings settings = null;
     private BukkitMessager messager = null;
     private CommandHandler commandHandler = null;
     private SQLDatabase db = null;
-    private Properties sqlConfig = null;
     private Metrics metrics = null;
     private PluginLogger logger;
 
-    private final File configFile = new File("config.yml");
+    private File configFile;
     private BukkitConfiguration config = null;
+    private Settings settings = null;
+
+    private File sqlConfigFile;
+    private BukkitConfiguration sqlConfig = null;
+    private SQLSettings sqlSettings = null;
 
     /**
      * Override this method if you wish for your permissions to start with something other than the plugin name
@@ -82,6 +81,9 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     /** {@inheritDoc} */
     @Override
     public final void onLoad() {
+        // Setup config files
+        configFile = new File(getDataFolder(), "config.yml");
+        sqlConfigFile = new File(getDataFolder(), "db_config.yml");
         // Setup the server interface.
         this.serverInterface = new BukkitServerInterface(getServer());
         // Initialize our logging.
@@ -137,7 +139,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         setupMessager(settings.getLanguageSettings());
 
         // Do any important first run stuff here.
-        if (getSettings() != null && getSettings().isFirstRun()) {
+        if (getSettings().isFirstRun()) {
             firstRun();
             getSettings().setFirstRun(false);
             try {
@@ -177,13 +179,10 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         if (useDatabase()) {
             this.db = null;
             initDatabase();
-            if (sqlConfig().get(SQLConfig.DB_TYPE).equalsIgnoreCase("mysql")) {
+            if (getSQLSettings().getDatabaseType().equalsIgnoreCase("mysql")) {
+                SQLSettings.DatabaseInfo dbInfo = getSQLSettings().getDatabaseInfo();
                 try {
-                    this.db = new MySQL(sqlConfig().get(SQLConfig.DB_HOST),
-                            sqlConfig().get(SQLConfig.DB_PORT),
-                            sqlConfig().get(SQLConfig.DB_DATABASE),
-                            sqlConfig().get(SQLConfig.DB_USER),
-                            sqlConfig().get(SQLConfig.DB_PASS));
+                    this.db = new MySQL(dbInfo.getHost(), dbInfo.getPort(), dbInfo.getDatabase(), dbInfo.getUser(), dbInfo.getPass());
                 } catch (ClassNotFoundException e) {
                     getLog().severe("Your server does not support MySQL!");
                 }
@@ -216,6 +215,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private Settings setupConfig() {
         try {
             config = BukkitConfiguration.loadYamlConfig(getConfigurationFile());
+            ((YamlConfiguration) config).options().comments(true);
             Settings defaults = getDefaultSettings();
             settings = config.getToObject("settings", defaults);
             if (settings == null) {
@@ -363,6 +363,8 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         return settings;
     }
 
+    /** {@inheritDoc} */
+    @Override
     public void saveConfig() {
         try {
             saveSettings();
@@ -371,12 +373,16 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         }
     }
 
-    private void saveSettings() throws SendablePluginBaseException {
-        YamlConfiguration config = new YamlConfiguration();
+    /** {@inheritDoc} */
+    @Override
+    public void saveSettings() throws SendablePluginBaseException {
         config.set("settings", settings);
+        sqlConfig.set("settings", sqlSettings);
         File configFile = getConfigurationFile();
+        File sqlConfigFile = getSqlConfigFile();
         try {
             config.save(configFile);
+            sqlConfig.save(sqlConfigFile);
         } catch (IOException e) {
             new PluginBaseException(e).logException(getLog(), Level.WARNING);
         }
@@ -399,8 +405,8 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     /** {@inheritDoc} */
     @Nullable
     @Override
-    public Properties sqlConfig() {
-        return sqlConfig;
+    public SQLSettings getSQLSettings() {
+        return sqlSettings;
     }
 
     /** {@inheritDoc} */
@@ -415,9 +421,24 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      */
     protected abstract boolean useDatabase();
 
+    protected File getSqlConfigFile() {
+        return sqlConfigFile;
+    }
+
+    protected SQLSettings getDefaultSQLSettings() {
+        return new SQLSettings();
+    }
+
     private void initDatabase() {
         try {
-            sqlConfig = new YamlProperties.Loader(getLog(), new File(getDataFolder(), "db_config.yml"), SQLConfig.class).load();
+            SQLSettings defaults = getDefaultSQLSettings();
+            sqlConfig = BukkitConfiguration.loadYamlConfig(getSqlConfigFile());
+            ((YamlConfiguration) sqlConfig).options().comments(true);
+            sqlSettings = sqlConfig.getToObject("settings", defaults);
+            if (sqlSettings == null) {
+                sqlSettings = defaults;
+            }
+            getLog().fine("Loaded db config file!");
         } catch (PluginBaseException e) {
             getLog().severe("Could not create db_config.yml!");
             e.logException(getLog(), Level.SEVERE);

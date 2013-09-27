@@ -17,8 +17,15 @@ public enum Serializers {
         }
         try {
             Constructor<S> constructor = serializerClass.getDeclaredConstructor();
+            boolean accessible = constructor.isAccessible();
+            if (!accessible) {
+                constructor.setAccessible(true);
+            }
             S serializer = constructor.newInstance();
             registerSerializerInstance(serializerClass, serializer);
+            if (!accessible) {
+                constructor.setAccessible(false);
+            }
             return serializer;
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);

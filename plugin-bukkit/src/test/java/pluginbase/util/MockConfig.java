@@ -1,5 +1,6 @@
 package pluginbase.util;
 
+import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.Name;
 import pluginbase.plugin.PluginBase;
@@ -13,6 +14,12 @@ import java.util.Map;
 
 @Comment("===[ PluginBase Settings ]===")
 public class MockConfig extends Settings {
+
+    static {
+        SerializationRegistrar.registerClass(MockConfig.class);
+        SerializationRegistrar.registerClass(Nested.class);
+        SerializationRegistrar.registerClass(Nested.DoubleNested.class);
+    }
 
     @Comment("===[ PluginBase Test ]===")
     public boolean test = true;
@@ -29,6 +36,8 @@ public class MockConfig extends Settings {
     public MockConfig(@NotNull PluginBase plugin) {
         super(plugin);
     }
+
+    private MockConfig() { }
 
     public static class Nested {
 

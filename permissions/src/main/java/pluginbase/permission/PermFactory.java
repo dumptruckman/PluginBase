@@ -205,7 +205,7 @@ public abstract class PermFactory {
      * @return this PermFactory for method chaining.
      */
     public PermFactory parent(final String name) {
-        return parent(name, true);
+        return parent(name.toLowerCase(), true);
     }
 
     /**
@@ -227,7 +227,7 @@ public abstract class PermFactory {
      * @return this PermFactory for method chaining.
      */
     public PermFactory parent(final String name, final boolean state) {
-        parents.put(name, state);
+        parents.put(name.toLowerCase(), state);
         return this;
     }
 

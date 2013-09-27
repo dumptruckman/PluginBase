@@ -11,7 +11,6 @@ import pluginbase.messages.Theme;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
 import pluginbase.permission.PermFactory;
-import pluginbase.plugin.BaseConfig;
 import pluginbase.plugin.PluginBase;
 import pluginbase.util.webpaste.BitlyURLShortener;
 import pluginbase.util.webpaste.PasteFailedException;

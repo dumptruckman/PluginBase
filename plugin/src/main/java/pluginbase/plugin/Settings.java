@@ -41,7 +41,7 @@ public class Settings extends PropertiesWrapper {
         this.debugLevel = new VirtualDebug(plugin.getLog());
     }
 
-    private Settings() { }
+    protected Settings() { }
 
     @NotNull
     public Language getLanguageSettings() {

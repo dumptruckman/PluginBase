@@ -6,13 +6,11 @@ package pluginbase.plugin.command.builtin;
 import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
 import pluginbase.messages.Message;
-import pluginbase.messages.PluginBaseException;
 import pluginbase.messages.Theme;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
 import pluginbase.permission.PermFactory;
-import pluginbase.plugin.BaseConfig;
 import pluginbase.plugin.PluginBase;
 import org.jetbrains.annotations.NotNull;
 

@@ -32,7 +32,7 @@ public class BukkitPerm extends Perm {
 
     private Permission setupPermission(final String name) {
         final PluginManager pluginManager = Bukkit.getPluginManager();
-        Permission permission = pluginManager.getPermission(name);
+        Permission permission = pluginManager.getPermission(name.toLowerCase());
         if (permission == null) {
             permission = new Permission(name, getDescription(), getPermissionDefault(), getChildren());
             for (Map.Entry<String, Boolean> parent : parents.entrySet()) {
@@ -40,6 +40,24 @@ public class BukkitPerm extends Perm {
             }
             pluginManager.addPermission(permission);
             return permission;
+        } else {
+            boolean changed = false;
+            if (!permission.getDescription().equals(getDescription())) {
+                permission.setDescription(getDescription());
+                changed = true;
+            }
+            if (!permission.getDefault().equals(getPermissionDefault())) {
+                permission.setDefault(getPermissionDefault());
+                changed = true;
+            }
+            if (!permission.getChildren().equals(getChildren())) {
+                permission.getChildren().clear();
+                permission.getChildren().putAll(getChildren());
+                changed = true;
+            }
+            if (changed) {
+                return permission;
+            }
         }
         return null;
     }
@@ -49,7 +67,9 @@ public class BukkitPerm extends Perm {
     protected void verify(final String name) {
         final Permission permission = setupPermission(name);
         if (permission != null) {
-            Bukkit.getPluginManager().recalculatePermissionDefaults(permission);
+            try {
+                Bukkit.getPluginManager().recalculatePermissionDefaults(permission);
+            } catch (IllegalArgumentException e) { }
         }
     }
 

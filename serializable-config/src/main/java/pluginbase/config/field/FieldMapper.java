@@ -18,11 +18,11 @@ public class FieldMapper {
 
     public static <T> T mapFields(T source, T destination) {
         FieldMap sourceMap = getFieldMap(source.getClass());
-        mapFields(sourceMap, source, destination);
+        destination = mapFields(sourceMap, source, destination);
         return destination;
     }
 
-    private static <T> void mapFields(FieldMap sourceMap, T source, T destination) {
+    private static <T> T mapFields(FieldMap sourceMap, T source, T destination) {
         for (Field field : sourceMap) {
             if (field.hasChildFields()) {
                 mapFields(field, field.getValue(source), field.getValue(destination));
@@ -34,6 +34,7 @@ public class FieldMapper {
                 }
             }
         }
+        return destination;
     }
 
     public static FieldMap getFieldMap(@NotNull Class clazz) {

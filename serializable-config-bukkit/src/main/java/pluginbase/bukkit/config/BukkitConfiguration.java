@@ -47,6 +47,9 @@ public abstract class BukkitConfiguration extends FileConfiguration {
         YamlConfiguration config = new YamlConfiguration();
 
         try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
             config.load(file);
         } catch (FileNotFoundException ex) {
             throw new SendablePluginBaseException(Message.bundleMessage(Messages.COULD_NOT_LOAD, file), ex);
@@ -156,6 +159,7 @@ public abstract class BukkitConfiguration extends FileConfiguration {
                 set(path, object);
                 return object;
             } catch (Exception e) {
+                e.printStackTrace(); // TODO remove
                 return null;
             }
         } else if (clazz.isInstance(o)) {

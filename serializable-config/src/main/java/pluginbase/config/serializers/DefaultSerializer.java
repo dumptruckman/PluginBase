@@ -74,7 +74,7 @@ public class DefaultSerializer implements Serializer<Object> {
         } else if (object instanceof String
                 || PRIMITIVE_WRAPPER_MAP.containsKey(object.getClass())
                 || PRIMITIVE_WRAPPER_MAP.containsValue(object.getClass())) {
-            return String.valueOf(object);
+            return object;
         } else {
             throw new IllegalArgumentException(object.getClass() + " is not registered for serialization.");
         }

@@ -7,17 +7,17 @@
 
 package pluginbase;
 
+import org.bukkit.craftbukkit.v1_6_R2.CraftServer;
 import pluginbase.bukkit.AbstractBukkitPlugin;
 import pluginbase.bukkit.CommandUtil;
+import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.serializers.Serializers;
-import pluginbase.plugin.BaseConfig;
-import pluginbase.plugin.Settings;
+import pluginbase.messages.MessageProvider;
 import pluginbase.plugin.Settings.Language;
 import pluginbase.util.MockConfig;
 import pluginbase.util.MockMessages;
 import pluginbase.util.MockPlugin;
 import pluginbase.util.TestInstanceCreator;
-import junit.framework.Assert;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -32,11 +32,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.File;
 import java.util.*;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ AbstractBukkitPlugin.class, SimplePluginManager.class})
+@PrepareForTest({ AbstractBukkitPlugin.class, SimplePluginManager.class, CraftServer.class })
 public class TestBasics {
     TestInstanceCreator creator;
     Server mockServer;
@@ -72,9 +71,9 @@ public class TestBasics {
         serverDirectory.mkdirs();
 
         // Assert debug mode is off
-        Assert.assertEquals(0, (int) myPlugin.getSettings().getDebugLevel());
+        assertEquals(0, (myPlugin.getSettings().getDebugLevel()));
 
-        Assert.assertFalse(myPlugin.getSettings().isFirstRun());
+        assertFalse(myPlugin.getSettings().isFirstRun());
 
         // Send the debug command.
         CommandUtil.runCommand(plugin, mockCommandSender, "pb debug", "3");
@@ -92,60 +91,54 @@ public class TestBasics {
 
         CommandUtil.runCommand(plugin, mockCommandSender, "pb version", "-p");
 
-        Assert.assertFalse(myPlugin.getSettings().isFirstRun()));
+        assertFalse(myPlugin.getSettings().isFirstRun());
 
-        Assert.assertEquals(3, (int) myPlugin.getSettings().getDebugLevel());
+        assertEquals(3, myPlugin.getSettings().getDebugLevel());
         
         myPlugin.getMessager().message(myPlugin.wrapSender(mockCommandSender), MockMessages.TEST_MESSAGE, "And a test arg");
 
-        Assert.assertEquals(Serializers.getSerializer(Language.LocaleSerializer.class).serialize(BaseConfig.LOCALE.getDefault()), myPlugin.getSettings().getLanguageSettings().getLocale());
+        assertEquals(Serializers.getSerializer(Language.LocaleSerializer.class).serialize(MessageProvider.DEFAULT_LOCALE), myPlugin.getSettings().getLanguageSettings().getLocale().toString());
         
         myPlugin.getSettings().getLanguageSettings().setLocale(Locale.CANADA);
 
-        Assert.assertEquals(Locale.CANADA, myPlugin.getSettings().getLanguageSettings().getLocale());
+        assertEquals(Locale.CANADA, myPlugin.getSettings().getLanguageSettings().getLocale());
         
         myPlugin.saveConfig();
 
         MockConfig defaults = new MockConfig(myPlugin);
 
-        Assert.assertEquals(defaults.specificTest, myPlugin.getConfig().get("specific_test"));
-        Map<String, Integer> testMap = myPlugin.config().get(MockConfig.SPECIFIC_TEST);
-        Assert.assertEquals(null, testMap.get("test1"));
+        assertEquals(defaults.specificTest, myPlugin.getSettings().getProperty("specific_test"));
+        Map<String, Integer> testMap = myPlugin.getSettings().specificTest;
+        assertEquals(null, testMap.get("test1"));
         testMap.put("test1", 25);
-        myPlugin.config().set(MockConfig.SPECIFIC_TEST, testMap);
-        Assert.assertEquals(25, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST).get("test1"));
-        myPlugin.config().flush();
+        myPlugin.saveConfig();
+        myPlugin.reloadConfig();
         CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
-        testMap = new HashMap<String, Integer>(1);
+        testMap = new HashMap<String, Integer>();
         testMap.put("test1", 25);
-        Assert.assertEquals(testMap, myPlugin.config().get(MockConfig.SPECIFIC_TEST));
+        for (Map.Entry<String, Integer> entry : testMap.entrySet()) {
+            assertEquals(entry.getValue(), myPlugin.getSettings().specificTest.get(entry.getKey()));
+        }
+        for (Map.Entry<String, Integer> entry : myPlugin.getSettings().specificTest.entrySet()) {
+            assertEquals(entry.getValue(), testMap.get(entry.getKey()));
+        }
 
-        Assert.assertEquals(null, myPlugin.config().get(MockConfig.SPECIFIC_TEST, "test2"));
-        myPlugin.config().set(MockConfig.SPECIFIC_TEST, "test2", 50);
-        Assert.assertEquals(50, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST).get("test2"));
-        Assert.assertEquals(50, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST, "test2"));
-        myPlugin.config().flush();
-        CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
-        Assert.assertEquals(50, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST).get("test2"));
-        Assert.assertEquals(50, (int) myPlugin.config().get(MockConfig.SPECIFIC_TEST, "test2"));
-
-        Assert.assertEquals(MockConfig.LIST_TEST.getNewTypeList(), myPlugin.config().get(MockConfig.LIST_TEST));
-        myPlugin.config().set(MockConfig.LIST_TEST, Arrays.asList(25, 41));
-        myPlugin.config().flush();
-        CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
-        List<Integer> checkList = myPlugin.config().get(MockConfig.LIST_TEST);
-        assertTrue(checkList instanceof LinkedList);
+        assertEquals(defaults.listTest, myPlugin.getSettings().getProperty("list_test"));
+        myPlugin.getSettings().listTest = Arrays.asList(25, 41);
+        myPlugin.saveConfig();
+        myPlugin.reloadConfig();
+        List<Integer> checkList = myPlugin.getSettings().listTest;
         assertTrue(checkList.contains(25) && checkList.contains(41));
 
-        assertTrue(myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
-        myPlugin.config().get(MockConfig.NESTED_TEST).set(MockConfig.Nested.TEST, false);
-        assertTrue(!myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
-        CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
-        assertTrue(myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
-        myPlugin.config().get(MockConfig.NESTED_TEST).set(MockConfig.Nested.TEST, false);
-        assertTrue(!myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
-        myPlugin.config().flush();
-        CommandUtil.runCommand(plugin, mockCommandSender, "pb reload");
-        assertTrue(!myPlugin.config().get(MockConfig.NESTED_TEST).get(MockConfig.Nested.TEST));
+        assertTrue(myPlugin.getSettings().nested.test);
+        myPlugin.getSettings().nested.test = false;
+        assertTrue(!myPlugin.getSettings().nested.test);
+        myPlugin.reloadConfig();
+        assertTrue((Boolean) myPlugin.getSettings().getProperty("nested", "nested_test"));
+        myPlugin.getSettings().nested.test = false;
+        assertTrue(!myPlugin.getSettings().nested.test);
+        myPlugin.saveConfig();
+        myPlugin.reloadConfig();
+        assertTrue(!myPlugin.getSettings().nested.test);
     }
 }

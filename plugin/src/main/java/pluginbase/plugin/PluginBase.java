@@ -6,6 +6,7 @@ package pluginbase.plugin;
 import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandProvider;
 import pluginbase.database.SQLDatabase;
+import pluginbase.database.SQLSettings;
 import pluginbase.logging.LoggablePlugin;
 import pluginbase.logging.PluginLogger;
 import pluginbase.messages.PluginBaseException;
@@ -31,6 +32,8 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
     Settings getSettings();
 
     void saveConfig();
+
+    void saveSettings() throws SendablePluginBaseException;
 
     /**
      * Gets the info object for this plugin.
@@ -72,7 +75,7 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
      * @return the sql database configuration or null if unused.
      */
     @Nullable
-    Properties sqlConfig();
+    SQLSettings getSQLSettings();
 
     /**
      * Gets the metrics object for this plugin.
