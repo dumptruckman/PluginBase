@@ -18,6 +18,7 @@ public class Field extends FieldMap {
     @NotNull
     private final java.lang.reflect.Field field;
     private final boolean persistable;
+    private final boolean mutable;
     private final String name;
 
     @Nullable
@@ -51,6 +52,7 @@ public class Field extends FieldMap {
         } else {
             this.name = field.getName();
         }
+        this.mutable = !Modifier.isFinal(field.getModifiers());
     }
 
     public String getName() {
@@ -63,6 +65,10 @@ public class Field extends FieldMap {
 
     public boolean isPersistable() {
         return persistable;
+    }
+
+    public boolean isMutable() {
+        return mutable;
     }
 
     @NotNull
@@ -113,6 +119,9 @@ public class Field extends FieldMap {
     }
 
     public void setValue(@NotNull Object object, @Nullable Object value) throws PropertyVetoException {
+        if (!isMutable()) {
+            return;
+        }
         boolean accessible = field.isAccessible();
         if (!accessible) {
             field.setAccessible(true);

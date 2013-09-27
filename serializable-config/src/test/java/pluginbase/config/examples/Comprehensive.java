@@ -76,7 +76,7 @@ public class Comprehensive extends PropertiesWrapper {
     public List<List<String>> listList = new ArrayList<List<String>>(LIST_LIST);
     public List<Object> randomList = new ArrayList<Object>(RANDOM_LIST);
     public Map<String, Object> stringObjectMap = new HashMap<String, Object>(STRING_OBJECT_MAP);
-    public Custom custom = new Custom(CUSTOM.name);
+    public final Custom custom = new Custom(CUSTOM.name);
     @SerializeWith(CustomSerializer2.class)
     public Custom custom2 = new Custom(CUSTOM.name);
 
