@@ -47,7 +47,7 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Minecraft-Link</artifactId>
-            <version>${minecraft-link.version.version}</version>
+            <version>${minecraft-link.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
