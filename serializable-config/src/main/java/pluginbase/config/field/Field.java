@@ -53,7 +53,7 @@ public class Field extends FieldMap {
         } else {
             this.name = field.getName();
         }
-        this.immutable = field.getAnnotation(Immutable.class) != null || Modifier.isFinal(field.getModifiers());
+        this.immutable = field.getAnnotation(Immutable.class) != null;
     }
 
     public String getName() {
