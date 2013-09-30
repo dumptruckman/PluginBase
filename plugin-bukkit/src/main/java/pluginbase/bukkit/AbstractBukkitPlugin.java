@@ -377,14 +377,24 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     @Override
     public void saveSettings() throws SendablePluginBaseException {
         config.set("settings", settings);
-        sqlConfig.set("settings", sqlSettings);
         File configFile = getConfigurationFile();
-        File sqlConfigFile = getSqlConfigFile();
         try {
             config.save(configFile);
-            sqlConfig.save(sqlConfigFile);
         } catch (IOException e) {
             new PluginBaseException(e).logException(getLog(), Level.WARNING);
+        }
+        saveSqlSettings();
+    }
+
+    private void saveSqlSettings() throws SendablePluginBaseException {
+        if (sqlConfig != null) {
+            sqlConfig.set("settings", sqlSettings);
+            File sqlConfigFile = getSqlConfigFile();
+            try {
+                sqlConfig.save(sqlConfigFile);
+            } catch (IOException e) {
+                new PluginBaseException(e).logException(getLog(), Level.WARNING);
+            }
         }
     }
 
