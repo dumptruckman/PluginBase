@@ -47,13 +47,6 @@
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Properties</artifactId>
-            <version>${properties.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Serializable-Config</artifactId>
             <version>${serializable-config.version}</version>
             <type>jar</type>
@@ -133,7 +126,6 @@
                                     <include>com.dumptruckman.minecraft.pluginbase:Utilities</include>
                                     <include>org.apache.commons:commons-io</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Messaging</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Properties</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Minecraft-Link</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Commands</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Serializable-Config</include>
