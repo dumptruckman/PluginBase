@@ -6,6 +6,7 @@ import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.annotation.ValidateWith;
+import pluginbase.config.field.DependentProperty;
 import pluginbase.config.field.PropertyVetoException;
 import pluginbase.config.field.Validator;
 import pluginbase.config.field.Validators;
@@ -32,13 +33,13 @@ public class Settings extends PropertiesWrapper {
 
     @Comment("0 = off, 1-3 display debug info with increasing granularity.")
     @ValidateWith(DebugLevelValidator.class)
-    private VirtualProperty<Integer> debugLevel;
+    private final VirtualDebug debugLevel = new VirtualDebug();
 
     @Comment("Will make the plugin perform tasks only done on a first run (if any.)")
     private boolean firstRun = true;
 
     public Settings(@NotNull PluginBase plugin) {
-        this.debugLevel = new VirtualDebug(plugin.getLog());
+        this.debugLevel.setLogger(plugin.getLog());
     }
 
     protected Settings() { }
@@ -49,7 +50,8 @@ public class Settings extends PropertiesWrapper {
     }
 
     public int getDebugLevel() {
-        return debugLevel.get();
+        Integer level = debugLevel.get();
+        return level != null ? level : 0;
     }
 
     public void setDebugLevel(int debugLevel) throws PropertyVetoException {
@@ -141,22 +143,30 @@ public class Settings extends PropertiesWrapper {
         }
     }
 
-    private static class VirtualDebug implements VirtualProperty<Integer> {
+    private static class VirtualDebug extends DependentProperty<Integer, PluginLogger> {
 
-        private PluginLogger logger;
+        private PluginLogger logger = null;
 
-        VirtualDebug(PluginLogger logger) {
+        VirtualDebug() {
+            super(0);
+        }
+
+        public void setLogger(PluginLogger logger) {
             this.logger = logger;
         }
 
-        @Override
-        public Integer get() {
-            return logger.getDebugLevel();
+        protected PluginLogger getDependency() {
+            return logger;
         }
 
         @Override
-        public void set(Integer newValue) {
-            logger.setDebugLevel(newValue);
+        protected Integer getDependentValue() {
+            return getDependency().getDebugLevel();
+        }
+
+        @Override
+        protected void setDependentValue(@Nullable Integer value) {
+            getDependency().setDebugLevel(value != null ? value : 0);
         }
     }
 }
