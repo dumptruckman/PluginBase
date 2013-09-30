@@ -27,7 +27,7 @@ public enum ConfigSerializer {
             Map map = (Map) data;
             Class<?> clazz = getClassFromSerializedData(map);
             if (clazz == null) {
-                throw new IllegalArgumentException("The given data is not valid for type " + map.get(SERIALIZED_TYPE_KEY));
+                throw new IllegalArgumentException("The given data is not valid for type " + map.get(SERIALIZED_TYPE_KEY) + ".  Was the type registered?");
             }
             return deserializeAs(data, clazz);
         } else {

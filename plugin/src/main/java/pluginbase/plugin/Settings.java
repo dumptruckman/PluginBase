@@ -22,11 +22,6 @@ import java.util.Locale;
 
 public class Settings extends PropertiesWrapper {
 
-    static {
-        SerializationRegistrar.registerClass(Settings.class);
-        SerializationRegistrar.registerClass(Language.class);
-    }
-
     @Comment("Settings related to language/locale.")
     @NotNull
     private Language language = new Language();

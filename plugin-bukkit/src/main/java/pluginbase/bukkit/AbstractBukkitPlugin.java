@@ -12,6 +12,7 @@ import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandInfo;
 import pluginbase.command.CommandUsageException;
 import pluginbase.command.QueuedCommand;
+import pluginbase.config.SerializationRegistrar;
 import pluginbase.database.MySQL;
 import pluginbase.database.SQLDatabase;
 import pluginbase.database.SQLSettings;
@@ -25,6 +26,7 @@ import pluginbase.plugin.PluginBase;
 import pluginbase.plugin.PluginInfo;
 import pluginbase.plugin.ServerInterface;
 import pluginbase.plugin.Settings;
+import pluginbase.plugin.Settings.Language;
 import pluginbase.plugin.command.builtin.ConfirmCommand;
 import pluginbase.plugin.command.builtin.DebugCommand;
 import pluginbase.plugin.command.builtin.InfoCommand;
@@ -48,6 +50,11 @@ import java.util.logging.Level;
  * required in a plugin.
  */
 public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitPlugin {
+
+    static {
+        SerializationRegistrar.registerClass(Settings.class);
+        SerializationRegistrar.registerClass(Language.class);
+    }
 
     private final BukkitPluginInfo pluginInfo = new BukkitPluginInfo(this);
 
