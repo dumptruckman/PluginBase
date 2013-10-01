@@ -167,10 +167,15 @@ public class DefaultSerializer implements Serializer<Object> {
             typeInstance = createInstance(wantedType);
         } else {
             Class clazz = ConfigSerializer.getClassFromSerializedData(data);
-            if (clazz == null) {
-                throw new IllegalArgumentException("The given data is does not contain valid serialized data");
+            if (clazz != null) {
+                typeInstance = createInstance(clazz);
+            } else {
+                try {
+                    typeInstance = createInstance(wantedType);
+                } catch (RuntimeException e) {
+                    throw new IllegalArgumentException("The serialized form does not contain enough information to deserialize", e);
+                }
             }
-            typeInstance = createInstance(clazz);
         }
         return deserializeToObject(data, typeInstance);
     }
