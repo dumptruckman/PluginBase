@@ -7,7 +7,7 @@ import pluginbase.config.examples.Comprehensive;
 
 import static org.junit.Assert.*;
 
-public class FieldTestRename extends TestBase {
+public class FieldTest extends TestBase {
 
     @Test
     public void testVirtualPropertyType() throws Exception {
