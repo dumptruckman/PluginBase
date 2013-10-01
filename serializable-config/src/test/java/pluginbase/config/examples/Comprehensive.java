@@ -7,6 +7,7 @@ import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.annotation.ValidateWith;
 import pluginbase.config.field.PropertyVetoException;
 import pluginbase.config.field.Validator;
+import pluginbase.config.field.VirtualProperty;
 import pluginbase.config.properties.PropertiesWrapper;
 import pluginbase.config.properties.PropertyAliases;
 import pluginbase.config.serializers.CustomSerializer2;
@@ -83,6 +84,17 @@ public class Comprehensive extends PropertiesWrapper {
     @Immutable
     public Custom custom3 = new Custom(CUSTOM.name);
     public final String finalString = NAME;
+    public final VirtualProperty<Anum> virtualEnum = new VirtualProperty<Anum>() {
+        private Anum actual = Anum.A;
+        @Override
+        public Anum get() {
+            return actual;
+        }
+        @Override
+        public void set(final Anum newValue) {
+            actual = newValue;
+        }
+    };
 
     @Override
     public boolean equals(Object o) {
@@ -103,6 +115,7 @@ public class Comprehensive extends PropertiesWrapper {
         if (!wordList2.equals(that.wordList2)) return false;
         if (!custom3.equals(that.custom3)) return false;
         if (!finalString.equals(that.finalString)) return false;
+        if (!virtualEnum.get().equals(that.virtualEnum.get())) return false;
 
         return true;
     }
@@ -119,6 +132,9 @@ public class Comprehensive extends PropertiesWrapper {
         result = 31 * result + stringObjectMap.hashCode();
         result = 31 * result + custom.hashCode();
         result = 31 * result + custom2.hashCode();
+        result = 31 * result + custom3.hashCode();
+        result = 31 * result + finalString.hashCode();
+        result = 31 * result + virtualEnum.hashCode();
         return result;
     }
 
@@ -137,6 +153,7 @@ public class Comprehensive extends PropertiesWrapper {
                 ", custom2=" + custom2 +
                 ", custom3=" + custom3 +
                 ", finalString='" + finalString + '\'' +
+                ", virtualEnum=" + virtualEnum.get() +
                 '}';
     }
 }

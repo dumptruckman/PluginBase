@@ -1,5 +1,6 @@
 package pluginbase.config.field;
 
+import com.googlecode.gentyref.GenericTypeReflector;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.Description;
 import pluginbase.config.annotation.Immutable;
@@ -13,6 +14,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public class Field extends FieldMap {
 
@@ -21,6 +24,7 @@ public class Field extends FieldMap {
     private final boolean persistable;
     private final boolean immutable;
     private final String name;
+    private final Class type;
 
     @Nullable
     public static FieldInstance getInstance(@NotNull Object object, @NotNull String... name) {
@@ -54,6 +58,18 @@ public class Field extends FieldMap {
             this.name = field.getName();
         }
         this.immutable = field.getAnnotation(Immutable.class) != null;
+        this.type = getActualType();
+    }
+
+    private Class getActualType() {
+        Class clazz = field.getType();
+        if (VirtualProperty.class.isAssignableFrom(clazz)) {
+            Type type = GenericTypeReflector.getExactSuperType(field.getGenericType(), VirtualProperty.class);
+            if (type instanceof ParameterizedType) {
+                return (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
+            }
+        }
+        return clazz;
     }
 
     public String getName() {
@@ -176,7 +192,7 @@ public class Field extends FieldMap {
     }
 
     public Class getType() {
-        return field.getType();
+        return type;
     }
 
     @Nullable
