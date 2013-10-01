@@ -7,7 +7,7 @@ import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.annotation.ValidateWith;
 import pluginbase.config.field.PropertyVetoException;
 import pluginbase.config.field.Validator;
-import pluginbase.config.field.VirtualProperty;
+import pluginbase.config.field.VirtualField;
 import pluginbase.config.properties.PropertiesWrapper;
 import pluginbase.config.properties.PropertyAliases;
 import pluginbase.config.serializers.CustomSerializer2;
@@ -84,7 +84,7 @@ public class Comprehensive extends PropertiesWrapper {
     @Immutable
     public Custom custom3 = new Custom(CUSTOM.name);
     public final String finalString = NAME;
-    public final VirtualProperty<Anum> virtualEnum = new VirtualProperty<Anum>() {
+    public final VirtualField<Anum> virtualEnum = new VirtualField<Anum>() {
         private Anum actual = Anum.A;
         @Override
         public Anum get() {

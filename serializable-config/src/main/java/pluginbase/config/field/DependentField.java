@@ -3,13 +3,13 @@ package pluginbase.config.field;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * An implementation of VirtualProperty that acts as a proxy to a dependent object but also supplies a backup value in
+ * An implementation of VirtualField that acts as a proxy to a dependent object but also supplies a backup value in
  * that object's absence.
  *
  * @param <T> The type for virtual property.
  * @param <D> The type of the dependent object.
  */
-public abstract class DependentProperty<T, D> implements VirtualProperty<T> {
+public abstract class DependentField<T, D> implements VirtualField<T> {
 
     /** This is the value used when {@link #getDependency()} returns null. */
     @Nullable
@@ -20,7 +20,7 @@ public abstract class DependentProperty<T, D> implements VirtualProperty<T> {
      *
      * @param initialValue
      */
-    public DependentProperty(@Nullable T initialValue) {
+    public DependentField(@Nullable T initialValue) {
         this.backupValue = initialValue;
     }
 

@@ -63,8 +63,8 @@ public class Field extends FieldMap {
 
     private Class getActualType() {
         Class clazz = field.getType();
-        if (VirtualProperty.class.isAssignableFrom(clazz)) {
-            Type type = GenericTypeReflector.getExactSuperType(field.getGenericType(), VirtualProperty.class);
+        if (VirtualField.class.isAssignableFrom(clazz)) {
+            Type type = GenericTypeReflector.getExactSuperType(field.getGenericType(), VirtualField.class);
             if (type instanceof ParameterizedType) {
                 return (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
             }
@@ -118,8 +118,8 @@ public class Field extends FieldMap {
             field.setAccessible(true);
         }
         try {
-            if (VirtualProperty.class.isAssignableFrom(field.getType())) {
-                VirtualProperty vProp = (VirtualProperty) field.get(object);
+            if (VirtualField.class.isAssignableFrom(field.getType())) {
+                VirtualField vProp = (VirtualField) field.get(object);
                 return vProp != null ? vProp.get() : null;
             } else {
                 return field.get(object);
@@ -148,8 +148,8 @@ public class Field extends FieldMap {
             field.setAccessible(true);
         }
         try {
-            if (VirtualProperty.class.isAssignableFrom(field.getType())) {
-                setVirtualProperty((VirtualProperty) field.get(object), value);
+            if (VirtualField.class.isAssignableFrom(field.getType())) {
+                setVirtualProperty((VirtualField) field.get(object), value);
             } else {
                 setProperty(object, value);
             }
@@ -170,7 +170,7 @@ public class Field extends FieldMap {
         }
     }
 
-    private void setVirtualProperty(@Nullable VirtualProperty vProp, @Nullable Object value) throws PropertyVetoException {
+    private void setVirtualProperty(@Nullable VirtualField vProp, @Nullable Object value) throws PropertyVetoException {
         if (vProp == null) {
             return;
         }

@@ -2,15 +2,13 @@ package pluginbase.plugin;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.annotation.ValidateWith;
-import pluginbase.config.field.DependentProperty;
+import pluginbase.config.field.DependentField;
 import pluginbase.config.field.PropertyVetoException;
 import pluginbase.config.field.Validator;
 import pluginbase.config.field.Validators;
-import pluginbase.config.field.VirtualProperty;
 import pluginbase.config.properties.PropertiesWrapper;
 import pluginbase.config.serializers.Serializer;
 import pluginbase.logging.PluginLogger;
@@ -138,7 +136,7 @@ public class Settings extends PropertiesWrapper {
         }
     }
 
-    private static class VirtualDebug extends DependentProperty<Integer, PluginLogger> {
+    private static class VirtualDebug extends DependentField<Integer, PluginLogger> {
 
         private PluginLogger logger = null;
 

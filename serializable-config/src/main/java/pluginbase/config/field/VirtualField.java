@@ -7,15 +7,15 @@ package pluginbase.config.field;
  * awesome features of {@link SerializationConfig} with them.
  * @param <T>
  */
-public interface VirtualProperty<T> {
+public interface VirtualField<T> {
     /**
-     * Called to get this {@link VirtualProperty}'s value.
-     * @return This {@link VirtualProperty}'s value.
+     * Called to get this {@link VirtualField}'s value.
+     * @return This {@link VirtualField}'s value.
      */
     T get();
 
     /**
-     * Called to set this {@link VirtualProperty}'s value.
+     * Called to set this {@link VirtualField}'s value.
      * @param newValue The new value.
      */
     void set(T newValue);
