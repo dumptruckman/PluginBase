@@ -155,7 +155,7 @@ public class DefaultSerializer implements Serializer<Object> {
         }
         try {
             Method valueOf = wantedType.getMethod("valueOf", String.class);
-            return valueOf.invoke(null, serialized);
+            return valueOf.invoke(null, serialized.toString());
         } catch (Exception e) {
             return deserializeUnknownType(serialized);
         }
