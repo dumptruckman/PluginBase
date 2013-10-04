@@ -19,4 +19,10 @@ public class TestMessageProvider implements MessageProvider {
     public PluginLogger getLog() {
         return Logging.getLogger();
     }
+
+    @NotNull
+    @Override
+    public String getLocalizedMessage(@NotNull final String key, @NotNull final Object... args) {
+        return "";
+    }
 }
