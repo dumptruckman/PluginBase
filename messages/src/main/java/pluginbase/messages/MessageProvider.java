@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.messages;
 
+import org.jetbrains.annotations.Nullable;
 import pluginbase.logging.PluginLogger;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,6 +34,18 @@ public interface MessageProvider {
      */
     @NotNull
     String getLocalizedMessage(@NotNull final Message key, @NotNull final Object... args);
+
+    /**
+     * Returns a message (as {@link String}) for the specified key (as {@link pluginbase.messages.Messages}).
+     * <p/>
+     * This is a localized message.
+     *
+     * @param key  the message key.
+     * @param args arguments for String.format().
+     * @return the localized message.
+     */
+    @NotNull
+    String getLocalizedMessage(@NotNull final String key, @NotNull final Object... args);
 
     /**
      * MessageProvider requires a method to acquire a logger due to the needs of the default implementations of the

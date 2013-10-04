@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.messages;
 
+import org.jetbrains.annotations.Nullable;
 import pluginbase.logging.PluginLogger;
 import org.jetbrains.annotations.NotNull;
 
@@ -113,10 +114,10 @@ class DefaultMessageProvider implements MessageProvider {
         return language;
     }
 
-    private String _getMessage(@NotNull final Message key) {
-        final String message = this.messages.getProperty(key.getKey());
+    private String _getMessage(@NotNull final String key) {
+        final String message = this.messages.getProperty(key);
         if (message == null) {
-            getLog().warning("There is not language entry for %s.  Was it registered?", key.getKey());
+            getLog().warning("There is not language entry for %s.  Was it registered?", key);
             return "";
         }
         return message;
@@ -153,11 +154,17 @@ class DefaultMessageProvider implements MessageProvider {
     @Override
     @NotNull
     public String getLocalizedMessage(@NotNull final Message key, @NotNull final Object... args) {
+        return getLocalizedMessage(key.getKey(), args);
+    }
+
+    @NotNull
+    @Override
+    public String getLocalizedMessage(@NotNull final String key, @NotNull final Object... args) {
         final String message = _getMessage(key);
         try {
             return format(locale, _getMessage(key), args);
         } catch (IllegalFormatException e) {
-            getLog().warning("Language string format is incorrect: %s: %s", key.getKey(), message);
+            getLog().warning("Language string format is incorrect: %s: %s", key, message);
             for (final StackTraceElement ste : Thread.currentThread().getStackTrace()) {
                 getLog().warning(ste.toString());
             }

@@ -77,6 +77,13 @@ public class Messager implements MessageProvider {
         return provider.getLocalizedMessage(key, args);
     }
 
+    /** {@inheritDoc} */
+    @NotNull
+    @Override
+    public String getLocalizedMessage(@NotNull final String key, @NotNull final Object... args) {
+        return provider.getLocalizedMessage(key, args);
+    }
+
     protected void send(@NotNull final MessageReceiver sender,
                         @Nullable final String prefix,
                         @NotNull final Message message,
