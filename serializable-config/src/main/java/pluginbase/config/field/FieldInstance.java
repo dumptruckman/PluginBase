@@ -2,6 +2,7 @@ package pluginbase.config.field;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.config.properties.Stringifier;
 
 public class FieldInstance {
 
@@ -38,6 +39,16 @@ public class FieldInstance {
         return this;
     }
 
+    @NotNull
+    public Class getType() {
+        return field.getType();
+    }
+
+    @Nullable
+    public Class getCollectionType() {
+        return field.getCollectionType();
+    }
+
     @Nullable
     public Object getValue() {
         return field.getValue(containingObject);
@@ -51,7 +62,15 @@ public class FieldInstance {
         return field.getValidator();
     }
 
-    public boolean isFinal() {
+    public boolean isImmutable() {
         return field.isImmutable();
+    }
+
+    public boolean isAllowingSetProperty() {
+        return field.isAllowingSetProperty();
+    }
+
+    public Stringifier getStringifier() {
+        return field.getStringifier();
     }
 }

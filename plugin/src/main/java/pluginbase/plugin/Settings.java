@@ -32,10 +32,13 @@ public class Settings extends PropertiesWrapper {
     private boolean firstRun = true;
 
     public Settings(@NotNull PluginBase plugin) {
+        super(".");
         this.debugLevel.setLogger(plugin.getLog());
     }
 
-    protected Settings() { }
+    protected Settings() {
+        super(".");
+    }
 
     @NotNull
     public Language getLanguageSettings() {

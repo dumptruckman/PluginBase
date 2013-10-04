@@ -5,6 +5,10 @@ import pluginbase.config.examples.Comprehensive;
 import pluginbase.config.examples.Custom;
 import org.junit.Before;
 import org.junit.Test;
+import pluginbase.config.examples.Simple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -31,7 +35,7 @@ public class PropertiesWrapperTest extends TestBase {
 
     @Test
     public void testGetPropertyNested() throws Exception {
-        assertEquals(Comprehensive.CUSTOM.name, comprehensive.getProperty("custom", "name"));
+        assertEquals(Comprehensive.CUSTOM.name, comprehensive.getProperty("custom.name"));
     }
 
     @Test(expected = NoSuchFieldException.class)
@@ -41,7 +45,7 @@ public class PropertiesWrapperTest extends TestBase {
 
     @Test(expected = NoSuchFieldException.class)
     public void testGetPropertyNestedNoSuchField() throws Exception {
-        comprehensive.getProperty("custom", "fake");
+        comprehensive.getProperty("custom.fake");
     }
 
     @Test
@@ -51,7 +55,7 @@ public class PropertiesWrapperTest extends TestBase {
 
     @Test
     public void testGetPropertyUncheckedNested() throws Exception {
-        assertEquals(Comprehensive.CUSTOM.name, comprehensive.getPropertyUnchecked("custom", "name"));
+        assertEquals(Comprehensive.CUSTOM.name, comprehensive.getPropertyUnchecked("custom.name"));
     }
 
     @Test
@@ -61,71 +65,70 @@ public class PropertiesWrapperTest extends TestBase {
 
     @Test
     public void testGetPropertyUncheckedNestedNoSuchField() throws Exception {
-        assertNull(comprehensive.getPropertyUnchecked("custom", "fake"));
+        assertNull(comprehensive.getPropertyUnchecked("custom.fake"));
     }
 
     @Test
     public void testSetProperty() throws Exception {
         assertFalse(comprehensive.aInt == 500);
-        comprehensive.setProperty(500, "aint");
+        comprehensive.setProperty("aint", "500");
         assertEquals(500, comprehensive.aInt);
     }
 
     @Test
     public void testSetPropertyNested() throws Exception {
         assertFalse(comprehensive.custom.name.equals("aname"));
-        comprehensive.setProperty("aname", "custom", "name");
+        comprehensive.setProperty("custom.name", "aname");
         assertEquals("aname", comprehensive.custom.name);
     }
 
     @Test(expected = NoSuchFieldException.class)
     public void testSetPropertyNoSuchField() throws Exception {
-        comprehensive.setProperty("value", "booboooboo");
+        comprehensive.setProperty("booboooboo", "value");
     }
 
     @Test(expected = NoSuchFieldException.class)
     public void testSetPropertyNestedNoSuchField() throws Exception {
-        comprehensive.setProperty("value", "custom", "fake");
+        comprehensive.setProperty("custom.fake", "value");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetPropertyIllegalValue() throws Exception {
-        comprehensive.setProperty("value", "aint");
+        comprehensive.setProperty("aint", "value");
     }
 
     @Test
     public void testSetPropertyUnchecked() throws Exception {
         assertFalse(comprehensive.aInt == 500);
-        comprehensive.setPropertyUnchecked(500, "aint");
+        comprehensive.setPropertyUnchecked("aint", "500");
         assertEquals(500, comprehensive.aInt);
     }
 
     @Test
     public void testSetPropertyUncheckedNested() throws Exception {
         assertFalse(comprehensive.custom.name.equals("aname"));
-        comprehensive.setPropertyUnchecked("aname", "custom", "name");
+        assertTrue(comprehensive.setPropertyUnchecked("custom.name", "aname"));
         assertEquals("aname", comprehensive.custom.name);
     }
 
     @Test
     public void testSetPropertyUncheckedNoSuchField() throws Exception {
-        comprehensive.setPropertyUnchecked("value", "booboooboo");
+        comprehensive.setPropertyUnchecked("booboooboo", "value");
     }
 
     @Test
     public void testSetPropertyUncheckedNestedNoSuchField() throws Exception {
-        comprehensive.setPropertyUnchecked("value", "custom", "fake");
+        comprehensive.setPropertyUnchecked("custom.fake", "value");
     }
 
-    @Test(expected = IllegalArgumentException.class)
     public void testSetPropertyUncheckedIllegalValue() throws Exception {
-        comprehensive.setPropertyUnchecked("value", "aint");
+        comprehensive.setPropertyUnchecked("aint", "value");
     }
 
     @Test
     public void testPropertiesWrapper() throws Exception {
         Custom custom = new Custom("custom");
-        Properties properties = PropertiesWrapper.wrapObject(custom);
+        Properties properties = PropertiesWrapper.wrapObject(custom, ".");
         assertEquals(custom.name, properties.getProperty("name"));
     }
 
@@ -134,10 +137,11 @@ public class PropertiesWrapperTest extends TestBase {
         Comprehensive comp = new Comprehensive();
         Object original = comp.getProperty("custom");
         assertNotNull(original);
-        Custom newValue = new Custom("a");
+        Simple newValue = new Simple();
+        newValue.string = "a";
         assertFalse(original.equals(newValue));
-        comp.setProperty(newValue, "custom");
-        assertEquals(newValue, comp.getProperty("custom"));
+        comp.setProperty("simple", newValue.toString());
+        assertEquals(newValue, comp.getProperty("simple"));
     }
 
     @Test
@@ -158,6 +162,65 @@ public class PropertiesWrapperTest extends TestBase {
 
     @Test(expected = IllegalAccessException.class)
     public void testSetPropertyImmutable() throws Exception {
-        comprehensive.setProperty(new Custom("test"), "custom3");
+        comprehensive.setProperty("immutableString", new Custom("test").toString());
+    }
+
+    @Test
+    public void testAddProperty() throws Exception {
+        List<String> original = new ArrayList<String>(comprehensive.wordList);
+        comprehensive.addProperty("wordList", "hubbub");
+        assertFalse(original.equals(comprehensive.wordList));
+        original.add("hubbub");
+        assertEquals(original, comprehensive.getProperty("wordList"));
+    }
+
+    @Test
+    public void testRemoveProperty() throws Exception {
+        List<String> original = new ArrayList<String>(comprehensive.wordList);
+        comprehensive.removeProperty("wordList", "test");
+        assertFalse(original.equals(comprehensive.wordList));
+        original.remove("test");
+        assertEquals(original, comprehensive.getProperty("wordList"));
+    }
+
+    @Test
+    public void testClearProperty() throws Exception {
+        assertFalse(comprehensive.wordList.isEmpty());
+        comprehensive.clearProperty("wordList");
+        assertTrue(comprehensive.wordList.isEmpty());
+    }
+
+    @Test
+    public void testSetCustomStringifierProperty() throws Exception {
+        List<Simple> test = new ArrayList<Simple>();
+        test.add(new Simple("hubbub"));
+        assertFalse(test.equals(comprehensive.simpleList));
+        comprehensive.setProperty("simpleList", "hubbub");
+        assertEquals(test, comprehensive.getProperty("simpleList"));
+    }
+
+    @Test
+    public void testAddCustomStringifierProperty() throws Exception {
+        List<Simple> original = new ArrayList<Simple>(comprehensive.simpleList);
+        comprehensive.addProperty("simpleList", "hubbub");
+        assertFalse(original.equals(comprehensive.simpleList));
+        original.add(new Simple("hubbub"));
+        assertEquals(original, comprehensive.getProperty("simpleList"));
+    }
+
+    @Test
+    public void testRemoveCustomStringifierProperty() throws Exception {
+        List<Simple> original = new ArrayList<Simple>(comprehensive.simpleList);
+        comprehensive.removeProperty("simpleList", "test");
+        assertFalse(original.equals(comprehensive.simpleList));
+        original.remove(new Simple("test"));
+        assertEquals(original, comprehensive.getProperty("simpleList"));
+    }
+
+    @Test
+    public void testClearCustomStringifierProperty() throws Exception {
+        assertFalse(comprehensive.simpleList.isEmpty());
+        comprehensive.clearProperty("simpleList");
+        assertTrue(comprehensive.simpleList.isEmpty());
     }
 }

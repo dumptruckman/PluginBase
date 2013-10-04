@@ -13,6 +13,7 @@ import pluginbase.command.CommandInfo;
 import pluginbase.command.CommandUsageException;
 import pluginbase.command.QueuedCommand;
 import pluginbase.config.SerializationRegistrar;
+import pluginbase.config.properties.PropertiesWrapper;
 import pluginbase.database.MySQL;
 import pluginbase.database.SQLDatabase;
 import pluginbase.database.SQLSettings;
@@ -52,6 +53,7 @@ import java.util.logging.Level;
 public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitPlugin {
 
     static {
+        PropertiesWrapper.initializePropertyMessages();
         SerializationRegistrar.registerClass(Settings.class);
         SerializationRegistrar.registerClass(Language.class);
     }
