@@ -1,5 +1,6 @@
 package pluginbase.database;
 
+import org.jetbrains.annotations.NotNull;
 import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.properties.PropertiesWrapper;
@@ -14,6 +15,10 @@ public class SQLSettings extends PropertiesWrapper {
     @Comment("What type of database to use.  Base options are SQLite and MySQL.")
     private String databaseType = "SQLite";
     private DatabaseInfo databaseInfo = new DatabaseInfo();
+
+    public SQLSettings() {
+        super(".");
+    }
 
     public String getDatabaseType() {
         return databaseType;

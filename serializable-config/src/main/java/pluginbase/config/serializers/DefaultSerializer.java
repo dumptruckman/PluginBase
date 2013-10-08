@@ -222,10 +222,14 @@ public class DefaultSerializer implements Serializer<Object> {
             if (field != null) {
                 Object fieldValue = field.getValue(object);
                 Object serializedFieldData = data.get(key);
-                if (isEligibleForDeserializationToObject(serializedFieldData, fieldValue)) {
-                    fieldValue = deserializeFieldAs(field, serializedFieldData, fieldValue.getClass());
+                if (serializedFieldData == null) {
+                    fieldValue = null;
                 } else {
-                    fieldValue = deserializeField(field, serializedFieldData);
+                    if (isEligibleForDeserializationToObject(serializedFieldData, fieldValue)) {
+                        fieldValue = deserializeFieldAs(field, serializedFieldData, fieldValue.getClass());
+                    } else {
+                        fieldValue = deserializeField(field, serializedFieldData);
+                    }
                 }
                 try {
                     field.forceSet(object, fieldValue);

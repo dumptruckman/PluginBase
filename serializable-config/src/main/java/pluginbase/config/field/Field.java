@@ -6,8 +6,11 @@ import pluginbase.config.annotation.Description;
 import pluginbase.config.annotation.Immutable;
 import pluginbase.config.annotation.Name;
 import pluginbase.config.annotation.SerializeWith;
+import pluginbase.config.annotation.Stringify;
 import pluginbase.config.annotation.ValidateWith;
 import pluginbase.config.properties.PropertyAliases;
+import pluginbase.config.properties.Stringifier;
+import pluginbase.config.properties.Stringifiers;
 import pluginbase.config.serializers.Serializer;
 import pluginbase.config.serializers.Serializers;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +19,8 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.WildcardType;
+import java.util.Collection;
 
 public class Field extends FieldMap {
 
@@ -24,7 +29,10 @@ public class Field extends FieldMap {
     private final boolean persistable;
     private final boolean immutable;
     private final String name;
-    private final Class type;
+    private final Type type;
+    private final Class typeClass;
+    private final Class collectionType;
+    private final Stringify stringify;
 
     @Nullable
     public static FieldInstance getInstance(@NotNull Object object, @NotNull String... name) {
@@ -58,18 +66,49 @@ public class Field extends FieldMap {
             this.name = field.getName();
         }
         this.immutable = field.getAnnotation(Immutable.class) != null;
-        this.type = getActualType();
-    }
-
-    private Class getActualType() {
-        Class clazz = field.getType();
-        if (VirtualField.class.isAssignableFrom(clazz)) {
-            Type type = GenericTypeReflector.getExactSuperType(field.getGenericType(), VirtualField.class);
-            if (type instanceof ParameterizedType) {
-                return (Class) ((ParameterizedType) type).getActualTypeArguments()[0];
+        this.type = determineActualType();
+        if (type instanceof Class) {
+            typeClass = (Class) type;
+        } else {
+            if (type instanceof WildcardType) {
+                typeClass = Object.class;
+            } else {
+                typeClass = GenericTypeReflector.erase(type);
             }
         }
-        return clazz;
+        this.collectionType = determineCollectionType();
+        this.stringify = field.getAnnotation(Stringify.class);
+    }
+
+    private Type determineActualType() {
+        Type type = field.getGenericType();
+        Class clazz = GenericTypeReflector.erase(type);
+        if (VirtualField.class.isAssignableFrom(clazz)) {
+            type = GenericTypeReflector.getExactSuperType(type, VirtualField.class);
+            if (type instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+                type = parameterizedType.getActualTypeArguments()[0];
+            }
+        }
+        return type;
+    }
+
+    private Class determineCollectionType() {
+        if (Collection.class.isAssignableFrom(getType())) {
+            Type collectionType = GenericTypeReflector.getExactSuperType(type, Collection.class);
+            if (collectionType instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) collectionType;
+                collectionType = parameterizedType.getActualTypeArguments()[0];
+                if (collectionType instanceof Class) {
+                    return (Class) collectionType;
+                }
+            }
+            if (collectionType instanceof WildcardType) {
+                return Object.class;
+            }
+            return GenericTypeReflector.erase(collectionType);
+        }
+        return null;
     }
 
     public String getName() {
@@ -191,8 +230,23 @@ public class Field extends FieldMap {
         }
     }
 
+    @NotNull
     public Class getType() {
-        return type;
+        return typeClass;
+    }
+
+    @Nullable
+    public Class getCollectionType() {
+        return collectionType;
+    }
+
+    @NotNull
+    public Stringifier getStringifier() {
+        return stringify != null ? Stringifiers.getStringifier(stringify.withClass()) : Stringifiers.getDefaultStringifier();
+    }
+
+    public boolean isAllowingSetProperty() {
+        return stringify == null || stringify.allowSetProperty();
     }
 
     @Nullable
