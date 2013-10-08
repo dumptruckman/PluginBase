@@ -1,19 +1,23 @@
 package pluginbase.config.examples;
 
+import org.jetbrains.annotations.NotNull;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.Description;
 import pluginbase.config.annotation.Immutable;
 import pluginbase.config.annotation.SerializeWith;
+import pluginbase.config.annotation.Stringify;
 import pluginbase.config.annotation.ValidateWith;
 import pluginbase.config.field.PropertyVetoException;
 import pluginbase.config.field.Validator;
 import pluginbase.config.field.VirtualField;
 import pluginbase.config.properties.PropertiesWrapper;
 import pluginbase.config.properties.PropertyAliases;
+import pluginbase.config.properties.Stringifier;
 import pluginbase.config.serializers.CustomSerializer2;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +59,10 @@ public class Comprehensive extends PropertiesWrapper {
         PropertyAliases.createAlias(Comprehensive.class, "cname", "custom", "name");
     }
 
+    public Comprehensive() {
+        super(".");
+    }
+
     public static class NameValidator implements Validator<String> {
         @Nullable
         @Override
@@ -64,6 +72,37 @@ public class Comprehensive extends PropertiesWrapper {
             } else {
                 return oldValue;
             }
+        }
+    }
+
+    public static class SimpleStringifier implements Stringifier {
+        @NotNull
+        @Override
+        public String toString(@NotNull Object value) {
+            if (value instanceof Simple) {
+                return ((Simple) value).string;
+            } else if (value instanceof List) {
+                StringBuilder buffer = new StringBuilder();
+                List<Simple> values = (List<Simple>) value;
+                for (Simple simple : values) {
+                    if (buffer.length() != 0) {
+                        buffer.append(",");
+                    }
+                    buffer.append(simple.string);
+                }
+                return buffer.toString();
+            }
+            return value.toString();
+        }
+        @NotNull
+        @Override
+        public Object valueOf(@NotNull String value, @NotNull Class desiredType) throws PropertyVetoException {
+            String[] values = value.split(",");
+            List<Simple> list = new ArrayList<Simple>(values.length);
+            for (String s : values) {
+                list.add(new Simple(s));
+            }
+            return list;
         }
     }
 
@@ -82,7 +121,8 @@ public class Comprehensive extends PropertiesWrapper {
     @SerializeWith(CustomSerializer2.class)
     public Custom custom2 = new Custom(CUSTOM.name);
     @Immutable
-    public Custom custom3 = new Custom(CUSTOM.name);
+    public String immutableString = NAME;
+    public final Simple simple = new Simple();
     public final String finalString = NAME;
     public final VirtualField<Anum> virtualEnum = new VirtualField<Anum>() {
         private Anum actual = Anum.A;
@@ -95,6 +135,17 @@ public class Comprehensive extends PropertiesWrapper {
             actual = newValue;
         }
     };
+
+    private VirtualField<List<?>> testWildCardListVirtualProp;
+    private VirtualField<?> testWildCardVirtualProp;
+    private VirtualField<List<String>> testTypedVirtualProp;
+    private List<?> genericList = new ArrayList();
+
+    @Stringify(withClass = SimpleStringifier.class)
+    public List<Simple> simpleList = new ArrayList<Simple>();
+    {
+        simpleList.add(new Simple("test"));
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -113,9 +164,10 @@ public class Comprehensive extends PropertiesWrapper {
         if (!stringObjectMap.equals(that.stringObjectMap)) return false;
         if (!wordList.equals(that.wordList)) return false;
         if (!wordList2.equals(that.wordList2)) return false;
-        if (!custom3.equals(that.custom3)) return false;
+        if (!immutableString.equals(that.immutableString)) return false;
         if (!finalString.equals(that.finalString)) return false;
         if (!virtualEnum.get().equals(that.virtualEnum.get())) return false;
+        if (!simple.equals(that.simple)) return false;
 
         return true;
     }
@@ -132,9 +184,10 @@ public class Comprehensive extends PropertiesWrapper {
         result = 31 * result + stringObjectMap.hashCode();
         result = 31 * result + custom.hashCode();
         result = 31 * result + custom2.hashCode();
-        result = 31 * result + custom3.hashCode();
+        result = 31 * result + immutableString.hashCode();
         result = 31 * result + finalString.hashCode();
         result = 31 * result + virtualEnum.hashCode();
+        result = 31 * result + simple.hashCode();
         return result;
     }
 
@@ -151,9 +204,10 @@ public class Comprehensive extends PropertiesWrapper {
                 ", stringObjectMap=" + stringObjectMap +
                 ", custom=" + custom +
                 ", custom2=" + custom2 +
-                ", custom3=" + custom3 +
+                ", immutableString=" + immutableString +
                 ", finalString='" + finalString + '\'' +
                 ", virtualEnum=" + virtualEnum.get() +
+                ", simple=" + simple +
                 '}';
     }
 }

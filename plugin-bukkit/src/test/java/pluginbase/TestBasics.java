@@ -134,7 +134,7 @@ public class TestBasics {
         myPlugin.getSettings().nested.test = false;
         assertTrue(!myPlugin.getSettings().nested.test);
         myPlugin.reloadConfig();
-        assertTrue((Boolean) myPlugin.getSettings().getProperty("nested", "nested_test"));
+        assertTrue((Boolean) myPlugin.getSettings().getProperty("nested.nested_test"));
         myPlugin.getSettings().nested.test = false;
         assertTrue(!myPlugin.getSettings().nested.test);
         myPlugin.saveConfig();
