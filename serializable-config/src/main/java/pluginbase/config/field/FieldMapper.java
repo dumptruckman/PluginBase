@@ -1,7 +1,7 @@
 package pluginbase.config.field;
 
 import pluginbase.config.SerializationRegistrar;
-import pluginbase.config.annotation.IgnoreParentFields;
+import pluginbase.config.annotation.IgnoreSuperFields;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Modifier;
@@ -76,7 +76,7 @@ public class FieldMapper {
 
     private java.lang.reflect.Field[] collectAllFieldsForClass(Class clazz) {
         java.lang.reflect.Field[] declaredFields = clazz.getDeclaredFields();
-        if (clazz.getAnnotation(IgnoreParentFields.class) != null) {
+        if (clazz.getAnnotation(IgnoreSuperFields.class) != null) {
             return declaredFields;
         }
         Class superClass = clazz.getSuperclass();
