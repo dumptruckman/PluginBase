@@ -6,7 +6,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class DefaultStringifier implements Stringifier {
@@ -47,6 +49,9 @@ public class DefaultStringifier implements Stringifier {
     @NotNull
     @Override
     public String toString(@NotNull Object value) {
+        if (value instanceof Enum) {
+            return ((Enum) value).name();
+        }
         return value.toString();
     }
 
@@ -58,6 +63,14 @@ public class DefaultStringifier implements Stringifier {
         }
         if (desiredType.equals(String.class)) {
             return value;
+        }
+        if (Enum.class.isAssignableFrom(desiredType)) {
+            EnumSet<?> enumValues = EnumSet.allOf(desiredType);
+            for (Enum e : enumValues) {
+                if (e.name().equalsIgnoreCase(value)) {
+                    return e;
+                }
+            }
         }
         try {
             Method method = getValueOfMethod(desiredType);
