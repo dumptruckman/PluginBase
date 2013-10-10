@@ -58,11 +58,9 @@ class DefaultPropertyHandler implements PropertyHandler<Object> {
             return value;
         }
         if (Enum.class.isAssignableFrom(desiredType)) {
-            EnumSet<?> enumValues = EnumSet.allOf(desiredType);
-            for (Enum e : enumValues) {
-                if (e.name().equalsIgnoreCase(value)) {
-                    return e;
-                }
+            Enum e = EnumUtil.matchEnum(desiredType, value);
+            if (e != null) {
+                return e;
             }
         }
         try {
