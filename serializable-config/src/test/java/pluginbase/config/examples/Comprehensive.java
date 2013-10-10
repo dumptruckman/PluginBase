@@ -3,21 +3,21 @@ package pluginbase.config.examples;
 import org.jetbrains.annotations.NotNull;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.Description;
+import pluginbase.config.annotation.HandlePropertyWith;
 import pluginbase.config.annotation.Immutable;
 import pluginbase.config.annotation.SerializeWith;
-import pluginbase.config.annotation.Stringify;
 import pluginbase.config.annotation.ValidateWith;
+import pluginbase.config.field.FieldInstance;
 import pluginbase.config.field.PropertyVetoException;
 import pluginbase.config.field.Validator;
 import pluginbase.config.field.VirtualField;
 import pluginbase.config.properties.PropertiesWrapper;
 import pluginbase.config.properties.PropertyAliases;
-import pluginbase.config.properties.Stringifier;
+import pluginbase.config.properties.PropertyHandler;
 import pluginbase.config.serializers.CustomSerializer2;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,9 +59,7 @@ public class Comprehensive extends PropertiesWrapper {
         PropertyAliases.createAlias(Comprehensive.class, "cname", "custom", "name");
     }
 
-    public Comprehensive() {
-        super(".");
-    }
+    public Comprehensive() { }
 
     public static class NameValidator implements Validator<String> {
         @Nullable
@@ -75,34 +73,34 @@ public class Comprehensive extends PropertiesWrapper {
         }
     }
 
-    public static class SimpleStringifier implements Stringifier {
-        @NotNull
-        @Override
-        public String toString(@NotNull Object value) {
-            if (value instanceof Simple) {
-                return ((Simple) value).string;
-            } else if (value instanceof List) {
-                StringBuilder buffer = new StringBuilder();
-                List<Simple> values = (List<Simple>) value;
-                for (Simple simple : values) {
-                    if (buffer.length() != 0) {
-                        buffer.append(",");
-                    }
-                    buffer.append(simple.string);
-                }
-                return buffer.toString();
-            }
-            return value.toString();
-        }
-        @NotNull
-        @Override
-        public Object valueOf(@NotNull String value, @NotNull Class desiredType) throws PropertyVetoException {
+    public static class SimpleHandler implements PropertyHandler {
+        private List<Simple> convertToList(String value) {
             String[] values = value.split(",");
             List<Simple> list = new ArrayList<Simple>(values.length);
             for (String s : values) {
                 list.add(new Simple(s));
             }
             return list;
+        }
+
+        @Override
+        public void set(@NotNull FieldInstance field, @NotNull String newValue) throws PropertyVetoException, UnsupportedOperationException {
+            field.setValue(convertToList(newValue));
+        }
+
+        @Override
+        public void add(@NotNull FieldInstance field, @NotNull String valueToAdd) throws PropertyVetoException, UnsupportedOperationException {
+            ((List) field.getValue()).addAll(convertToList(valueToAdd));
+        }
+
+        @Override
+        public void remove(@NotNull FieldInstance field, @NotNull String valueToRemove) throws PropertyVetoException, UnsupportedOperationException {
+            ((List) field.getValue()).removeAll(convertToList(valueToRemove));
+        }
+
+        @Override
+        public void clear(@NotNull FieldInstance field) throws UnsupportedOperationException {
+            ((List) field.getValue()).clear();
         }
     }
 
@@ -141,7 +139,7 @@ public class Comprehensive extends PropertiesWrapper {
     private VirtualField<List<String>> testTypedVirtualProp;
     private List<?> genericList = new ArrayList();
 
-    @Stringify(withClass = SimpleStringifier.class)
+    @HandlePropertyWith(SimpleHandler.class)
     public List<Simple> simpleList = new ArrayList<Simple>();
     {
         simpleList.add(new Simple("test"));

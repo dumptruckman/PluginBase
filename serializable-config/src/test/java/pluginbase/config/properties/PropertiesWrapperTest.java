@@ -128,7 +128,7 @@ public class PropertiesWrapperTest extends TestBase {
     @Test
     public void testPropertiesWrapper() throws Exception {
         Custom custom = new Custom("custom");
-        Properties properties = PropertiesWrapper.wrapObject(custom, ".");
+        Properties properties = PropertiesWrapper.wrapObject(custom);
         assertEquals(custom.name, properties.getProperty("name"));
     }
 

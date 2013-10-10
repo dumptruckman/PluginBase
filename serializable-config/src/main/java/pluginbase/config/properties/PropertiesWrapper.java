@@ -17,47 +17,36 @@ import java.util.List;
 
 public class PropertiesWrapper implements Properties {
 
+    private static final transient String SEPARATOR = ".";
+    private static final transient String SEPARATOR_REGEX = "\\.";
+
+
     public static void initializePropertyMessages() { }
 
     @Immutable
     @NotNull
     private final transient Object object;
-    @NotNull
-    @Immutable
-    private final transient String separator;
-    @NotNull
-    @Immutable
-    private final transient String separatorRegex;
 
-    public static Properties wrapObject(@NotNull Object object, @NotNull String separator) {
-        return new PropertiesWrapper(object, separator);
+    public static Properties wrapObject(@NotNull Object object) {
+        return new PropertiesWrapper(object);
     }
 
-    public static String[] getAllPropertyNames(Class clazz, @NotNull String separator) {
-        return new PropertyNameExtractor(clazz, separator).extractPropertyNames();
+    public static String[] getAllPropertyNames(Class clazz) {
+        return new PropertyNameExtractor(clazz).extractPropertyNames();
     }
 
-    private PropertiesWrapper(@NotNull Object object, @NotNull String separator) {
+    private PropertiesWrapper(@NotNull Object object) {
         this.object = object;
-        this.separator = separator;
-        this.separatorRegex = "\\Q" + separator + "\\E";
     }
 
-    protected PropertiesWrapper(@NotNull String separator) {
+    protected PropertiesWrapper() {
         this.object = this;
-        this.separator = separator;
-        this.separatorRegex = "\\Q" + separator + "\\E";
-    }
-
-    @NotNull
-    public String getNameSeparator() {
-        return separator;
     }
 
     @NotNull
     @Override
     public String[] getAllPropertyNames() {
-        return getAllPropertyNames(object.getClass(), separator);
+        return getAllPropertyNames(object.getClass());
     }
 
     @Nullable
@@ -70,44 +59,41 @@ public class PropertiesWrapper implements Properties {
     @Override
     public void setProperty(@NotNull String name, @NotNull String value) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
         FieldInstance field = getFieldInstanceForModify(name);
-        if (!field.isAllowingSetProperty()) {
+        try {
+            field.getPropertyHandler().set(field, value);
+        } catch (UnsupportedOperationException e) {
             throw new PropertyVetoException(Message.bundleMessage(CANNOT_SET_PROPERTY, name));
         }
-        Object destringifiedValue = field.getStringifier().valueOf(value, field.getType());
-        field.setValue(destringifiedValue);
     }
 
     @Override
     public void addProperty(@NotNull String name, @NotNull String value) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
         FieldInstance field = getFieldInstanceForListModify(name);
-        Class collectionType = field.getCollectionType();
-        Collection collection = (Collection) field.getValue();
-        Object destringifiedValue = field.getStringifier().valueOf(value, collectionType);
-        if (destringifiedValue instanceof Collection && !Collection.class.isAssignableFrom(collectionType)) {
-            collection.addAll((Collection) destringifiedValue);
-        } else {
-            collection.add(destringifiedValue);
+        try {
+            field.getPropertyHandler().add(field, value);
+        } catch (UnsupportedOperationException e) {
+            throw new PropertyVetoException(Message.bundleMessage(CANNOT_MODIFY_NON_COLLECTION, name));
         }
     }
 
     @Override
     public void removeProperty(@NotNull String name, @NotNull String value) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
         FieldInstance field = getFieldInstanceForListModify(name);
-        Class collectionType = field.getCollectionType();
-        Collection collection = (Collection) field.getValue();
-        Object destringifiedValue = field.getStringifier().valueOf(value, collectionType);
-        if (destringifiedValue instanceof Collection && !Collection.class.isAssignableFrom(collectionType)) {
-            collection.removeAll((Collection) destringifiedValue);
-        } else {
-            collection.remove(destringifiedValue);
+        try {
+            field.getPropertyHandler().remove(field, value);
+        } catch (UnsupportedOperationException e) {
+            throw new PropertyVetoException(Message.bundleMessage(CANNOT_MODIFY_NON_COLLECTION, name));
         }
     }
 
     @Override
     public void clearProperty(@NotNull String name) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
         FieldInstance field = getFieldInstanceForListModify(name);
-        Collection collection = (Collection) field.getValue();
-        collection.clear();
+        try {
+            field.getPropertyHandler().clear(field);
+        } catch (UnsupportedOperationException e) {
+            throw new PropertyVetoException(Message.bundleMessage(CANNOT_MODIFY_NON_COLLECTION, name));
+        }
     }
 
     @Nullable
@@ -161,7 +147,11 @@ public class PropertiesWrapper implements Properties {
     }
 
     private FieldInstance getFieldInstance(@NotNull String name) throws NoSuchFieldException {
-        FieldInstance field = Field.getInstance(object, name.split(separatorRegex));
+        String[] path = PropertyAliases.getPropertyName(object.getClass(), name);
+        if (path == null) {
+            path = name.split(SEPARATOR_REGEX);
+        }
+        FieldInstance field = Field.getInstance(object, path);
         if (field == null) {
             throw new NoSuchFieldException("No property by that name exists.");
         }
@@ -188,11 +178,9 @@ public class PropertiesWrapper implements Properties {
         Class clazz;
         List<String> allProperties;
         Deque<String> currentPropertyParents;
-        String separator;
 
-        PropertyNameExtractor(Class clazz, String separator) {
+        PropertyNameExtractor(Class clazz) {
             this.clazz = clazz;
-            this.separator = separator;
         }
 
         public String[] extractPropertyNames() {
@@ -225,7 +213,7 @@ public class PropertiesWrapper implements Properties {
             StringBuilder buffer = new StringBuilder();
             for (String parent : currentPropertyParents) {
                 buffer.append(parent);
-                buffer.append(separator);
+                buffer.append(SEPARATOR);
             }
             buffer.append(name);
             allProperties.add(buffer.toString());

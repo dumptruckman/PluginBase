@@ -1,0 +1,18 @@
+package pluginbase.config.properties;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import pluginbase.config.field.Field;
+import pluginbase.config.field.FieldInstance;
+import pluginbase.config.field.PropertyVetoException;
+
+public interface PropertyHandler<T> {
+
+    void set(@NotNull FieldInstance field, @NotNull String newValue) throws PropertyVetoException, UnsupportedOperationException;
+
+    void add(@NotNull FieldInstance field, @NotNull String valueToAdd) throws PropertyVetoException, UnsupportedOperationException;
+
+    void remove(@NotNull FieldInstance field, @NotNull String valueToRemove) throws PropertyVetoException, UnsupportedOperationException;
+
+    void clear(@NotNull FieldInstance field) throws UnsupportedOperationException;
+}

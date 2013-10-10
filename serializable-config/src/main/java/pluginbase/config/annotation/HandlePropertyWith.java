@@ -1,7 +1,6 @@
 package pluginbase.config.annotation;
 
-import pluginbase.config.properties.DefaultStringifier;
-import pluginbase.config.properties.Stringifier;
+import pluginbase.config.properties.PropertyHandler;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -12,7 +11,6 @@ import java.lang.annotation.Target;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.TYPE})
-public @interface Stringify {
-    Class<? extends Stringifier> withClass() default DefaultStringifier.class;
-    boolean allowSetProperty() default true;
+public @interface HandlePropertyWith {
+    Class<? extends PropertyHandler> value();
 }

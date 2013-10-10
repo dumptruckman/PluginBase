@@ -2,7 +2,7 @@ package pluginbase.config.field;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pluginbase.config.properties.Stringifier;
+import pluginbase.config.properties.PropertyHandler;
 
 public class FieldInstance {
 
@@ -66,11 +66,8 @@ public class FieldInstance {
         return field.isImmutable();
     }
 
-    public boolean isAllowingSetProperty() {
-        return field.isAllowingSetProperty();
-    }
-
-    public Stringifier getStringifier() {
-        return field.getStringifier();
+    @NotNull
+    public PropertyHandler getPropertyHandler() {
+        return field.getPropertyHandler();
     }
 }

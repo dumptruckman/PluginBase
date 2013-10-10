@@ -16,9 +16,6 @@ public interface Properties {
     @NotNull
     String[] getAllPropertyNames();
 
-    @NotNull
-    public String getNameSeparator();
-
     @Nullable
     Object getProperty(@NotNull String name) throws NoSuchFieldException;
 

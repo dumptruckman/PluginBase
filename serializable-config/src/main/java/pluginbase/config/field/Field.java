@@ -3,14 +3,14 @@ package pluginbase.config.field;
 import com.googlecode.gentyref.GenericTypeReflector;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.Description;
+import pluginbase.config.annotation.HandlePropertyWith;
 import pluginbase.config.annotation.Immutable;
 import pluginbase.config.annotation.Name;
 import pluginbase.config.annotation.SerializeWith;
-import pluginbase.config.annotation.Stringify;
 import pluginbase.config.annotation.ValidateWith;
 import pluginbase.config.properties.PropertyAliases;
-import pluginbase.config.properties.Stringifier;
-import pluginbase.config.properties.Stringifiers;
+import pluginbase.config.properties.PropertyHandler;
+import pluginbase.config.properties.PropertyHandlers;
 import pluginbase.config.serializers.Serializer;
 import pluginbase.config.serializers.Serializers;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ public class Field extends FieldMap {
     private final Type type;
     private final Class typeClass;
     private final Class collectionType;
-    private final Stringify stringify;
+    private final Class<? extends PropertyHandler> propertyHandlerClass;
 
     @Nullable
     public static FieldInstance getInstance(@NotNull Object object, @NotNull String... name) {
@@ -77,7 +77,12 @@ public class Field extends FieldMap {
             }
         }
         this.collectionType = determineCollectionType();
-        this.stringify = field.getAnnotation(Stringify.class);
+        HandlePropertyWith handlePropertyWith = field.getAnnotation(HandlePropertyWith.class);
+        if (handlePropertyWith != null) {
+            this.propertyHandlerClass = handlePropertyWith.value();
+        } else {
+            this.propertyHandlerClass = null;
+        }
     }
 
     private Type determineActualType() {
@@ -241,12 +246,12 @@ public class Field extends FieldMap {
     }
 
     @NotNull
-    public Stringifier getStringifier() {
-        return stringify != null ? Stringifiers.getStringifier(stringify.withClass()) : Stringifiers.getDefaultStringifier();
-    }
-
-    public boolean isAllowingSetProperty() {
-        return stringify == null || stringify.allowSetProperty();
+    public PropertyHandler getPropertyHandler() {
+        if (propertyHandlerClass != null) {
+            return PropertyHandlers.getHandler(propertyHandlerClass);
+        } else {
+            return PropertyHandlers.getDefaultHandler();
+        }
     }
 
     @Nullable

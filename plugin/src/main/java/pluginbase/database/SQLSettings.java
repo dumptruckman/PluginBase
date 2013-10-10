@@ -16,9 +16,7 @@ public class SQLSettings extends PropertiesWrapper {
     private String databaseType = "SQLite";
     private DatabaseInfo databaseInfo = new DatabaseInfo();
 
-    public SQLSettings() {
-        super(".");
-    }
+    public SQLSettings() { }
 
     public String getDatabaseType() {
         return databaseType;
