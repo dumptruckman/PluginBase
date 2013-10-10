@@ -15,7 +15,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
-class DefaultHandler implements PropertyHandler<Object> {
+class DefaultPropertyHandler implements PropertyHandler<Object> {
 
     private static final Map<Class, Method> VALUE_OF_METHODS = new HashMap<Class, Method>();
     private static final Map<Class, Class> PRIMITIVE_WRAPPER_MAP;
