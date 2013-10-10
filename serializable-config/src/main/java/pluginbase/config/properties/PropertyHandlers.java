@@ -38,11 +38,11 @@ public enum PropertyHandlers {
     }
 
     public static PropertyHandler<Object> getDefaultHandler() {
-        return getHandler(DefaultHandler.class);
+        return getHandler(DefaultPropertyHandler.class);
     }
 
     public static void setDefaultHandler(PropertyHandler<Object> handler) {
-        HANDLER_MAP.put(DefaultHandler.class, handler);
+        HANDLER_MAP.put(DefaultPropertyHandler.class, handler);
     }
 
     public static <T extends PropertyHandler> void registerHandlerInstance(Class<T> handlerClass, T handler) {
