@@ -8,7 +8,6 @@ import java.util.Map;
 public enum Serializers {
     ;
 
-    private static Serializer<Object> defaultSerializer = new DefaultSerializer();
     private static final Map<Class<? extends Serializer>, Serializer> SERIALIZER_MAP = new HashMap<Class<? extends Serializer>, Serializer>();
 
     public static <S extends Serializer> Serializer getSerializer(Class<S> serializerClass) {
@@ -39,11 +38,11 @@ public enum Serializers {
     }
 
     public static Serializer<Object> getDefaultSerializer() {
-        return defaultSerializer;
+        return getSerializer(DefaultSerializer.class);
     }
 
     public static void setDefaultSerializer(Serializer<Object> serializer) {
-        defaultSerializer = serializer;
+        SERIALIZER_MAP.put(DefaultSerializer.class, serializer);
     }
 
     public static <T extends Serializer> void registerSerializerInstance(Class<T> serializerClass, T serializer) {

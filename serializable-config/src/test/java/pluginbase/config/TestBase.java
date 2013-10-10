@@ -3,6 +3,7 @@ package pluginbase.config;
 import pluginbase.config.examples.Child;
 import pluginbase.config.examples.Comprehensive;
 import pluginbase.config.examples.Custom;
+import pluginbase.config.examples.FakeEnum;
 import pluginbase.config.examples.Parent;
 import pluginbase.config.examples.Recursive;
 import org.junit.Before;
@@ -18,5 +19,6 @@ public class TestBase {
         SerializationRegistrar.registerClass(Custom.class);
         SerializationRegistrar.registerClass(Recursive.class);
         SerializationRegistrar.registerClass(Simple.class);
+        SerializationRegistrar.registerClass(FakeEnum.class);
     }
 }

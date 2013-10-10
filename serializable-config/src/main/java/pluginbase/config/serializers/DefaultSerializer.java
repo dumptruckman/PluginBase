@@ -2,6 +2,7 @@ package pluginbase.config.serializers;
 
 import pluginbase.config.ConfigSerializer;
 import pluginbase.config.SerializationRegistrar;
+import pluginbase.config.annotation.FauxEnum;
 import pluginbase.config.field.Field;
 import pluginbase.config.field.FieldMap;
 import pluginbase.config.field.FieldMapper;
@@ -63,8 +64,13 @@ public class DefaultSerializer implements Serializer<Object> {
         if (object == null) {
             return null;
         }
+
         if (SerializationRegistrar.isClassRegistered(object.getClass())) {
-            return serializeRegisteredType(object);
+            if (object.getClass().getAnnotation(FauxEnum.class) == null) {
+                return serializeRegisteredType(object);
+            } else {
+                return serializeFauxEnum(object, object.getClass());
+            }
         } else if (object instanceof Map) {
             return serializeMap((Map) object);
         } else if (object instanceof Collection) {
@@ -131,6 +137,15 @@ public class DefaultSerializer implements Serializer<Object> {
         return result;
     }
 
+    protected String serializeFauxEnum(@NotNull Object fauxEnumValue, Class fauxEnumClass) {
+        try {
+            Method method = fauxEnumClass.getMethod("name");
+            return (String) method.invoke(fauxEnumValue);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("The class " + fauxEnumClass + " is annotated as a FauxEnum but is lacking the required name method.");
+        }
+    }
+
     @NotNull
     @Override
     public Object deserialize(@NotNull Object serialized, @NotNull Class wantedType) throws IllegalArgumentException {
@@ -143,6 +158,8 @@ public class DefaultSerializer implements Serializer<Object> {
         if (SerializationRegistrar.isClassRegistered(wantedType)) {
             if (serialized instanceof Map) {
                 return deserializeRegisteredType((Map) serialized, wantedType);
+            } else if (wantedType.getAnnotation(FauxEnum.class) != null && serialized instanceof String) {
+                return deserializeFauxEnum((String) serialized, wantedType);
             } else {
                 throw new IllegalArgumentException("Deserializing a registered type requires serialized data to be a Map");
             }
@@ -178,6 +195,15 @@ public class DefaultSerializer implements Serializer<Object> {
             }
         }
         return deserializeToObject(data, typeInstance);
+    }
+
+    protected Object deserializeFauxEnum(String value, Class fauxEnumClass) {
+        try {
+            Method valueOfMethod = fauxEnumClass.getDeclaredMethod("valueOf", String.class);
+            return valueOfMethod.invoke(null, value);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("The class " + fauxEnumClass + " is annotated as a FauxEnum but is lacking the required valueOf method.");
+        }
     }
 
     protected <T> T createInstance(Class<T> wantedType) {

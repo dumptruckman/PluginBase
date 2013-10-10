@@ -133,6 +133,7 @@ public class Comprehensive extends PropertiesWrapper {
             actual = newValue;
         }
     };
+    public FakeEnum fakeEnum = FakeEnum.FAKE_2;
 
     private VirtualField<List<?>> testWildCardListVirtualProp;
     private VirtualField<?> testWildCardVirtualProp;
@@ -186,6 +187,7 @@ public class Comprehensive extends PropertiesWrapper {
         result = 31 * result + finalString.hashCode();
         result = 31 * result + virtualEnum.hashCode();
         result = 31 * result + simple.hashCode();
+        result = 31 * result + fakeEnum.hashCode();
         return result;
     }
 
@@ -206,6 +208,7 @@ public class Comprehensive extends PropertiesWrapper {
                 ", finalString='" + finalString + '\'' +
                 ", virtualEnum=" + virtualEnum.get() +
                 ", simple=" + simple +
+                ", fakeEnum=" + fakeEnum +
                 '}';
     }
 }

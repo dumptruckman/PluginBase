@@ -1,6 +1,8 @@
 package pluginbase.bukkit.config;
 
 import pluginbase.config.examples.Child;
+import pluginbase.config.examples.Comprehensive;
+import pluginbase.config.examples.FakeEnum;
 import pluginbase.config.examples.Parent;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.junit.Test;
@@ -86,5 +88,18 @@ public class YamlConfigurationTest extends BukkitConfigurationTest {
         assertTrue(yamlString.contains("# Test comment 1"));
         assertTrue(yamlString.contains("# Test comment 2"));
         assertTrue(yamlString.contains("# Test boolean comments"));
+    }
+
+    @Test
+    public void testFakeEnumYamlSerialization() throws Exception {
+        Comprehensive comp = new Comprehensive();
+        comp.fakeEnum = FakeEnum.FAKE_1;
+        YamlConfiguration yamlConfig = getConfig();
+        yamlConfig.set("test", comp);
+        String yamlString = yamlConfig.saveToString();
+        yamlConfig = getConfig();
+        yamlConfig.loadFromString(yamlString);
+        Comprehensive newComp = (Comprehensive) yamlConfig.get("test");
+        assertEquals(comp, newComp);
     }
 }
