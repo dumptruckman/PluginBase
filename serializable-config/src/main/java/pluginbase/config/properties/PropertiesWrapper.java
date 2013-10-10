@@ -20,9 +20,6 @@ public class PropertiesWrapper implements Properties {
     private static final transient String SEPARATOR = ".";
     private static final transient String SEPARATOR_REGEX = "\\.";
 
-
-    public static void initializePropertyMessages() { }
-
     @Immutable
     @NotNull
     private final transient Object object;
