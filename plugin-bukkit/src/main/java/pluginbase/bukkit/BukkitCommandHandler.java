@@ -9,6 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
 
     private final CommandExecutor executor;
@@ -28,13 +32,20 @@ class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
         if (commandMap == null) {
             return false;
         }
-        DynamicPluginCommand cmd = new DynamicPluginCommand(commandInfo.getAliases(), commandInfo.getDesc(),
+        String[] aliases = commandInfo.getAliases();
+        //String[] bukkitCompatAliases = new String[aliases.length];
+        //for (int i = 0; i < aliases.length; i++) {
+        //    bukkitCompatAliases[i] = aliases[i].split(" ")[0];
+        //}
+        DynamicPluginCommand cmd = new DynamicPluginCommand(aliases, commandInfo.getDesc(),
                 "/" + commandInfo.getName() + " " + commandInfo.getUsage(), executor, commandInfo.getRegisteredWith(), plugin);
         CommandHelpTopic helpTopic = new CommandHelpTopic(cmd, command.getHelp());
         cmd.setPermissions(commandInfo.getPermissions());
-        commandMap.register(commandInfo.getName(), plugin.getDescription().getName(), cmd);
-        Bukkit.getServer().getHelpMap().addTopic(helpTopic);
-        return true;
+        if (commandMap.register(commandInfo.getName(), plugin.getDescription().getName(), cmd)) {
+            Bukkit.getServer().getHelpMap().addTopic(helpTopic);
+            return true;
+        }
+        return false;
     }
 
     private CommandMap getCommandMap() {
