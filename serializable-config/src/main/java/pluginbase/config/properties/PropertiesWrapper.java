@@ -65,7 +65,7 @@ public class PropertiesWrapper implements Properties {
 
     @Override
     public void addProperty(@NotNull String name, @NotNull String value) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
-        FieldInstance field = getFieldInstanceForListModify(name);
+        FieldInstance field = getFieldInstanceForModify(name);
         try {
             field.getPropertyHandler().add(field, value);
         } catch (UnsupportedOperationException e) {
@@ -75,7 +75,7 @@ public class PropertiesWrapper implements Properties {
 
     @Override
     public void removeProperty(@NotNull String name, @NotNull String value) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
-        FieldInstance field = getFieldInstanceForListModify(name);
+        FieldInstance field = getFieldInstanceForModify(name);
         try {
             field.getPropertyHandler().remove(field, value);
         } catch (UnsupportedOperationException e) {
@@ -85,7 +85,7 @@ public class PropertiesWrapper implements Properties {
 
     @Override
     public void clearProperty(@NotNull String name) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
-        FieldInstance field = getFieldInstanceForListModify(name);
+        FieldInstance field = getFieldInstanceForModify(name);
         try {
             field.getPropertyHandler().clear(field);
         } catch (UnsupportedOperationException e) {
@@ -159,14 +159,6 @@ public class PropertiesWrapper implements Properties {
         FieldInstance field = getFieldInstance(name);
         if (field.isImmutable()) {
             throw new IllegalAccessException("You may not modify this property.");
-        }
-        return field;
-    }
-
-    private FieldInstance getFieldInstanceForListModify(@NotNull String name) throws NoSuchFieldException, IllegalAccessException, PropertyVetoException {
-        FieldInstance field = getFieldInstanceForModify(name);
-        if (field.getCollectionType() == null) {
-            throw new PropertyVetoException(Message.bundleMessage(CANNOT_MODIFY_NON_COLLECTION, name));
         }
         return field;
     }
