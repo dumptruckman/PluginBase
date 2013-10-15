@@ -18,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * This class is responsible for handling commands.
@@ -30,6 +31,8 @@ import java.util.Set;
  * @param <P> Typically represents a plugin implementing this command handler.
  */
 public abstract class CommandHandler<P extends CommandProvider & Messaging> {
+
+    protected static final Pattern PATTERN_ON_SPACE = Pattern.compile(" ", Pattern.LITERAL);
 
     @NotNull
     protected final P plugin;

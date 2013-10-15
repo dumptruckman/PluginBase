@@ -25,7 +25,7 @@ class CommandTree {
     }
 
     public void registerKeysForAlias(@NotNull String alias) {
-        String[] args = alias.split(" ");
+        String[] args = CommandHandler.PATTERN_ON_SPACE.split(alias);
         registerKeysForArgs(args);
     }
 

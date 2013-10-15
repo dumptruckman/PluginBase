@@ -33,9 +33,13 @@ class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
             return false;
         }
         String[] aliases = commandInfo.getAliases();
-        //String[] bukkitCompatAliases = new String[aliases.length];
+        //String[] bukkitCompatibleAliases = new String[aliases.length];
         //for (int i = 0; i < aliases.length; i++) {
-        //    bukkitCompatAliases[i] = aliases[i].split(" ")[0];
+            //if (i == 0) {
+            //    bukkitCompatibleAliases[i] = aliases[i];
+            //} else {
+                //bukkitCompatibleAliases[i] = PATTERN_ON_SPACE.split(aliases[i])[0];
+            //}
         //}
         DynamicPluginCommand cmd = new DynamicPluginCommand(aliases, commandInfo.getDesc(),
                 "/" + commandInfo.getName() + " " + commandInfo.getUsage(), executor, commandInfo.getRegisteredWith(), plugin);
