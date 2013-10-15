@@ -12,12 +12,12 @@ public class CommandHandlerTest extends TestCase {
         TestPlugin plugin = PowerMockito.mock(TestPlugin.class);
         CommandHandler ch = Mockito.spy(new CommandHandler(plugin) {
             {
-                newKey("pb", true);
-                getKey("pb").newKey("reload", true);
+                configureCommandKeys("pb");
+                configureCommandKeys("pb reload");
             }
             @Override
             protected boolean register(CommandRegistration commandInfo, Command cmd) {
-                return false;  //To change body of implemented methods use File | Settings | File Templates.
+                return true;
             }
         });
         String[] res = ch.commandDetection(new String[] {"pb"});
