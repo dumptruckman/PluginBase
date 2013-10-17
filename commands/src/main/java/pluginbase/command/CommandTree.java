@@ -57,8 +57,9 @@ class CommandTree {
         int commandArgLength = 0;
         for (int i = 0; i < args.length; i++) {
             commandArgLength++;
-            key = tree.keyMap.get(args[i]);
-            tree = tree.treeMap.get(args[i]);
+            String lowerName = args[i].toLowerCase();
+            key = tree.keyMap.get(lowerName);
+            tree = tree.treeMap.get(lowerName);
             if (tree == null) {
                 break;
             }
