@@ -5,7 +5,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 class CommandTree {
 
@@ -79,6 +81,15 @@ class CommandTree {
         }
     }
 
+    public CommandTree getTreeAt(String path) {
+        String[] args = CommandHandler.PATTERN_ON_SPACE.split(path);
+        CommandTree tree = this;
+        for (String arg : args) {
+            tree = tree.treeMap.get(arg.toLowerCase());
+        }
+        return tree;
+    }
+
     @Override
     public String toString() {
         return "CommandTree{" +
@@ -86,6 +97,17 @@ class CommandTree {
                 ", treeMap=" + treeMap +
                 ", keyMap=" + keyMap +
                 '}';
+    }
+
+    public Set<String> getSubCommandSet() {
+        Set<String> subCommands = new HashSet<String>(treeMap.size() + keyMap.size());
+        for (CommandTree key : treeMap.values()) {
+            subCommands.add(key.name);
+        }
+        for (CommandKey key : keyMap.values()) {
+            subCommands.add(key.getName());
+        }
+        return subCommands;
     }
 
     private static class CommandKey {

@@ -33,6 +33,7 @@ class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
             return false;
         }
         String[] aliases = commandInfo.getAliases();
+        /*
         String[] bukkitCompatibleAliases = new String[aliases.length];
         for (int i = 0; i < aliases.length; i++) {
             if (i == 0) {
@@ -41,7 +42,8 @@ class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
                 bukkitCompatibleAliases[i] = PATTERN_ON_SPACE.split(aliases[i])[0];
             }
         }
-        DynamicPluginCommand cmd = new DynamicPluginCommand(bukkitCompatibleAliases, commandInfo.getDesc(),
+        */
+        DynamicPluginCommand cmd = new DynamicPluginCommand(aliases, commandInfo.getDesc(),
                 "/" + commandInfo.getName() + " " + commandInfo.getUsage(), executor, commandInfo.getRegisteredWith(), plugin);
         CommandHelpTopic helpTopic = new CommandHelpTopic(cmd, command.getHelp());
         cmd.setPermissions(commandInfo.getPermissions());

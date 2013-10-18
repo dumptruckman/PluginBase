@@ -22,6 +22,9 @@ enum CommandLoader {
         if (!(plugin instanceof Messaging && plugin instanceof CommandProvider)) {
             throw new IllegalArgumentException("Plugin must extend Messaging and CommandProvider");
         }
+        if (clazz.equals(DirectoryCommand.class)) {
+            return new DirectoryCommand((CommandProvider) plugin);
+        }
         try {
             for (final Constructor constructor : clazz.getDeclaredConstructors()) {
                 if (constructor.getParameterTypes().length == 1

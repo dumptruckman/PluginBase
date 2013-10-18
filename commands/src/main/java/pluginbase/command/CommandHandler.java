@@ -80,18 +80,20 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
      */
     public boolean registerCommand(@NotNull Class<? extends Command> commandClass) throws IllegalArgumentException {
         CommandBuilder<P> commandBuilder = new CommandBuilder<P>(plugin, commandClass);
-        String primaryAlias = commandBuilder.getPrimaryAlias();
-        assertNotAlreadyRegistered(primaryAlias);
-
-        CommandRegistration <P> bukkitCmdInfo = commandBuilder.createCommandRegistration();
+        CommandRegistration<P> commandRegistration = commandBuilder.createCommandRegistration();
+        assertNotAlreadyRegistered(commandRegistration);
         Command command = commandBuilder.getCommand();
-        if (register(bukkitCmdInfo, command)) {
+        if (register(commandRegistration, command)) {
+            registerRootCommands(commandRegistration);
             cacheUsageString(commandBuilder);
-            configureCommandKeys(primaryAlias);
-            registeredCommandClasses.put(primaryAlias, commandClass);
+            String[] aliases = commandRegistration.getAliases();
+            for (String alias : aliases) {
+                configureCommandKeys(alias);
+                registeredCommandClasses.put(alias, commandClass);
+            }
             // Register language in the command class if any.
             Messages.registerMessages(plugin, commandClass);
-            getLog().fine("Registered command '%s' to: %s", primaryAlias, commandClass);
+            getLog().fine("Registered command '%s' to: %s", aliases[0], commandClass);
             return true;
         }
 
@@ -99,9 +101,44 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         return false;
     }
 
-    private void assertNotAlreadyRegistered(String primaryAlias) {
-        if (registeredCommandClasses.containsKey(primaryAlias)) {
-            throw new IllegalArgumentException("Command with the same primary alias has already been registered!");
+    private static final String SUB_COMMAND_HELP = "Displays a list of sub-commands.";
+
+    private void registerRootCommands(CommandRegistration<P> commandRegistration) {
+        String[] aliases = commandRegistration.getAliases();
+        Command<P> command = new DirectoryCommand<P>(plugin);
+        for (String alias : aliases) {
+            String[] args = PATTERN_ON_SPACE.split(alias);
+            if (args.length > 1) {
+                List<String> directoryAliases = new ArrayList<String>(args.length - 1);
+                StringBuilder directoryAliasBuilder = new StringBuilder();
+                for (int i = 0; i < args.length - 1; i++) {
+                    if (i != 0) {
+                        directoryAliasBuilder.append(" ");
+                    }
+                    directoryAliasBuilder.append(args[i]);
+                    String directoryAlias = directoryAliasBuilder.toString();
+                    if (!registeredCommandClasses.containsKey(directoryAlias)) {
+                        directoryAliases.add(directoryAlias);
+                        registeredCommandClasses.put(directoryAlias, DirectoryCommand.class);
+                        configureCommandKeys(directoryAlias);
+                        getLog().finer("Registered directory command '%s'", directoryAlias);
+                    }
+                }
+                if (!directoryAliases.isEmpty()) {
+                    CommandRegistration <P> directoryCommandRegistration = new CommandRegistration<P>(SUB_COMMAND_HELP, SUB_COMMAND_HELP,
+                            directoryAliases.toArray(new String[directoryAliases.size()]), plugin);
+                    register(directoryCommandRegistration, command);
+                }
+            }
+        }
+    }
+
+    private void assertNotAlreadyRegistered(CommandRegistration commandRegistration) {
+        String[] aliases = commandRegistration.getAliases();
+        for (String alias : aliases) {
+            if (registeredCommandClasses.containsKey(alias)) {
+                throw new IllegalArgumentException("Command with the same alias has already been registered!");
+            }
         }
     }
 
@@ -182,6 +219,10 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
             return false;
         }
         final Command command = CommandLoader.loadCommand(plugin, commandClass);
+        if (command instanceof DirectoryCommand) {
+            ((DirectoryCommand) command).runCommand(player, args[0], commandTree.getTreeAt(args[0]));
+            return true;
+        }
         final CommandInfo cmdInfo = command.getClass().getAnnotation(CommandInfo.class);
         if (cmdInfo == null) {
             getLog().severe("Missing CommandInfo for command: " + args[0]);
@@ -246,6 +287,9 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
             Theme.ERROR + "Value flag '" + Theme.VALUE + "%s" + Theme.ERROR + "' already given");
     public static final Message NO_VALUE_FOR_VALUE_FLAG = Message.createMessage("commands.usage.must_specify_value_for_value_flag",
             Theme.ERROR + "No value specified for the '" + Theme.VALUE + "-%s" + Theme.ERROR + "' flag.");
+
+    public static final Message SUB_COMMAND_LIST = Message.createMessage("commands.sub_command_list",
+            Theme.INFO + "The following is a list of sub-commands for '" + Theme.VALUE + "%s" + Theme.INFO + "':\n%s");
 
     /**
      * Returns a list of strings detailing the usage of the given command.
