@@ -35,8 +35,11 @@ class CommandTree {
             CommandKey commandKey = new CommandKey(getCommandKeyName(initialArg));
             keyMap.put(initialArg, commandKey);
         } else {
-            CommandTree commandTree = new CommandTree(this, initialArg);
-            treeMap.put(initialArg, commandTree);
+            CommandTree commandTree = treeMap.get(initialArg);
+            if (commandTree == null) {
+                commandTree = new CommandTree(this, initialArg);
+                treeMap.put(initialArg, commandTree);
+            }
             commandTree.registerKeysForArgs(removeInitialArg(args));
         }
     }
@@ -74,6 +77,15 @@ class CommandTree {
         } else {
             return args;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "CommandTree{" +
+                "name='" + name + '\'' +
+                ", treeMap=" + treeMap +
+                ", keyMap=" + keyMap +
+                '}';
     }
 
     private static class CommandKey {

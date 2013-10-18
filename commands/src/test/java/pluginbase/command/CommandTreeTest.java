@@ -16,6 +16,8 @@ public class CommandTreeTest {
         commandTree.registerKeysForAlias("two args");
         commandTree.registerKeysForAlias("parent");
         commandTree.registerKeysForAlias("parent child");
+        commandTree.registerKeysForAlias("unused first");
+        commandTree.registerKeysForAlias("unused second");
     }
 
     @Test
@@ -93,5 +95,23 @@ public class CommandTreeTest {
     public void test2ArgChildCommandWith4Args() throws Exception {
         String[] args = commandTree.joinArgsForKnownCommands(new String[] {"parent", "child", "one", "two"});
         assertArrayEquals(new String[] {"parent child", "one", "two"}, args);
+    }
+
+    @Test
+    public void test2ArgChildUnusedParentCommandWith1Arg() throws Exception {
+        String[] args = commandTree.joinArgsForKnownCommands(new String[] {"unused"});
+        assertArrayEquals(new String[] {"unused"}, args);
+    }
+
+    @Test
+    public void test2ArgChildUnusedParentCommandWith2ArgFirst() throws Exception {
+        String[] args = commandTree.joinArgsForKnownCommands(new String[] {"unused", "first"});
+        assertArrayEquals(new String[] {"unused first"}, args);
+    }
+
+    @Test
+    public void test2ArgChildUnusedParentCommandWith2ArgSecond() throws Exception {
+        String[] args = commandTree.joinArgsForKnownCommands(new String[] {"unused", "second"});
+        assertArrayEquals(new String[] {"unused second"}, args);
     }
 }
