@@ -99,7 +99,7 @@ public class Comprehensive extends PropertiesWrapper {
         }
 
         @Override
-        public void clear(@NotNull FieldInstance field) throws UnsupportedOperationException {
+        public void clear(@NotNull FieldInstance field, @Nullable String valueToClear) throws PropertyVetoException, UnsupportedOperationException {
             ((List) field.getValue()).clear();
         }
     }

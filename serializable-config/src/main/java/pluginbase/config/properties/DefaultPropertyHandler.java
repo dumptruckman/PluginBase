@@ -2,7 +2,6 @@ package pluginbase.config.properties;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pluginbase.config.field.Field;
 import pluginbase.config.field.FieldInstance;
 import pluginbase.config.field.PropertyVetoException;
 
@@ -11,7 +10,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -112,7 +110,7 @@ class DefaultPropertyHandler implements PropertyHandler<Object> {
     }
 
     @Override
-    public void clear(@NotNull FieldInstance field) throws UnsupportedOperationException {
+    public void clear(@NotNull FieldInstance field, @Nullable String valueToClear) throws PropertyVetoException, UnsupportedOperationException {
         if (field.getCollectionType() == null) {
             throw new UnsupportedOperationException();
         }

@@ -186,7 +186,7 @@ public class PropertiesWrapperTest extends TestBase {
     @Test
     public void testClearProperty() throws Exception {
         assertFalse(comprehensive.wordList.isEmpty());
-        comprehensive.clearProperty("wordList");
+        comprehensive.clearProperty("wordList", null);
         assertTrue(comprehensive.wordList.isEmpty());
     }
 
@@ -220,7 +220,7 @@ public class PropertiesWrapperTest extends TestBase {
     @Test
     public void testClearCustomStringifierProperty() throws Exception {
         assertFalse(comprehensive.simpleList.isEmpty());
-        comprehensive.clearProperty("simpleList");
+        comprehensive.clearProperty("simpleList", null);
         assertTrue(comprehensive.simpleList.isEmpty());
     }
 }

@@ -10,7 +10,6 @@ import pluginbase.config.field.FieldMapper;
 import pluginbase.config.field.PropertyVetoException;
 import pluginbase.messages.Message;
 
-import java.util.Collection;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -84,10 +83,10 @@ public class PropertiesWrapper implements Properties {
     }
 
     @Override
-    public void clearProperty(@NotNull String name) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
+    public void clearProperty(@NotNull String name, @Nullable String value) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException {
         FieldInstance field = getFieldInstanceForModify(name);
         try {
-            field.getPropertyHandler().clear(field);
+            field.getPropertyHandler().clear(field, value);
         } catch (UnsupportedOperationException e) {
             throw new PropertyVetoException(Message.bundleMessage(CANNOT_MODIFY_NON_COLLECTION, name));
         }
@@ -134,9 +133,9 @@ public class PropertiesWrapper implements Properties {
     }
 
     @Override
-    public boolean clearPropertyUnchecked(@NotNull String name) {
+    public boolean clearPropertyUnchecked(@NotNull String name, @Nullable String value) {
         try {
-            clearProperty(name);
+            clearProperty(name, value);
             return true;
         } catch (Exception e) {
             return false;

@@ -25,7 +25,7 @@ public interface Properties {
 
     void removeProperty(@NotNull String name, @NotNull String value) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException;
 
-    void clearProperty(@NotNull String name) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException;
+    void clearProperty(@NotNull String name, @Nullable String value) throws IllegalAccessException, NoSuchFieldException, PropertyVetoException, IllegalArgumentException;
 
     @Nullable
     Object getPropertyUnchecked(@NotNull String name);
@@ -36,5 +36,5 @@ public interface Properties {
 
     boolean removePropertyUnchecked(@NotNull String name, @NotNull String value);
 
-    boolean clearPropertyUnchecked(@NotNull String name);
+    boolean clearPropertyUnchecked(@NotNull String name, @Nullable String value);
 }

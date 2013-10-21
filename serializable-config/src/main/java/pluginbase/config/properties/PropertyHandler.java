@@ -14,5 +14,5 @@ public interface PropertyHandler<T> {
 
     void remove(@NotNull FieldInstance field, @NotNull String valueToRemove) throws PropertyVetoException, UnsupportedOperationException;
 
-    void clear(@NotNull FieldInstance field) throws UnsupportedOperationException;
+    void clear(@NotNull FieldInstance field, @Nullable String valueToClear) throws PropertyVetoException, UnsupportedOperationException;
 }
