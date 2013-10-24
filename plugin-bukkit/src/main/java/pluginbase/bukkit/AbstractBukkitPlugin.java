@@ -45,7 +45,9 @@ import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -75,6 +77,9 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private File sqlConfigFile;
     private BukkitConfiguration sqlConfig = null;
     private SQLSettings sqlSettings = null;
+
+    private boolean initialCommandRegistrationComplete = false;
+    private Set<Class<? extends Command>> commandsToRegister = new HashSet<Class<? extends Command>>();
 
     /**
      * Override this method if you wish for your permissions to start with something other than the plugin name
@@ -304,6 +309,11 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         }
         //getCommandHandler().registerCommand(new HelpCommand<AbstractBukkitPlugin>(this));
         registerCommands();
+        for (Class<? extends Command> clazz : commandsToRegister) {
+            getCommandHandler().registerCommand(clazz);
+        }
+        commandsToRegister = null;
+        initialCommandRegistrationComplete = true;
     }
 
     /**
@@ -325,7 +335,25 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         if (commandClass.getAnnotation(CommandInfo.class) == null) {
             throw new IllegalArgumentException("Command class must be annotated with " + CommandInfo.class);
         }
-        getCommandHandler().registerCommand(commandClass);
+        if (initialCommandRegistrationComplete) {
+            getCommandHandler().registerCommand(commandClass);
+        } else {
+            commandsToRegister.add(commandClass);
+        }
+    }
+
+    /**
+     * Retrieves the set of commands that will be registered after {@link #registerCommands()} has been called.
+     * <p/>
+     * This will contain the default commands.  You may remove commands from this set if you do not wish them to be registered.
+     * <p/>
+     * After {@link #registerCommands()} has been called this method will always return null.
+     *
+     * @return The commands to be registered or null if initial command registration has already occurred.
+     */
+    @Nullable
+    protected Set<Class<? extends Command>> getCommandsToRegister() {
+        return commandsToRegister;
     }
 
     /** {@inheritDoc} */
