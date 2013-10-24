@@ -46,6 +46,7 @@ import org.mcstats.Metrics;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -291,12 +292,21 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     /**
      * Override this method if you'd like to return any special information for your plugin when using the version
      * command.
+     * <p/>
+     * The default implementation will return a list with several tidbits of information about this plugin.  If you wish
+     * to keep this info, simply override this method but add to the list obtained with a super call.
      *
-     * @return A list of strings to appears in the version information.  If this is not overriden, null is returned.
+     * @return A list of strings to appears in the version information.
      */
-    @Nullable
+    @NotNull
     public List<String> dumpVersionInfo() {
-        return null;
+        List<String> buffer = new LinkedList<String>();
+        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_PLUGIN_VERSION, getPluginInfo().getName(), getPluginInfo().getVersion()));
+        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_SERVER_NAME, getServerInterface().getName()));
+        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_SERVER_VERSION, getServerInterface().getVersion()));
+        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_LANG_FILE, getSettings().getLanguageSettings().getLanguageFile()));
+        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_DEBUG_MODE, getSettings().getDebugLevel()));
+        return buffer;
     }
 
     private void setupCommands(@NotNull Settings settings) {

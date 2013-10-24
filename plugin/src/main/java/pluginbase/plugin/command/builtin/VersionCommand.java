@@ -105,20 +105,13 @@ public class VersionCommand extends BaseBuiltInCommand {
             getMessager().message(sender, VERSION_PLAYER);
         }
 
-        final List<String> buffer = new LinkedList<String>();
-        buffer.add(getMessager().getLocalizedMessage(VERSION_PLUGIN_VERSION, getPlugin().getPluginInfo().getName(), getPlugin().getPluginInfo().getVersion()));
-        buffer.add(getMessager().getLocalizedMessage(VERSION_SERVER_NAME, getPlugin().getServerInterface().getName()));
-        buffer.add(getMessager().getLocalizedMessage(VERSION_SERVER_VERSION, getPlugin().getServerInterface().getVersion()));
-        buffer.add(getMessager().getLocalizedMessage(VERSION_LANG_FILE, getPlugin().getSettings().getLanguageSettings().getLanguageFile()));
-        buffer.add(getMessager().getLocalizedMessage(VERSION_DEBUG_MODE, getPlugin().getSettings().getDebugLevel()));
-
         final List<String> versionInfoDump = getPlugin().dumpVersionInfo();
         if (versionInfoDump != null) {
-            buffer.addAll(versionInfoDump);
+            versionInfoDump.addAll(versionInfoDump);
         }
 
         // send info to sender
-        for (String line : buffer) {
+        for (String line : versionInfoDump) {
             getMessager().message(sender, line);
         }
 
@@ -130,9 +123,9 @@ public class VersionCommand extends BaseBuiltInCommand {
                     for (Character flag : flags) {
                         final String pasteUrl;
                         if (flag.equals('p')) {
-                            pasteUrl = postToService(PasteServiceType.PASTIE, true, buffer, getPlugin().getLog());
+                            pasteUrl = postToService(PasteServiceType.PASTIE, true, versionInfoDump, getPlugin().getLog());
                         } else if (flag.equals('b')) {
-                            pasteUrl = postToService(PasteServiceType.PASTEBIN, true, buffer, getPlugin().getLog());
+                            pasteUrl = postToService(PasteServiceType.PASTEBIN, true, versionInfoDump, getPlugin().getLog());
                         } else {
                             continue;
                         }

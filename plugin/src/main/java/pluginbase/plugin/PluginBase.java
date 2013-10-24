@@ -102,9 +102,9 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
     /**
      * Gets a list of special data points this plugin wishes to be shown when using the version command.
      *
-     * @return a list of special data points for version info or null if nothing extra specified.
+     * @return a list of special data points for version info.
      */
-    @Nullable
+    @NotNull
     List<String> dumpVersionInfo();
 
     /**

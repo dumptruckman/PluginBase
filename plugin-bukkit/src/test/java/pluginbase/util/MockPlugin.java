@@ -27,10 +27,10 @@ public class MockPlugin extends AbstractBukkitPlugin {
         return "pb";
     }
 
-    @Nullable
+    @NotNull
     @Override
     public List<String> dumpVersionInfo() {
-        List<String> versionInfo = new LinkedList<String>();
+        List<String> versionInfo = new LinkedList<String>(super.dumpVersionInfo());
         versionInfo.add("Test");
         return versionInfo;
     }
