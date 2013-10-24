@@ -106,9 +106,6 @@ public class VersionCommand extends BaseBuiltInCommand {
         }
 
         final List<String> versionInfoDump = getPlugin().dumpVersionInfo();
-        if (versionInfoDump != null) {
-            versionInfoDump.addAll(versionInfoDump);
-        }
 
         // send info to sender
         for (String line : versionInfoDump) {
