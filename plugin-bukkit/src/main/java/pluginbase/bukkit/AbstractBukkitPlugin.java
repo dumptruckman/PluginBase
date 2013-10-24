@@ -45,9 +45,12 @@ import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -81,6 +84,8 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     private boolean initialCommandRegistrationComplete = false;
     private List<Class<? extends Command>> commandsToRegister = new LinkedList<Class<? extends Command>>();
+
+    private Map<Class<? extends Command>, Set<String>> additionalCommandAliases = new HashMap<Class<? extends Command>, Set<String>>();
 
     /**
      * Override this method if you wish for your permissions to start with something other than the plugin name
@@ -561,5 +566,20 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     @Override
     public PluginLogger getLog() {
         return logger;
+    }
+
+    protected final void addBuiltInCommandAlias(@NotNull Class<? extends Command> command, @NotNull String alias) {
+        Set<String> aliases = additionalCommandAliases.get(command);
+        if (aliases == null) {
+            aliases = new HashSet<String>();
+            additionalCommandAliases.put(command, aliases);
+        }
+        aliases.add(alias);
+    }
+
+    @NotNull
+    @Override
+    public Map<Class<? extends Command>, Set<String>> getAdditionalCommandAliases() {
+        return Collections.unmodifiableMap(additionalCommandAliases);
     }
 }
