@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * This command is requires as it is the base command for the plugin.
- * TODO: Decide what the hell it does.
+ * TODO: Decide what the hell it does and then maybe use it.
  */
 @CommandInfo(
         primaryAlias = "",

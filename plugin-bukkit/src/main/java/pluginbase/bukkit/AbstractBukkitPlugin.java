@@ -310,7 +310,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     }
 
     private void setupCommands(@NotNull Settings settings) {
-        registerCommand(InfoCommand.class);
+        //registerCommand(InfoCommand.class); // TODO Unused currently... may implement later.
         registerCommand(DebugCommand.class);
         registerCommand(ReloadCommand.class);
         registerCommand(VersionCommand.class);
