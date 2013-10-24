@@ -137,7 +137,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         String[] aliases = commandRegistration.getAliases();
         for (String alias : aliases) {
             if (registeredCommandClasses.containsKey(alias)) {
-                throw new IllegalArgumentException("Command with the same alias has already been registered!");
+                throw new IllegalArgumentException("Command using alias '" + alias + "' has already been registered!");
             }
         }
     }
