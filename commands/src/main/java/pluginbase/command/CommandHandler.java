@@ -265,7 +265,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
                 this.plugin.getMessager().message(player, confirmMessage.getMessage(), confirmMessage.getArgs());
             } else {
                 this.plugin.getMessager().message(player, MUST_CONFIRM,
-                        "/" + this.plugin.getCommandPrefix() + "confirm",
+                        "/" + this.plugin.getCommandPrefix() + " confirm",
                         Duration.valueOf(queuedCommand.getExpirationDuration()).asVerboseString());
             }
         }

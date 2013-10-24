@@ -22,9 +22,7 @@ import java.util.List;
  */
 @CommandInfo(
         primaryAlias = "confirm",
-        directlyPrefixPrimary = true,
-        desc = "Confirms a previously entered command.",
-        prefixedAliases = "confirm"
+        desc = "Confirms a previously entered command."
 )
 public class ConfirmCommand extends BaseBuiltInCommand {
 
