@@ -80,7 +80,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private SQLSettings sqlSettings = null;
 
     private boolean initialCommandRegistrationComplete = false;
-    private Set<Class<? extends Command>> commandsToRegister = new HashSet<Class<? extends Command>>();
+    private List<Class<? extends Command>> commandsToRegister = new LinkedList<Class<? extends Command>>();
 
     /**
      * Override this method if you wish for your permissions to start with something other than the plugin name
@@ -353,16 +353,19 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     }
 
     /**
-     * Retrieves the set of commands that will be registered after {@link #registerCommands()} has been called.
+     * Retrieves the list of commands that will be registered after {@link #registerCommands()} has been called.
      * <p/>
-     * This will contain the default commands.  You may remove commands from this set if you do not wish them to be registered.
+     * This will contain the default commands.  You may remove commands from this list if you do not wish them to be registered.
      * <p/>
      * After {@link #registerCommands()} has been called this method will always return null.
+     * <p/>
+     * Ordering of commands can matter.  If you have a parent command, "test", and you want a child command, "test help",
+     * you must ensure that "test" is in this list ahead of "test help" or "test" will not work 100%.
      *
      * @return The commands to be registered or null if initial command registration has already occurred.
      */
     @Nullable
-    protected Set<Class<? extends Command>> getCommandsToRegister() {
+    protected List<Class<? extends Command>> getCommandsToRegister() {
         return commandsToRegister;
     }
 
