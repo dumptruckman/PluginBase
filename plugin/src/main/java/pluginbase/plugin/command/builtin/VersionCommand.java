@@ -117,9 +117,9 @@ public class VersionCommand extends BaseBuiltInCommand {
             buffer.addAll(versionInfoDump);
         }
 
-        // log to console
+        // send info to sender
         for (String line : buffer) {
-            getPlugin().getLog().info(line);
+            getMessager().message(sender, line);
         }
 
         final Set<Character> flags = new LinkedHashSet<Character>(context.getFlags());
