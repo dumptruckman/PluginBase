@@ -81,7 +81,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
     public boolean registerCommand(@NotNull Class<? extends Command> commandClass) throws IllegalArgumentException {
         CommandBuilder<P> commandBuilder = new CommandBuilder<P>(plugin, commandClass);
         CommandRegistration<P> commandRegistration = commandBuilder.createCommandRegistration();
-        assertNotAlreadyRegistered(commandRegistration);
+        assertNotAlreadyRegistered(commandClass, commandRegistration);
         Command command = commandBuilder.getCommand();
         if (register(commandRegistration, command)) {
             registerRootCommands(commandRegistration);
@@ -133,11 +133,11 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         }
     }
 
-    private void assertNotAlreadyRegistered(CommandRegistration commandRegistration) {
+    private void assertNotAlreadyRegistered(Class commandClass, CommandRegistration commandRegistration) {
         String[] aliases = commandRegistration.getAliases();
         for (String alias : aliases) {
             if (registeredCommandClasses.containsKey(alias)) {
-                throw new IllegalArgumentException("Command using alias '" + alias + "' has already been registered!");
+                throw new IllegalArgumentException("Command using alias '" + alias + "' has already been registered [" + commandClass + "]");
             }
         }
     }
