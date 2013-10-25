@@ -13,9 +13,6 @@ import pluginbase.permission.PermFactory;
 import pluginbase.plugin.PluginBase;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * This command is requires as it is the base command for the plugin.
  * TODO: Decide what the hell it does and then maybe use it.
@@ -25,7 +22,7 @@ import java.util.List;
         directlyPrefixPrimary = true,
         desc = "Gives some information about this plugin"
 )
-public class InfoCommand extends BaseBuiltInCommand {
+public class InfoCommand extends BuiltInCommand {
 
     /** Permission for info command. */
     public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.info").usePluginName().commandPermission()
@@ -33,29 +30,8 @@ public class InfoCommand extends BaseBuiltInCommand {
 
     public final static Message INFO_HELP = Message.createMessage("cmd.info.help", Theme.HELP + "Gives some basic information about this plugin.");
 
-    private static final List<String> STATIC_KEYS = new ArrayList<String>();
-
-    /**
-     * Adds an alias to this built in command.
-     * <p/>
-     * Allows adding aliases to a built in command which is not normally possible since you cannot
-     * add CommandInfo annotations to them.
-     *
-     * @param key The alias to add.
-     */
-    public static void addStaticAlias(@NotNull final String key) {
-        STATIC_KEYS.add(key);
-    }
-
     protected InfoCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-    }
-
-    /** {@inheritDoc} */
-    @NotNull
-    @Override
-    public List<String> getStaticAliases() {
-        return STATIC_KEYS;
     }
 
     /** {@inheritDoc} */

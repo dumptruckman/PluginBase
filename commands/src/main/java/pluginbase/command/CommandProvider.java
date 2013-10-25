@@ -1,7 +1,9 @@
 package pluginbase.command;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,8 +63,8 @@ public interface CommandProvider {
      * <p/>
      * This is useful for when the CommandProvider does not have access to the Command class in order to add them normally.
      *
-     * @return a map of additional command aliases.
+     * @return an array of additional command aliases.
      */
     @NotNull
-    Map<Class<? extends Command>, Set<String>> getAdditionalCommandAliases();
+    String[] getAdditionalCommandAliases(Class<? extends Command> commandClass);
 }

@@ -45,6 +45,7 @@ import org.mcstats.Metrics;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -85,7 +86,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private boolean initialCommandRegistrationComplete = false;
     private List<Class<? extends Command>> commandsToRegister = new LinkedList<Class<? extends Command>>();
 
-    private Map<Class<? extends Command>, Set<String>> additionalCommandAliases = new HashMap<Class<? extends Command>, Set<String>>();
+    private Map<Class<? extends Command>, List<String>> additionalCommandAliases = new HashMap<Class<? extends Command>, List<String>>();
 
     /**
      * Override this method if you wish for your permissions to start with something other than the plugin name
@@ -569,9 +570,9 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     }
 
     protected final void addBuiltInCommandAlias(@NotNull Class<? extends Command> command, @NotNull String alias) {
-        Set<String> aliases = additionalCommandAliases.get(command);
+        List<String> aliases = additionalCommandAliases.get(command);
         if (aliases == null) {
-            aliases = new HashSet<String>();
+            aliases = new ArrayList<String>();
             additionalCommandAliases.put(command, aliases);
         }
         aliases.add(alias);
@@ -579,7 +580,8 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     @NotNull
     @Override
-    public Map<Class<? extends Command>, Set<String>> getAdditionalCommandAliases() {
-        return Collections.unmodifiableMap(additionalCommandAliases);
+    public String[] getAdditionalCommandAliases(Class<? extends Command> commandClass) {
+        List<String> aliases = additionalCommandAliases.get(commandClass);
+        return aliases != null ? aliases.toArray(new String[aliases.size()]) : new String[0];
     }
 }
