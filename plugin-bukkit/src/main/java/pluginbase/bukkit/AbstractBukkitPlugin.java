@@ -569,11 +569,19 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         return logger;
     }
 
-    protected final void addBuiltInCommandAlias(@NotNull Class<? extends Command> command, @NotNull String alias) {
-        List<String> aliases = additionalCommandAliases.get(command);
+    /**
+     * Adds an additional alias to a command.  Any amount may be added by calling this method multiple times.
+     * <p/>
+     * This must be called before the command is registered!
+     *
+     * @param commandClass the class to add aliases for.
+     * @param alias the alias to add.
+     */
+    protected final void addAdditionalCommandAlias(@NotNull Class<? extends Command> commandClass, @NotNull String alias) {
+        List<String> aliases = additionalCommandAliases.get(commandClass);
         if (aliases == null) {
             aliases = new ArrayList<String>();
-            additionalCommandAliases.put(command, aliases);
+            additionalCommandAliases.put(commandClass, aliases);
         }
         aliases.add(alias);
     }
