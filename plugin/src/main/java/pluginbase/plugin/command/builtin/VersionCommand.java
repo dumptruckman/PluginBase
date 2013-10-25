@@ -20,9 +20,7 @@ import pluginbase.util.webpaste.PasteServiceType;
 import pluginbase.util.webpaste.URLShortener;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -38,7 +36,7 @@ import java.util.logging.Level;
         desc = "Prints useful version information to the console.",
         flags = "pb"
 )
-public class VersionCommand extends BaseBuiltInCommand {
+public class VersionCommand extends BuiltInCommand {
 
     /** Permission for version command. */
     public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.version").usePluginName().commandPermission()
@@ -60,29 +58,8 @@ public class VersionCommand extends BaseBuiltInCommand {
 
     private static final URLShortener SHORTENER = new BitlyURLShortener();
 
-    private static final List<String> STATIC_KEYS = new ArrayList<String>();
-
-    /**
-     * Adds an alias to this built in command.
-     * <p/>
-     * Allows adding aliases to a built in command which is not normally possible since you cannot
-     * add CommandInfo annotations to them.
-     *
-     * @param key The alias to add.
-     */
-    public static void addStaticAlias(@NotNull final String key) {
-        STATIC_KEYS.add(key);
-    }
-
     protected VersionCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-    }
-
-    /** {@inheritDoc} */
-    @NotNull
-    @Override
-    public List<String> getStaticAliases() {
-        return STATIC_KEYS;
     }
 
     /** {@inheritDoc} */

@@ -14,9 +14,6 @@ import pluginbase.permission.PermFactory;
 import pluginbase.plugin.PluginBase;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Enables debug-information.
  */
@@ -26,7 +23,7 @@ import java.util.List;
         usage = "[1|2|3|off]",
         max = 1
 )
-public class DebugCommand extends BaseBuiltInCommand {
+public class DebugCommand extends BuiltInCommand {
 
     /** Permission for debug command. */
     public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.debug").usePluginName().commandPermission()
@@ -39,29 +36,8 @@ public class DebugCommand extends BaseBuiltInCommand {
     public final static Message INVALID_DEBUG = Message.createMessage("debug.invalid",
             Theme.ERROR + "Invalid debug level.  Please use number 0-3.  " + Theme.INFO + "(3 being many many messages!)");
 
-    private static final List<String> STATIC_KEYS = new ArrayList<String>();
-
-    /**
-     * Adds an alias to this built in command.
-     * <p/>
-     * Allows adding aliases to a built in command which is not normally possible since you cannot
-     * add CommandInfo annotations to them.
-     *
-     * @param key The alias to add.
-     */
-    public static void addStaticAlias(@NotNull final String key) {
-        STATIC_KEYS.add(key);
-    }
-
     protected DebugCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-    }
-
-    /** {@inheritDoc} */
-    @NotNull
-    @Override
-    public List<String> getStaticAliases() {
-        return STATIC_KEYS;
     }
 
     /** {@inheritDoc} */

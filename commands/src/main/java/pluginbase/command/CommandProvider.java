@@ -1,6 +1,11 @@
 package pluginbase.command;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * An interface required for using the commands provided by PluginBase.
@@ -52,4 +57,14 @@ public interface CommandProvider {
      * @return true means this provider offers queued commands and has a built in confirm command.
      */
     boolean useQueuedCommands();
+
+    /**
+     * Provides additional aliases that commands should use.
+     * <p/>
+     * This is useful for when the CommandProvider does not have access to the Command class in order to add them normally.
+     *
+     * @return an array of additional command aliases.
+     */
+    @NotNull
+    String[] getAdditionalCommandAliases(Class<? extends Command> commandClass);
 }

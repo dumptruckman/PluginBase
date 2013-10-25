@@ -1,7 +1,6 @@
 package pluginbase.command;
 
 import org.jetbrains.annotations.NotNull;
-import pluginbase.command.builtin.BuiltInCommand;
 import pluginbase.messages.Theme;
 import pluginbase.messages.messaging.Messaging;
 
@@ -146,30 +145,21 @@ class CommandBuilder<P extends CommandProvider & Messaging> {
         }
 
         private void buildUpAliasList(P plugin, CommandInfo cmdInfo, Command command) {
-            int totalAliasCount = getTotalAliasCount(command, cmdInfo);
+            int totalAliasCount = getTotalAliasCount(plugin, command, cmdInfo);
             aliases = new ArrayList<String>(totalAliasCount);
             addPrimaryAlias(cmdInfo, plugin);
             addRegularAliases(cmdInfo);
             addPrefixedAliases(cmdInfo, plugin);
             addDirectlyPrefixedAliases(cmdInfo, plugin);
-            if (command instanceof BuiltInCommand) {
-                addStaticAliasesForBuiltInCommand((BuiltInCommand) command);
-            }
+            addAdditionalAliases(command, plugin);
         }
 
-        private int getTotalAliasCount(Command command, CommandInfo cmdInfo) {
-            if (command instanceof BuiltInCommand) {
-                return cmdInfo.aliases().length
-                        + cmdInfo.prefixedAliases().length
-                        + cmdInfo.directlyPrefixedAliases().length
-                        + ((BuiltInCommand) command).getStaticAliases().size()
-                        + 1;
-            } else {
-                return cmdInfo.aliases().length
-                        + cmdInfo.prefixedAliases().length
-                        + cmdInfo.directlyPrefixedAliases().length
-                        + 1;
-            }
+        private int getTotalAliasCount(P plugin, Command command, CommandInfo cmdInfo) {
+            return cmdInfo.aliases().length
+                    + cmdInfo.prefixedAliases().length
+                    + cmdInfo.directlyPrefixedAliases().length
+                    + plugin.getAdditionalCommandAliases(command.getClass()).length
+                    + 1;
         }
 
         private void addPrimaryAlias(CommandInfo cmdInfo, P plugin) {
@@ -206,10 +196,10 @@ class CommandBuilder<P extends CommandProvider & Messaging> {
             }
         }
 
-        private void addStaticAliasesForBuiltInCommand(BuiltInCommand command) {
-            for (final Object alias : command.getStaticAliases()) {
-                if (!alias.toString().isEmpty()) {
-                    aliases.add(alias.toString());
+        private void addAdditionalAliases(Command command, P plugin) {
+            for (final String alias : plugin.getAdditionalCommandAliases(command.getClass())) {
+                if (!alias.isEmpty()) {
+                    aliases.add(alias);
                 }
             }
         }
