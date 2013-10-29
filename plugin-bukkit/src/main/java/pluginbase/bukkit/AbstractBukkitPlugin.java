@@ -209,13 +209,17 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
                 }
             }
             try {
+                ClassLoader previousClassLoader = Thread.currentThread().getContextClassLoader();
+                Thread.currentThread().setContextClassLoader(getClassLoader());
                 dataSource.setDriverClassName(dbType);
                 dataSource.setUrl(url);
                 dataSource.setUsername(sqlSettings.getDatabaseInfo().getUser());
                 dataSource.setPassword(sqlSettings.getDatabaseInfo().getPass());
+                Thread.currentThread().setContextClassLoader(previousClassLoader);
             } catch (Exception e) {
                 getLog().severe("There was an error initializing the database!");
                 e.printStackTrace();
+            } finally {
             }
         }
     }
