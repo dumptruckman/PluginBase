@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.bukkit;
 
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import pluginbase.bukkit.config.BukkitConfiguration;
 import pluginbase.bukkit.config.YamlConfiguration;
 import pluginbase.bukkit.permission.BukkitPermFactory;
@@ -14,11 +15,7 @@ import pluginbase.command.CommandUsageException;
 import pluginbase.command.QueuedCommand;
 import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.properties.Properties;
-import pluginbase.config.properties.PropertiesWrapper;
-import pluginbase.database.MySQL;
-import pluginbase.database.SQLDatabase;
-import pluginbase.database.SQLSettings;
-import pluginbase.database.SQLite;
+import pluginbase.plugin.SQLSettings;
 import pluginbase.logging.PluginLogger;
 import pluginbase.messages.Messages;
 import pluginbase.messages.PluginBaseException;
@@ -32,7 +29,6 @@ import pluginbase.plugin.Settings;
 import pluginbase.plugin.Settings.Language;
 import pluginbase.plugin.command.builtin.ConfirmCommand;
 import pluginbase.plugin.command.builtin.DebugCommand;
-import pluginbase.plugin.command.builtin.InfoCommand;
 import pluginbase.plugin.command.builtin.ReloadCommand;
 import pluginbase.plugin.command.builtin.VersionCommand;
 import org.bukkit.Bukkit;
@@ -43,16 +39,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcstats.Metrics;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 /**
@@ -71,7 +65,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private ServerInterface<BukkitPlugin> serverInterface;
     private BukkitMessager messager = null;
     private CommandHandler commandHandler = null;
-    private SQLDatabase db = null;
+    private DriverManagerDataSource dataSource = null;
     private Metrics metrics = null;
     private PluginLogger logger;
 
@@ -195,25 +189,33 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     }
 
     private void setupDB() {
-        if (this.db != null) {
-            this.db.shutdown();
-        }
         if (useDatabase()) {
-            this.db = null;
+            this.dataSource = new DriverManagerDataSource();
             initDatabase();
-            if (getSQLSettings().getDatabaseType().equalsIgnoreCase("mysql")) {
-                SQLSettings.DatabaseInfo dbInfo = getSQLSettings().getDatabaseInfo();
-                try {
-                    this.db = new MySQL(dbInfo.getHost(), dbInfo.getPort(), dbInfo.getDatabase(), dbInfo.getUser(), dbInfo.getPass());
-                } catch (ClassNotFoundException e) {
-                    getLog().severe("Your server does not support MySQL!");
+            SQLSettings sqlSettings = getSQLSettings();
+            String dbType = sqlSettings.getDatabaseType();
+            String url = sqlSettings.getDatabaseInfo().getUrl();
+            if (dbType.equalsIgnoreCase("H2")) {
+                dbType = "org.h2.Driver";
+                if (!url.startsWith("jdbc")) {
+                    url = "jdbc:h2:" + new File(getDataFolder(), url).getPath();
                 }
-            } else {
-                try {
-                    this.db = new SQLite(new File(getDataFolder(), "data"));
-                } catch (ClassNotFoundException e) {
-                    getLog().severe("Your server does not support SQLite!");
+            } else if (dbType.equalsIgnoreCase("MySQL")) {
+                dbType = "com.mysql.jdbc.Driver";
+            } else if (dbType.equalsIgnoreCase("SQLite")) {
+                dbType = "org.sqlite.JDBC";
+                if (!url.startsWith("jdbc")) {
+                    url = "jdbc:sqlite:" + new File(getDataFolder(), url).getPath();
                 }
+            }
+            try {
+                dataSource.setDriverClassName(dbType);
+                dataSource.setUrl(url);
+                dataSource.setUsername(sqlSettings.getDatabaseInfo().getUser());
+                dataSource.setPassword(sqlSettings.getDatabaseInfo().getPass());
+            } catch (Exception e) {
+                getLog().severe("There was an error initializing the database!");
+                e.printStackTrace();
             }
         }
     }
@@ -466,8 +468,8 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     /** {@inheritDoc} */
     @Nullable
     @Override
-    public SQLDatabase getDB() {
-        return db;
+    public DataSource getDataSource() {
+        return dataSource;
     }
 
     /** {@inheritDoc} */

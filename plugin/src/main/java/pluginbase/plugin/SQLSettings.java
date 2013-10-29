@@ -1,6 +1,5 @@
-package pluginbase.database;
+package pluginbase.plugin;
 
-import org.jetbrains.annotations.NotNull;
 import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.properties.PropertiesWrapper;
@@ -12,8 +11,13 @@ public class SQLSettings extends PropertiesWrapper {
         SerializationRegistrar.registerClass(DatabaseInfo.class);
     }
 
-    @Comment("What type of database to use.  Base options are SQLite and MySQL.")
-    private String databaseType = "SQLite";
+    @Comment({
+            "What type of database to use.",
+            "H2 is built in.",
+            "Others such as MySQL or SQLite may work.",
+            "You can also specify the exact driver to use here."
+    })
+    private String databaseType = "H2";
     private DatabaseInfo databaseInfo = new DatabaseInfo();
 
     public SQLSettings() { }
@@ -29,21 +33,15 @@ public class SQLSettings extends PropertiesWrapper {
     @Comment("Settings for non-SQLite databases")
     public static class DatabaseInfo {
 
-        private String host = "localhost";
-        private String port = "3306";
-        private String user = "minecraft";
+        @Comment({
+                "This is the JDBC url that will be used for connecting to the database.",
+                "If this does not start with \"jdbc\" then it will be assumed an embedded db is desired and this will be the file name for such."
+        })
+        private String url = "database";
+        private String user = "sa";
         private String pass = "";
-        private String database = "minecraft";
 
         private DatabaseInfo() { }
-
-        public String getHost() {
-            return host;
-        }
-
-        public String getPort() {
-            return port;
-        }
 
         public String getUser() {
             return user;
@@ -53,8 +51,8 @@ public class SQLSettings extends PropertiesWrapper {
             return pass;
         }
 
-        public String getDatabase() {
-            return database;
+        public String getUrl() {
+            return url;
         }
     }
 }

@@ -5,8 +5,6 @@ package pluginbase.plugin;
 
 import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandProvider;
-import pluginbase.database.SQLDatabase;
-import pluginbase.database.SQLSettings;
 import pluginbase.logging.LoggablePlugin;
 import pluginbase.logging.PluginLogger;
 import pluginbase.messages.messaging.Messager;
@@ -16,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcstats.Metrics;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.util.List;
 
@@ -60,12 +59,12 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
     String getCommandPrefix();
 
     /**
-     * Gets the sql database interface for this plugin if it uses one.
+     * Gets the sql data source for this plugin if it uses one.
      *
-     * @return the sql database interface or null if unused.
+     * @return the sql data source or null if unused.
      */
     @Nullable
-    SQLDatabase getDB();
+    DataSource getDataSource();
 
     /**
      * Gets the sql database configuration for this plugin if it uses one.

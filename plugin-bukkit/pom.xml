@@ -52,6 +52,16 @@
             <type>jar</type>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>3.2.4.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.3.174</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -106,6 +116,8 @@
                                     <include>com.dumptruckman.minecraft.pluginbase:Serializable-Config-Bukkit</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:File-Comments</include>
                                     <include>org.mcstats:metrics</include>
+                                    <include>org.springframework:spring-jdbc</include>
+                                    <include>com.h2database:h2</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
