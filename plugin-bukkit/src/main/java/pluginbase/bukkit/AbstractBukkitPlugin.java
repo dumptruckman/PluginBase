@@ -241,16 +241,22 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
             config = BukkitConfiguration.loadYamlConfig(getConfigurationFile());
             ((YamlConfiguration) config).options().comments(true);
             Settings defaults = getDefaultSettings();
-            settings = config.getToObject("settings", defaults);
-            if (settings == null) {
+            if (config.contains("settings")) {
+                settings = config.getToObject("settings", defaults);
+            } else {
                 settings = defaults;
             }
+            config.set("settings", defaults);
+            config.save(getConfigurationFile());
             getLog().fine("Loaded config file!");
         } catch (PluginBaseException e) {  // Catch errors loading the config file and exit out if found.
             getLog().severe("Error loading config file!");
             e.logException(getLog(), Level.SEVERE);
             Bukkit.getPluginManager().disablePlugin(this);
             return null;
+        } catch (IOException e) {
+            getLog().severe("There was a problem saving the config file!");
+            e.printStackTrace();
         }
         getLog().setDebugLevel(getSettings().getDebugLevel());
         return settings;
@@ -504,14 +510,20 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
             SQLSettings defaults = getDefaultSQLSettings();
             sqlConfig = BukkitConfiguration.loadYamlConfig(getSqlConfigFile());
             ((YamlConfiguration) sqlConfig).options().comments(true);
-            sqlSettings = sqlConfig.getToObject("settings", defaults);
-            if (sqlSettings == null) {
+            if (sqlConfig.contains("settings")) {
+                sqlSettings = sqlConfig.getToObject("settings", defaults);
+            } else {
                 sqlSettings = defaults;
             }
+            sqlConfig.set("settings", sqlSettings);
+            sqlConfig.save(getSqlConfigFile());
             getLog().fine("Loaded db config file!");
         } catch (PluginBaseException e) {
             getLog().severe("Could not create db_config.yml!");
             e.logException(getLog(), Level.SEVERE);
+        } catch (IOException e) {
+            getLog().severe("There was a problem saving the db config file!");
+            e.printStackTrace();
         }
     }
 
