@@ -4,8 +4,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class TestPlugin extends AbstractBukkitPlugin {
 
-
-
     @NotNull
     @Override
     public String getCommandPrefix() {

@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.bukkit;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import pluginbase.bukkit.config.BukkitConfiguration;
 import pluginbase.bukkit.config.YamlConfiguration;
@@ -480,6 +481,16 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     @Override
     public DataSource getDataSource() {
         return dataSource;
+    }
+
+    /** {@inheritDoc} */
+    @NotNull
+    @Override
+    public JdbcTemplate createJdbcTemplate() {
+        if (getDataSource() == null) {
+            throw new IllegalStateException("This plugin is not set up to use a database");
+        }
+        return new JdbcTemplate(getDataSource());
     }
 
     /** {@inheritDoc} */

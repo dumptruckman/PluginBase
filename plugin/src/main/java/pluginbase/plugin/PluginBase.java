@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.plugin;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandProvider;
 import pluginbase.logging.LoggablePlugin;
@@ -65,6 +66,15 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
      */
     @Nullable
     DataSource getDataSource();
+
+    /**
+     * Creates a new JDBC Template which is the basis for Spring's JDBC API.
+     *
+     * @return a new JDBC Template.
+     * @throws IllegalStateException if this plugin is not set up for a database.
+     */
+    @NotNull
+    JdbcTemplate createJdbcTemplate() throws IllegalStateException;
 
     /**
      * Gets the sql database configuration for this plugin if it uses one.
