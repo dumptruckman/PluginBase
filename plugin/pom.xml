@@ -67,6 +67,13 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>JDBC</artifactId>
+            <version>${jdbc.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.mcstats</groupId>
             <artifactId>metrics</artifactId>
             <version>1.1-SNAPSHOT</version>
@@ -78,12 +85,6 @@
                     <artifactId>bukkit</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-            <version>3.2.4.RELEASE</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -135,6 +136,7 @@
                                     <include>com.dumptruckman.minecraft.pluginbase:Minecraft-Link</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Commands</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Serializable-Config</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:JDBC</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

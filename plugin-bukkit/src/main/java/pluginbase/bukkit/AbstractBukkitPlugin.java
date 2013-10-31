@@ -3,8 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.bukkit;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import pluginbase.bukkit.config.BukkitConfiguration;
 import pluginbase.bukkit.config.YamlConfiguration;
 import pluginbase.bukkit.permission.BukkitPermFactory;
@@ -16,7 +14,8 @@ import pluginbase.command.CommandUsageException;
 import pluginbase.command.QueuedCommand;
 import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.properties.Properties;
-import pluginbase.plugin.SQLSettings;
+import pluginbase.jdbc.DatabaseSettings;
+import pluginbase.jdbc.JdbcAgent;
 import pluginbase.logging.PluginLogger;
 import pluginbase.messages.Messages;
 import pluginbase.messages.PluginBaseException;
@@ -40,7 +39,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcstats.Metrics;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,7 +64,6 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     private ServerInterface<BukkitPlugin> serverInterface;
     private BukkitMessager messager = null;
     private CommandHandler commandHandler = null;
-    private DriverManagerDataSource dataSource = null;
     private Metrics metrics = null;
     private PluginLogger logger;
 
@@ -76,7 +73,6 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     private File sqlConfigFile;
     private BukkitConfiguration sqlConfig = null;
-    private SQLSettings sqlSettings = null;
 
     private boolean initialCommandRegistrationComplete = false;
     private List<Class<? extends Command>> commandsToRegister = new LinkedList<Class<? extends Command>>();
@@ -146,8 +142,6 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     public final void onEnable() {
         // Setup plugin metrics.
         setupMetrics();
-        // Sets up the plugin database if configured.
-        setupDB();
         // Loads the configuration.
         Settings settings = setupConfig();
         // Setup our base commands.
@@ -187,42 +181,6 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
 
     private void startMetrics() {
         getMetrics().start();
-    }
-
-    private void setupDB() {
-        if (useDatabase()) {
-            this.dataSource = new DriverManagerDataSource();
-            initDatabase();
-            SQLSettings sqlSettings = getSQLSettings();
-            String dbType = sqlSettings.getDatabaseType();
-            String url = sqlSettings.getDatabaseInfo().getUrl();
-            if (dbType.equalsIgnoreCase("H2")) {
-                dbType = "org.h2.Driver";
-                if (!url.startsWith("jdbc")) {
-                    url = "jdbc:h2:" + new File(getDataFolder(), url).getPath();
-                }
-            } else if (dbType.equalsIgnoreCase("MySQL")) {
-                dbType = "com.mysql.jdbc.Driver";
-            } else if (dbType.equalsIgnoreCase("SQLite")) {
-                dbType = "org.sqlite.JDBC";
-                if (!url.startsWith("jdbc")) {
-                    url = "jdbc:sqlite:" + new File(getDataFolder(), url).getPath();
-                }
-            }
-            try {
-                ClassLoader previousClassLoader = Thread.currentThread().getContextClassLoader();
-                Thread.currentThread().setContextClassLoader(getClassLoader());
-                dataSource.setDriverClassName(dbType);
-                dataSource.setUrl(url);
-                dataSource.setUsername(sqlSettings.getDatabaseInfo().getUser());
-                dataSource.setPassword(sqlSettings.getDatabaseInfo().getPass());
-                Thread.currentThread().setContextClassLoader(previousClassLoader);
-            } catch (Exception e) {
-                getLog().severe("There was an error initializing the database!");
-                e.printStackTrace();
-            } finally {
-            }
-        }
     }
 
     /**
@@ -296,7 +254,6 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
      * Nulls the config object and reloads a new one.
      */
     public final void reloadConfig() {
-        setupDB();
         Settings settings = setupConfig();
         setupMessager(settings.getLanguageSettings());
         onReloadConfig();
@@ -454,19 +411,6 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         } catch (IOException e) {
             new PluginBaseException(e).logException(getLog(), Level.WARNING);
         }
-        saveSqlSettings();
-    }
-
-    private void saveSqlSettings() throws SendablePluginBaseException {
-        if (sqlConfig != null) {
-            sqlConfig.set("settings", sqlSettings);
-            File sqlConfigFile = getSqlConfigFile();
-            try {
-                sqlConfig.save(sqlConfigFile);
-            } catch (IOException e) {
-                new PluginBaseException(e).logException(getLog(), Level.WARNING);
-            }
-        }
     }
 
     /** {@inheritDoc} */
@@ -476,28 +420,16 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
         return this.messager;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * Override this method to provide a JDBC agent for the plugin.
+     * <p/>
+     * You may make use of {@link #loadDatabaseSettings(pluginbase.jdbc.DatabaseSettings)} to help set this up.
+     */
     @Nullable
     @Override
-    public DataSource getDataSource() {
-        return dataSource;
-    }
-
-    /** {@inheritDoc} */
-    @NotNull
-    @Override
-    public JdbcTemplate createJdbcTemplate() {
-        if (getDataSource() == null) {
-            throw new IllegalStateException("This plugin is not set up to use a database");
-        }
-        return new JdbcTemplate(getDataSource());
-    }
-
-    /** {@inheritDoc} */
-    @Nullable
-    @Override
-    public SQLSettings getSQLSettings() {
-        return sqlSettings;
+    public JdbcAgent getJdbcAgent() {
+        return null;
     }
 
     /** {@inheritDoc} */
@@ -505,32 +437,26 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
     @Override
     public abstract String getCommandPrefix();
 
-    /**
-     * Implement this method to tell PluginBase whether to use a database configuration file or not.
-     *
-     * @return True to automatically set up a database.
-     */
-    protected abstract boolean useDatabase();
-
     protected File getSqlConfigFile() {
         return sqlConfigFile;
     }
 
-    protected SQLSettings getDefaultSQLSettings() {
-        return new SQLSettings();
-    }
-
-    private void initDatabase() {
+    /**
+     * Loads DatabaseSettings from the db_config.yml file in the plugin folder.  If the file does not exist it is created
+     * and populated with the specified defaults.
+     *
+     * @param defaults The defaults to use for any missing information in the settings.
+     * @return The database settings as loaded from db_config.yml.
+     */
+    protected DatabaseSettings loadDatabaseSettings(DatabaseSettings defaults) {
+        DatabaseSettings settings = defaults;
         try {
-            SQLSettings defaults = getDefaultSQLSettings();
             sqlConfig = BukkitConfiguration.loadYamlConfig(getSqlConfigFile());
             ((YamlConfiguration) sqlConfig).options().comments(true);
             if (sqlConfig.contains("settings")) {
-                sqlSettings = sqlConfig.getToObject("settings", defaults);
-            } else {
-                sqlSettings = defaults;
+                settings = sqlConfig.getToObject("settings", defaults);
             }
-            sqlConfig.set("settings", sqlSettings);
+            sqlConfig.set("settings", settings);
             sqlConfig.save(getSqlConfigFile());
             getLog().fine("Loaded db config file!");
         } catch (PluginBaseException e) {
@@ -540,6 +466,7 @@ public abstract class AbstractBukkitPlugin extends JavaPlugin implements BukkitP
             getLog().severe("There was a problem saving the db config file!");
             e.printStackTrace();
         }
+        return settings;
     }
 
     /** {@inheritDoc} */

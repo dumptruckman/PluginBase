@@ -9,10 +9,8 @@ package pluginbase;
 
 import org.bukkit.craftbukkit.v1_6_R2.CraftServer;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import pluginbase.bukkit.AbstractBukkitPlugin;
 import pluginbase.bukkit.CommandUtil;
-import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.serializers.Serializers;
 import pluginbase.messages.MessageProvider;
 import pluginbase.plugin.Settings.Language;
@@ -32,8 +30,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -145,8 +141,9 @@ public class TestBasics {
         myPlugin.reloadConfig();
         assertTrue(!myPlugin.getSettings().nested.test);
 
-        assertNotNull(myPlugin.getDataSource());
-        JdbcTemplate testCreate = new JdbcTemplate(myPlugin.getDataSource());
+
+        assertNotNull(myPlugin.getJdbcAgent());
+        JdbcTemplate testCreate = new JdbcTemplate(myPlugin.getJdbcAgent().getDataSource());
         testCreate.update("CREATE TABLE COMPANY " +
                    "(ID INT PRIMARY KEY     NOT NULL," +
                    " NAME           TEXT    NOT NULL, " +

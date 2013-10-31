@@ -34,6 +34,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>JDBC-Spring</artifactId>
+            <version>${jdbc-spring.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.3.174</version>
@@ -82,6 +88,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.dumptruckman.minecraft.pluginbase:Plugin-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:JDBC-Spring</include>
                                     <include>com.h2database:h2</include>
                                 </includes>
                             </artifactSet>

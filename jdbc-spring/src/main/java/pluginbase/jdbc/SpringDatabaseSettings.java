@@ -1,14 +1,14 @@
-package pluginbase.plugin;
+package pluginbase.jdbc;
 
 import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.properties.PropertiesWrapper;
 
-public class SQLSettings extends PropertiesWrapper {
+public class SpringDatabaseSettings extends PropertiesWrapper implements DatabaseSettings {
 
     static {
-        SerializationRegistrar.registerClass(SQLSettings.class);
-        SerializationRegistrar.registerClass(DatabaseInfo.class);
+        SerializationRegistrar.registerClass(SpringDatabaseSettings.class);
+        SerializationRegistrar.registerClass(SpringDatabaseConnectionInfo.class);
     }
 
     @Comment({
@@ -18,20 +18,20 @@ public class SQLSettings extends PropertiesWrapper {
             "You can also specify the exact driver to use here."
     })
     private String databaseType = "H2";
-    private DatabaseInfo databaseInfo = new DatabaseInfo();
+    private SpringDatabaseConnectionInfo databaseInfo = new SpringDatabaseConnectionInfo();
 
-    public SQLSettings() { }
+    public SpringDatabaseSettings() { }
 
     public String getDatabaseType() {
         return databaseType;
     }
 
-    public DatabaseInfo getDatabaseInfo() {
+    public SpringDatabaseConnectionInfo getDatabaseInfo() {
         return databaseInfo;
     }
 
     @Comment("Settings for non-SQLite databases")
-    public static class DatabaseInfo {
+    public static class SpringDatabaseConnectionInfo implements DatabaseConnectionInfo {
 
         @Comment({
                 "This is the JDBC url that will be used for connecting to the database.",
@@ -41,7 +41,7 @@ public class SQLSettings extends PropertiesWrapper {
         private String user = "sa";
         private String pass = "";
 
-        private DatabaseInfo() { }
+        private SpringDatabaseConnectionInfo() { }
 
         public String getUser() {
             return user;

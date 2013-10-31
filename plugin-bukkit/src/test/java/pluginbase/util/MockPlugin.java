@@ -3,12 +3,16 @@ package pluginbase.util;
 import pluginbase.bukkit.AbstractBukkitPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.jdbc.JdbcAgent;
+import pluginbase.jdbc.SpringDatabaseSettings;
+import pluginbase.jdbc.SpringJdbcAgent;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MockPlugin extends AbstractBukkitPlugin {
+
+    JdbcAgent jdbcAgent;
 
     @Override
     public void onPluginLoad() {
@@ -19,6 +23,11 @@ public class MockPlugin extends AbstractBukkitPlugin {
     @Override
     public void onPluginEnable() {
         //getCommandHandler().registerCommand(new MockQueuedCommand(this));
+        try {
+            jdbcAgent = SpringJdbcAgent.createAgent(loadDatabaseSettings(new SpringDatabaseSettings()), getDataFolder(), MockPlugin.class.getClassLoader());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @NotNull
@@ -47,8 +56,9 @@ public class MockPlugin extends AbstractBukkitPlugin {
         return (MockConfig) super.getSettings();
     }
 
+    @NotNull
     @Override
-    protected boolean useDatabase() {
-        return true;
+    public JdbcAgent getJdbcAgent() {
+        return jdbcAgent;
     }
 }

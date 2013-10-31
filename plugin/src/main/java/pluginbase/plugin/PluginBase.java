@@ -3,9 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.plugin;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandProvider;
+import pluginbase.jdbc.JdbcAgent;
 import pluginbase.logging.LoggablePlugin;
 import pluginbase.logging.PluginLogger;
 import pluginbase.messages.messaging.Messager;
@@ -15,7 +15,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcstats.Metrics;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.util.List;
 
@@ -60,29 +59,14 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
     String getCommandPrefix();
 
     /**
-     * Gets the sql data source for this plugin if it uses one.
+     * Retrieves the JDBC agent for this plugin, if configured.
+     * <p/>
+     * This agent will provide a connection to a database which can be used to execute queries.
      *
-     * @return the sql data source or null if unused.
+     * @return the JDBC agent for this plugin or null if not configured.
      */
     @Nullable
-    DataSource getDataSource();
-
-    /**
-     * Creates a new JDBC Template which is the basis for Spring's JDBC API.
-     *
-     * @return a new JDBC Template.
-     * @throws IllegalStateException if this plugin is not set up for a database.
-     */
-    @NotNull
-    JdbcTemplate createJdbcTemplate() throws IllegalStateException;
-
-    /**
-     * Gets the sql database configuration for this plugin if it uses one.
-     *
-     * @return the sql database configuration or null if unused.
-     */
-    @Nullable
-    SQLSettings getSQLSettings();
+    JdbcAgent getJdbcAgent();
 
     /**
      * Gets the metrics object for this plugin.
