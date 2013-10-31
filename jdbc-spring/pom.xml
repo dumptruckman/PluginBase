@@ -71,11 +71,12 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <minimizeJar>true</minimizeJar>
                             <artifactSet>
                                 <includes>
                                     <include>org.springframework:spring-jdbc</include>
                                     <include>org.springframework:spring-core</include>
+                                    <include>org.springframework:spring-beans</include>
+                                    <include>org.springframework:spring-tx</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
