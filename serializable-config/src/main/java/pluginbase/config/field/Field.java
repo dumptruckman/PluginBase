@@ -11,6 +11,7 @@ import pluginbase.config.annotation.ValidateWith;
 import pluginbase.config.properties.PropertyAliases;
 import pluginbase.config.properties.PropertyHandler;
 import pluginbase.config.properties.PropertyHandlers;
+import pluginbase.config.serializers.DefaultSerializer;
 import pluginbase.config.serializers.Serializer;
 import pluginbase.config.serializers.Serializers;
 import org.jetbrains.annotations.NotNull;
@@ -20,6 +21,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.Arrays;
 import java.util.Collection;
 
 public class Field extends FieldMap {
@@ -32,7 +34,16 @@ public class Field extends FieldMap {
     private final Type type;
     private final Class typeClass;
     private final Class collectionType;
+    @Nullable
     private final Class<? extends PropertyHandler> propertyHandlerClass;
+    @Nullable
+    private final Class<? extends Serializer> serializerClass;
+    @Nullable
+    private final Class<? extends Validator> validatorClass;
+    @Nullable
+    private final String description;
+    @Nullable
+    private final String[] comments;
 
     @Nullable
     public static FieldInstance getInstance(@NotNull Object object, @NotNull String... name) {
@@ -55,37 +66,33 @@ public class Field extends FieldMap {
     Field(@NotNull java.lang.reflect.Field field, @Nullable FieldMap children) {
         super(children == null ? null : children.fieldMap);
         this.field = field;
-        persistable = !Modifier.isTransient(field.getModifiers());
+        this.persistable = !Modifier.isTransient(field.getModifiers());
+        this.name = getName(field);
+        this.immutable = field.getAnnotation(Immutable.class) != null;
+        this.type = determineActualType(field);
+        this.typeClass = determineTypeClass(type);
+        this.collectionType = determineCollectionType(type);
+        this.propertyHandlerClass = getPropertyHandlerClass(field);
+        this.serializerClass = getSerializerClass(field);
+        this.validatorClass = getValidatorClass(field);
+        this.description = getDescription(field);
+        this.comments = getComments(field);
+    }
+
+    private String getName(@NotNull java.lang.reflect.Field field) {
         Name name = field.getAnnotation(Name.class);
         if (name == null) {
             name = field.getType().getAnnotation(Name.class);
         }
         if (name != null) {
-            this.name = name.value();
+            return name.value();
         } else {
-            this.name = field.getName();
-        }
-        this.immutable = field.getAnnotation(Immutable.class) != null;
-        this.type = determineActualType();
-        if (type instanceof Class) {
-            typeClass = (Class) type;
-        } else {
-            if (type instanceof WildcardType) {
-                typeClass = Object.class;
-            } else {
-                typeClass = GenericTypeReflector.erase(type);
-            }
-        }
-        this.collectionType = determineCollectionType();
-        HandlePropertyWith handlePropertyWith = field.getAnnotation(HandlePropertyWith.class);
-        if (handlePropertyWith != null) {
-            this.propertyHandlerClass = handlePropertyWith.value();
-        } else {
-            this.propertyHandlerClass = null;
+            return field.getName();
         }
     }
 
-    private Type determineActualType() {
+    @NotNull
+    private Type determineActualType(@NotNull java.lang.reflect.Field field) {
         Type type = field.getGenericType();
         Class clazz = GenericTypeReflector.erase(type);
         if (VirtualField.class.isAssignableFrom(clazz)) {
@@ -98,7 +105,21 @@ public class Field extends FieldMap {
         return type;
     }
 
-    private Class determineCollectionType() {
+    @NotNull
+    private Class determineTypeClass(@NotNull Type type) {
+        if (type instanceof Class) {
+            return (Class) type;
+        } else {
+            if (type instanceof WildcardType) {
+                return Object.class;
+            } else {
+                return GenericTypeReflector.erase(type);
+            }
+        }
+    }
+
+    @Nullable
+    private Class determineCollectionType(@NotNull Type type) {
         if (Collection.class.isAssignableFrom(getType())) {
             Type collectionType = GenericTypeReflector.getExactSuperType(type, Collection.class);
             if (collectionType instanceof ParameterizedType) {
@@ -112,6 +133,67 @@ public class Field extends FieldMap {
                 return Object.class;
             }
             return GenericTypeReflector.erase(collectionType);
+        }
+        return null;
+    }
+
+    @Nullable
+    private Class<? extends PropertyHandler> getPropertyHandlerClass(@NotNull java.lang.reflect.Field field) {
+        HandlePropertyWith handlePropertyWith = field.getAnnotation(HandlePropertyWith.class);
+        if (handlePropertyWith != null) {
+            return handlePropertyWith.value();
+        } else {
+            return null;
+        }
+    }
+
+    @Nullable
+    private Class<? extends Serializer> getSerializerClass(@NotNull java.lang.reflect.Field field) {
+        SerializeWith serializeWith = field.getAnnotation(SerializeWith.class);
+        if (serializeWith != null) {
+            return serializeWith.value();
+        } else {
+            serializeWith = field.getType().getAnnotation(SerializeWith.class);
+            if (serializeWith != null) {
+                return serializeWith.value();
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    private Class<? extends Validator> getValidatorClass(@NotNull java.lang.reflect.Field field) {
+        ValidateWith validateWith = field.getAnnotation(ValidateWith.class);
+        if (validateWith != null) {
+            return validateWith.value();
+        }
+        return null;
+    }
+
+    @Nullable
+    private String getDescription(@NotNull java.lang.reflect.Field field) {
+        Description description = field.getAnnotation(Description.class);
+        if (description != null) {
+            return description.value();
+        } else {
+            description = field.getType().getAnnotation(Description.class);
+            if (description != null) {
+                return description.value();
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    private String[] getComments(@NotNull java.lang.reflect.Field field) {
+        Comment comment = field.getAnnotation(Comment.class);
+        if (comment != null) {
+            return comment.value();
+        } else {
+            comment = field.getType().getAnnotation(Comment.class);
+            if (comment != null) {
+                return comment.value();
+            }
         }
         return null;
     }
@@ -134,25 +216,12 @@ public class Field extends FieldMap {
 
     @NotNull
     public Serializer getSerializer() {
-        SerializeWith serializeWith = field.getAnnotation(SerializeWith.class);
-        if (serializeWith != null) {
-            return Serializers.getSerializer(serializeWith.value());
-        } else {
-            serializeWith = field.getType().getAnnotation(SerializeWith.class);
-            if (serializeWith != null) {
-                return Serializers.getSerializer(serializeWith.value());
-            }
-        }
-        return Serializers.getDefaultSerializer();
+        return serializerClass != null ? Serializers.getSerializer(serializerClass) : Serializers.getDefaultSerializer();
     }
 
     @Nullable
     public Validator getValidator() {
-        ValidateWith validateWith = field.getAnnotation(ValidateWith.class);
-        if (validateWith != null) {
-            return Validators.getValidator(validateWith.value());
-        }
-        return null;
+        return validatorClass != null ? Validators.getValidator(validatorClass) : null;
     }
 
     @Nullable
@@ -247,39 +316,22 @@ public class Field extends FieldMap {
 
     @NotNull
     public PropertyHandler getPropertyHandler() {
-        if (propertyHandlerClass != null) {
-            return PropertyHandlers.getHandler(propertyHandlerClass);
-        } else {
-            return PropertyHandlers.getDefaultHandler();
-        }
+        return propertyHandlerClass != null ? PropertyHandlers.getHandler(propertyHandlerClass) : PropertyHandlers.getDefaultHandler();
     }
 
     @Nullable
     public String getDescription() {
-        Description description = field.getAnnotation(Description.class);
-        if (description != null) {
-            return description.value();
-        } else {
-            description = field.getType().getAnnotation(Description.class);
-            if (description != null) {
-                return description.value();
-            }
-        }
-        return null;
+        return description;
     }
 
     @Nullable
     public String[] getComments() {
-        Comment comment = field.getAnnotation(Comment.class);
-        if (comment != null) {
-            return comment.value();
-        } else {
-            comment = field.getType().getAnnotation(Comment.class);
-            if (comment != null) {
-                return comment.value();
-            }
+        if (this.comments == null) {
+            return null;
         }
-        return null;
+        String[] comments = new String[this.comments.length];
+        System.arraycopy(this.comments, 0, comments, 0, this.comments.length);
+        return comments;
     }
 
     @Override
