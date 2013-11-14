@@ -17,15 +17,28 @@ public class SpringDatabaseSettings extends PropertiesWrapper implements Databas
             "Others such as MySQL or SQLite may work.",
             "You can also specify the exact driver to use here."
     })
-    private String databaseType = "H2";
+    private String databaseType;
     private SpringDatabaseConnectionInfo databaseInfo = new SpringDatabaseConnectionInfo();
 
-    public SpringDatabaseSettings() { }
+    public SpringDatabaseSettings() {
+        this("H2");
+    }
 
+    public SpringDatabaseSettings(String defaultDbType) {
+        this.databaseType = defaultDbType;
+    }
+
+    @Override
     public String getDatabaseType() {
         return databaseType;
     }
 
+    @Override
+    public void setDatabaseType(String databaseType) {
+        this.databaseType = databaseType;
+    }
+
+    @Override
     public SpringDatabaseConnectionInfo getDatabaseInfo() {
         return databaseInfo;
     }
@@ -43,16 +56,34 @@ public class SpringDatabaseSettings extends PropertiesWrapper implements Databas
 
         private SpringDatabaseConnectionInfo() { }
 
+        @Override
         public String getUser() {
             return user;
         }
 
+        @Override
         public String getPass() {
             return pass;
         }
 
+        @Override
         public String getUrl() {
             return url;
+        }
+
+        @Override
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        @Override
+        public void setUser(String user) {
+            this.user = user;
+        }
+
+        @Override
+        public void setPass(String pass) {
+            this.pass = pass;
         }
     }
 }
