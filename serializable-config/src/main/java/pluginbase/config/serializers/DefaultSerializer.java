@@ -25,8 +25,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DefaultSerializer implements Serializer<Object> {
 
-    private static final Map<Class, Serializer> defaultSerializerMap = new HashMap<Class, Serializer>();
-
     private static final Class[] EMPTY_PARAM_TYPE_ARRAY = new Class[0];
     private static final Object[] EMPTY_PARAM_VALUE_ARRAY = new Object[0];
     private static final Class[] SIZE_PARAM_TYPE_ARRAY = new Class[] {Integer.class};
@@ -44,37 +42,9 @@ public class DefaultSerializer implements Serializer<Object> {
         PRIMITIVE_WRAPPER_MAP = Collections.unmodifiableMap(map);
     }
 
-    /**
-     * Registers a default serializer to use for a given type whenever this default serializer would be used for serialization.
-     * In other words, the given defaultSerializer will be used to serialize/deserialize the given type if no other serializer
-     * has been defined for that type via {@link pluginbase.config.annotation.SerializeWith}.
-     * <p/>
-     * This is mostly intended for registering a serializer for classes outside of your control. (i.e. 3rd party classes)
-     * <p/>
-     * If {@link DefaultSerializer} is not doing the serialization then this will not apply.
-     *
-     * @param type The class to register a default serializer for.
-     * @param defaultSerializer the default serializer class to use when none other is specified.
-     */
-    public static void registerDefaultTypeSerializer(@NotNull Class type, @NotNull Class<? extends Serializer> defaultSerializer) {
-        Serializer serializer = Serializers.getSerializer(defaultSerializer);
-        defaultSerializerMap.put(type, serializer);
-    }
-
-    @Nullable
-    protected Serializer getDefaultTypeSerializer(@NotNull Class type) {
-        return defaultSerializerMap.get(type);
-    }
-
     @NotNull
     protected Serializer getSerializer(@NotNull Field field) {
         Serializer serializer = field.getSerializer();
-        if (field.getSerializer().getClass().equals(this.getClass())) {
-            Serializer defaultSerializer = getDefaultTypeSerializer(field.getType());
-            if (defaultSerializer != null) {
-                serializer = defaultSerializer;
-            }
-        }
         return serializer;
     }
 
