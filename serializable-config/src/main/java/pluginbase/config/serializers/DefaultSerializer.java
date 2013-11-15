@@ -196,7 +196,7 @@ public class DefaultSerializer implements Serializer<Object> {
             } else if (wantedType.getAnnotation(FauxEnum.class) != null && serialized instanceof String) {
                 return deserializeFauxEnum((String) serialized, wantedType);
             } else {
-                throw new IllegalArgumentException("Deserializing a registered type requires serialized data to be a Map");
+                throw new IllegalArgumentException("Deserializing the registered type '" + wantedType + "' requires serialized data to be a Map or FauxEnum but is instead: " + serialized);
             }
         }
         if (serialized instanceof Collection && Collection.class.isAssignableFrom(wantedType)) {
@@ -310,12 +310,20 @@ public class DefaultSerializer implements Serializer<Object> {
 
     protected Object deserializeFieldAs(@NotNull Field field, @NotNull Object data, @NotNull Class asClass) {
         Serializer serializer = getSerializer(field);
-        return serializer.deserialize((Map) data, asClass);
+        try {
+            return serializer.deserialize(data, asClass);
+        } catch (Exception e) {
+            throw new RuntimeException("Exception while deserializing field '" + field + "' as class '" + asClass + "'", e);
+        }
     }
 
     protected Object deserializeField(Field field, Object data) {
         Serializer serializer = getSerializer(field);
-        return serializer.deserialize(data, field.getType());
+        try {
+            return serializer.deserialize(data, field.getType());
+        } catch (Exception e) {
+            throw new RuntimeException("Exception while deserializing field: " + field, e);
+        }
     }
 
     protected Object deserializeCollection(@NotNull Collection data, @NotNull Class<? extends Collection> wantedType) {
