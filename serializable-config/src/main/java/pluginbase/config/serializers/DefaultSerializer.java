@@ -191,7 +191,9 @@ public class DefaultSerializer implements Serializer<Object> {
             return serialized;
         }
         if (SerializationRegistrar.isClassRegistered(wantedType)) {
-            if (serialized instanceof Map) {
+            if (wantedType.isAssignableFrom(serialized.getClass())) {
+                return serialized;
+            }else if (serialized instanceof Map) {
                 return deserializeRegisteredType((Map) serialized, wantedType);
             } else if (wantedType.getAnnotation(FauxEnum.class) != null && serialized instanceof String) {
                 return deserializeFauxEnum((String) serialized, wantedType);
