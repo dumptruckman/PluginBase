@@ -37,7 +37,7 @@ public class TimeTools {
         hour = hour % 24;
         StringBuilder time = new StringBuilder();
         if (day != 0) {
-            time.append(hour).append("h ");
+            time.append(day).append("d ");
         }
         if (hour != 0) {
             time.append(hour).append("h ");
