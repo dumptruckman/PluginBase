@@ -5,7 +5,7 @@ package pluginbase.messages.messaging;
 
 import pluginbase.logging.PluginLogger;
 import pluginbase.messages.BundledMessage;
-import pluginbase.messages.Localizable;
+import pluginbase.messages.LocalizablePlugin;
 import pluginbase.messages.Message;
 import pluginbase.messages.MessageProvider;
 import pluginbase.messages.Messages;
@@ -54,20 +54,20 @@ public class Messager implements MessageProvider {
     /**
      * Loads the given language file into a new Messager set to use the given locale.
      * <p/>
-     * Any messages registered with {@link Messages#registerMessages(Localizable, Class)} for the same Localizable object
+     * Any messages registered with {@link Messages#registerMessages(pluginbase.messages.LocalizablePlugin, Class)} for the same Localizable object
      * should be present in this file.  If they are not previously present, they will be inserted with the default
      * message.  If any message is located in the file that is not registered as previously mentioned it will be
      * removed from the file.
      *
-     * @param localizable the object that registered localizable messages.
+     * @param localizablePlugin the object that registered localizable messages.
      * @param languageFile the language file to load localized messages from.
      * @param locale the locale to use when formatting the messages.
      * @return a new messager loaded with the messages from the given language file and locale.
      */
-    public static Messager loadMessagerWithMessages(@NotNull final Localizable localizable,
+    public static Messager loadMessagerWithMessages(@NotNull final LocalizablePlugin localizablePlugin,
                                                     @NotNull final File languageFile,
                                                     @NotNull final Locale locale) {
-        return new Messager(Messages.loadMessages(localizable, languageFile, locale));
+        return new Messager(Messages.loadMessages(localizablePlugin, languageFile, locale));
     }
 
     /** {@inheritDoc} */
@@ -224,8 +224,13 @@ public class Messager implements MessageProvider {
 
     @NotNull
     @Override
-    public PluginLogger getLog() {
-        return provider.getLog();
+    public LocalizablePlugin getPlugin() {
+        return provider.getPlugin();
+    }
+
+    @NotNull
+    protected PluginLogger getLog() {
+        return getPlugin().getLog();
     }
 }
 

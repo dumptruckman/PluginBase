@@ -6,6 +6,7 @@ package pluginbase.messages;
 import pluginbase.logging.Logging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.logging.PluginLogger;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -25,32 +26,32 @@ public class Messages {
     }
 
     @NotNull
-    private static final Map<Localizable, Map<String, Message>> messages = new HashMap<Localizable, Map<String, Message>>();
+    private static final Map<LocalizablePlugin, Map<String, Message>> messages = new HashMap<LocalizablePlugin, Map<String, Message>>();
 
     @NotNull
-    static Set<String> getMessageKeys(@NotNull final Localizable localizable) {
-        if (!messages.containsKey(localizable)) {
+    static Set<String> getMessageKeys(@NotNull final LocalizablePlugin localizablePlugin) {
+        if (!messages.containsKey(localizablePlugin)) {
             throw new IllegalArgumentException("Provider has no registered messages.");
         }
-        return messages.get(localizable).keySet();
+        return messages.get(localizablePlugin).keySet();
     }
 
     @Nullable
-    static Message getMessage(@NotNull final Localizable localizable, @Nullable final String key) {
-        if (!messages.containsKey(localizable)) {
+    static Message getMessage(@NotNull final LocalizablePlugin localizablePlugin, @Nullable final String key) {
+        if (!messages.containsKey(localizablePlugin)) {
             throw new IllegalArgumentException("Provider has no registered messages.");
         }
         if (key == null) {
             return BLANK;
         }
-        return messages.get(localizable).get(key);
+        return messages.get(localizablePlugin).get(key);
     }
 
-    static boolean containsMessageKey(@NotNull final Localizable localizable, @NotNull final String key) {
-        if (!messages.containsKey(localizable)) {
+    static boolean containsMessageKey(@NotNull final LocalizablePlugin localizablePlugin, @NotNull final String key) {
+        if (!messages.containsKey(localizablePlugin)) {
             throw new IllegalArgumentException("Provider has no registered messages.");
         }
-        return messages.get(localizable).containsKey(key);
+        return messages.get(localizablePlugin).containsKey(key);
     }
 
     /** A message with no text. */
@@ -74,25 +75,25 @@ public class Messages {
     @NotNull public final static Message COULD_NOT_SAVE = Message.createMessage("generic.could_not_save", "Could not save: %s");
 
     /**
-     * Registers all of the messages in a given class and all inner classes to the localizable object.
+     * Registers all of the messages in a given class and all inner classes to the localizablePlugin object.
      * <p/>
      * Messages are defined with the {@link Message} class and should be declared as static and final (constant).
      * Their access modifier is not important and should be set as your needs dictate.
      * <p/>
      * This method will import all of the Messages defined per the above guide lines that exist in the class.
-     * Those messages imported will be linked to the given localizable object.
+     * Those messages imported will be linked to the given localizablePlugin object.
      *
-     * @param localizable the "owner" of the message.  Typically this a plugin who will be using the messages.
+     * @param localizablePlugin the "owner" of the message.  Typically this a plugin who will be using the messages.
      * @param clazz the class that contains the definition of the messages.
      */
-    public static void registerMessages(@NotNull final Localizable localizable, @NotNull final Class clazz) {
+    public static void registerMessages(@NotNull final LocalizablePlugin localizablePlugin, @NotNull final Class clazz) {
         if (clazz.equals(Messages.class)) {
             return;
         }
-        if (!messages.containsKey(localizable)) {
-            messages.put(localizable, new HashMap<String, Message>());
+        if (!messages.containsKey(localizablePlugin)) {
+            messages.put(localizablePlugin, new HashMap<String, Message>());
         }
-        final Map<String, Message> messages = Messages.messages.get(localizable);
+        final Map<String, Message> messages = Messages.messages.get(localizablePlugin);
         if (!messages.containsKey(SUCCESS.getKey())) {
             messages.put(SUCCESS.getKey(), SUCCESS);
         }
@@ -137,28 +138,28 @@ public class Messages {
         }
 
         for (Class<?> c : clazz.getDeclaredClasses()) {
-            registerMessages(localizable, c);
+            registerMessages(localizablePlugin, c);
         }
     }
 
     /**
      * Loads the given language file into a new MessageProvider set to use the given locale.
      * <p/>
-     * Any messages registered with {@link #registerMessages(Localizable, Class)} for the same Localizable object
+     * Any messages registered with {@link #registerMessages(LocalizablePlugin, Class)} for the same LocalizablePlugin object
      * should be present in this file.  If they are not previously present, they will be inserted with the default
      * message.  If any message is located in the file that is not registered as previously mentioned it will be
      * removed from the file.
      *
-     * @param localizable the object that registered localizable messages.
+     * @param localizablePlugin the object that registered localizable messages.
      * @param languageFile the language file to load localized messages from.
      * @param locale the locale to use when formatting the messages.
      * @return a new MessagerProvider loaded with the messages from the given language file and locale.
      */
     @NotNull
-    public static MessageProvider loadMessages(@NotNull final Localizable localizable,
+    public static MessageProvider loadMessages(@NotNull final LocalizablePlugin localizablePlugin,
                                                @NotNull final File languageFile,
                                                @NotNull final Locale locale) {
-        return new DefaultMessageProvider(localizable, languageFile, locale);
+        return new DefaultMessageProvider(localizablePlugin, languageFile, locale);
     }
 }
 

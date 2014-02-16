@@ -3,12 +3,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.messages.messaging;
 
-import pluginbase.messages.Localizable;
+import pluginbase.messages.LocalizablePlugin;
 
 /**
  * Indicates that this class has a Messager available for sending messages to users.
  */
-public interface Messaging extends Localizable {
+public interface Messaging extends LocalizablePlugin {
 
     /**
      * Gets the messager.

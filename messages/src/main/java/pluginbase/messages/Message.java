@@ -85,7 +85,7 @@ public final class Message {
      * This should be defined as a final static object (constant).
      * <p/>
      * The class that contains the definition must be
-     * registered with {@link Messages#registerMessages(Localizable, Class)} prior to creating a {@link DefaultMessageProvider}
+     * registered with {@link Messages#registerMessages(LocalizablePlugin, Class)} prior to creating a {@link DefaultMessageProvider}
      * in order to have the default messages populate the language file.
      *
      * @param key The localization key for this message.

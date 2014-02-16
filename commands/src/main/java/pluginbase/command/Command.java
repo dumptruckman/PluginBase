@@ -1,5 +1,6 @@
 package pluginbase.command;
 
+import pluginbase.logging.LogProvider;
 import pluginbase.messages.Message;
 import pluginbase.messages.messaging.Messager;
 import pluginbase.messages.messaging.Messaging;

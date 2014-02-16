@@ -1,5 +1,6 @@
 package pluginbase.command;
 
+import pluginbase.logging.LogProvider;
 import pluginbase.logging.PluginLogger;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.Message;
@@ -30,7 +31,7 @@ import java.util.regex.Pattern;
  *
  * @param <P> Typically represents a plugin implementing this command handler.
  */
-public abstract class CommandHandler<P extends CommandProvider & Messaging> {
+public abstract class CommandHandler<P extends CommandProvider & Messaging & LogProvider> {
 
     protected static final Pattern PATTERN_ON_SPACE = Pattern.compile(" ", Pattern.LITERAL);
 

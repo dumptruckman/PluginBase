@@ -3,6 +3,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.command;
 
+import pluginbase.logging.LogProvider;
+import pluginbase.logging.PluginLogger;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.messaging.Messaging;
 import pluginbase.minecraft.BasePlayer;
@@ -12,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Allows for a command to be queued and require to be confirmed before executing.
  */
-public abstract class QueuedCommand<P extends CommandProvider & Messaging> extends Command<P> implements Runnable {
+public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogProvider> extends Command<P> implements Runnable {
 
     protected QueuedCommand(@NotNull final P plugin) {
         super(plugin);

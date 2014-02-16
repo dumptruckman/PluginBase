@@ -3,7 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.messages;
 
-import org.jetbrains.annotations.Nullable;
 import pluginbase.logging.PluginLogger;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,15 +24,15 @@ class DefaultMessageProvider implements MessageProvider {
     private final Properties messages;
 
     @NotNull
-    private final PluginLogger logger;
+    private final LocalizablePlugin plugin;
 
-    public DefaultMessageProvider(@NotNull final Localizable localizable,
+    public DefaultMessageProvider(@NotNull final LocalizablePlugin localizablePlugin,
                                   @NotNull final File languageFile,
                                   @NotNull final Locale locale) {
         this.locale = locale;
-        this.logger = localizable.getLog();
-        messages = getProperties(localizable, languageFile);
-        pruneLanguage(localizable, messages);
+        this.plugin = localizablePlugin;
+        messages = getProperties(localizablePlugin, languageFile);
+        pruneLanguage(localizablePlugin, messages);
         storeProperties(languageFile, messages);
     }
 
@@ -57,7 +56,7 @@ class DefaultMessageProvider implements MessageProvider {
         }
     }
 
-    private void pruneLanguage(@NotNull final Localizable localizable, @NotNull final Properties language){
+    private void pruneLanguage(@NotNull final LocalizablePlugin localizable, @NotNull final Properties language){
         // Prune file
         final Iterator<Object> it = language.keySet().iterator();
         while (it.hasNext()) {
@@ -70,7 +69,7 @@ class DefaultMessageProvider implements MessageProvider {
     }
 
     @NotNull
-    private Properties getProperties(@NotNull final Localizable localizable, @NotNull final File languageFile){
+    private Properties getProperties(@NotNull final LocalizablePlugin localizable, @NotNull final File languageFile){
         final Properties language = new Properties();
         if (!languageFile.exists()) {
             try {
@@ -172,9 +171,14 @@ class DefaultMessageProvider implements MessageProvider {
         }
     }
 
+    @NotNull
     @Override
+    public LocalizablePlugin getPlugin() {
+        return plugin;
+    }
+
     @NotNull
     public PluginLogger getLog() {
-        return logger;
+        return getPlugin().getLog();
     }
 }

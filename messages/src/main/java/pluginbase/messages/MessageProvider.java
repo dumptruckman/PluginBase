@@ -3,8 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.messages;
 
-import org.jetbrains.annotations.Nullable;
-import pluginbase.logging.PluginLogger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
@@ -12,7 +10,7 @@ import java.util.Locale;
 /**
  * Indicates that localized messages can be retrieved from this class.
  * <p/>
- * See {@link Messages#loadMessages(Localizable, java.io.File, java.util.Locale)} for a simple flat file implementation.
+ * See {@link Messages#loadMessages(LocalizablePlugin, java.io.File, java.util.Locale)} for a simple flat file implementation.
  */
 public interface MessageProvider {
 
@@ -48,12 +46,11 @@ public interface MessageProvider {
     String getLocalizedMessage(@NotNull final String key, @NotNull final Object... args);
 
     /**
-     * MessageProvider requires a method to acquire a logger due to the needs of the default implementations of the
-     * classes that utilize the MessageProvider interface to log messages.
+     * Returns the plugin this message provider provides messages for.
      *
-     * @return a PluginLogger for this MessageProvider.
+     * @return the plugin this message provider provides messages for.
      */
     @NotNull
-    PluginLogger getLog();
+    LocalizablePlugin getPlugin();
 }
 

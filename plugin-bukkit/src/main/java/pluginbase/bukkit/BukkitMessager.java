@@ -3,8 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.bukkit;
 
+import pluginbase.logging.LogProvider;
 import pluginbase.messages.BundledMessage;
-import pluginbase.messages.Localizable;
+import pluginbase.messages.LocalizablePlugin;
 import pluginbase.messages.Message;
 import pluginbase.messages.MessageProvider;
 import pluginbase.messages.Messages;
@@ -42,20 +43,20 @@ public class BukkitMessager extends Messager {
     /**
      * Loads the given language file into a new BukkitMessager set to use the given locale.
      * <p/>
-     * Any messages registered with {@link Messages#registerMessages(Localizable, Class)} for the same Localizable object
+     * Any messages registered with {@link Messages#registerMessages(pluginbase.messages.LocalizablePlugin, Class)} for the same Localizable object
      * should be present in this file.  If they are not previously present, they will be inserted with the default
      * message.  If any message is located in the file that is not registered as previously mentioned it will be
      * removed from the file.
      *
-     * @param localizable the object that registered localizable messages.
+     * @param localizablePlugin the object that registered localizable messages.
      * @param languageFile the language file to load localized messages from.
      * @param locale the locale to use when formatting the messages.
      * @return a new messager loaded with the messages from the given language file and locale.
      */
-    public static BukkitMessager loadMessagerWithMessages(@NotNull final Localizable localizable,
+    public static BukkitMessager loadMessagerWithMessages(@NotNull final LocalizablePlugin localizablePlugin,
                                                           @NotNull final File languageFile,
                                                           @NotNull final Locale locale) {
-        return new BukkitMessager(Messages.loadMessages(localizable, languageFile, locale));
+        return new BukkitMessager(Messages.loadMessages(localizablePlugin, languageFile, locale));
     }
 
     /** {@inheritDoc} */
