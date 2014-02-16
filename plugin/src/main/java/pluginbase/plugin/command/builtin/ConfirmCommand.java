@@ -25,18 +25,18 @@ public class ConfirmCommand extends BuiltInCommand {
 
     public final static Message COMMAND_CONFIRM_HELP = Message.createMessage("cmd.confirm.help", Theme.HELP + "Confirms the usage of a previously entered command, if required.");
 
-    /** Permission for confirm command. */
-    public static final Perm CONFIRM_COMMAND_PERM = PermFactory.newPerm(PluginBase.class, "cmd.confirm").usePluginName().commandPermission()
-            .desc("If you have not been prompted to use this, it will not do anything.").build();
+    private final Perm perm;
 
     protected ConfirmCommand(@NotNull final PluginBase plugin) {
         super(plugin);
+        perm = PermFactory.newPerm(plugin.getClass(), "cmd.confirm").usePluginName().commandPermission()
+                .desc("If you have not been prompted to use this, it will not do anything.").build();
     }
 
     /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
-        return CONFIRM_COMMAND_PERM;
+        return perm;
     }
 
     /** {@inheritDoc} */

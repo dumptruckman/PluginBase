@@ -24,20 +24,20 @@ import org.jetbrains.annotations.NotNull;
 )
 public class InfoCommand extends BuiltInCommand {
 
-    /** Permission for info command. */
-    public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.info").usePluginName().commandPermission()
-            .desc("Gives some basic information about this plugin.").build();
-
     public final static Message INFO_HELP = Message.createMessage("cmd.info.help", Theme.HELP + "Gives some basic information about this plugin.");
+
+    private final Perm perm;
 
     protected InfoCommand(@NotNull final PluginBase plugin) {
         super(plugin);
+        perm = PermFactory.newPerm(plugin.getClass(), "cmd.info").usePluginName().commandPermission()
+                .desc("Gives some basic information about this plugin.").build();
     }
 
     /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
-        return PERMISSION;
+        return perm;
     }
 
     /** {@inheritDoc} */

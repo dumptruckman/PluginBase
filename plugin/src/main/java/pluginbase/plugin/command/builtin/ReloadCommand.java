@@ -24,21 +24,21 @@ import org.jetbrains.annotations.NotNull;
 )
 public class ReloadCommand extends BuiltInCommand {
 
-    /** Permission for reload command. */
-    public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.reload").usePluginName().commandPermission()
-            .desc("Reloads the config file.").build();
-
     public final static Message RELOAD_HELP = Message.createMessage("cmd.reload.help", Theme.HELP + "Reloads the plugin, typically detecting any external changes in plugin files.");
     public final static Message RELOAD_COMPLETE = Message.createMessage("cmd.reload.complete", Theme.INFO + "===[ Reload Complete! ]===");
 
+    private final Perm perm;
+
     protected ReloadCommand(@NotNull final PluginBase plugin) {
         super(plugin);
+        perm = PermFactory.newPerm(plugin.getClass(), "cmd.reload").usePluginName().commandPermission()
+                .desc("Reloads the config file.").build();
     }
 
     /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
-        return PERMISSION;
+        return perm;
     }
 
     /** {@inheritDoc} */

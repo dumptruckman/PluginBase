@@ -38,10 +38,6 @@ import java.util.logging.Level;
 )
 public class VersionCommand extends BuiltInCommand {
 
-    /** Permission for version command. */
-    public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.version").usePluginName().commandPermission()
-            .desc("Sends version information to the console.").build();
-
     public final static Message VERSION_HELP = Message.createMessage("cmd.version.help",
             Theme.HELP + "Displays version and other helpful information about the plugin."
                     + "\n" + Theme.HELP + "Flags:"
@@ -58,14 +54,18 @@ public class VersionCommand extends BuiltInCommand {
 
     private static final URLShortener SHORTENER = new BitlyURLShortener();
 
+    private final Perm perm;
+
     protected VersionCommand(@NotNull final PluginBase plugin) {
         super(plugin);
+        perm = PermFactory.newPerm(plugin.getClass(), "cmd.version").usePluginName().commandPermission()
+                .desc("Sends version information to the console.").build();
     }
 
     /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
-        return PERMISSION;
+        return perm;
     }
 
     /** {@inheritDoc} */

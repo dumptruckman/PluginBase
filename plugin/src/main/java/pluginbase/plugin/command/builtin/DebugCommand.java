@@ -25,10 +25,6 @@ import org.jetbrains.annotations.NotNull;
 )
 public class DebugCommand extends BuiltInCommand {
 
-    /** Permission for debug command. */
-    public static final Perm PERMISSION = PermFactory.newPerm(PluginBase.class, "cmd.debug").usePluginName().commandPermission()
-            .desc("Spams the console a bunch.").build();
-
     public final static Message DEBUG_HELP = Message.createMessage("cmd.debug.help", Theme.HELP + "Enables or disable debug mode."
             + "  When enabled the console will be spammed with lots of information useful for helping developers debug.");
     public final static Message DEBUG_SET = Message.createMessage("cmd.debug.set", Theme.SUCCESS + "Debug mode is " + Theme.VALUE + "%s");
@@ -36,14 +32,18 @@ public class DebugCommand extends BuiltInCommand {
     public final static Message INVALID_DEBUG = Message.createMessage("debug.invalid",
             Theme.ERROR + "Invalid debug level.  Please use number 0-3.  " + Theme.INFO + "(3 being many many messages!)");
 
+    private final Perm perm;
+
     protected DebugCommand(@NotNull final PluginBase plugin) {
         super(plugin);
+        perm = PermFactory.newPerm(plugin.getClass(), "cmd.debug").usePluginName().commandPermission()
+                .desc("Spams the console a bunch.").build();
     }
 
     /** {@inheritDoc} */
     @Override
     public Perm getPerm() {
-        return PERMISSION;
+        return perm;
     }
 
     /** {@inheritDoc} */
