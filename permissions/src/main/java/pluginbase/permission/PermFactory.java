@@ -54,6 +54,9 @@ public abstract class PermFactory {
         if (factory == null) {
             throw new IllegalStateException("Must register a PermFactory class!");
         }
+        if (!PERM_NAME_MAP.containsKey(pluginClass.getName())) {
+            throw new IllegalArgumentException(pluginClass + " does not have a registered permission name!");
+        }
         Perm.ensureParentPermsConfigured(pluginClass);
         return newUncheckedPerm(pluginClass, permName);
     }
