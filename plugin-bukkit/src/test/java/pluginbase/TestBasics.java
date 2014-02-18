@@ -8,8 +8,9 @@
 package pluginbase;
 
 import org.bukkit.craftbukkit.v1_6_R2.CraftServer;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.springframework.jdbc.core.JdbcTemplate;
-import pluginbase.bukkit.AbstractBukkitPlugin;
+import pluginbase.bukkit.BukkitTools;
 import pluginbase.bukkit.CommandUtil;
 import pluginbase.config.serializers.Serializers;
 import pluginbase.messages.MessageProvider;
@@ -35,7 +36,7 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ AbstractBukkitPlugin.class, SimplePluginManager.class, CraftServer.class })
+@PrepareForTest({ JavaPlugin.class, SimplePluginManager.class, CraftServer.class })
 public class TestBasics {
     TestInstanceCreator creator;
     Server mockServer;
@@ -95,7 +96,7 @@ public class TestBasics {
 
         assertEquals(3, myPlugin.getSettings().getDebugLevel());
         
-        myPlugin.getMessager().message(myPlugin.wrapSender(mockCommandSender), MockMessages.TEST_MESSAGE, "And a test arg");
+        myPlugin.getMessager().message(BukkitTools.wrapSender(mockCommandSender), MockMessages.TEST_MESSAGE, "And a test arg");
 
         assertEquals(Serializers.getSerializer(Language.LocaleSerializer.class).serialize(MessageProvider.DEFAULT_LOCALE), myPlugin.getSettings().getLanguageSettings().getLocale().toString());
         
@@ -105,7 +106,7 @@ public class TestBasics {
         
         myPlugin.saveConfig();
 
-        MockConfig defaults = new MockConfig(myPlugin);
+        MockConfig defaults = new MockConfig(myPlugin.getPluginBase());
 
         assertEquals(defaults.specificTest, myPlugin.getSettings().getProperty("specific_test"));
         Map<String, Integer> testMap = myPlugin.getSettings().specificTest;

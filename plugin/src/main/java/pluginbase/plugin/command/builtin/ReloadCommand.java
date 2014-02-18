@@ -31,7 +31,7 @@ public class ReloadCommand extends BuiltInCommand {
 
     protected ReloadCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-        perm = PermFactory.newPerm(plugin.getClass(), "cmd.reload").usePluginName().commandPermission()
+        perm = PermFactory.newPerm(plugin.getPluginClass(), "cmd.reload").usePluginName().commandPermission()
                 .desc("Reloads the config file.").build();
     }
 

@@ -58,7 +58,7 @@ public class VersionCommand extends BuiltInCommand {
 
     protected VersionCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-        perm = PermFactory.newPerm(plugin.getClass(), "cmd.version").usePluginName().commandPermission()
+        perm = PermFactory.newPerm(plugin.getPluginClass(), "cmd.version").usePluginName().commandPermission()
                 .desc("Sends version information to the console.").build();
     }
 
@@ -91,7 +91,7 @@ public class VersionCommand extends BuiltInCommand {
 
         final Set<Character> flags = new LinkedHashSet<Character>(context.getFlags());
         if (!flags.isEmpty()) {
-            getPlugin().getServerInterface().runTaskAsynchronously(getPlugin(), new Runnable() {
+            getPlugin().getServerInterface().runTaskAsynchronously(new Runnable() {
                 @Override
                 public void run() {
                     for (Character flag : flags) {
@@ -103,7 +103,7 @@ public class VersionCommand extends BuiltInCommand {
                         } else {
                             continue;
                         }
-                        getPlugin().getServerInterface().runTask(getPlugin(), new Runnable() {
+                        getPlugin().getServerInterface().runTask(new Runnable() {
                             @Override
                             public void run() {
                                 getMessager().message(sender, VERSION_INFO_DUMPED, pasteUrl);

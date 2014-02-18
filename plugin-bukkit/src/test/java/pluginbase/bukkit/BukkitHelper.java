@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class BukkitHelper {
 
-    public static ServerInterface getServerInterface(@NotNull final Server server) {
-        return new BukkitServerInterface(server);
+    public static ServerInterface getServerInterface(@NotNull final Plugin plugin) {
+        return new BukkitServerInterface(plugin);
     }
 
     public static PluginInfo getPluginInfo(@NotNull final Plugin plugin) {

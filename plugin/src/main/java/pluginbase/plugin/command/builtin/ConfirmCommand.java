@@ -29,7 +29,7 @@ public class ConfirmCommand extends BuiltInCommand {
 
     protected ConfirmCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-        perm = PermFactory.newPerm(plugin.getClass(), "cmd.confirm").usePluginName().commandPermission()
+        perm = PermFactory.newPerm(plugin.getPluginClass(), "cmd.confirm").usePluginName().commandPermission()
                 .desc("If you have not been prompted to use this, it will not do anything.").build();
     }
 

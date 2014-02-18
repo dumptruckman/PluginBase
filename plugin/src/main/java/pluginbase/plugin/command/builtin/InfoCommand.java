@@ -30,7 +30,7 @@ public class InfoCommand extends BuiltInCommand {
 
     protected InfoCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-        perm = PermFactory.newPerm(plugin.getClass(), "cmd.info").usePluginName().commandPermission()
+        perm = PermFactory.newPerm(plugin.getPluginClass(), "cmd.info").usePluginName().commandPermission()
                 .desc("Gives some basic information about this plugin.").build();
     }
 

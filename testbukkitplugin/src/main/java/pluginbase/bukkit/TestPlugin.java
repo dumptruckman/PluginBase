@@ -1,33 +1,53 @@
 package pluginbase.bukkit;
 
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.jdbc.SpringDatabaseSettings;
 import pluginbase.jdbc.SpringJdbcAgent;
 
-public class TestPlugin extends AbstractBukkitPlugin {
+import java.util.concurrent.Callable;
+
+public class TestPlugin extends JavaPlugin {
 
     JdbcAgent jdbcAgent;
 
+    BukkitPluginAgent pluginAgent = BukkitPluginAgent.getPluginAgent(this, "pb");
+
+    public void onLoad() {
+        pluginAgent.setJdbcAgentCallable(new Callable<JdbcAgent>() {
+            @Override
+            public JdbcAgent call() throws Exception {
+                return jdbcAgent;
+            }
+        });
+        pluginAgent.loadPluginBase();
+    }
+
     @Override
-    public void onPluginEnable() {
+    public void onEnable() {
+        pluginAgent.enablePluginBase();
         //getCommandHandler().registerCommand(new MockQueuedCommand(this));
         try {
-            jdbcAgent = SpringJdbcAgent.createAgent(loadDatabaseSettings(new SpringDatabaseSettings()), getDataFolder(), getClassLoader());
+            jdbcAgent = SpringJdbcAgent.createAgent(pluginAgent.loadDatabaseSettings(new SpringDatabaseSettings()), getDataFolder(), getClassLoader());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
 
-    @NotNull
-    @Override
-    public String getCommandPrefix() {
-        return "pb";
+    public void onDisable() {
+        pluginAgent.disablePluginBase();
     }
 
-    @NotNull
-    @Override
+    @Nullable
     public JdbcAgent getJdbcAgent() {
-        return jdbcAgent;
+        return pluginAgent.getPluginBase().getJdbcAgent();
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        return pluginAgent.callCommand(sender, command, label, args);
     }
 }

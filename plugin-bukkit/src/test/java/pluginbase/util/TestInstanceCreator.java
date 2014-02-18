@@ -10,9 +10,7 @@ package pluginbase.util;
 import org.bukkit.craftbukkit.v1_6_R2.CraftServer;
 import org.bukkit.craftbukkit.v1_6_R2.help.SimpleHelpMap;
 import org.bukkit.help.HelpMap;
-import pluginbase.bukkit.AbstractBukkitPlugin;
 import pluginbase.bukkit.BukkitHelper;
-import pluginbase.messages.Messages;
 import junit.framework.Assert;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -51,7 +49,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class TestInstanceCreator {
-    private AbstractBukkitPlugin plugin;
+    private MockPlugin plugin;
     private Server mockServer;
     private CommandSender commandSender;
 
@@ -139,7 +137,7 @@ public class TestInstanceCreator {
             HelpMap helpMap = new SimpleHelpMap(mockCraftServer);
             when(mockServer.getHelpMap()).thenReturn(helpMap);
 
-            doReturn(BukkitHelper.getServerInterface(mockServer)).when(plugin).getServerInterface();
+            doReturn(BukkitHelper.getServerInterface(plugin)).when(plugin).getServerInterface();
 
             // Make some fake folders to fool the fake MV into thinking these worlds exist
             File worldNormalFile = new File(plugin.getServerInterface().getWorldContainer(), "world");
@@ -342,8 +340,6 @@ public class TestInstanceCreator {
             // Load Multiverse Core
             plugin.onLoad();
 
-            Messages.registerMessages(plugin, MockMessages.class);
-
             // Enable it.
             plugin.onEnable();
 
@@ -382,7 +378,7 @@ public class TestInstanceCreator {
         return true;
     }
 
-    public AbstractBukkitPlugin getPlugin() {
+    public MockPlugin getPlugin() {
         return this.plugin;
     }
 

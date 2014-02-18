@@ -3,7 +3,7 @@ package pluginbase.plugin;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Contains information about the plugin.
+ * Contains information about the server plugin.
  */
 public interface PluginInfo {
 

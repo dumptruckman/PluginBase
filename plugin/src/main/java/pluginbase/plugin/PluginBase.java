@@ -3,8 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.plugin;
 
+import pluginbase.command.Command;
 import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandProvider;
+import pluginbase.command.QueuedCommand;
+import pluginbase.config.SerializationRegistrar;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.logging.LoggablePlugin;
 import pluginbase.logging.PluginLogger;
@@ -13,9 +16,12 @@ import pluginbase.messages.messaging.Messaging;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mcstats.Metrics;
+import pluginbase.permission.PermFactory;
+import pluginbase.plugin.Settings.Language;
+import pluginbase.plugin.command.builtin.VersionCommand;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -23,14 +29,78 @@ import java.util.List;
  * <p/>
  * Provides numerous useful methods for general plugin self-management.
  */
-public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
+public final class PluginBase implements LoggablePlugin, Messaging, CommandProvider {
+
+    static {
+        SerializationRegistrar.registerClass(Settings.class);
+        SerializationRegistrar.registerClass(Language.class);
+    }
 
     @NotNull
-    Settings getSettings();
+    private final PluginAgent pluginAgent;
+    private PluginLogger logger;
+    private Settings settings = null;
+    private CommandHandler commandHandler = null;
+    private Messager messager = null;
 
-    void saveConfig();
+    PluginBase(@NotNull PluginAgent pluginAgent) {
+        this.pluginAgent = pluginAgent;
+    }
 
-    void saveSettings() throws SendablePluginBaseException;
+    void onLoad() {
+        // Initialize our logging.
+        logger = PluginLogger.getLogger(this);
+
+        // Register the permission name for the plugin.
+        PermFactory.registerPermissionName(getPluginClass(), getName().toLowerCase());
+
+        // Loads the configuration.
+        settings = pluginAgent.loadSettings();
+
+        // Setup the command handler.
+        commandHandler = pluginAgent.getNewCommandHandler();
+    }
+
+    void onEnable() {
+        // Loads the configuration.
+        settings = pluginAgent.loadSettings();
+
+        // Set up commands.
+        pluginAgent.registerCommands();
+
+        // Setup the plugin messager.
+        messager = pluginAgent.getNewMessager(settings.getLanguageSettings());
+
+        // Do any important first run stuff here.
+        if (getSettings().isFirstRun()) {
+            pluginAgent.firstRun();
+            getSettings().setFirstRun(false);
+            try {
+                saveSettings();
+            } catch (SendablePluginBaseException e) {
+                e.printStackTrace();
+                getLog().severe("Cannot save config on startup.  Terminating plugin.");
+                pluginAgent.disablePlugin();
+            }
+        }
+    }
+
+    void onDisable() {
+        getLog().shutdown();
+    }
+
+    public Class getPluginClass() {
+        return pluginAgent.getPluginClass();
+    }
+
+    @NotNull
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void saveSettings() throws SendablePluginBaseException {
+        pluginAgent.saveSettings();
+    }
 
     /**
      * Gets the info object for this plugin.
@@ -38,25 +108,23 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
      * @return the info object for this plugin.
      */
     @NotNull
-    PluginInfo getPluginInfo();
+    public PluginInfo getPluginInfo() {
+        return pluginAgent.getPluginInfo();
+    }
 
-    /**
-     * Returns the directory that the plugin data's files are located in.
-     *
-     * @return the directory that the plugin data's files are located in.
-     */
+    /** {@inheritDoc} */
     @NotNull
-    File getDataFolder();
+    @Override
+    public File getDataFolder() {
+        return pluginAgent.getDataFolder();
+    }
 
-    /**
-     * Returns the short prefix for the commands owned by this plugin.
-     * <p/>
-     * This is particularly necessary due to PluginBase offering built in commands.
-     *
-     * @return the short prefix for the commands owned by this plugin.
-     */
+    /** {@inheritDoc} */
     @NotNull
-    String getCommandPrefix();
+    @Override
+    public String getCommandPrefix() {
+        return pluginAgent.getCommandPrefix();
+    }
 
     /**
      * Retrieves the JDBC agent for this plugin, if configured.
@@ -66,31 +134,24 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
      * @return the JDBC agent for this plugin or null if not configured.
      */
     @Nullable
-    JdbcAgent getJdbcAgent();
-
-    /**
-     * Gets the metrics object for this plugin.
-     *
-     * @return the metrics object for this plugin or null if something went wrong while enabling one or if the
-     * plugin chooses not to use metrics.
-     */
-    @Nullable
-    Metrics getMetrics();
+    public JdbcAgent getJdbcAgent() {
+        return pluginAgent.getJdbcAgent();
+    }
 
     /**
      * Tells the plugin to reload the configuration and other data files.
-     * <p/>
-     * Exactly what this entails is up to the implementation.
      */
-    void reloadConfig();
+    public void reloadConfig() {
+        Settings settings = pluginAgent.loadSettings();
+        messager = pluginAgent.getNewMessager(settings.getLanguageSettings());
+    }
 
-    /**
-     * Gets the messager for this plugin.
-     *
-     * @return the messager for this plugin.
-     */
+    /** {@inheritDoc} */
     @NotNull
-    Messager getMessager();
+    @Override
+    public Messager getMessager() {
+        return messager;
+    }
 
     /**
      * Gets a list of special data points this plugin wishes to be shown when using the version command.
@@ -98,15 +159,25 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
      * @return a list of special data points for version info.
      */
     @NotNull
-    List<String> dumpVersionInfo();
+    public List<String> dumpVersionInfo() {
+        List<String> buffer = new LinkedList<String>();
+        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_PLUGIN_VERSION, getPluginInfo().getName(), getPluginInfo().getVersion()));
+        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_SERVER_NAME, getServerInterface().getName()));
+        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_SERVER_VERSION, getServerInterface().getVersion()));
+        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_LANG_FILE, getSettings().getLanguageSettings().getLanguageFile()));
+        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_DEBUG_MODE, getSettings().getDebugLevel()));
+        List<String> additional = pluginAgent.getAdditionalVersionInfo();
+        if (additional != null) {
+            buffer.addAll(additional);
+        }
+        return buffer;
+    }
 
-    /**
-     * Gets the interface for interacting with the server implementation.
-     *
-     * @return the interface for interacting with the server implementation.
-     */
+    /** {@inheritDoc} */
     @NotNull
-    ServerInterface getServerInterface();
+    public ServerInterface getServerInterface() {
+        return pluginAgent.getServerInterface();
+    }
 
     /**
      * Gets the command handler for this plugin.
@@ -114,7 +185,10 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
      * @return the command handler for this plugin.
      */
     @NotNull
-    CommandHandler getCommandHandler();
+    @Override
+    public CommandHandler getCommandHandler() {
+        return commandHandler;
+    }
 
     /**
      * Gets the PluginBase logger for this PluginBase plugin.
@@ -122,5 +196,36 @@ public interface PluginBase extends LoggablePlugin, Messaging, CommandProvider {
      * @return the PluginBase logger for this PluginBase plugin.
      */
     @NotNull
-    PluginLogger getLog();
+    @Override
+    public PluginLogger getLog() {
+        return logger;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void scheduleQueuedCommandExpiration(@NotNull QueuedCommand queuedCommand) {
+        if (useQueuedCommands()) {
+            getServerInterface().runTaskLater(queuedCommand, queuedCommand.getExpirationDuration());
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean useQueuedCommands() {
+        return pluginAgent.isQueuedCommandsEnabled();
+    }
+
+    /** {@inheritDoc} */
+    @NotNull
+    @Override
+    public String[] getAdditionalCommandAliases(Class<? extends Command> commandClass) {
+        return pluginAgent.getAdditionalCommandAliases(commandClass);
+    }
+
+    /** {@inheritDoc} */
+    @NotNull
+    @Override
+    public String getName() {
+        return getPluginInfo().getName();
+    }
 }

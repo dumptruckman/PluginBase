@@ -25,17 +25,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.plugin.Plugin;
+import pluginbase.plugin.PluginBase;
 
 import java.util.Arrays;
 
 class DynamicPluginCommand extends org.bukkit.command.Command implements PluginIdentifiableCommand {
 
     protected final CommandExecutor owner;
-    protected final BukkitPlugin registeredWith;
+    protected final PluginBase registeredWith;
     protected final Plugin owningPlugin;
     protected String[] permissions = new String[0];
 
-    public DynamicPluginCommand(String[] aliases, String desc, String usage, CommandExecutor owner, BukkitPlugin registeredWith, Plugin plugin) {
+    public DynamicPluginCommand(String[] aliases, String desc, String usage, CommandExecutor owner, PluginBase registeredWith, Plugin plugin) {
         super(aliases[0], desc, usage, Arrays.asList(aliases));
         this.owner = owner;
         this.owningPlugin = plugin;
@@ -65,17 +66,6 @@ class DynamicPluginCommand extends org.bukkit.command.Command implements PluginI
             return true;
         }
 
-        if (registeredWith instanceof BukkitCommandHandler) {
-            try {
-                for (String permission : permissions) {
-                    if (((BukkitCommandHandler) registeredWith).hasPermission(sender, permission)) {
-                        return true;
-                    }
-                }
-                return false;
-            } catch (Throwable ignore) {
-            }
-        }
         for (String permission : permissions) {
             if (sender.hasPermission(permission)) {
                 return true;

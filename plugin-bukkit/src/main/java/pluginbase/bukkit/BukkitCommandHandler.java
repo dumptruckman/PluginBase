@@ -1,33 +1,26 @@
 package pluginbase.bukkit;
 
+import org.bukkit.plugin.Plugin;
 import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandRegistration;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.jetbrains.annotations.NotNull;
+import pluginbase.plugin.PluginBase;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+class BukkitCommandHandler extends CommandHandler<PluginBase> {
 
-class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
-
-    private final CommandExecutor executor;
+    private final Plugin executor;
     private CommandMap fallbackCommands;
 
-    public BukkitCommandHandler(BukkitPlugin plugin) {
-        this(plugin, plugin);
-    }
-
-    public BukkitCommandHandler(BukkitPlugin plugin, CommandExecutor executor) {
+    public BukkitCommandHandler(PluginBase plugin, Plugin executor) {
         super(plugin);
         this.executor = executor;
     }
 
-    protected boolean register(@NotNull final CommandRegistration<BukkitPlugin> commandInfo, @NotNull final pluginbase.command.Command<BukkitPlugin> command) {
+    protected boolean register(@NotNull final CommandRegistration<PluginBase> commandInfo, @NotNull final pluginbase.command.Command<PluginBase> command) {
         CommandMap commandMap = getCommandMap();
         if (commandMap == null) {
             return false;
@@ -44,10 +37,10 @@ class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
         }
         */
         DynamicPluginCommand cmd = new DynamicPluginCommand(aliases, commandInfo.getDesc(),
-                "/" + commandInfo.getName() + " " + commandInfo.getUsage(), executor, commandInfo.getRegisteredWith(), plugin);
+                "/" + commandInfo.getName() + " " + commandInfo.getUsage(), executor, commandInfo.getRegisteredWith(), executor);
         CommandHelpTopic helpTopic = new CommandHelpTopic(cmd, command.getHelp());
         cmd.setPermissions(commandInfo.getPermissions());
-        if (commandMap.register(commandInfo.getName(), plugin.getDescription().getName(), cmd)) {
+        if (commandMap.register(commandInfo.getName(), plugin.getName(), cmd)) {
             Bukkit.getServer().getHelpMap().addTopic(helpTopic);
             return true;
         }
@@ -55,20 +48,20 @@ class BukkitCommandHandler extends CommandHandler<BukkitPlugin> {
     }
 
     private CommandMap getCommandMap() {
-        CommandMap commandMap = ReflectionUtil.getField(plugin.getServer().getPluginManager(), "commandMap");
+        CommandMap commandMap = ReflectionUtil.getField(executor.getServer().getPluginManager(), "commandMap");
         if (commandMap == null) {
             if (fallbackCommands != null) {
                 commandMap = fallbackCommands;
             } else {
                 getLog().warning("Could not retrieve server CommandMap, using fallback instead!");
                 fallbackCommands = commandMap = new SimpleCommandMap(Bukkit.getServer());
-                Bukkit.getServer().getPluginManager().registerEvents(new FallbackRegistrationListener(fallbackCommands), plugin);
+                Bukkit.getServer().getPluginManager().registerEvents(new FallbackRegistrationListener(fallbackCommands), executor);
             }
         }
         return commandMap;
     }
 
     boolean hasPermission(final CommandSender sender, final String permission) {
-        return plugin.wrapSender(sender).hasPermission(permission);
+        return BukkitTools.wrapSender(sender).hasPermission(permission);
     }
 }

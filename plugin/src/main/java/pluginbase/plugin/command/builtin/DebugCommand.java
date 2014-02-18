@@ -36,7 +36,7 @@ public class DebugCommand extends BuiltInCommand {
 
     protected DebugCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-        perm = PermFactory.newPerm(plugin.getClass(), "cmd.debug").usePluginName().commandPermission()
+        perm = PermFactory.newPerm(plugin.getPluginClass(), "cmd.debug").usePluginName().commandPermission()
                 .desc("Spams the console a bunch.").build();
     }
 
