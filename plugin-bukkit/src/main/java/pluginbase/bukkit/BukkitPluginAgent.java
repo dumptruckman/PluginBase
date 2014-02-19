@@ -28,15 +28,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
-public class BukkitPluginAgent extends PluginAgent {
+public class BukkitPluginAgent<P> extends PluginAgent<P> {
 
     static {
         PermFactory.registerPermissionFactory(BukkitPermFactory.class);
     }
 
     @NotNull
-    public static BukkitPluginAgent getPluginAgent(@NotNull Plugin plugin, @NotNull String commandPrefix) {
-        return new BukkitPluginAgent(plugin, commandPrefix);
+    public static <P> BukkitPluginAgent<P> getPluginAgent(@NotNull Class<P> pluginInterface, @NotNull Plugin plugin, @NotNull String commandPrefix) {
+        if (!pluginInterface.isInstance(plugin)) {
+            throw new IllegalArgumentException("pluginInterface must be a superclass or superinterface of plugin.");
+        }
+        return new BukkitPluginAgent<P>(pluginInterface, plugin, commandPrefix);
     }
 
     @NotNull
@@ -48,8 +51,8 @@ public class BukkitPluginAgent extends PluginAgent {
 
     private BukkitConfiguration config;
 
-    private BukkitPluginAgent(@NotNull Plugin plugin, @NotNull String commandPrefix) {
-        super(commandPrefix);
+    private BukkitPluginAgent(@NotNull Class<P> pluginInterface, @NotNull Plugin plugin, @NotNull String commandPrefix) {
+        super(pluginInterface, (P) plugin, commandPrefix);
         this.plugin = plugin;
         this.serverInterface = new BukkitServerInterface(plugin);
     }
@@ -89,12 +92,6 @@ public class BukkitPluginAgent extends PluginAgent {
     @Override
     protected File getDataFolder() {
         return plugin.getDataFolder();
-    }
-
-    @NotNull
-    @Override
-    protected Class getPluginClass() {
-        return plugin.getClass();
     }
 
     @NotNull

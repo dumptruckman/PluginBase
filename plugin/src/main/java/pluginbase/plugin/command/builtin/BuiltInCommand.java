@@ -16,5 +16,6 @@ abstract class BuiltInCommand extends Command<PluginBase> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public abstract boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context);
 }

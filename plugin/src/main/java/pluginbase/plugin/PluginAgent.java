@@ -16,6 +16,8 @@ import pluginbase.messages.Messages;
 import pluginbase.messages.messaging.Messager;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
+import pluginbase.plugin.command.PluginCommand;
+import pluginbase.plugin.command.QueuedPluginCommand;
 import pluginbase.plugin.command.builtin.DebugCommand;
 import pluginbase.plugin.command.builtin.ReloadCommand;
 import pluginbase.plugin.command.builtin.VersionCommand;
@@ -30,9 +32,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
-public abstract class PluginAgent {
+public abstract class PluginAgent<P> {
 
-    private final PluginBase pluginBase;
+    private final P plugin;
+    private final Class<P> pluginClass;
+    private final PluginBase<P> pluginBase;
 
     private boolean loaded = false;
 
@@ -62,18 +66,24 @@ public abstract class PluginAgent {
 
     private String permissionPrefix;
 
-    protected PluginAgent(@NotNull String commandPrefix) {
+    protected PluginAgent(@NotNull Class<P> pluginClass, @NotNull P plugin, @NotNull String commandPrefix) {
+        this.pluginClass = pluginClass;
+        this.plugin = plugin;
         this.commandPrefix = commandPrefix;
-        this.pluginBase = new PluginBase(this);
+        this.pluginBase = new PluginBase<P>(this);
 
         // Add initial commands for registration
         //registerCommand(InfoCommand.class); // TODO Unused currently... may implement later.
-        registerCommand(DebugCommand.class);
-        registerCommand(ReloadCommand.class);
-        registerCommand(VersionCommand.class);
+        _registerCommand(DebugCommand.class);
+        _registerCommand(ReloadCommand.class);
+        _registerCommand(VersionCommand.class);
     }
 
-    public PluginBase getPluginBase() {
+    protected P getPlugin() {
+        return plugin;
+    }
+
+    public PluginBase<P> getPluginBase() {
         return pluginBase;
     }
 
@@ -184,7 +194,20 @@ public abstract class PluginAgent {
      *
      * @param commandClass the command class to register as a command for this plugin.
      */
-    public final void registerCommand(Class<? extends Command> commandClass) {
+    public final void registerCommand(Class<? extends PluginCommand<P>> commandClass) {
+        _registerCommand(commandClass);
+    }
+
+    /**
+     * Register the given command class as a command for this plugin.
+     *
+     * @param commandClass the command class to register as a command for this plugin.
+     */
+    public final void registerQueuedCommand(Class<? extends QueuedPluginCommand<P>> commandClass) {
+        _registerCommand(commandClass);
+    }
+
+    private void _registerCommand(Class<? extends Command> commandClass) {
         if (commandClass.getAnnotation(CommandInfo.class) == null) {
             throw new IllegalArgumentException("Command class must be annotated with " + CommandInfo.class);
         }
@@ -294,13 +317,15 @@ public abstract class PluginAgent {
     }
 
     @NotNull
+    Class<P> getPluginClass() {
+        return pluginClass;
+    }
+
+    @NotNull
     protected abstract PluginInfo getPluginInfo();
 
     @NotNull
     protected abstract File getDataFolder();
-
-    @NotNull
-    protected abstract Class getPluginClass();
 
     @NotNull
     protected abstract Settings loadSettings();

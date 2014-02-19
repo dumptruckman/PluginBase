@@ -14,7 +14,7 @@ public class TestPlugin extends JavaPlugin {
 
     JdbcAgent jdbcAgent;
 
-    BukkitPluginAgent pluginAgent = BukkitPluginAgent.getPluginAgent(this, "pb");
+    BukkitPluginAgent pluginAgent = BukkitPluginAgent.getPluginAgent(TestPlugin.class, this, "pb");
 
     public void onLoad() {
         pluginAgent.setJdbcAgentCallable(new Callable<JdbcAgent>() {

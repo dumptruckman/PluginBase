@@ -4,7 +4,6 @@
 package pluginbase.command;
 
 import pluginbase.logging.LogProvider;
-import pluginbase.logging.PluginLogger;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.messaging.Messaging;
 import pluginbase.minecraft.BasePlayer;
@@ -35,15 +34,15 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogP
     protected abstract BundledMessage getConfirmMessage();
 
     final void confirm() {
-        getPlugin().getLog().finer("Confirming queued command '%s' for '%s' with '%s'", this, sender, context);
+        getPluginBase().getLog().finer("Confirming queued command '%s' for '%s' with '%s'", this, sender, context);
         onConfirm(sender, context);
-        getPlugin().getCommandHandler().removedQueuedCommand(sender, this);
+        getPluginBase().getCommandHandler().removedQueuedCommand(sender, this);
     }
 
     private void expire() {
-        getPlugin().getLog().finer("Expiring queued command '%s' for '%s' with '%s'", this, sender, context);
+        getPluginBase().getLog().finer("Expiring queued command '%s' for '%s' with '%s'", this, sender, context);
         onExpire(sender, context);
-        getPlugin().getCommandHandler().removedQueuedCommand(sender, this);
+        getPluginBase().getCommandHandler().removedQueuedCommand(sender, this);
     }
 
     public abstract long getExpirationDuration();
@@ -58,7 +57,7 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogP
     public final boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         this.sender = sender;
         this.context = context;
-        getPlugin().scheduleQueuedCommandExpiration(this);
+        getPluginBase().scheduleQueuedCommandExpiration(this);
         return preConfirm(sender, context);
     }
 

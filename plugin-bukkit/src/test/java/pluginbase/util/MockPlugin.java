@@ -23,7 +23,7 @@ public class MockPlugin extends JavaPlugin {
 
     JdbcAgent jdbcAgent;
 
-    BukkitPluginAgent pluginAgent = BukkitPluginAgent.getPluginAgent(this, "pb");
+    BukkitPluginAgent pluginAgent = BukkitPluginAgent.getPluginAgent(MockPlugin.class, this, "pb");
 
     public void onLoad() {
         pluginAgent.setAdditionalVersionInfoCallable(new VersionInfoExtras());

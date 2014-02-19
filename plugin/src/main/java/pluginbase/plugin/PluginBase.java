@@ -29,7 +29,7 @@ import java.util.List;
  * <p/>
  * Provides numerous useful methods for general plugin self-management.
  */
-public final class PluginBase implements LoggablePlugin, Messaging, CommandProvider {
+public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandProvider {
 
     static {
         SerializationRegistrar.registerClass(Settings.class);
@@ -37,20 +37,25 @@ public final class PluginBase implements LoggablePlugin, Messaging, CommandProvi
     }
 
     @NotNull
-    private final PluginAgent pluginAgent;
+    private final PluginAgent<P> pluginAgent;
     private PluginLogger logger;
     private Settings settings = null;
     private CommandHandler commandHandler = null;
     private Messager messager = null;
 
-    PluginBase(@NotNull PluginAgent pluginAgent) {
+    PluginBase(@NotNull PluginAgent<P> pluginAgent) {
         this.pluginAgent = pluginAgent;
+    }
+
+    public P getPlugin() {
+        return pluginAgent.getPlugin();
     }
 
     void onLoad() {
         // Initialize our logging.
         logger = PluginLogger.getLogger(this);
 
+        System.out.println("Plugin Class: " + getPluginClass());
         // Register the permission name for the plugin.
         PermFactory.registerPermissionName(getPluginClass(), pluginAgent.getPermissionPrefix());
 

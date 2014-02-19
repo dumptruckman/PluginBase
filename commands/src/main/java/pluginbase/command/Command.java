@@ -1,6 +1,5 @@
 package pluginbase.command;
 
-import pluginbase.logging.LogProvider;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.Message;
 import pluginbase.messages.messaging.Messager;
@@ -37,7 +36,7 @@ public abstract class Command<P extends CommandProvider & Messaging> {
      * @return the plugin implementing this command.
      */
     @NotNull
-    protected P getPlugin() {
+    protected P getPluginBase() {
         return plugin;
     }
 
@@ -48,7 +47,7 @@ public abstract class Command<P extends CommandProvider & Messaging> {
      */
     @NotNull
     protected Messager getMessager() {
-        return getPlugin().getMessager();
+        return getPluginBase().getMessager();
     }
 
     /**

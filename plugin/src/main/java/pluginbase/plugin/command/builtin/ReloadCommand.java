@@ -50,7 +50,7 @@ public class ReloadCommand extends BuiltInCommand {
     /** {@inheritDoc} */
     @Override
     public boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
-        getPlugin().reloadConfig();
+        getPluginBase().reloadConfig();
         getMessager().message(sender, RELOAD_COMPLETE);
         return true;
     }

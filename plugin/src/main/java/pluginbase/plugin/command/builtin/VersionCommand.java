@@ -82,7 +82,7 @@ public class VersionCommand extends BuiltInCommand {
             getMessager().message(sender, VERSION_PLAYER);
         }
 
-        final List<String> versionInfoDump = getPlugin().dumpVersionInfo();
+        final List<String> versionInfoDump = getPluginBase().dumpVersionInfo();
 
         // send info to sender
         for (String line : versionInfoDump) {
@@ -91,19 +91,19 @@ public class VersionCommand extends BuiltInCommand {
 
         final Set<Character> flags = new LinkedHashSet<Character>(context.getFlags());
         if (!flags.isEmpty()) {
-            getPlugin().getServerInterface().runTaskAsynchronously(new Runnable() {
+            getPluginBase().getServerInterface().runTaskAsynchronously(new Runnable() {
                 @Override
                 public void run() {
                     for (Character flag : flags) {
                         final String pasteUrl;
                         if (flag.equals('p')) {
-                            pasteUrl = postToService(PasteServiceType.PASTIE, true, versionInfoDump, getPlugin().getLog());
+                            pasteUrl = postToService(PasteServiceType.PASTIE, true, versionInfoDump, getPluginBase().getLog());
                         } else if (flag.equals('b')) {
-                            pasteUrl = postToService(PasteServiceType.PASTEBIN, true, versionInfoDump, getPlugin().getLog());
+                            pasteUrl = postToService(PasteServiceType.PASTEBIN, true, versionInfoDump, getPluginBase().getLog());
                         } else {
                             continue;
                         }
-                        getPlugin().getServerInterface().runTask(new Runnable() {
+                        getPluginBase().getServerInterface().runTask(new Runnable() {
                             @Override
                             public void run() {
                                 getMessager().message(sender, VERSION_INFO_DUMPED, pasteUrl);
