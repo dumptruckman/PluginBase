@@ -1,6 +1,7 @@
 package pluginbase.command;
 
 import pluginbase.logging.LogProvider;
+import pluginbase.messages.BundledMessage;
 import pluginbase.messages.Message;
 import pluginbase.messages.messaging.Messager;
 import pluginbase.messages.messaging.Messaging;
@@ -57,6 +58,16 @@ public abstract class Command<P extends CommandProvider & Messaging> {
      */
     @Nullable
     public abstract Perm getPerm();
+
+    /**
+     * Gets the permission denied message for this command.
+     *
+     * @return the permission denied message for this command or null if the default message should be used.
+     */
+    @Nullable
+    public BundledMessage getPermissionMessage() {
+        return null;
+    }
 
     /**
      * Gets the help message for this command.
