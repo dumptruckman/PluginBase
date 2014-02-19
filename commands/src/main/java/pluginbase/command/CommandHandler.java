@@ -172,6 +172,9 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging & Log
             Theme.DO_THIS + "You must confirm the previous command by typing " + Theme.CMD_HIGHLIGHT + "%s"
                     + "\n" + Theme.INFO + "You have %s to comply.");
 
+    public static final Message PERMISSION_DENIED = Message.createMessage("commands.permission-denied",
+            Theme.SORRY + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error.");
+
     /**
      * Confirms any queued command for the given player.
      *
@@ -223,6 +226,14 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging & Log
         if (command instanceof DirectoryCommand) {
             ((DirectoryCommand) command).runCommand(player, args[0], commandTree.getTreeAt(args[0]));
             return true;
+        }
+        if (command.getPerm() != null && !command.getPerm().hasPermission(player)) {
+            BundledMessage permissionMessage = command.getPermissionMessage();
+            if (permissionMessage == null) {
+                permissionMessage = Message.bundleMessage(PERMISSION_DENIED);
+            }
+            plugin.getMessager().message(player, permissionMessage);
+            return false;
         }
         final CommandInfo cmdInfo = command.getClass().getAnnotation(CommandInfo.class);
         if (cmdInfo == null) {
