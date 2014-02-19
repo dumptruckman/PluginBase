@@ -43,8 +43,6 @@ public abstract class PluginAgent {
     private final String commandPrefix;
     @Nullable
     private Callable<? extends Settings> settingsCallable;
-    @Nullable
-    private Callable<? extends DatabaseSettings> dbSettingsCallable;
 
     private Set<Class> messageClassesToRegister = new HashSet<Class>();
     private List<Class<? extends Command>> commandClassesToRegister = new LinkedList<Class<? extends Command>>();
@@ -61,6 +59,8 @@ public abstract class PluginAgent {
     private Callable<List<String>> additionalVersionInfo = null;
 
     private Map<Class<? extends Command>, List<String>> additionalCommandAliases = new HashMap<Class<? extends Command>, List<String>>();
+
+    private String permissionPrefix;
 
     protected PluginAgent(@NotNull String commandPrefix) {
         this.commandPrefix = commandPrefix;
@@ -282,6 +282,15 @@ public abstract class PluginAgent {
             }
         }
         return true;
+    }
+
+    @NotNull
+    String getPermissionPrefix() {
+        return permissionPrefix == null ? getPluginInfo().getName().toLowerCase() : permissionPrefix;
+    }
+
+    public void setPermissionPrefix(@Nullable String permissionPrefix) {
+        this.permissionPrefix = permissionPrefix;
     }
 
     @NotNull
