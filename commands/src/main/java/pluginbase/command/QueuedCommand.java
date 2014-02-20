@@ -5,16 +5,37 @@ package pluginbase.command;
 
 import pluginbase.logging.LogProvider;
 import pluginbase.messages.BundledMessage;
+import pluginbase.messages.Message;
 import pluginbase.messages.messaging.Messaging;
 import pluginbase.minecraft.BasePlayer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.util.time.Duration;
 
 /**
- * Allows for a command to be queued and require to be confirmed before executing.
+ * A PluginBase user queued command that requires confirmation before executing.
+ * <p/>
+ * This is for commands to be used on the server by the server operator or the players on the server.
+ * A queued command waits for the user to execute a confirmation command before performing the actual
+ * command.  A queued command will have an expiration time after which it will stop waiting for the confirm
+ * command and simply not run.  A queued command that is expired must be typed in again and confirmed.
+ * <br/>
+ * Queued commands for PluginBase's command handler <b>must</b> implement this class AND annotate it with the
+ * {@link CommandInfo} annotation.
+ * <p/>
+ * <b>Note:</b> If you are using the Plugin module you should be extending QueuedPluginCommand instead.
+ *
+ * @param <P> Typically represents the plugin implementing this command though note see above.
  */
 public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogProvider> extends Command<P> implements Runnable {
 
+    /**
+     * Constructs a queued command.
+     * <p/>
+     * You will never need to call this constructor.  It is used by {@link CommandHandler}
+     *
+     * @param plugin your plugin.
+     */
     protected QueuedCommand(@NotNull final P plugin) {
         super(plugin);
     }
@@ -27,11 +48,15 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogP
      * requires confirmation using the appropriate confirm command.
      * <p/>
      * The confirm command is "/" + {@link pluginbase.command.CommandProvider#getCommandPrefix()} + " confirm" by default.
+     * <br/>
+     * This returns a built in message and must be overridden to provide a custom message.
      *
-     * @return The confirm required message or null to use the default {@link CommandHandler#MUST_CONFIRM}.
+     * @return The confirm required message.
      */
-    @Nullable
-    protected abstract BundledMessage getConfirmMessage();
+    @NotNull
+    protected BundledMessage getConfirmMessage() {
+        return Message.bundleMessage(CommandHandler.MUST_CONFIRM, Duration.valueOf(getExpirationDuration()).asVerboseString());
+    }
 
     final void confirm() {
         getPluginBase().getLog().finer("Confirming queued command '%s' for '%s' with '%s'", this, sender, context);
@@ -45,14 +70,45 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogP
         getPluginBase().getCommandHandler().removedQueuedCommand(sender, this);
     }
 
+    /**
+     * How long the queued command will wait for confirmation before expiring.
+     *
+     * @return the expiration time in server ticks.
+     */
     public abstract long getExpirationDuration();
 
+    /**
+     * Gives the command a chance to do something before the confirm command has been used.
+     * <p/>
+     * This is called internally and must simply be implemented.  It is okay for this method to be blank.
+     *
+     * @param sender the command sender.
+     * @param context the command context containing details about the command's usage.
+     * @return true to indicate the command was used as indicated and false to indicate improper usage.
+     */
     protected abstract boolean preConfirm(@NotNull final BasePlayer sender, @NotNull final CommandContext context);
 
+    /**
+     * This runs the actual command once it is confirmed.
+     * <p/>
+     * Implement with what the command should actually do.
+     *
+     * @param sender the command sender.
+     * @param context the command context containing details about the command's usage.
+     */
     protected abstract void onConfirm(@NotNull final BasePlayer sender, @NotNull final CommandContext context);
 
+    /**
+     * Gives the command a chance to do something when the user has missed the confirmation window.
+     * <p/>
+     * This is called internally and must simply be implemented.  It is okay for this method to be blank.
+     *
+     * @param sender the command sender.
+     * @param context the command context containing details about the command's usage.
+     */
     protected abstract void onExpire(@NotNull final BasePlayer sender, @NotNull final CommandContext context);
 
+    /** {@inheritDoc} */
     @Override
     public final boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         this.sender = sender;
@@ -61,8 +117,13 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogP
         return preConfirm(sender, context);
     }
 
+    /**
+     * This will cause the expiration of the queued command.
+     * <p/>
+     * This is mostly for use internally.
+     */
     @Override
-    public void run() {
+    public final void run() {
         expire();
     }
 }

@@ -273,13 +273,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging & Log
             getLog().finer("Queueing command '%s' for '%s'", queuedCommand, player);
             queuedCommands.put(player, queuedCommand);
             final BundledMessage confirmMessage = queuedCommand.getConfirmMessage();
-            if (confirmMessage != null) {
-                this.plugin.getMessager().message(player, confirmMessage.getMessage(), confirmMessage.getArgs());
-            } else {
-                this.plugin.getMessager().message(player, MUST_CONFIRM,
-                        "/" + this.plugin.getCommandPrefix() + " confirm",
-                        Duration.valueOf(queuedCommand.getExpirationDuration()).asVerboseString());
-            }
+            this.plugin.getMessager().message(player, confirmMessage);
         }
         return true;
     }

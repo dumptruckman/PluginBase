@@ -10,10 +10,16 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Commands for PluginBase's command handler must implement this class AND annotate it with the
+ * A PluginBase user command.
+ * <p/>
+ * This is for commands to be used on the server by the server operator or the players on the server.
+ * <br/>
+ * Commands for PluginBase's command handler <b>must</b> implement this class AND annotate it with the
  * {@link CommandInfo} annotation.
+ * <p/>
+ * <b>Note:</b> If you are using the Plugin module you should be extending PluginCommand instead.
  *
- * @param <P> Typically represents a plugin implementing this command.
+ * @param <P> Typically represents the plugin implementing this command though note see above.
  */
 public abstract class Command<P extends CommandProvider & Messaging> {
 
