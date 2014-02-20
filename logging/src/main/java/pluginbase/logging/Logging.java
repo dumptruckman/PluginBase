@@ -22,7 +22,7 @@ public final class Logging {
     /**
      * The default "plugin" class to use for static logging.
      */
-    private static class LoggingPlugin implements LoggablePlugin {
+    private static class AnonymousLogging implements LoggablePlugin {
         /** {@inheritDoc} */
         @NotNull
         @Override
@@ -38,8 +38,8 @@ public final class Logging {
         }
     }
 
-    /** Single instance of LoggingPlugin for use as the default plugin for this static logging class. */
-    static final LoggingPlugin DEFAULT_PLUGIN = new LoggingPlugin();
+    /** Single instance of AnonymousLogging for use as the default plugin for this static logging class. */
+    static final AnonymousLogging DEFAULT_PLUGIN = new AnonymousLogging();
 
     /** The PluginLogger instance used for static logging.  Package-Private so PluginLogger may change this. */
     @NotNull
