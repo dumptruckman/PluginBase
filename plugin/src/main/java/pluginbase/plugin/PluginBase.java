@@ -171,10 +171,7 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
         buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_SERVER_VERSION, getServerInterface().getVersion()));
         buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_LANG_FILE, getSettings().getLanguageSettings().getLanguageFile()));
         buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_DEBUG_MODE, getSettings().getDebugLevel()));
-        List<String> additional = pluginAgent.getAdditionalVersionInfo();
-        if (additional != null) {
-            buffer.addAll(additional);
-        }
+        buffer = pluginAgent.getModifiedVersionInfo(buffer);
         return buffer;
     }
 

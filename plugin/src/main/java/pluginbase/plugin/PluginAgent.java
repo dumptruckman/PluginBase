@@ -60,7 +60,7 @@ public abstract class PluginAgent<P> {
     private Callable<JdbcAgent> jdbcAgentCallable = null;
 
     @Nullable
-    private Callable<List<String>> additionalVersionInfo = null;
+    private VersionInfoModifier versionInfoModifier = null;
 
     private Map<Class<? extends Command>, List<String>> additionalCommandAliases = new HashMap<Class<? extends Command>, List<String>>();
 
@@ -141,14 +141,14 @@ public abstract class PluginAgent<P> {
         }
     }
 
-    public void setAdditionalVersionInfoCallable(@NotNull Callable<List<String>> additionalVersionInfo) {
-        this.additionalVersionInfo = additionalVersionInfo;
+    public void setVersionInfoModifier(@Nullable VersionInfoModifier versionInfoModifier) {
+        this.versionInfoModifier = versionInfoModifier;
     }
 
-    @Nullable
-    List<String> getAdditionalVersionInfo() {
+    @NotNull
+    List<String> getModifiedVersionInfo(List<String> versionInfo) {
         try {
-            return additionalVersionInfo != null ? additionalVersionInfo.call() : new ArrayList<String>(0);
+            return versionInfoModifier != null ? versionInfoModifier.modifyVersionInfo(versionInfo) : versionInfo;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

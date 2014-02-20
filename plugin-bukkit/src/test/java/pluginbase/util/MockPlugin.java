@@ -13,6 +13,7 @@ import pluginbase.plugin.PluginBase;
 import pluginbase.plugin.PluginInfo;
 import pluginbase.plugin.ServerInterface;
 import pluginbase.plugin.Settings;
+import pluginbase.plugin.VersionInfoModifier;
 
 import java.io.File;
 import java.util.LinkedList;
@@ -26,7 +27,7 @@ public class MockPlugin extends JavaPlugin {
     BukkitPluginAgent pluginAgent = BukkitPluginAgent.getPluginAgent(MockPlugin.class, this, "pb");
 
     public void onLoad() {
-        pluginAgent.setAdditionalVersionInfoCallable(new VersionInfoExtras());
+        pluginAgent.setVersionInfoModifier(new VersionInfoExtras());
         pluginAgent.setDefaultSettingsCallable(new Callable<Settings>() {
             @Override
             public Settings call() throws Exception {
@@ -58,10 +59,10 @@ public class MockPlugin extends JavaPlugin {
         pluginAgent.disablePluginBase();
     }
 
-    private static class VersionInfoExtras implements Callable<List<String>> {
+    private static class VersionInfoExtras implements VersionInfoModifier {
+        @NotNull
         @Override
-        public List<String> call() throws Exception {
-            List<String> versionInfo = new LinkedList<String>();
+        public List<String> modifyVersionInfo(@NotNull List<String> versionInfo) {
             versionInfo.add("Test");
             return versionInfo;
         }
