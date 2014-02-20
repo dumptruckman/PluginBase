@@ -3,6 +3,8 @@ package pluginbase.config;
 import pluginbase.config.annotation.SerializableAs;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.logging.Logging;
+import pluginbase.logging.PluginLogger;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -20,6 +22,11 @@ public enum SerializationRegistrar {
      * Registers the given class to be eligible for serialization.
      */
     public static void registerClass(@NotNull Class clazz) {
+        try {
+            clazz.getDeclaredConstructor();
+        } catch (NoSuchMethodException e) {
+            Logging.warning("SerializationRegistrar: Class '%s' is missing a 0-arg constructor and may cause deserialization issues.", clazz.getName());
+        }
         serializationEligibleClasses.add(clazz);
 
         registerClassAlias(clazz, getAlias(clazz));
