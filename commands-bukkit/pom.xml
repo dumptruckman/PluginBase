@@ -19,14 +19,14 @@
     <dependencies>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>commands</artifactId>
+            <artifactId>Commands</artifactId>
             <version>${commands.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>minecraft-link-bukkit</artifactId>
+            <artifactId>Minecraft-Link-Bukkit</artifactId>
             <version>${minecraft-link-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>

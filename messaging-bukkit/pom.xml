@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>messaging</artifactId>
+            <artifactId>Messaging</artifactId>
             <version>${messaging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
