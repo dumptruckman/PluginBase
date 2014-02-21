@@ -1,4 +1,4 @@
-package pluginbase.bukkit;
+package pluginbase.bukkit.minecraft;
 
 import pluginbase.logging.Logging;
 import pluginbase.minecraft.Entity;

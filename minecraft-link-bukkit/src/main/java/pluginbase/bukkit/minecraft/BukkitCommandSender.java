@@ -1,4 +1,4 @@
-package pluginbase.bukkit;
+package pluginbase.bukkit.minecraft;
 
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;

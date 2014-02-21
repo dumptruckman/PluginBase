@@ -1,25 +1,28 @@
-package pluginbase.bukkit;
+package pluginbase.bukkit.command;
 
 import org.bukkit.plugin.Plugin;
+import pluginbase.bukkit.minecraft.BukkitTools;
 import pluginbase.command.CommandHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.jetbrains.annotations.NotNull;
-import pluginbase.plugin.PluginBase;
+import pluginbase.command.CommandProvider;
+import pluginbase.logging.LoggablePlugin;
+import pluginbase.messages.messaging.Messaging;
 
-class BukkitCommandHandler extends CommandHandler<PluginBase> {
+public class BukkitCommandHandler<P extends CommandProvider & Messaging & LoggablePlugin> extends CommandHandler<P> {
 
     private final Plugin executor;
     private CommandMap fallbackCommands;
 
-    public BukkitCommandHandler(PluginBase plugin, Plugin executor) {
+    public BukkitCommandHandler(P plugin, Plugin executor) {
         super(plugin);
         this.executor = executor;
     }
 
-    protected boolean register(@NotNull final CommandRegistration<PluginBase> commandInfo, @NotNull final pluginbase.command.Command<PluginBase> command) {
+    protected boolean register(@NotNull final CommandRegistration<P> commandInfo, @NotNull final pluginbase.command.Command<P> command) {
         CommandMap commandMap = getCommandMap();
         if (commandMap == null) {
             return false;
@@ -35,7 +38,7 @@ class BukkitCommandHandler extends CommandHandler<PluginBase> {
             }
         }
         */
-        DynamicPluginCommand cmd = new DynamicPluginCommand(aliases, commandInfo.getDesc(),
+        DynamicPluginCommand<P> cmd = new DynamicPluginCommand<P>(aliases, commandInfo.getDesc(),
                 "/" + commandInfo.getName() + " " + commandInfo.getUsage(), executor, commandInfo.getRegisteredWith(), executor);
         CommandHelpTopic helpTopic = new CommandHelpTopic(cmd, command.getHelp());
         cmd.setPermissions(commandInfo.getPermissions());

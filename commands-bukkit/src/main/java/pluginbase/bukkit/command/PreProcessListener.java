@@ -1,4 +1,4 @@
-package pluginbase.bukkit;
+package pluginbase.bukkit.command;
 
 import pluginbase.command.CommandProvider;
 import org.bukkit.Bukkit;

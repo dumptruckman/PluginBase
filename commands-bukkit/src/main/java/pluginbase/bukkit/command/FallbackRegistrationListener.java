@@ -1,5 +1,5 @@
 /*
- * WorldGuard
+ * WorldEdit
  * Copyright (C) 2011 sk89q <http://www.sk89q.com> and contributors
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,26 +19,28 @@
 /*
  * Copied and modified on March 9, 2013 by dumptruckman.
 */
-package pluginbase.bukkit;
+package pluginbase.bukkit.command;
 
-import java.lang.reflect.Field;
+import org.bukkit.command.CommandMap;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 /**
  * @author zml2008
  */
-class ReflectionUtil {
-    @SuppressWarnings("unchecked")
-    public static <T> T getField(Object from, String name) {
-        Class<?> checkClass = from.getClass();
-        do {
-            try {
-                Field field = checkClass.getDeclaredField(name);
-                field.setAccessible(true);
-                return (T) field.get(from);
-            } catch (NoSuchFieldException e) {
-            } catch (IllegalAccessException e) {
-            }
-        } while (checkClass.getSuperclass() != Object.class && ((checkClass = checkClass.getSuperclass()) != null));
-        return null;
+class FallbackRegistrationListener implements Listener {
+
+    private final CommandMap commandRegistration;
+
+    public FallbackRegistrationListener(CommandMap commandRegistration) {
+        this.commandRegistration = commandRegistration;
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+        if (commandRegistration.dispatch(event.getPlayer(), event.getMessage())) {
+            event.setCancelled(true);
+        }
     }
 }

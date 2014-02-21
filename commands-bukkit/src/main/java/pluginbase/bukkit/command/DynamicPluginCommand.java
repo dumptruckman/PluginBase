@@ -19,24 +19,24 @@
 /*
  * Copied and modified on March 9, 2013 by dumptruckman.
 */
-package pluginbase.bukkit;
+package pluginbase.bukkit.command;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
 import org.bukkit.plugin.Plugin;
-import pluginbase.plugin.PluginBase;
+import pluginbase.messages.messaging.Messaging;
 
 import java.util.Arrays;
 
-class DynamicPluginCommand extends org.bukkit.command.Command implements PluginIdentifiableCommand {
+class DynamicPluginCommand<P extends Messaging> extends org.bukkit.command.Command implements PluginIdentifiableCommand {
 
     protected final CommandExecutor owner;
-    protected final PluginBase registeredWith;
+    protected final P registeredWith;
     protected final Plugin owningPlugin;
     protected String[] permissions = new String[0];
 
-    public DynamicPluginCommand(String[] aliases, String desc, String usage, CommandExecutor owner, PluginBase registeredWith, Plugin plugin) {
+    DynamicPluginCommand(String[] aliases, String desc, String usage, CommandExecutor owner, P registeredWith, Plugin plugin) {
         super(aliases[0], desc, usage, Arrays.asList(aliases));
         this.owner = owner;
         this.owningPlugin = plugin;

@@ -18,7 +18,7 @@
 /*
  * Copied and modified on March 9, 2013 by dumptruckman.
 */
-package pluginbase.bukkit;
+package pluginbase.bukkit.command;
 
 /**
  * String utilities.

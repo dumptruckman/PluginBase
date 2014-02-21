@@ -26,11 +26,14 @@
         <plugin.version>${pluginbase.version}</plugin.version>
         <plugin-bukkit.version>${pluginbase.version}</plugin-bukkit.version>
         <commands.version>0.1-SNAPSHOT</commands.version>
+        <commands-bukkit.version>0.1-SNAPSHOT</commands-bukkit.version>
         <file-comments.version>0.1-SNAPSHOT</file-comments.version>
         <logging.version>0.1-SNAPSHOT</logging.version>
         <messages.version>0.1-SNAPSHOT</messages.version>
         <messaging.version>0.1-SNAPSHOT</messaging.version>
+        <messaging-bukkit.version>0.1-SNAPSHOT</messaging-bukkit.version>
         <minecraft-link.version>0.1-SNAPSHOT</minecraft-link.version>
+        <minecraft-link-bukkit.version>0.1-SNAPSHOT</minecraft-link-bukkit.version>
         <permissions.version>0.1-SNAPSHOT</permissions.version>
         <permissions-bukkit.version>0.1-SNAPSHOT</permissions-bukkit.version>
         <properties.version>0.1-SNAPSHOT</properties.version>
@@ -85,12 +88,15 @@
         <module>logging</module>
         <module>messages</module>
         <module>messaging</module>
+        <module>messaging-bukkit</module>
         <module>permissions</module>
         <module>permissions-bukkit</module>
         <module>properties</module>
         <module>properties-bukkit</module>
         <module>minecraft-link</module>
+        <module>minecraft-link-bukkit</module>
         <module>commands</module>
+        <module>commands-bukkit</module>
         <module>utilities</module>
         <module>plugin</module>
         <module>plugin-bukkit</module>

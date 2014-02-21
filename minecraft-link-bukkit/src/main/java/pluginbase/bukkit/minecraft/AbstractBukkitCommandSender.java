@@ -1,4 +1,4 @@
-package pluginbase.bukkit;
+package pluginbase.bukkit.minecraft;
 
 import pluginbase.minecraft.BasePlayer;
 import org.bukkit.command.CommandSender;

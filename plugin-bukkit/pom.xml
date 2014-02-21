@@ -33,6 +33,27 @@
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Commands-Bukkit</artifactId>
+            <version>${commands-bukkit.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Minecraft-Link-Bukkit</artifactId>
+            <version>${minecraft-link-bukkit.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Messaging-Bukkit</artifactId>
+            <version>${messaging-bukkit.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Serializable-Config-Bukkit</artifactId>
             <version>${serializable-config-bukkit.version}</version>
             <type>jar</type>
@@ -121,6 +142,9 @@
                                 <includes>
                                     <include>com.dumptruckman.minecraft.pluginbase:Plugin</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Permissions-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Commands-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Minecraft-Link-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Messaging-Bukkit</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Serializable-Config-Bukkit</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:File-Comments</include>
                                     <include>org.mcstats:metrics</include>
