@@ -12,11 +12,25 @@ import pluginbase.command.CommandProvider;
 import pluginbase.logging.LoggablePlugin;
 import pluginbase.messages.messaging.Messaging;
 
+/**
+ * A Bukkit implementation of {@link CommandHandler}.
+ *
+ * @param <P> Probably the plugin implementing commands.  If you are using the Plugin/Plugin-Bukkit module this should
+ *           be PluginBase.  Otherwise, it will probably be your Plugin main class.
+ */
 public class BukkitCommandHandler<P extends CommandProvider & Messaging & LoggablePlugin> extends CommandHandler<P> {
 
     private final Plugin executor;
     private CommandMap fallbackCommands;
 
+    /**
+     * Creates a new instance of the bukkit command handler.  You'll only need one of these per plugin.
+     *
+     * @param plugin Probably the plugin implementing commands.  If you are using the Plugin/Plugin-Bukkit module this
+     *               should be your PluginBase instance and this will be created for you.  Otherwise, it will probably
+     *               be your plugin main class instance.
+     * @param executor Your plugin main class instance.
+     */
     public BukkitCommandHandler(P plugin, Plugin executor) {
         super(plugin);
         this.executor = executor;

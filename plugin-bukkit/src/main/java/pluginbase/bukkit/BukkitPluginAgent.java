@@ -164,7 +164,7 @@ public class BukkitPluginAgent<P> extends PluginAgent<P> {
 
     @Override
     protected CommandHandler<PluginBase> getNewCommandHandler() {
-        return new BukkitCommandHandler(getPluginBase(), plugin);
+        return new BukkitCommandHandler<PluginBase>(getPluginBase(), plugin);
     }
 
     @Override
