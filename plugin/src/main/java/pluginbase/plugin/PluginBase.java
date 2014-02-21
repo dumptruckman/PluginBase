@@ -207,7 +207,7 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     @Override
     public void scheduleQueuedCommandExpiration(@NotNull QueuedCommand queuedCommand) {
         if (useQueuedCommands()) {
-            getServerInterface().runTaskLater(queuedCommand, queuedCommand.getExpirationDuration());
+            getServerInterface().runTaskLater(queuedCommand, queuedCommand.getExpirationDuration() * 20L);
         }
     }
 

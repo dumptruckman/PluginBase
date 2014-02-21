@@ -73,7 +73,7 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogP
     /**
      * How long the queued command will wait for confirmation before expiring.
      *
-     * @return the expiration time in server ticks.
+     * @return the expiration time in seconds.
      */
     public abstract long getExpirationDuration();
 
