@@ -9,7 +9,6 @@ import pluginbase.messages.Theme;
 import pluginbase.messages.messaging.Messaging;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
-import pluginbase.util.time.Duration;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -338,5 +337,49 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging & Log
 
     protected String getArguments(@NotNull final CommandInfo cmdInfo) {
         return usageMap.containsKey(cmdInfo) ? usageMap.get(cmdInfo) : "";
+    }
+
+    protected static class CommandRegistration<P extends CommandProvider & Messaging> {
+
+        private final String[] aliases;
+        private final P registeredWith;
+        private final String usage, desc;
+        private final String[] permissions;
+
+        CommandRegistration(String usage, String desc, String[] aliases, P registeredWith) {
+            this(usage, desc, aliases, registeredWith, null);
+        }
+
+        CommandRegistration(String usage, String desc, String[] aliases, P registeredWith, String[] permissions) {
+            this.usage = usage;
+            this.desc = desc;
+            this.aliases = aliases;
+            this.permissions = permissions;
+            this.registeredWith = registeredWith;
+        }
+
+        public String[] getAliases() {
+            return aliases;
+        }
+
+        public String getName() {
+            return aliases[0];
+        }
+
+        public String getUsage() {
+            return usage;
+        }
+
+        public String getDesc() {
+            return desc;
+        }
+
+        public String[] getPermissions() {
+            return permissions;
+        }
+
+        public P getRegisteredWith() {
+            return registeredWith;
+        }
     }
 }

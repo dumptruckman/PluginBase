@@ -20,45 +20,48 @@
 */
 package pluginbase.command;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pluginbase.messages.Message;
 
 import java.util.*;
 
-public class CommandContext {
+/**
+ * Contains information regarding the current usage of a command such as what args and flags were used.
+ */
+public final class CommandContext {
 
-    protected final String command;
-    protected final List<String> parsedArgs;
-    protected final List<Integer> originalArgIndices;
-    protected final String[] originalArgs;
-    protected final Set<Character> booleanFlags = new HashSet<Character>();
-    protected final Map<Character, String> valueFlags = new HashMap<Character, String>();
+    private final String command;
+    private final List<String> parsedArgs;
+    private final List<Integer> originalArgIndices;
+    private final Set<Character> booleanFlags = new HashSet<Character>();
+    private final Map<Character, String> valueFlags = new HashMap<Character, String>();
 
-    CommandContext(String args) throws CommandException {
+    CommandContext(@NotNull String args) throws CommandException {
         this(args.split(" "), null);
     }
 
-    CommandContext(String[] args) throws CommandException {
+    CommandContext(@NotNull String[] args) throws CommandException {
         this(args, null);
     }
 
-    CommandContext(String args, Set<Character> valueFlags) throws CommandException {
+    CommandContext(@NotNull String args, @Nullable Set<Character> valueFlags) throws CommandException {
         this(args.split(" "), valueFlags);
     }
 
     /**
-     * @param args An array with arguments. Empty strings outside quotes will be removed.
+     * @param args An array with arguments including the command. Empty strings outside quotes will be removed.
      * @param valueFlags A set containing all value flags. Pass null to disable value flag parsing.
      * @throws CommandException This is thrown if flag fails for some reason.
      */
-    CommandContext(String[] args, Set<Character> valueFlags) throws CommandException {
+    CommandContext(@NotNull String[] args, @Nullable Set<Character> valueFlags) throws CommandException {
         if (valueFlags == null) {
             valueFlags = Collections.emptySet();
         }
 
-        originalArgs = args;
         command = args[0];
 
-        // Eliminate empty args and combine multiword args first
+        // Eliminate empty args and combine multi-word args first
         List<Integer> argIndexList = new ArrayList<Integer>(args.length);
         List<String> argList = new ArrayList<String>(args.length);
         for (int i = 1; i < args.length; ++i) {
@@ -150,110 +153,246 @@ public class CommandContext {
         }
     }
 
+    /**
+     * Gets the name of the command.
+     *
+     * @return the name of the command.
+     */
     public String getCommand() {
         return command;
     }
 
+    /**
+     * Checks whether the given command matches this command, ignoring case.
+     *
+     * @param command the command to check
+     * @return true if it matches the used command, ignoring case.
+     */
     public boolean matches(String command) {
         return this.command.equalsIgnoreCase(command);
     }
 
-    public String getString(int index) {
+    /**
+     * Gets the arg at the given index.
+     *
+     * @param index the index of the arg to retrieve.
+     * @return the arg at the given index.
+     * @throws java.lang.IndexOutOfBoundsException if the given index does not exist in the list of args.
+     */
+    public String getString(int index) throws IndexOutOfBoundsException {
         return parsedArgs.get(index);
     }
 
+    /**
+     * Gets the arg at the given index or the given default if that index is not valid.
+     *
+     * @param index the index of the arg to retrieve.
+     * @param def the default to use if the index is not valid.
+     * @return the arg at the given index or the given default if that index is not valid.
+     */
     public String getString(int index, String def) {
         return index < parsedArgs.size() ? parsedArgs.get(index) : def;
     }
 
-    public String getJoinedStrings(int initialIndex) {
-        initialIndex = originalArgIndices.get(initialIndex);
-        StringBuilder buffer = new StringBuilder(originalArgs[initialIndex]);
-        for (int i = initialIndex + 1; i < originalArgs.length; ++i) {
-            buffer.append(" ").append(originalArgs[i]);
-        }
-        return buffer.toString();
-    }
-
-    public int getInteger(int index) throws NumberFormatException {
+    /**
+     * Gets the integer arg at the given index.
+     *
+     * @param index the index of the integer arg to retrieve.
+     * @return the integer arg at the given index.
+     * @throws NumberFormatException if the arg at the given index is not an integer.
+     * @throws java.lang.IndexOutOfBoundsException if the given index does not exist in the list of args.
+     */
+    public Integer getInteger(int index) throws NumberFormatException, IndexOutOfBoundsException {
         return Integer.parseInt(parsedArgs.get(index));
     }
 
-    public int getInteger(int index, int def) throws NumberFormatException {
+    /**
+     * Gets the integer arg at the given index or the given default if that index is not valid.
+     *
+     * @param index the index of the integer arg to retrieve.
+     * @param def the default to use if the index is not valid.
+     * @return the integer arg at the given index or the given default if that index is not valid.
+     * @throws NumberFormatException if the arg at the given index is not an integer.
+     */
+    public Integer getInteger(int index, int def) throws NumberFormatException {
         return index < parsedArgs.size() ? Integer.parseInt(parsedArgs.get(index)) : def;
     }
 
-    public double getDouble(int index) throws NumberFormatException {
+    /**
+     * Gets the long arg at the given index.
+     *
+     * @param index the index of the long arg to retrieve.
+     * @return the long arg at the given index.
+     * @throws NumberFormatException if the arg at the given index is not a long.
+     * @throws java.lang.IndexOutOfBoundsException if the given index does not exist in the list of args.
+     */
+    public Long getLong(int index) throws NumberFormatException, IndexOutOfBoundsException {
+        return Long.parseLong(parsedArgs.get(index));
+    }
+
+    /**
+     * Gets the long arg at the given index or the given default if that index is not valid.
+     *
+     * @param index the index of the long arg to retrieve.
+     * @param def the default to use if the index is not valid.
+     * @return the long arg at the given index or the given default if that index is not valid.
+     * @throws NumberFormatException if the arg at the given index is not a long.
+     */
+    public Long getLong(int index, int def) throws NumberFormatException {
+        return index < parsedArgs.size() ? Long.parseLong(parsedArgs.get(index)) : def;
+    }
+
+    /**
+     * Gets the double arg at the given index.
+     *
+     * @param index the index of the double arg to retrieve.
+     * @return the double arg at the given index.
+     * @throws NumberFormatException if the arg at the given index is not a double.
+     * @throws java.lang.IndexOutOfBoundsException if the given index does not exist in the list of args.
+     */
+    public Double getDouble(int index) throws NumberFormatException {
         return Double.parseDouble(parsedArgs.get(index));
     }
 
-    public double getDouble(int index, double def) throws NumberFormatException {
+    /**
+     * Gets the double arg at the given index or the given default if that index is not valid.
+     *
+     * @param index the index of the double arg to retrieve.
+     * @param def the default to use if the index is not valid.
+     * @return the double arg at the given index or the given default if that index is not valid.
+     * @throws NumberFormatException if the arg at the given index is not a double.
+     */
+    public Double getDouble(int index, double def) throws NumberFormatException {
         return index < parsedArgs.size() ? Double.parseDouble(parsedArgs.get(index)) : def;
     }
 
-    public String[] getSlice(int index) {
-        String[] slice = new String[originalArgs.length - index];
-        System.arraycopy(originalArgs, index, slice, 0, originalArgs.length - index);
-        return slice;
+    /**
+     * Checks if the args include the given flag.
+     *
+     * @param flag the flag to check for.
+     * @return true if the flag is present in the args.
+     */
+    public boolean hasFlag(char flag) {
+        return booleanFlags.contains(flag) || valueFlags.containsKey(flag);
     }
 
-    public String[] getPaddedSlice(int index, int padding) {
-        String[] slice = new String[originalArgs.length - index + padding];
-        System.arraycopy(originalArgs, index, slice, padding, originalArgs.length - index);
-        return slice;
-    }
-
-    public boolean hasFlag(char ch) {
-        return booleanFlags.contains(ch) || valueFlags.containsKey(ch);
-    }
-
+    /**
+     * Gets the set of flags used with the command.
+     *
+     * @return the set of flags used with the command.
+     */
     public Set<Character> getFlags() {
         return booleanFlags;
     }
 
+    /**
+     * A mapping of any value flags used and their values.
+     *
+     * @return a map with the keys as the flag used and the value as the value of those flags.
+     */
     public Map<Character, String> getValueFlags() {
         return valueFlags;
     }
 
-    public String getFlag(char ch) {
-        return valueFlags.get(ch);
+    /**
+     * Gets the value of the given value flag.
+     *
+     * @param flag the flag to get the value for.
+     * @return the value of the given flag or null if the flag is not present.
+     */
+    public String getFlag(char flag) {
+        return valueFlags.get(flag);
     }
 
-    public String getFlag(char ch, String def) {
-        final String value = valueFlags.get(ch);
-        if (value == null) {
-            return def;
-        }
-
-        return value;
+    /**
+     * Gets the value of the given value flag or the given default if the flag is not present.
+     *
+     * @param flag the flag to get the value for.
+     * @param def the default to use if the flag is not present.
+     * @return the value of the given flag or the given default if the flag is not present.
+     */
+    public String getFlag(char flag, String def) {
+        final String value = valueFlags.get(flag);
+        return value != null ? value : def;
     }
 
-    public int getFlagInteger(char ch) throws NumberFormatException {
-        return Integer.parseInt(valueFlags.get(ch));
+    /**
+     * Gets the integer value of the given value flag.
+     *
+     * @param flag the flag to get the integer value for.
+     * @return the integer value of the given flag or null if the flag is not present.
+     * @throws NumberFormatException if the flag value is not an integer.
+     */
+    public Integer getFlagInteger(char flag) throws NumberFormatException {
+        return Integer.parseInt(valueFlags.get(flag));
     }
 
-    public int getFlagInteger(char ch, int def) throws NumberFormatException {
-        final String value = valueFlags.get(ch);
-        if (value == null) {
-            return def;
-        }
-
-        return Integer.parseInt(value);
+    /**
+     * Gets the integer value of the given value flag or the given default if the flag is not present.
+     *
+     * @param flag the flag to get the integer value for.
+     * @param def the default to use if the flag is not present.
+     * @return the integer value of the given flag or the given default if the flag is not present.
+     * @throws NumberFormatException if the flag value is not an integer.
+     */
+    public Integer getFlagInteger(char flag, int def) throws NumberFormatException {
+        final String value = valueFlags.get(flag);
+        return value != null ? Integer.parseInt(value) : def;
     }
 
-    public double getFlagDouble(char ch) throws NumberFormatException {
-        return Double.parseDouble(valueFlags.get(ch));
+    /**
+     * Gets the long value of the given value flag.
+     *
+     * @param flag the flag to get the long value for.
+     * @return the long value of the given flag or null if the flag is not present.
+     * @throws NumberFormatException if the flag value is not a long.
+     */
+    public Long getFlagLong(char flag) throws NumberFormatException {
+        return Long.parseLong(valueFlags.get(flag));
     }
 
-    public double getFlagDouble(char ch, double def) throws NumberFormatException {
-        final String value = valueFlags.get(ch);
-        if (value == null) {
-            return def;
-        }
-
-        return Double.parseDouble(value);
+    /**
+     * Gets the long value of the given value flag or the given default if the flag is not present.
+     *
+     * @param flag the flag to get the long value for.
+     * @param def the default to use if the flag is not present.
+     * @return the long value of the given flag or the given default if the flag is not present.
+     * @throws NumberFormatException if the flag value is not a long.
+     */
+    public Long getFlagLong(char flag, long def) throws NumberFormatException {
+        final String value = valueFlags.get(flag);
+        return value != null ? Long.parseLong(value) : def;
     }
 
+    /**
+     * Gets the double value of the given value flag.
+     *
+     * @param flag the flag to get the double value for.
+     * @return the double value of the given flag or null if the flag is not present.
+     * @throws NumberFormatException if the flag value is not a double.
+     */
+    public Double getFlagDouble(char flag) throws NumberFormatException {
+        return Double.parseDouble(valueFlags.get(flag));
+    }
+
+    /**
+     * Gets the double value of the given value flag or the given default if the flag is not present.
+     *
+     * @param flag the flag to get the double value for.
+     * @param def the default to use if the flag is not present.
+     * @return the double value of the given flag or the given default if the flag is not present.
+     * @throws NumberFormatException if the flag value is not a double.
+     */
+    public Double getFlagDouble(char flag, double def) throws NumberFormatException {
+        final String value = valueFlags.get(flag);
+        return value != null ? Double.parseDouble(value) : def;
+    }
+
+    /**
+     * Gets the number of arguments used with the command not including flags.
+     *
+     * @return the number of arguments used with the command not including flags.
+     */
     public int argsLength() {
         return parsedArgs.size();
     }

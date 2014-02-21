@@ -102,6 +102,9 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogP
      * Gives the command a chance to do something when the user has missed the confirmation window.
      * <p/>
      * This is called internally and must simply be implemented.  It is okay for this method to be blank.
+     * <br/>
+     * If you desire for the command sender to know when the command has expired, you must use this to send a
+     * message as no other warning is given.
      *
      * @param sender the command sender.
      * @param context the command context containing details about the command's usage.

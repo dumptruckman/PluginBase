@@ -5,6 +5,9 @@ import pluginbase.messages.PluginBaseException;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Used when commands throw exceptions.
+ */
 public class CommandException extends SendablePluginBaseException {
 
     public CommandException(@NotNull final BundledMessage languageMessage) {

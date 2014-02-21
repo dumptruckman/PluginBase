@@ -123,8 +123,8 @@ class CommandBuilder<P extends CommandProvider & Messaging> {
         return commandInfo;
     }
 
-    public CommandRegistration<P> createCommandRegistration() {
-        return new CommandRegistration<P>(getCommandUsageString(), commandInfo.desc(), aliases.toArray(new String[aliases.size()]), plugin, permissions);
+    public CommandHandler.CommandRegistration<P> createCommandRegistration() {
+        return new CommandHandler.CommandRegistration<P>(getCommandUsageString(), commandInfo.desc(), aliases.toArray(new String[aliases.size()]), plugin, permissions);
     }
 
     public String getCommandUsageString() {

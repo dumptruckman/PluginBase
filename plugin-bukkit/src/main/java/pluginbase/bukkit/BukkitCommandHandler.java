@@ -2,7 +2,6 @@ package pluginbase.bukkit;
 
 import org.bukkit.plugin.Plugin;
 import pluginbase.command.CommandHandler;
-import pluginbase.command.CommandRegistration;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandMap;
 import org.bukkit.command.CommandSender;
