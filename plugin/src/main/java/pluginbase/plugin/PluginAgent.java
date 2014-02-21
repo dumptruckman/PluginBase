@@ -6,8 +6,8 @@ import pluginbase.command.Command;
 import pluginbase.command.CommandException;
 import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandInfo;
+import pluginbase.command.CommandProvider;
 import pluginbase.command.CommandUsageException;
-import pluginbase.command.QueuedCommand;
 import pluginbase.config.properties.Properties;
 import pluginbase.jdbc.DatabaseSettings;
 import pluginbase.jdbc.JdbcAgent;
@@ -18,6 +18,7 @@ import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.plugin.command.PluginCommand;
 import pluginbase.plugin.command.QueuedPluginCommand;
+import pluginbase.plugin.command.builtin.ConfirmCommand;
 import pluginbase.plugin.command.builtin.DebugCommand;
 import pluginbase.plugin.command.builtin.ReloadCommand;
 import pluginbase.plugin.command.builtin.VersionCommand;
@@ -43,15 +44,11 @@ public abstract class PluginAgent<P> {
     private File configFile;
     private File sqlConfigFile;
 
-    @NotNull
-    private final String commandPrefix;
     @Nullable
     private Callable<? extends Settings> settingsCallable;
 
     private Set<Class> messageClassesToRegister = new HashSet<Class>();
     private List<Class<? extends Command>> commandClassesToRegister = new LinkedList<Class<? extends Command>>();
-
-    private boolean queuedCommandsEnabled = true;
 
     @Nullable
     private Runnable firstRunRunnable = null;
@@ -66,10 +63,9 @@ public abstract class PluginAgent<P> {
 
     private String permissionPrefix;
 
-    protected PluginAgent(@NotNull Class<P> pluginClass, @NotNull P plugin, @NotNull String commandPrefix) {
+    protected PluginAgent(@NotNull Class<P> pluginClass, @NotNull P plugin, boolean queuedCommands) {
         this.pluginClass = pluginClass;
         this.plugin = plugin;
-        this.commandPrefix = commandPrefix;
         this.pluginBase = new PluginBase<P>(this);
 
         // Add initial commands for registration
@@ -77,6 +73,9 @@ public abstract class PluginAgent<P> {
         _registerCommand(DebugCommand.class);
         _registerCommand(ReloadCommand.class);
         _registerCommand(VersionCommand.class);
+        if (queuedCommands) {
+            _registerCommand(ConfirmCommand.class);
+        }
     }
 
     protected P getPlugin() {
@@ -154,11 +153,6 @@ public abstract class PluginAgent<P> {
         }
     }
 
-    @NotNull
-    protected String getCommandPrefix() {
-        return commandPrefix;
-    }
-
     public void registerMessage(Class messageContainerClass) {
         if (messageClassesToRegister == null) {
             throw new IllegalStateException("Message registration must be done before loadPlugin is called.");
@@ -171,22 +165,6 @@ public abstract class PluginAgent<P> {
             Messages.registerMessages(getPluginBase(), messageContainerClass);
         }
         messageClassesToRegister = null;
-    }
-
-    public void setQueuedCommandsEnabled(boolean queuedCommandsEnabled) {
-        if (commandClassesToRegister == null) {
-            throw new IllegalStateException("Queued commands must be set prior to plugin enable");
-        }
-        if (queuedCommandsEnabled) {
-            commandClassesToRegister.add(QueuedCommand.class);
-        } else {
-            commandClassesToRegister.remove(QueuedCommand.class);
-        }
-        this.queuedCommandsEnabled = queuedCommandsEnabled;
-    }
-
-    public boolean isQueuedCommandsEnabled() {
-        return queuedCommandsEnabled;
     }
 
     /**
@@ -270,18 +248,13 @@ public abstract class PluginAgent<P> {
     /**
      * Adds an additional alias to a command.  Any amount may be added by calling this method multiple times.
      * <p/>
-     * This must be called before the command is registered!
+     * This must be called before command registration occurs!
      *
-     * @param commandClass the class to add aliases for.
+     * @param commandClass the command class to add aliases for.
      * @param alias the alias to add.
      */
-    public final void addAdditionalCommandAlias(@NotNull Class<? extends Command> commandClass, @NotNull String alias) {
-        List<String> aliases = additionalCommandAliases.get(commandClass);
-        if (aliases == null) {
-            aliases = new ArrayList<String>();
-            additionalCommandAliases.put(commandClass, aliases);
-        }
-        aliases.add(alias);
+    public final void addCommandAlias(@NotNull Class<? extends Command> commandClass, @NotNull String alias) {
+        getCommandProvider().addCommandAlias(commandClass, alias);
     }
 
     @NotNull
@@ -322,6 +295,9 @@ public abstract class PluginAgent<P> {
     }
 
     @NotNull
+    protected abstract CommandProvider getCommandProvider();
+
+    @NotNull
     protected abstract PluginInfo getPluginInfo();
 
     @NotNull
@@ -332,8 +308,6 @@ public abstract class PluginAgent<P> {
 
     @NotNull
     public abstract DatabaseSettings loadDatabaseSettings(@NotNull DatabaseSettings defaults);
-
-    protected abstract CommandHandler<PluginBase> getNewCommandHandler();
 
     protected abstract Messager getNewMessager(Settings.Language languageSettings);
 

@@ -40,7 +40,6 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     private final PluginAgent<P> pluginAgent;
     private PluginLogger logger;
     private Settings settings = null;
-    private CommandHandler commandHandler = null;
     private Messager messager = null;
 
     PluginBase(@NotNull PluginAgent<P> pluginAgent) {
@@ -61,9 +60,6 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
 
         // Loads the configuration.
         settings = pluginAgent.loadSettings();
-
-        // Setup the command handler.
-        commandHandler = pluginAgent.getNewCommandHandler();
     }
 
     void onEnable() {
@@ -128,7 +124,7 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     @NotNull
     @Override
     public String getCommandPrefix() {
-        return pluginAgent.getCommandPrefix();
+        return pluginAgent.getCommandProvider().getCommandPrefix();
     }
 
     /**
@@ -189,7 +185,7 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     @NotNull
     @Override
     public CommandHandler getCommandHandler() {
-        return commandHandler;
+        return pluginAgent.getCommandProvider().getCommandHandler();
     }
 
     /**
@@ -214,14 +210,19 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     /** {@inheritDoc} */
     @Override
     public boolean useQueuedCommands() {
-        return pluginAgent.isQueuedCommandsEnabled();
+        return pluginAgent.getCommandProvider().useQueuedCommands();
     }
 
     /** {@inheritDoc} */
     @NotNull
     @Override
-    public String[] getAdditionalCommandAliases(Class<? extends Command> commandClass) {
+    public String[] getAdditionalCommandAliases(@NotNull Class<? extends Command> commandClass) {
         return pluginAgent.getAdditionalCommandAliases(commandClass);
+    }
+
+    @Override
+    public void addCommandAlias(@NotNull Class<? extends Command> commandClass, @NotNull String alias) {
+        pluginAgent.getCommandProvider().addCommandAlias(commandClass, alias);
     }
 
     /** {@inheritDoc} */

@@ -3,6 +3,7 @@ package pluginbase.command;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,5 +67,15 @@ public interface CommandProvider {
      * @return an array of additional command aliases.
      */
     @NotNull
-    String[] getAdditionalCommandAliases(Class<? extends Command> commandClass);
+    String[] getAdditionalCommandAliases(@NotNull Class<? extends Command> commandClass);
+
+    /**
+     * Adds an additional alias to a command.  Any amount may be added by calling this method multiple times.
+     * <p/>
+     * This must be called before command registration occurs!
+     *
+     * @param commandClass the command class to add aliases for.
+     * @param alias the alias to add.
+     */
+    void addCommandAlias(@NotNull Class<? extends Command> commandClass, @NotNull String alias);
 }

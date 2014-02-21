@@ -18,7 +18,7 @@ import pluginbase.messages.messaging.Messaging;
  * @param <P> Probably the plugin implementing commands.  If you are using the Plugin/Plugin-Bukkit module this should
  *           be PluginBase.  Otherwise, it will probably be your Plugin main class.
  */
-public class BukkitCommandHandler<P extends CommandProvider & Messaging & LoggablePlugin> extends CommandHandler<P> {
+public final class BukkitCommandHandler<P extends CommandProvider & Messaging & LoggablePlugin> extends CommandHandler<P> {
 
     private final Plugin executor;
     private CommandMap fallbackCommands;

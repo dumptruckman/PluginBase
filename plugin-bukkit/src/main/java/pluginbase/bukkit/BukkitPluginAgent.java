@@ -7,12 +7,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mcstats.Metrics;
 import pluginbase.bukkit.command.BukkitCommandHandler;
+import pluginbase.bukkit.command.BukkitCommandProvider;
 import pluginbase.bukkit.config.BukkitConfiguration;
 import pluginbase.bukkit.config.YamlConfiguration;
 import pluginbase.bukkit.messaging.BukkitMessager;
 import pluginbase.bukkit.minecraft.BukkitTools;
 import pluginbase.bukkit.permission.BukkitPermFactory;
 import pluginbase.command.CommandHandler;
+import pluginbase.command.CommandProvider;
 import pluginbase.jdbc.DatabaseSettings;
 import pluginbase.messages.PluginBaseException;
 import pluginbase.messages.messaging.Messager;
@@ -41,22 +43,36 @@ public class BukkitPluginAgent<P> extends PluginAgent<P> {
         if (!pluginInterface.isInstance(plugin)) {
             throw new IllegalArgumentException("pluginInterface must be a superclass or superinterface of plugin.");
         }
-        return new BukkitPluginAgent<P>(pluginInterface, plugin, commandPrefix);
+        return new BukkitPluginAgent<P>(pluginInterface, plugin, commandPrefix, true);
+    }
+
+    @NotNull
+    public static <P> BukkitPluginAgent<P> getPluginAgentNoQueuedCommands(@NotNull Class<P> pluginInterface, @NotNull Plugin plugin, @NotNull String commandPrefix) {
+        if (!pluginInterface.isInstance(plugin)) {
+            throw new IllegalArgumentException("pluginInterface must be a superclass or superinterface of plugin.");
+        }
+        return new BukkitPluginAgent<P>(pluginInterface, plugin, commandPrefix, false);
     }
 
     @NotNull
     private final Plugin plugin;
     private PluginInfo pluginInfo;
     private final ServerInterface serverInterface;
+    private final CommandProvider commandProvider;
     @Nullable
     private Metrics metrics = null;
 
     private BukkitConfiguration config;
 
-    private BukkitPluginAgent(@NotNull Class<P> pluginInterface, @NotNull Plugin plugin, @NotNull String commandPrefix) {
-        super(pluginInterface, (P) plugin, commandPrefix);
+    private BukkitPluginAgent(@NotNull Class<P> pluginInterface, @NotNull Plugin plugin, @NotNull String commandPrefix, boolean queuedCommands) {
+        super(pluginInterface, (P) plugin, queuedCommands);
         this.plugin = plugin;
         this.serverInterface = new BukkitServerInterface(plugin);
+        if (queuedCommands) {
+            this.commandProvider = BukkitCommandProvider.getBukkitCommandProvider(getPluginBase(), plugin, commandPrefix);
+        } else {
+            this.commandProvider = BukkitCommandProvider.getBukkitCommandProviderNoQueuedCommands(getPluginBase(), plugin, commandPrefix);
+        }
     }
 
     public void enableMetrics() throws IOException {
@@ -162,9 +178,10 @@ public class BukkitPluginAgent<P> extends PluginAgent<P> {
         }
     }
 
+    @NotNull
     @Override
-    protected CommandHandler<PluginBase> getNewCommandHandler() {
-        return new BukkitCommandHandler<PluginBase>(getPluginBase(), plugin);
+    protected CommandProvider getCommandProvider() {
+        return commandProvider;
     }
 
     @Override
