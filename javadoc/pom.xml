@@ -109,14 +109,14 @@
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>jdbc</artifactId>
+            <artifactId>JDBC</artifactId>
             <version>${jdbc.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>jdbc-spring</artifactId>
+            <artifactId>JDBC-Spring</artifactId>
             <version>${jdbc-spring.version}</version>
             <type>jar</type>
             <scope>compile</scope>
