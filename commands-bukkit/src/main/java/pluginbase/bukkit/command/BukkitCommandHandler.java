@@ -9,16 +9,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
 import org.jetbrains.annotations.NotNull;
 import pluginbase.command.CommandProvider;
-import pluginbase.logging.LoggablePlugin;
-import pluginbase.messages.messaging.Messaging;
+
 
 /**
  * A Bukkit implementation of {@link CommandHandler}.
- *
- * @param <P> Probably the plugin implementing commands.  If you are using the Plugin/Plugin-Bukkit module this should
- *           be PluginBase.  Otherwise, it will probably be your Plugin main class.
  */
-public final class BukkitCommandHandler<P extends CommandProvider & Messaging & LoggablePlugin> extends CommandHandler<P> {
+public final class BukkitCommandHandler extends CommandHandler {
 
     private final Plugin executor;
     private CommandMap fallbackCommands;
@@ -26,17 +22,17 @@ public final class BukkitCommandHandler<P extends CommandProvider & Messaging & 
     /**
      * Creates a new instance of the bukkit command handler.  You'll only need one of these per plugin.
      *
-     * @param plugin Probably the plugin implementing commands.  If you are using the Plugin/Plugin-Bukkit module this
+     * @param commandProvider Probably the plugin implementing commands.  If you are using the Plugin/Plugin-Bukkit module this
      *               should be your PluginBase instance and this will be created for you.  Otherwise, it will probably
      *               be your plugin main class instance.
      * @param executor Your plugin main class instance.
      */
-    public BukkitCommandHandler(P plugin, Plugin executor) {
-        super(plugin);
+    public BukkitCommandHandler(@NotNull CommandProvider commandProvider, @NotNull Plugin executor) {
+        super(commandProvider);
         this.executor = executor;
     }
 
-    protected boolean register(@NotNull final CommandRegistration<P> commandInfo, @NotNull final pluginbase.command.Command<P> command) {
+    protected boolean register(@NotNull final CommandRegistration commandInfo, @NotNull final pluginbase.command.Command command) {
         CommandMap commandMap = getCommandMap();
         if (commandMap == null) {
             return false;
@@ -52,11 +48,11 @@ public final class BukkitCommandHandler<P extends CommandProvider & Messaging & 
             }
         }
         */
-        DynamicPluginCommand<P> cmd = new DynamicPluginCommand<P>(aliases, commandInfo.getDesc(),
+        DynamicPluginCommand cmd = new DynamicPluginCommand(aliases, commandInfo.getDesc(),
                 "/" + commandInfo.getName() + " " + commandInfo.getUsage(), executor, commandInfo.getRegisteredWith(), executor);
         CommandHelpTopic helpTopic = new CommandHelpTopic(cmd, command.getHelp());
         cmd.setPermissions(commandInfo.getPermissions());
-        if (commandMap.register(commandInfo.getName(), plugin.getName(), cmd)) {
+        if (commandMap.register(commandInfo.getName(), commandProvider.getName(), cmd)) {
             Bukkit.getServer().getHelpMap().addTopic(helpTopic);
             return true;
         }

@@ -68,15 +68,15 @@ public class DebugCommand extends BuiltInCommand {
                 getMessager().message(sender, INVALID_DEBUG);
             } else {
                 try {
-                    getPluginBase().getSettings().setDebugLevel(debugLevel);
-                    getPluginBase().getLog().setDebugLevel(getPluginBase().getSettings().getDebugLevel());
-                    getPluginBase().saveSettings();
+                    getCommandProvider().getSettings().setDebugLevel(debugLevel);
+                    getCommandProvider().getLog().setDebugLevel(getCommandProvider().getSettings().getDebugLevel());
+                    getCommandProvider().saveSettings();
                 } catch (SendablePluginBaseException e) {
                     e.sendException(getMessager(), sender);
                 }
             }
         }
-        displayDebugMode(getPluginBase(), sender);
+        displayDebugMode(getCommandProvider(), sender);
         return true;
     }
 
@@ -85,7 +85,7 @@ public class DebugCommand extends BuiltInCommand {
             p.getMessager().message(sender, DEBUG_DISABLED, sender);
         } else {
             p.getMessager().message(sender, DEBUG_SET, p.getSettings().getDebugLevel());
-            getPluginBase().getLog().fine("%s debug ENABLED", p.getPluginInfo().getName());
+            getCommandProvider().getLog().fine("%s debug ENABLED", p.getPluginInfo().getName());
         }
     }
 }

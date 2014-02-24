@@ -3,13 +3,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.command;
 
-import pluginbase.logging.LogProvider;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.Message;
-import pluginbase.messages.messaging.Messaging;
 import pluginbase.minecraft.BasePlayer;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import pluginbase.util.time.Duration;
 
 /**
@@ -25,9 +22,9 @@ import pluginbase.util.time.Duration;
  * <p/>
  * <b>Note:</b> If you are using the Plugin module you should be extending QueuedPluginCommand instead.
  *
- * @param <P> Typically represents the plugin implementing this command though note see above.
+ * @param <P> the plugin that this command belongs to.
  */
-public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogProvider> extends Command<P> implements Runnable {
+public abstract class QueuedCommand<P> extends Command<P> implements Runnable {
 
     /**
      * Constructs a queued command.
@@ -36,7 +33,7 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogP
      *
      * @param plugin your plugin.
      */
-    protected QueuedCommand(@NotNull final P plugin) {
+    protected QueuedCommand(@NotNull final CommandProvider<P> plugin) {
         super(plugin);
     }
 
@@ -59,15 +56,15 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogP
     }
 
     final void confirm() {
-        getPluginBase().getLog().finer("Confirming queued command '%s' for '%s' with '%s'", this, sender, context);
+        getCommandProvider().getLog().finer("Confirming queued command '%s' for '%s' with '%s'", this, sender, context);
         onConfirm(sender, context);
-        getPluginBase().getCommandHandler().removedQueuedCommand(sender, this);
+        getCommandProvider().getCommandHandler().removedQueuedCommand(sender, this);
     }
 
     private void expire() {
-        getPluginBase().getLog().finer("Expiring queued command '%s' for '%s' with '%s'", this, sender, context);
+        getCommandProvider().getLog().finer("Expiring queued command '%s' for '%s' with '%s'", this, sender, context);
         onExpire(sender, context);
-        getPluginBase().getCommandHandler().removedQueuedCommand(sender, this);
+        getCommandProvider().getCommandHandler().removedQueuedCommand(sender, this);
     }
 
     /**
@@ -116,7 +113,7 @@ public abstract class QueuedCommand<P extends CommandProvider & Messaging & LogP
     public final boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         this.sender = sender;
         this.context = context;
-        getPluginBase().scheduleQueuedCommandExpiration(this);
+        getCommandProvider().scheduleQueuedCommandExpiration(this);
         return preConfirm(sender, context);
     }
 

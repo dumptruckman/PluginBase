@@ -4,6 +4,7 @@
 package pluginbase.logging;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -45,8 +46,10 @@ public final class Logging {
     @NotNull
     static volatile PluginLogger pluginLogger = PluginLogger.getLogger(DEFAULT_PLUGIN);
 
-    static void init(@NotNull final LoggablePlugin plugin) {
-        if (pluginLogger.plugin == DEFAULT_PLUGIN) {
+    static void init(@Nullable final LoggablePlugin plugin) {
+        if (plugin == null) {
+            pluginLogger = PluginLogger.getLogger(DEFAULT_PLUGIN);
+        } else if (pluginLogger.plugin == DEFAULT_PLUGIN) {
             pluginLogger = PluginLogger.getLogger(plugin);
         }
     }

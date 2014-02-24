@@ -89,14 +89,14 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Plugin</artifactId>
-            <version>${plugin.version}</version>
+            <version>${commandProvider.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Plugin-Bukkit</artifactId>
-            <version>${plugin-bukkit.version}</version>
+            <version>${commandProvider-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

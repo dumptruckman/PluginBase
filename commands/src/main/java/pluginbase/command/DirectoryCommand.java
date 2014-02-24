@@ -4,13 +4,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.messages.Message;
 import pluginbase.messages.Theme;
-import pluginbase.messages.messaging.Messaging;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
 
-class DirectoryCommand<P extends CommandProvider & Messaging> extends Command<P> {
+final class DirectoryCommand extends Command {
 
-    public DirectoryCommand(@NotNull P plugin) {
+    public DirectoryCommand(@NotNull CommandProvider plugin) {
         super(plugin);
     }
 

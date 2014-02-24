@@ -23,13 +23,14 @@ import pluginbase.plugin.command.builtin.VersionCommand;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This represents the PluginBase plugin itself.
  * <p/>
  * Provides numerous useful methods for general plugin self-management.
  */
-public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandProvider {
+public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandProvider<P> {
 
     static {
         SerializationRegistrar.registerClass(Settings.class);
@@ -40,7 +41,6 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     private final PluginAgent<P> pluginAgent;
     private PluginLogger logger;
     private Settings settings = null;
-    private Messager messager = null;
 
     PluginBase(@NotNull PluginAgent<P> pluginAgent) {
         this.pluginAgent = pluginAgent;
@@ -70,7 +70,7 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
         pluginAgent.registerCommands();
 
         // Setup the plugin messager.
-        messager = pluginAgent.getNewMessager(settings.getLanguageSettings());
+        loadLanguage();
 
         // Do any important first run stuff here.
         if (getSettings().isFirstRun()) {
@@ -144,14 +144,24 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
      */
     public void reloadConfig() {
         Settings settings = pluginAgent.loadSettings();
-        messager = pluginAgent.getNewMessager(settings.getLanguageSettings());
+        loadLanguage();
+    }
+
+    private void loadLanguage() {
+        Language languageSettings = settings.getLanguageSettings();
+        pluginAgent.getCommandProvider().loadMessages(new File(getDataFolder(), languageSettings.getLanguageFile()), languageSettings.getLocale());
     }
 
     /** {@inheritDoc} */
     @NotNull
     @Override
     public Messager getMessager() {
-        return messager;
+        return pluginAgent.getCommandProvider().getMessager();
+    }
+
+    @Override
+    public void loadMessages(@NotNull final File languageFile, @NotNull final Locale locale) {
+        pluginAgent.getCommandProvider().loadMessages(languageFile, locale);
     }
 
     /**

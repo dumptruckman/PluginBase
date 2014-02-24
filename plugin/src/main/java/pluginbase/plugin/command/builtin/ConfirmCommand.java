@@ -48,7 +48,7 @@ public class ConfirmCommand extends BuiltInCommand {
     /** {@inheritDoc} */
     @Override
     public boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
-        if (!getPluginBase().getCommandHandler().confirmCommand(sender)) {
+        if (!getCommandProvider().getCommandHandler().confirmCommand(sender)) {
             getMessager().message(sender, CommandHandler.NO_QUEUED_COMMANDS);
         }
         return true;

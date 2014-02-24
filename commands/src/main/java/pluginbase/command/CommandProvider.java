@@ -1,19 +1,17 @@
 package pluginbase.command;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import pluginbase.logging.LoggablePlugin;
+import pluginbase.messages.messaging.Messaging;
 
 /**
  * An interface required for using the commands provided by PluginBase.
  *
  * Indicates that commands will be provided.
+ *
+ * @param <P> the plugin that this command provider belongs to.
  */
-public interface CommandProvider {
+public interface CommandProvider<P> extends Messaging, LoggablePlugin {
 
     /**
      * Gets the prefix for commands used by this CommandProvider.
@@ -78,4 +76,11 @@ public interface CommandProvider {
      * @param alias the alias to add.
      */
     void addCommandAlias(@NotNull Class<? extends Command> commandClass, @NotNull String alias);
+
+    /**
+     * Gets the plugin that this command provider belongs to.
+     *
+     * @return the plugin that this command provider belongs to.
+     */
+    P getPlugin();
 }

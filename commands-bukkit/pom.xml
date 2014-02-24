@@ -26,6 +26,13 @@
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Messaging-Bukkit</artifactId>
+            <version>${messaging-bukkit.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Minecraft-Link-Bukkit</artifactId>
             <version>${minecraft-link-bukkit.version}</version>
             <type>jar</type>
@@ -83,6 +90,7 @@
                                 <includes>
                                     <include>com.dumptruckman.minecraft.pluginbase:Commands</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Minecraft-Link-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Messaging-Bukkit</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

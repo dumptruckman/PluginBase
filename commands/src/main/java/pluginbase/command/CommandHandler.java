@@ -1,12 +1,10 @@
 package pluginbase.command;
 
-import pluginbase.logging.LogProvider;
 import pluginbase.logging.PluginLogger;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.Message;
 import pluginbase.messages.Messages;
 import pluginbase.messages.Theme;
-import pluginbase.messages.messaging.Messaging;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -27,17 +25,16 @@ import java.util.regex.Pattern;
  * to the appropriate command class.
  * <p/>
  * This must be implemented fully for a specific Minecraft server implementation.
- *
- * @param <P> Typically represents a plugin implementing this command handler.
  */
-public abstract class CommandHandler<P extends CommandProvider & Messaging> {
+public abstract class CommandHandler {
 
     protected static final Pattern PATTERN_ON_SPACE = Pattern.compile(" ", Pattern.LITERAL);
 
     @NotNull
-    protected final P plugin;
+    protected final CommandProvider commandProvider;
     @NotNull
     protected final Map<String, Class<? extends Command>> registeredCommandClasses;
+    protected final Map<Class<? extends Command>, CommandProvider> commandProviderMap;
     private final CommandTree commandTree = new CommandTree();
     @NotNull
     private final Map<BasePlayer, QueuedCommand> queuedCommands = new HashMap<BasePlayer, QueuedCommand>();
@@ -49,12 +46,14 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
      * <p/>
      * Typically you only want one of these per plugin.
      *
-     * @param plugin The plugin utilizing this command handler.
+     * @param commandProvider the provider of commands for this handler.
      */
-    protected CommandHandler(@NotNull final P plugin) {
-        this.plugin = plugin;
+    protected CommandHandler(@NotNull final CommandProvider commandProvider) {
+        this.commandProvider = commandProvider;
         this.registeredCommandClasses = new HashMap<String, Class<? extends Command>>();
-        Messages.registerMessages(plugin, CommandHandler.class);
+        this.commandProviderMap = new HashMap<Class<? extends Command>, CommandProvider>();
+        Messages.registerMessages(commandProvider, CommandHandler.class);
+        commandProviderMap.put(DirectoryCommand.class, commandProvider);
     }
 
     /**
@@ -64,7 +63,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
      */
     @NotNull
     protected PluginLogger getLog() {
-        return plugin.getLog();
+        return commandProvider.getLog();
     }
 
     //public boolean registerCommmands(String packageName) {
@@ -72,15 +71,32 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
     //}
 
     /**
-     * Registers the command represented by the given command class.
+     * Registers the command represented by the given command class for the command provider that belongs to this
+     * command handler.
      *
      * @param commandClass the command class to register.
      * @return true if command registered successfully.
      * @throws IllegalArgumentException if there was some problem with the command class passed in.
      */
     public boolean registerCommand(@NotNull Class<? extends Command> commandClass) throws IllegalArgumentException {
-        CommandBuilder<P> commandBuilder = new CommandBuilder<P>(plugin, commandClass);
-        CommandRegistration<P> commandRegistration = commandBuilder.createCommandRegistration();
+        return registerCommand(commandProvider, commandClass);
+    }
+
+    /**
+     * Registers the command represented by the given command class for the given command provider.
+     * <p/>
+     * Generally you can use the single arg version of this method as your commands should typically be using the
+     * same command provider this CommandHandler was initially set up with.
+     *
+     * @param commandProvider the commandProvider to register the command for.  This command provider will be used
+     *                        for instantiation of command instances.
+     * @param commandClass the command class to register.
+     * @return true if command registered successfully.
+     * @throws IllegalArgumentException if there was some problem with the command class passed in.
+     */
+    public boolean registerCommand(@NotNull CommandProvider commandProvider, @NotNull Class<? extends Command> commandClass) throws IllegalArgumentException {
+        CommandBuilder commandBuilder = new CommandBuilder(commandProvider, commandClass);
+        CommandRegistration commandRegistration = commandBuilder.createCommandRegistration();
         assertNotAlreadyRegistered(commandClass, commandRegistration);
         Command command = commandBuilder.getCommand();
         if (register(commandRegistration, command)) {
@@ -91,8 +107,9 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
                 configureCommandKeys(alias);
                 registeredCommandClasses.put(alias, commandClass);
             }
+            commandProviderMap.put(commandClass, commandProvider);
             // Register language in the command class if any.
-            Messages.registerMessages(plugin, commandClass);
+            Messages.registerMessages(this.commandProvider, commandClass);
             getLog().fine("Registered command '%s' to: %s", aliases[0], commandClass);
             return true;
         }
@@ -103,9 +120,9 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
 
     private static final String SUB_COMMAND_HELP = "Displays a list of sub-commands.";
 
-    private void registerRootCommands(CommandRegistration<P> commandRegistration) {
+    private void registerRootCommands(CommandRegistration commandRegistration) {
         String[] aliases = commandRegistration.getAliases();
-        Command<P> command = new DirectoryCommand<P>(plugin);
+        Command command = new DirectoryCommand(commandProvider);
         for (String alias : aliases) {
             String[] args = PATTERN_ON_SPACE.split(alias);
             if (args.length > 1) {
@@ -125,8 +142,8 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
                     }
                 }
                 if (!directoryAliases.isEmpty()) {
-                    CommandRegistration <P> directoryCommandRegistration = new CommandRegistration<P>(SUB_COMMAND_HELP, SUB_COMMAND_HELP,
-                            directoryAliases.toArray(new String[directoryAliases.size()]), plugin);
+                    CommandRegistration directoryCommandRegistration = new CommandRegistration(SUB_COMMAND_HELP, SUB_COMMAND_HELP,
+                            directoryAliases.toArray(new String[directoryAliases.size()]), commandProvider);
                     register(directoryCommandRegistration, command);
                 }
             }
@@ -153,9 +170,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
      * @param commandInfo the info for the command to register.
      * @return true if successfully registered.
      */
-    protected abstract boolean register(@NotNull final CommandRegistration<P> commandInfo, @NotNull final Command<P> command);
-
-
+    protected abstract boolean register(@NotNull final CommandRegistration commandInfo, @NotNull final Command command);
 
     void removedQueuedCommand(@NotNull final BasePlayer player, @NotNull final QueuedCommand command) {
         if (queuedCommands.containsKey(player) && queuedCommands.get(player).equals(command)) {
@@ -205,14 +220,14 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
     public boolean locateAndRunCommand(@NotNull final BasePlayer player, @NotNull String[] args) throws CommandException {
         args = commandDetection(args);
         getLog().finest("'%s' is attempting to use command '%s'", player, Arrays.toString(args));
-        if (this.plugin.useQueuedCommands()
-                && !this.registeredCommandClasses.containsKey(this.plugin.getCommandPrefix() + "confirm")
+        if (this.commandProvider.useQueuedCommands()
+                && !this.registeredCommandClasses.containsKey(this.commandProvider.getCommandPrefix() + "confirm")
                 && args.length == 2
-                && args[0].equalsIgnoreCase(this.plugin.getCommandPrefix())
+                && args[0].equalsIgnoreCase(this.commandProvider.getCommandPrefix())
                 && args[1].equalsIgnoreCase("confirm")) {
             getLog().finer("No confirm command registered, using built in confirm...");
             if (!confirmCommand(player)) {
-                this.plugin.getMessager().message(player, NO_QUEUED_COMMANDS);
+                this.commandProvider.getMessager().message(player, NO_QUEUED_COMMANDS);
             }
             return true;
         }
@@ -221,7 +236,11 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
             getLog().severe("Could not locate registered command '" + args[0] + "'");
             return false;
         }
-        final Command command = CommandLoader.loadCommand(plugin, commandClass);
+        final CommandProvider commandProviderForCommand = commandProviderMap.get(commandClass);
+        if (commandProviderForCommand == null) {
+            throw new IllegalStateException("CommandProvider not registered for " + commandClass);
+        }
+        final Command command = CommandLoader.loadCommand(commandProviderForCommand, commandClass);
         if (command instanceof DirectoryCommand) {
             ((DirectoryCommand) command).runCommand(player, args[0], commandTree.getTreeAt(args[0]));
             return true;
@@ -231,7 +250,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
             if (permissionMessage == null) {
                 permissionMessage = Message.bundleMessage(PERMISSION_DENIED);
             }
-            plugin.getMessager().message(player, permissionMessage);
+            commandProvider.getMessager().message(player, permissionMessage);
             return false;
         }
         final CommandInfo cmdInfo = command.getClass().getAnnotation(CommandInfo.class);
@@ -272,7 +291,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
             getLog().finer("Queueing command '%s' for '%s'", queuedCommand, player);
             queuedCommands.put(player, queuedCommand);
             final BundledMessage confirmMessage = queuedCommand.getConfirmMessage();
-            this.plugin.getMessager().message(player, confirmMessage);
+            this.commandProvider.getMessager().message(player, confirmMessage);
         }
         return true;
     }
@@ -320,7 +339,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         final String help;
         final Message helpMessage = cmd.getHelp();
         if (helpMessage != null) {
-            help = plugin.getMessager().getLocalizedMessage(helpMessage);
+            help = commandProvider.getMessager().getLocalizedMessage(helpMessage);
         } else {
             help = "";
         }
@@ -339,18 +358,18 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
         return usageMap.containsKey(cmdInfo) ? usageMap.get(cmdInfo) : "";
     }
 
-    protected static class CommandRegistration<P extends CommandProvider & Messaging> {
+    protected static class CommandRegistration {
 
         private final String[] aliases;
-        private final P registeredWith;
+        private final CommandProvider registeredWith;
         private final String usage, desc;
         private final String[] permissions;
 
-        CommandRegistration(String usage, String desc, String[] aliases, P registeredWith) {
+        CommandRegistration(String usage, String desc, String[] aliases, CommandProvider registeredWith) {
             this(usage, desc, aliases, registeredWith, null);
         }
 
-        CommandRegistration(String usage, String desc, String[] aliases, P registeredWith, String[] permissions) {
+        CommandRegistration(String usage, String desc, String[] aliases, CommandProvider registeredWith, String[] permissions) {
             this.usage = usage;
             this.desc = desc;
             this.aliases = aliases;
@@ -378,7 +397,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
             return permissions;
         }
 
-        public P getRegisteredWith() {
+        public CommandProvider getRegisteredWith() {
             return registeredWith;
         }
     }

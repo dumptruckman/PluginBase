@@ -47,7 +47,9 @@ public class PluginLogger extends Logger {
     final String pluginName;
     /** The debug log instance for this PluginLogger. */
     @NotNull
-    final DebugLog debugLog;
+    private DebugLog debugLog;
+    @Nullable
+    PluginLogger alternateDebugLog = null;
     /** The loggable plugin we use for this Plugin Logger. */
     @NotNull
     final LoggablePlugin plugin;
@@ -60,39 +62,7 @@ public class PluginLogger extends Logger {
     static final Map<String, PluginLogger> INITIALIZED_LOGGERS = new HashMap<String, PluginLogger>();
 
     /**
-     * Prepares the log for use.
-     * <p/>
-     * Debugging will default to disabled when initialized.
-     * <p/>
-     * This should be called early on in plugin initialization, such as during onLoad() or onEnable().
-     * <p/>
-     * If a logger has already been created for the plugin passed then that will be returned with no additional
-     * initialization steps.
-     *
-     * @param plugin The plugin using this logger.
-     * @param pluginToShareDebugLogger If you would like to use the same debug log file as another LoggablePlugin
-     *                                 specify that plugin here.  Otherwise specify null.
-     * @return A logger for your plugin.
-     */
-    public static synchronized PluginLogger getLogger(@NotNull final LoggablePlugin plugin,
-                                                      @Nullable final LoggablePlugin pluginToShareDebugLogger) {
-        if (INITIALIZED_LOGGERS.containsKey(plugin.getName())) {
-            return INITIALIZED_LOGGERS.get(plugin.getName());
-        }
-        final DebugLog debugLog;
-        final Logger logger = Logger.getLogger(plugin.getName());
-        if (pluginToShareDebugLogger != null && INITIALIZED_LOGGERS.containsKey(pluginToShareDebugLogger.getName())) {
-            debugLog = INITIALIZED_LOGGERS.get(pluginToShareDebugLogger.getName()).debugLog;
-        } else {
-            debugLog = DebugLog.getDebugLog(logger, getDebugFolder(plugin));
-        }
-        final PluginLogger logging = new PluginLogger(plugin, logger, debugLog);
-        INITIALIZED_LOGGERS.put(logging.getName(), logging);
-        return logging;
-    }
-
-    /**
-     * Prepares the log for use.
+     * Gets the existing logger for this plugin or prepares a new one if non-existent.
      * <p/>
      * Debugging will default to disabled when initialized.
      * <p/>
@@ -105,17 +75,44 @@ public class PluginLogger extends Logger {
      * @return A logger for your plugin.
      */
     public static synchronized PluginLogger getLogger(@NotNull final LoggablePlugin plugin) {
-        return getLogger(plugin, null);
+        PluginLogger logging = INITIALIZED_LOGGERS.get(plugin.getName());
+        if (logging == null) {
+            final Logger logger = Logger.getLogger(plugin.getName());
+            logging = new PluginLogger(plugin, logger);
+            INITIALIZED_LOGGERS.put(plugin.getName(), logging);
+        }
+        return logging;
     }
 
     private PluginLogger(@NotNull final LoggablePlugin plugin,
-                         @NotNull final Logger logger,
-                         @NotNull final DebugLog debugLog) {
+                         @NotNull final Logger logger) {
         super(logger.getName(), logger.getResourceBundleName());
         this.logger = logger;
-        this.debugLog = debugLog;
+        this.debugLog = DebugLog.getDebugLog(logger, getDebugFolder(plugin));
         this.plugin = plugin;
         this.pluginName = plugin.getName();
+    }
+
+    /**
+     * Tells this logger to use the debug log of another plugin.  If that plugin does not have a logger initialized, a
+     * new one will be created first.
+     *
+     * @param plugin The plugin to use the debug log of.
+     */
+    public synchronized void useDebugLogFrom(@Nullable final LoggablePlugin plugin) {
+        final int debugLevel = getDebugLevel();
+        if (debugLevel != 0) {
+            getDebugLog().setDebugLevel(0);
+        }
+        alternateDebugLog = plugin != null && !plugin.getName().equals(this.plugin.getName()) ? PluginLogger.getLogger(plugin) : null;
+        if (getDebugLog().getDebugLevel() != debugLevel) {
+            getDebugLog().setDebugLevel(debugLevel);
+        }
+    }
+
+    @NotNull
+    synchronized DebugLog getDebugLog() {
+        return alternateDebugLog != null ? alternateDebugLog.getDebugLog() : debugLog;
     }
 
     private synchronized void privateLog(@NotNull final Level level, @NotNull final String message) {
@@ -127,8 +124,8 @@ public class PluginLogger extends Logger {
 
     private synchronized void privateLog(@NotNull final LogRecord record) {
         super.log(record);
-        if (debugLog != null) {
-            debugLog.log(record);
+        if (getDebugLevel() > 0) {
+            getDebugLog().log(record);
         }
     }
 
@@ -198,7 +195,7 @@ public class PluginLogger extends Logger {
         if (debugLevel > 3 || debugLevel < 0) {
             throw new IllegalArgumentException("debugLevel must be between 0 and 3!");
         }
-        debugLog.setDebugLevel(debugLevel);
+        getDebugLog().setDebugLevel(debugLevel);
     }
 
     /**
@@ -207,7 +204,7 @@ public class PluginLogger extends Logger {
      * @return A value 0-3 indicating the debug logging level.
      */
     public final synchronized int getDebugLevel() {
-        return debugLog.getDebugLevel();
+        return getDebugLog().getDebugLevel();
     }
 
     /**

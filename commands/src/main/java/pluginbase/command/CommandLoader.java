@@ -18,21 +18,17 @@ enum CommandLoader {
      * @return a new instance of the command.
      */
     @NotNull
-    public static Command loadCommand(@NotNull Object plugin, @NotNull final Class<? extends Command> clazz) {
-        if (!(plugin instanceof Messaging && plugin instanceof CommandProvider)) {
-            throw new IllegalArgumentException("Plugin must extend Messaging and CommandProvider");
-        }
+    public static Command loadCommand(@NotNull CommandProvider commandProvider, @NotNull final Class<? extends Command> clazz) {
         if (clazz.equals(DirectoryCommand.class)) {
-            return new DirectoryCommand((CommandProvider) plugin);
+            return new DirectoryCommand(commandProvider);
         }
         try {
             for (final Constructor constructor : clazz.getDeclaredConstructors()) {
                 if (constructor.getParameterTypes().length == 1
-                        && Messaging.class.isAssignableFrom(constructor.getParameterTypes()[0])
                         && CommandProvider.class.isAssignableFrom(constructor.getParameterTypes()[0])) {
                     constructor.setAccessible(true);
                     try {
-                        return (Command) constructor.newInstance(plugin);
+                        return (Command) constructor.newInstance(commandProvider);
                     } finally {
                         constructor.setAccessible(false);
                     }

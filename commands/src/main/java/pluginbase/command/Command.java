@@ -3,7 +3,6 @@ package pluginbase.command;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.Message;
 import pluginbase.messages.messaging.Messager;
-import pluginbase.messages.messaging.Messaging;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
 import org.jetbrains.annotations.NotNull;
@@ -19,41 +18,50 @@ import org.jetbrains.annotations.Nullable;
  * <p/>
  * <b>Note:</b> If you are using the Plugin module you should be extending PluginCommand instead.
  *
- * @param <P> Typically represents the plugin implementing this command though note see above.
+ * @param <P> the plugin that this command belongs to.
  */
-public abstract class Command<P extends CommandProvider & Messaging> {
+public abstract class Command<P> {
 
-    private P plugin;
+    private CommandProvider<P> commandProvider;
 
     /**
      * Constructs a command.
      * <p/>
-     * You will never need to call this constructor.  It is used by {@link CommandHandler}
+     * You will never need to call this constructor.  It is used by {@link CommandHandler}.
      *
-     * @param plugin your plugin.
+     * @param commandProvider the command's provider.
      */
-    protected Command(@NotNull final P plugin) {
-        this.plugin = plugin;
+    protected Command(@NotNull final CommandProvider<P> commandProvider) {
+        this.commandProvider = commandProvider;
     }
 
     /**
-     * Gets the plugin implementing this command.
+     * Gets the provider of this command.
      *
-     * @return the plugin implementing this command.
+     * @return the provider of this command.
      */
     @NotNull
-    protected P getPluginBase() {
-        return plugin;
+    protected CommandProvider<P> getCommandProvider() {
+        return commandProvider;
     }
 
     /**
-     * Gets the messager from the plugin implementing this command.
+     * Gets the owner of this command.
      *
-     * @return the messager from the plugin implementing this command.
+     * @return the command owner.
+     */
+    protected P getPlugin() {
+        return getCommandProvider().getPlugin();
+    }
+
+    /**
+     * Gets the messager from the provider of this command.
+     *
+     * @return the messager from the provider of this command.
      */
     @NotNull
     protected Messager getMessager() {
-        return getPluginBase().getMessager();
+        return getCommandProvider().getMessager();
     }
 
     /**

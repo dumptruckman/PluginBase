@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.command.Command;
 import pluginbase.command.CommandException;
-import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandInfo;
 import pluginbase.command.CommandProvider;
 import pluginbase.command.CommandUsageException;
@@ -16,15 +15,13 @@ import pluginbase.messages.Messages;
 import pluginbase.messages.messaging.Messager;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
-import pluginbase.plugin.command.PluginCommand;
-import pluginbase.plugin.command.QueuedPluginCommand;
+import pluginbase.plugin.command.builtin.BuiltInCommand;
 import pluginbase.plugin.command.builtin.ConfirmCommand;
 import pluginbase.plugin.command.builtin.DebugCommand;
 import pluginbase.plugin.command.builtin.ReloadCommand;
 import pluginbase.plugin.command.builtin.VersionCommand;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -37,6 +34,7 @@ public abstract class PluginAgent<P> {
 
     private final P plugin;
     private final Class<P> pluginClass;
+    private final CommandProvider commandProvider;
     private final PluginBase<P> pluginBase;
 
     private boolean loaded = false;
@@ -63,9 +61,10 @@ public abstract class PluginAgent<P> {
 
     private String permissionPrefix;
 
-    protected PluginAgent(@NotNull Class<P> pluginClass, @NotNull P plugin, boolean queuedCommands) {
+    protected PluginAgent(@NotNull Class<P> pluginClass, @NotNull P plugin, @NotNull CommandProvider commandProvider) {
         this.pluginClass = pluginClass;
         this.plugin = plugin;
+        this.commandProvider = commandProvider;
         this.pluginBase = new PluginBase<P>(this);
 
         // Add initial commands for registration
@@ -73,7 +72,7 @@ public abstract class PluginAgent<P> {
         _registerCommand(DebugCommand.class);
         _registerCommand(ReloadCommand.class);
         _registerCommand(VersionCommand.class);
-        if (queuedCommands) {
+        if (commandProvider.useQueuedCommands()) {
             _registerCommand(ConfirmCommand.class);
         }
     }
@@ -172,16 +171,7 @@ public abstract class PluginAgent<P> {
      *
      * @param commandClass the command class to register as a command for this plugin.
      */
-    public final void registerCommand(Class<? extends PluginCommand<P>> commandClass) {
-        _registerCommand(commandClass);
-    }
-
-    /**
-     * Register the given command class as a command for this plugin.
-     *
-     * @param commandClass the command class to register as a command for this plugin.
-     */
-    public final void registerQueuedCommand(Class<? extends QueuedPluginCommand<P>> commandClass) {
+    public final void registerCommand(Class<? extends Command<P>> commandClass) {
         _registerCommand(commandClass);
     }
 
@@ -198,7 +188,11 @@ public abstract class PluginAgent<P> {
 
     void registerCommands() {
         for (Class<? extends Command> clazz : commandClassesToRegister) {
-            getPluginBase().getCommandHandler().registerCommand(clazz);
+            if (BuiltInCommand.class.isAssignableFrom(clazz)) {
+                getPluginBase().getCommandHandler().registerCommand(getPluginBase(), clazz);
+            } else {
+                getPluginBase().getCommandHandler().registerCommand(clazz);
+            }
         }
         commandClassesToRegister = null;
     }
@@ -295,7 +289,9 @@ public abstract class PluginAgent<P> {
     }
 
     @NotNull
-    protected abstract CommandProvider getCommandProvider();
+    CommandProvider getCommandProvider() {
+        return commandProvider;
+    }
 
     @NotNull
     protected abstract PluginInfo getPluginInfo();
@@ -308,8 +304,6 @@ public abstract class PluginAgent<P> {
 
     @NotNull
     public abstract DatabaseSettings loadDatabaseSettings(@NotNull DatabaseSettings defaults);
-
-    protected abstract Messager getNewMessager(Settings.Language languageSettings);
 
     protected abstract void disablePlugin();
 

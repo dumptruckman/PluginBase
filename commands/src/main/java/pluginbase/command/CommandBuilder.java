@@ -2,30 +2,29 @@ package pluginbase.command;
 
 import org.jetbrains.annotations.NotNull;
 import pluginbase.messages.Theme;
-import pluginbase.messages.messaging.Messaging;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class CommandBuilder<P extends CommandProvider & Messaging> {
+class CommandBuilder {
 
     private static final Pattern OPTIONAL_ARGS_PATTERN = Pattern.compile("\\[.+?\\]");
     private static final Pattern REQUIRED_ARGS_PATTERN = Pattern.compile("\\{.+?\\}");
 
-    private P plugin;
+    private CommandProvider commandProvider;
     private CommandInfo commandInfo;
     private Command command;
     List<String> aliases;
     String[] permissions;
     String usageString;
 
-    CommandBuilder(@NotNull P plugin, @NotNull Class<? extends Command> commandClass) {
-        this.plugin = plugin;
+    CommandBuilder(@NotNull CommandProvider commandProvider, @NotNull Class<? extends Command> commandClass) {
+        this.commandProvider = commandProvider;
         commandInfo = gatherCommandInfo(commandClass);
-        command = CommandLoader.loadCommand(plugin, commandClass);
-        aliases = gatherAliases(plugin, command, commandInfo);
+        command = CommandLoader.loadCommand(commandProvider, commandClass);
+        aliases = gatherAliases(commandProvider, command, commandInfo);
         permissions = gatherPermissions(command);
         usageString = gatherUsageString();
     }
@@ -39,9 +38,9 @@ class CommandBuilder<P extends CommandProvider & Messaging> {
         return commandInfo;
     }
 
-    private List<String> gatherAliases(P plugin, Command command, CommandInfo cmdInfo) {
-        CommandAliases<P> aliases = new CommandAliases<P>();
-        return aliases.gatherAliases(plugin, cmdInfo, command);
+    private List<String> gatherAliases(CommandProvider commandProvider, Command command, CommandInfo cmdInfo) {
+        CommandAliases aliases = new CommandAliases(commandProvider, cmdInfo, command);
+        return aliases.gatherAliases();
     }
 
     private String[] gatherPermissions(Command command) {
@@ -123,8 +122,8 @@ class CommandBuilder<P extends CommandProvider & Messaging> {
         return commandInfo;
     }
 
-    public CommandHandler.CommandRegistration<P> createCommandRegistration() {
-        return new CommandHandler.CommandRegistration<P>(getCommandUsageString(), commandInfo.desc(), aliases.toArray(new String[aliases.size()]), plugin, permissions);
+    public CommandHandler.CommandRegistration createCommandRegistration() {
+        return new CommandHandler.CommandRegistration(getCommandUsageString(), commandInfo.desc(), aliases.toArray(new String[aliases.size()]), commandProvider, permissions);
     }
 
     public String getCommandUsageString() {
@@ -135,44 +134,54 @@ class CommandBuilder<P extends CommandProvider & Messaging> {
         return command;
     }
 
-    private static class CommandAliases<P extends CommandProvider & Messaging> {
+    private static class CommandAliases {
+
+        private final CommandProvider commandProvider;
+        private final CommandInfo cmdInfo;
+        private final Command command;
+
+        private CommandAliases(final CommandProvider commandProvider, final CommandInfo cmdInfo, final Command command) {
+            this.commandProvider = commandProvider;
+            this.cmdInfo = cmdInfo;
+            this.command = command;
+        }
 
         private List<String> aliases;
 
-        public List<String> gatherAliases(P plugin, CommandInfo cmdInfo, Command command) {
-            buildUpAliasList(plugin, cmdInfo, command);
+        public List<String> gatherAliases() {
+            return buildUpAliasList();
+        }
+
+        private List<String> buildUpAliasList() {
+            int totalAliasCount = getTotalAliasCount();
+            aliases = new ArrayList<String>(totalAliasCount);
+            addPrimaryAlias();
+            addRegularAliases();
+            addPrefixedAliases();
+            addDirectlyPrefixedAliases();
+            addAdditionalAliases();
             return aliases;
         }
 
-        private void buildUpAliasList(P plugin, CommandInfo cmdInfo, Command command) {
-            int totalAliasCount = getTotalAliasCount(plugin, command, cmdInfo);
-            aliases = new ArrayList<String>(totalAliasCount);
-            addPrimaryAlias(cmdInfo, plugin);
-            addRegularAliases(cmdInfo);
-            addPrefixedAliases(cmdInfo, plugin);
-            addDirectlyPrefixedAliases(cmdInfo, plugin);
-            addAdditionalAliases(command, plugin);
-        }
-
-        private int getTotalAliasCount(P plugin, Command command, CommandInfo cmdInfo) {
+        private int getTotalAliasCount() {
             return cmdInfo.aliases().length
                     + cmdInfo.prefixedAliases().length
                     + cmdInfo.directlyPrefixedAliases().length
-                    + plugin.getAdditionalCommandAliases(command.getClass()).length
+                    + commandProvider.getAdditionalCommandAliases(command.getClass()).length
                     + 1;
         }
 
-        private void addPrimaryAlias(CommandInfo cmdInfo, P plugin) {
+        private void addPrimaryAlias() {
             if (cmdInfo.directlyPrefixPrimary()) {
-                aliases.add(plugin.getCommandPrefix() + cmdInfo.primaryAlias());
+                aliases.add(commandProvider.getCommandPrefix() + cmdInfo.primaryAlias());
             } else if (cmdInfo.prefixPrimary())  {
-                aliases.add(plugin.getCommandPrefix() + " " + cmdInfo.primaryAlias());
+                aliases.add(commandProvider.getCommandPrefix() + " " + cmdInfo.primaryAlias());
             } else {
                 aliases.add(cmdInfo.primaryAlias());
             }
         }
 
-        private void addRegularAliases(CommandInfo cmdInfo) {
+        private void addRegularAliases() {
             for (final String alias : cmdInfo.aliases()) {
                 if (!alias.isEmpty()) {
                     aliases.add(alias);
@@ -180,24 +189,24 @@ class CommandBuilder<P extends CommandProvider & Messaging> {
             }
         }
 
-        private void addPrefixedAliases(CommandInfo cmdInfo, P plugin) {
+        private void addPrefixedAliases() {
             for (final String alias : cmdInfo.prefixedAliases()) {
                 if (!alias.isEmpty()) {
-                    aliases.add(plugin.getCommandPrefix() + " " + alias);
+                    aliases.add(commandProvider.getCommandPrefix() + " " + alias);
                 }
             }
         }
 
-        private void addDirectlyPrefixedAliases(CommandInfo cmdInfo, P plugin) {
+        private void addDirectlyPrefixedAliases() {
             for (final String alias : cmdInfo.directlyPrefixedAliases()) {
                 if (!alias.isEmpty()) {
-                    aliases.add(plugin.getCommandPrefix() + alias);
+                    aliases.add(commandProvider.getCommandPrefix() + alias);
                 }
             }
         }
 
-        private void addAdditionalAliases(Command command, P plugin) {
-            for (final String alias : plugin.getAdditionalCommandAliases(command.getClass())) {
+        private void addAdditionalAliases() {
+            for (final String alias : commandProvider.getAdditionalCommandAliases(command.getClass())) {
                 if (!alias.isEmpty()) {
                     aliases.add(alias);
                 }

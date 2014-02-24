@@ -58,21 +58,15 @@ public class BukkitPluginAgent<P> extends PluginAgent<P> {
     private final Plugin plugin;
     private PluginInfo pluginInfo;
     private final ServerInterface serverInterface;
-    private final CommandProvider commandProvider;
     @Nullable
     private Metrics metrics = null;
 
     private BukkitConfiguration config;
 
     private BukkitPluginAgent(@NotNull Class<P> pluginInterface, @NotNull Plugin plugin, @NotNull String commandPrefix, boolean queuedCommands) {
-        super(pluginInterface, (P) plugin, queuedCommands);
+        super(pluginInterface, (P) plugin, queuedCommands ? BukkitCommandProvider.getBukkitCommandProvider(plugin, commandPrefix) : BukkitCommandProvider.getBukkitCommandProviderNoQueuedCommands(plugin, commandPrefix));
         this.plugin = plugin;
         this.serverInterface = new BukkitServerInterface(plugin);
-        if (queuedCommands) {
-            this.commandProvider = BukkitCommandProvider.getBukkitCommandProvider(getPluginBase(), plugin, commandPrefix);
-        } else {
-            this.commandProvider = BukkitCommandProvider.getBukkitCommandProviderNoQueuedCommands(getPluginBase(), plugin, commandPrefix);
-        }
     }
 
     public void enableMetrics() throws IOException {
@@ -176,17 +170,6 @@ public class BukkitPluginAgent<P> extends PluginAgent<P> {
         } catch (IOException e) {
             new PluginBaseException(e).logException(getLog(), Level.WARNING);
         }
-    }
-
-    @NotNull
-    @Override
-    protected CommandProvider getCommandProvider() {
-        return commandProvider;
-    }
-
-    @Override
-    protected Messager getNewMessager(Language languageSettings) {
-        return BukkitMessager.loadMessagerWithMessages(getPluginBase(), new File(getDataFolder(), languageSettings.getLanguageFile()), languageSettings.getLocale());
     }
 
     @Override

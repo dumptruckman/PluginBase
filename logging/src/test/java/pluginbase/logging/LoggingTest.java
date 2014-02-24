@@ -48,20 +48,21 @@ public class LoggingTest {
     public void tearDown() throws Exception {
         logging.shutdown();
         PluginLogger.INITIALIZED_LOGGERS.clear();
+        Logging.init(null);
     }
 
     @Test
     public void testInit() throws Exception {
-        assertNotNull(logging.debugLog);
+        assertNotNull(logging.getDebugLog());
         assertEquals(logging.pluginName, plugin.getName());
-        assertEquals(logging.debugLog.debugLevel, DebugLog.ORIGINAL_DEBUG_LEVEL);
+        assertEquals(logging.getDebugLog().debugLevel, DebugLog.ORIGINAL_DEBUG_LEVEL);
         assertEquals(logging.plugin, plugin);
     }
 
     @Test
     public void testShutdown() throws Exception {
         logging.shutdown();
-        assertEquals(logging.debugLog.debugLevel, DebugLog.ORIGINAL_DEBUG_LEVEL);
+        assertEquals(logging.getDebugLog().debugLevel, DebugLog.ORIGINAL_DEBUG_LEVEL);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -76,15 +77,15 @@ public class LoggingTest {
 
     @Test
     public void testSetDebugLevel() throws Exception {
-        assertTrue(logging.debugLog.isClosed());
+        assertTrue(logging.getDebugLog().isClosed());
         logging.setDebugLevel(1);
-        assertFalse(logging.debugLog.isClosed());
-        assertEquals(logging.logger, logging.debugLog.log);
-        assertEquals(logging.debugLog.getDebugFolder(), PluginLogger.getDebugFolder(plugin));
+        assertFalse(logging.getDebugLog().isClosed());
+        assertEquals(logging.logger, logging.getDebugLog().log);
+        assertEquals(logging.getDebugLog().getDebugFolder(), PluginLogger.getDebugFolder(plugin));
         logging.setDebugLevel(0);
-        assertTrue(logging.debugLog.isClosed());
+        assertTrue(logging.getDebugLog().isClosed());
         logging.setDebugLevel(1);
-        assertFalse(logging.debugLog.isClosed());
+        assertFalse(logging.getDebugLog().isClosed());
     }
 
     @Test
@@ -99,9 +100,9 @@ public class LoggingTest {
     @Test
     public void testCloseDebugLog() throws Exception {
         logging.setDebugLevel(3);
-        assertFalse(logging.debugLog.isClosed());
+        assertFalse(logging.getDebugLog().isClosed());
         logging.shutdown();
-        assertTrue(logging.debugLog.isClosed());
+        assertTrue(logging.getDebugLog().isClosed());
     }
 
     @Test
@@ -163,6 +164,8 @@ public class LoggingTest {
 
     @Test
     public void testLog() throws Exception {
+        assertEquals(logging, Logging.getLogger());
+
         logging.setDebugLevel(3);
         logging.logger.getParent().addHandler(parentHandler);
         logging.logger.addHandler(handler);
