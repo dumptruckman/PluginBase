@@ -39,6 +39,13 @@
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Messaging-Bukkit</artifactId>
+            <version>${messaging-bukkit.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Commands</artifactId>
             <version>${commands.version}</version>
             <type>jar</type>
@@ -46,8 +53,22 @@
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Commands-Bukkit</artifactId>
+            <version>${commands-bukkit.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Minecraft-Link</artifactId>
             <version>${minecraft-link.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Minecraft-Link-Bukkit</artifactId>
+            <version>${minecraft-link-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -88,15 +109,29 @@
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>jdbc</artifactId>
+            <version>${jdbc.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>jdbc-spring</artifactId>
+            <version>${jdbc-spring.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Plugin</artifactId>
-            <version>${commandProvider.version}</version>
+            <version>${plugin.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Plugin-Bukkit</artifactId>
-            <version>${commandProvider-bukkit.version}</version>
+            <version>${plugin-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -152,6 +187,8 @@
                                 <dependencySourceExclude>junit:*</dependencySourceExclude>
                                 <dependencySourceExclude>org.powermock:*</dependencySourceExclude>
                                 <dependencySourceExclude>org.easymock:*</dependencySourceExclude>
+                                <dependencySourceExclude>org.springframework:*</dependencySourceExclude>
+                                <dependencySourceExclude>commons-logging:*</dependencySourceExclude>
                             </dependencySourceExcludes>
                         </configuration>
                     </execution>
