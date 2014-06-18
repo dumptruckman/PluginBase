@@ -1,36 +1,39 @@
 package pluginbase.minecraft;
 
+import org.jetbrains.annotations.NotNull;
 import pluginbase.minecraft.location.EntityCoordinates;
 import pluginbase.minecraft.location.Vector;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Describes an entity in minecraft which is anything that is not a block or an item in an inventory.
  */
 public interface Entity {
+
     /**
-     * @return This entity's current location.
+     * @return This {@link Entity}'s current location.
      */
     @NotNull
     EntityCoordinates getLocation();
 
     /**
-     * Teleports this entity to the given location.
+     * Teleports this {@link Entity} to the given {@link EntityCoordinates}.
      *
-     * @param location New location to teleport this entity to.
-     * @return True if the teleport was successful.
+     * @param location new location to teleport this entity to
+     * @return true if the teleport was successful
      */
     boolean teleport(@NotNull final EntityCoordinates location);
 
     /**
-     * Gets this {@link Entity}'s current velocity.
-     * @return This {@link Entity}'s current velocity.
+     * Gets this {@link Entity}'s current {@link Vector}.
+     *
+     * @return this {@link Entity}'s current velocity
      */
     Vector getVelocity();
 
     /**
-     * Sets this {@link Entity}'s current velocity.
-     * @param v The new velocity.
+     * Sets this {@link Entity}'s current {@link Vector}.
+     *
+     * @param v the new velocity
      */
     void setVelocity(Vector v);
 }

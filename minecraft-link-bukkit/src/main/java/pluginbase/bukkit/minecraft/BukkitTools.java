@@ -74,11 +74,10 @@ public class BukkitTools extends MinecraftTools {
     }
 
     /**
-     * Converts {@link org.bukkit.util.Vector} objects to
-     * {@link pluginbase.minecraft.location.Vector} objects.
+     * Convert a {@link org.bukkit.util.Vector} to a {@link Vector}.
      *
-     * @param v The Bukkit vector.
-     * @return The PluginBase vector.
+     * @param v the {@link org.bukkit.util.Vector} to convert
+     * @return the converted {@link Vector}
      */
     @NotNull
     public static Vector convertVector(@NotNull final org.bukkit.util.Vector v) {
@@ -86,11 +85,10 @@ public class BukkitTools extends MinecraftTools {
     }
 
     /**
-     * Converts {@link pluginbase.minecraft.location.Vector} objects
-     * to {@link org.bukkit.util.Vector} objects.
+     * Convert a {@link Vector} to a {@link org.bukkit.util.Vector}.
      *
-     * @param v The PluginBase vector.
-     * @return The Bukkit vector.
+     * @param v the {@link Vector} to convert
+     * @return The converted {@link org.bukkit.util.Vector}
      */
     @NotNull
     public static org.bukkit.util.Vector convertVector(final Vector v) {
