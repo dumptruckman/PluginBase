@@ -18,11 +18,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.build.number>UNKNOWN</project.build.number>
         
         <annotations.version>13.0</annotations.version>
         <!-- Bukkit Version -->
-        <bukkit.version>1.6.2-R1.0</bukkit.version>
+        <spigot.version>1.7.9-R0.1</spigot.version>
         
         <!-- PluginBase Version -->
         <pluginbase.version>1.5-SNAPSHOT</pluginbase.version>
