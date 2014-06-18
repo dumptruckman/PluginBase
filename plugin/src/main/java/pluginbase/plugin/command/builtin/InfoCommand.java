@@ -8,7 +8,7 @@ import pluginbase.command.CommandInfo;
 import pluginbase.messages.Message;
 import pluginbase.messages.Theme;
 import pluginbase.minecraft.BasePlayer;
-import pluginbase.permission.Perm;
+import pluginbase.permission.Permission;
 import pluginbase.permission.PermFactory;
 import pluginbase.plugin.PluginBase;
 import org.jetbrains.annotations.NotNull;
@@ -26,18 +26,18 @@ public class InfoCommand extends BuiltInCommand {
 
     public final static Message INFO_HELP = Message.createMessage("cmd.info.help", Theme.HELP + "Gives some basic information about this plugin.");
 
-    private final Perm perm;
+    private final Permission permission;
 
     protected InfoCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-        perm = PermFactory.newPerm(plugin.getPluginClass(), "cmd.info").usePluginName().commandPermission()
+        permission = PermFactory.newPerm(plugin.getPluginClass(), "cmd.info").usePluginName().commandPermission()
                 .desc("Gives some basic information about this plugin.").build();
     }
 
     /** {@inheritDoc} */
     @Override
-    public Perm getPerm() {
-        return perm;
+    public Permission getPermission() {
+        return permission;
     }
 
     /** {@inheritDoc} */

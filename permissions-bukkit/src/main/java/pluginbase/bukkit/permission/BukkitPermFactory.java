@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.bukkit.permission;
 
-import pluginbase.permission.Perm;
+import pluginbase.permission.Permission;
 import pluginbase.permission.PermDefault;
 import pluginbase.permission.PermFactory;
 
@@ -15,10 +15,10 @@ import pluginbase.permission.PermFactory;
 public class BukkitPermFactory extends PermFactory {
 
     /**
-     * Creates a builder object for creating new {@link BukkitPerm}s.
+     * Creates a builder object for creating new {@link BukkitPermission}s.
      *
      * @param permName The name of the permission, generally without top level namespaces.
-     * @return A new PermFactory object used for building a new {@link BukkitPerm}.
+     * @return A new PermFactory object used for building a new {@link BukkitPermission}.
      */
     public static BukkitPermFactory newBukkitPerm(final Class pluginClass, final String permName) {
         if (!hasFactory()) {
@@ -39,8 +39,8 @@ public class BukkitPermFactory extends PermFactory {
 
     /** {@inheritDoc} */
     @Override
-    public BukkitPermFactory child(Perm perm) {
-        return (BukkitPermFactory) super.child(perm);
+    public BukkitPermFactory child(Permission permission) {
+        return (BukkitPermFactory) super.child(permission);
     }
 
     /** {@inheritDoc} */
@@ -51,8 +51,8 @@ public class BukkitPermFactory extends PermFactory {
 
     /** {@inheritDoc} */
     @Override
-    public BukkitPermFactory child(Perm perm, boolean state) {
-        return (BukkitPermFactory) super.child(perm, state);
+    public BukkitPermFactory child(Permission permission, boolean state) {
+        return (BukkitPermFactory) super.child(permission, state);
     }
 
     /** {@inheritDoc} */
@@ -63,8 +63,8 @@ public class BukkitPermFactory extends PermFactory {
 
     /** {@inheritDoc} */
     @Override
-    public BukkitPermFactory parent(Perm perm) {
-        return (BukkitPermFactory) super.parent(perm);
+    public BukkitPermFactory parent(Permission permission) {
+        return (BukkitPermFactory) super.parent(permission);
     }
 
     /** {@inheritDoc} */
@@ -75,8 +75,8 @@ public class BukkitPermFactory extends PermFactory {
 
     /** {@inheritDoc} */
     @Override
-    public BukkitPermFactory parent(Perm perm, boolean state) {
-        return (BukkitPermFactory) super.parent(perm, state);
+    public BukkitPermFactory parent(Permission permission, boolean state) {
+        return (BukkitPermFactory) super.parent(permission, state);
     }
 
     /** {@inheritDoc} */
@@ -117,7 +117,7 @@ public class BukkitPermFactory extends PermFactory {
 
     /** {@inheritDoc} */
     @Override
-    public BukkitPerm build() {
-        return new BukkitPerm(this.pluginClass, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName, this.specificOnly);
+    public BukkitPermission build() {
+        return new BukkitPermission(this.pluginClass, this.name, this.description, this.children, this.permissionDefault, this.parents, this.baseName, this.specificOnly);
     }
 }

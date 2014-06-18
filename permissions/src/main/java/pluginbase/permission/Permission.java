@@ -15,7 +15,7 @@ import java.util.Map;
  * These should generally be defined as constants.
  * This class must be implemented for your specific Minecraft Server implementation.  See {@link #verify(String)}.
  */
-public abstract class Perm {
+public abstract class Permission {
 
     /** Static initialization method. */
     static void init() { }
@@ -25,9 +25,9 @@ public abstract class Perm {
      */
     protected static final char SEPARATOR = '.';
 
-    private static final Map<String, Perm> ALL_PERM_MAP = new HashMap<String, Perm>();
+    private static final Map<String, Permission> ALL_PERM_MAP = new HashMap<String, Permission>();
 
-    private static final Map<String, Perm> ALL_CMD_PERM_MAP = new HashMap<String, Perm>();
+    private static final Map<String, Permission> ALL_CMD_PERM_MAP = new HashMap<String, Permission>();
 
     /**
      * Retrieves the Perm that represents the top level all encompassing permission for your plugin.
@@ -38,7 +38,7 @@ public abstract class Perm {
      * @param clazz Your plugin class.
      * @return The "all" permission.
      */
-    public static Perm getAllPerm(final Class clazz) {
+    public static Permission getAllPerm(final Class clazz) {
         return ALL_PERM_MAP.get(clazz.getName());
     }
 
@@ -51,7 +51,7 @@ public abstract class Perm {
      * @param clazz Your plugin class.
      * @return The "all" permission.
      */
-    public static Perm getCommandPerm(final Class clazz) {
+    public static Permission getCommandPerm(final Class clazz) {
         return ALL_CMD_PERM_MAP.get(clazz.getName());
     }
 
@@ -99,9 +99,9 @@ public abstract class Perm {
     /** Whether or not this permissions is allowed to be used without a specific node added. */
     protected final boolean specificOnly;
 
-    protected Perm(final Class declaringPluginClass, final String name, final String description,
-         final Map<String, Boolean> children, final PermDefault permDefault, final Map<String, Boolean> parents,
-         final boolean baseName, final boolean specificOnly) {
+    protected Permission(final Class declaringPluginClass, final String name, final String description,
+                         final Map<String, Boolean> children, final PermDefault permDefault,
+                         final Map<String, Boolean> parents, final boolean baseName, final boolean specificOnly) {
         if (baseName) {
             this.name = (getBaseNameFromClass(declaringPluginClass) + SEPARATOR + name).toLowerCase();
         } else {

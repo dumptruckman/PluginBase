@@ -8,7 +8,7 @@ import pluginbase.command.CommandInfo;
 import pluginbase.messages.Message;
 import pluginbase.messages.Theme;
 import pluginbase.minecraft.BasePlayer;
-import pluginbase.permission.Perm;
+import pluginbase.permission.Permission;
 import pluginbase.permission.PermFactory;
 import pluginbase.plugin.PluginBase;
 import org.jetbrains.annotations.NotNull;
@@ -27,18 +27,18 @@ public class ReloadCommand extends BuiltInCommand {
     public final static Message RELOAD_HELP = Message.createMessage("cmd.reload.help", Theme.HELP + "Reloads the plugin, typically detecting any external changes in plugin files.");
     public final static Message RELOAD_COMPLETE = Message.createMessage("cmd.reload.complete", Theme.INFO + "===[ Reload Complete! ]===");
 
-    private final Perm perm;
+    private final Permission permission;
 
     protected ReloadCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-        perm = PermFactory.newPerm(plugin.getPluginClass(), "cmd.reload").usePluginName().commandPermission()
+        permission = PermFactory.newPerm(plugin.getPluginClass(), "cmd.reload").usePluginName().commandPermission()
                 .desc("Reloads the config file.").build();
     }
 
     /** {@inheritDoc} */
     @Override
-    public Perm getPerm() {
-        return perm;
+    public Permission getPermission() {
+        return permission;
     }
 
     /** {@inheritDoc} */

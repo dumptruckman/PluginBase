@@ -9,7 +9,7 @@ import pluginbase.logging.PluginLogger;
 import pluginbase.messages.Message;
 import pluginbase.messages.Theme;
 import pluginbase.minecraft.BasePlayer;
-import pluginbase.permission.Perm;
+import pluginbase.permission.Permission;
 import pluginbase.permission.PermFactory;
 import pluginbase.plugin.PluginBase;
 import pluginbase.util.webpaste.BitlyURLShortener;
@@ -54,18 +54,18 @@ public class VersionCommand extends BuiltInCommand {
 
     private static final URLShortener SHORTENER = new BitlyURLShortener();
 
-    private final Perm perm;
+    private final Permission permission;
 
     protected VersionCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-        perm = PermFactory.newPerm(plugin.getPluginClass(), "cmd.version").usePluginName().commandPermission()
+        permission = PermFactory.newPerm(plugin.getPluginClass(), "cmd.version").usePluginName().commandPermission()
                 .desc("Sends version information to the console.").build();
     }
 
     /** {@inheritDoc} */
     @Override
-    public Perm getPerm() {
-        return perm;
+    public Permission getPermission() {
+        return permission;
     }
 
     /** {@inheritDoc} */

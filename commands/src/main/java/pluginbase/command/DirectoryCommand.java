@@ -6,7 +6,7 @@ import pluginbase.messages.Message;
 import pluginbase.messages.Theme;
 import pluginbase.messages.messaging.Messaging;
 import pluginbase.minecraft.BasePlayer;
-import pluginbase.permission.Perm;
+import pluginbase.permission.Permission;
 
 class DirectoryCommand<P extends CommandProvider & Messaging> extends Command<P> {
 
@@ -16,7 +16,7 @@ class DirectoryCommand<P extends CommandProvider & Messaging> extends Command<P>
 
     @Nullable
     @Override
-    public Perm getPerm() {
+    public Permission getPermission() {
         return null;
     }
 

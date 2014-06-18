@@ -46,9 +46,9 @@ class CommandBuilder<P extends CommandProvider & Messaging> {
 
     private String[] gatherPermissions(Command command) {
         String[] permissions;
-        if (command.getPerm() != null) {
+        if (command.getPermission() != null) {
             permissions = new String[1];
-            permissions[0] = command.getPerm().getName();
+            permissions[0] = command.getPermission().getName();
         } else {
             permissions = new String[0];
         }

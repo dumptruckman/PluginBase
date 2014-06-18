@@ -9,7 +9,7 @@ import pluginbase.messages.Message;
 import pluginbase.messages.Theme;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
-import pluginbase.permission.Perm;
+import pluginbase.permission.Permission;
 import pluginbase.permission.PermFactory;
 import pluginbase.plugin.PluginBase;
 import org.jetbrains.annotations.NotNull;
@@ -32,18 +32,18 @@ public class DebugCommand extends BuiltInCommand {
     public final static Message INVALID_DEBUG = Message.createMessage("debug.invalid",
             Theme.ERROR + "Invalid debug level.  Please use number 0-3.  " + Theme.INFO + "(3 being many many messages!)");
 
-    private final Perm perm;
+    private final Permission permission;
 
     protected DebugCommand(@NotNull final PluginBase plugin) {
         super(plugin);
-        perm = PermFactory.newPerm(plugin.getPluginClass(), "cmd.debug").usePluginName().commandPermission()
+        permission = PermFactory.newPerm(plugin.getPluginClass(), "cmd.debug").usePluginName().commandPermission()
                 .desc("Spams the console a bunch.").build();
     }
 
     /** {@inheritDoc} */
     @Override
-    public Perm getPerm() {
-        return perm;
+    public Permission getPermission() {
+        return permission;
     }
 
     /** {@inheritDoc} */

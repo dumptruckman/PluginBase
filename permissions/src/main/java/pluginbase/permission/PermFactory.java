@@ -43,12 +43,12 @@ public abstract class PermFactory {
     }
 
     /**
-     * Creates a builder object for creating new {@link Perm}s.
+     * Creates a builder object for creating new {@link Permission}s.
      *
      * @param pluginClass The Class for the Plugin declaring this permission.  This is used for setting top level
      *                    permissions and a base permission name.
      * @param permName The name of the permission, generally without top level namespaces.
-     * @return A new PermFactory object used for building a new {@link Perm}.
+     * @return A new PermFactory object used for building a new {@link Permission}.
      */
     public static PermFactory newPerm(final Class pluginClass, final String permName) {
         if (factory == null) {
@@ -57,7 +57,7 @@ public abstract class PermFactory {
         if (!PERM_NAME_MAP.containsKey(pluginClass.getName())) {
             throw new IllegalArgumentException(pluginClass + " does not have a registered permission name!");
         }
-        Perm.ensureParentPermsConfigured(pluginClass);
+        Permission.ensureParentPermsConfigured(pluginClass);
         return newUncheckedPerm(pluginClass, permName);
     }
 
@@ -81,8 +81,8 @@ public abstract class PermFactory {
         }
         return new PermFactory(pluginClass, permName) {
             @Override
-            public Perm build() {
-                return new Perm(pluginClass, this.name, this.description, this.children, this.permissionDefault,
+            public Permission build() {
+                return new Permission(pluginClass, this.name, this.description, this.children, this.permissionDefault,
                         this.parents, this.baseName, this.specificOnly) {
                     @Override
                     protected void verify(final String name) { }
@@ -104,7 +104,7 @@ public abstract class PermFactory {
     public static void registerPermissionFactory(final Class<? extends PermFactory> clazz) {
         try {
             factory = clazz.getDeclaredConstructor(Class.class, String.class);
-            Perm.init();
+            Permission.init();
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("PermFactory must have constructor accepting single string!");
         }
@@ -151,11 +151,11 @@ public abstract class PermFactory {
     /**
      * Adds a child permission with a default value of true.
      *
-     * @param perm The child permission to add.
+     * @param permission The child permission to add.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory child(final Perm perm) {
-        return child(perm.getName());
+    public PermFactory child(final Permission permission) {
+        return child(permission.getName());
     }
 
     /**
@@ -171,12 +171,12 @@ public abstract class PermFactory {
     /**
      * Adds a child permission with a specified default value.
      *
-     * @param perm The child permission to add.
+     * @param permission The child permission to add.
      * @param state The default value for the child.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory child(final Perm perm, final boolean state) {
-        return child(perm.getName(), state);
+    public PermFactory child(final Permission permission, final boolean state) {
+        return child(permission.getName(), state);
     }
 
     /**
@@ -194,11 +194,11 @@ public abstract class PermFactory {
     /**
      * Adds a parent permission that will grant this permission by default.
      *
-     * @param perm The parent permission to add.
+     * @param permission The parent permission to add.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory parent(final Perm perm) {
-        return parent(perm.getName());
+    public PermFactory parent(final Permission permission) {
+        return parent(permission.getName());
     }
 
     /**
@@ -214,12 +214,12 @@ public abstract class PermFactory {
     /**
      * Adds a parent permission that will grant the specified default for this permission.
      *
-     * @param perm The parent permission to add.
+     * @param permission The parent permission to add.
      * @param state The default state for this permission when given the parent.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory parent(final Perm perm, final boolean state) {
-        return parent(perm.getName(), state);
+    public PermFactory parent(final Permission permission, final boolean state) {
+        return parent(permission.getName(), state);
     }
 
     /**
@@ -235,21 +235,21 @@ public abstract class PermFactory {
     }
 
     /**
-     * Adds this permission as a child to {@link Perm#getAllPerm(Class)}.
+     * Adds this permission as a child to {@link Permission#getAllPerm(Class)}.
      *
      * @return this PermFactory for method chaining.
      */
     public PermFactory addToAll() {
-        return parent(Perm.getAllPerm(pluginClass));
+        return parent(Permission.getAllPerm(pluginClass));
     }
 
     /**
-     * Adds this permission as a child to {@link Perm#getCommandPerm(Class)}.
+     * Adds this permission as a child to {@link Permission#getCommandPerm(Class)}.
      *
      * @return this PermFactory for method chaining.
      */
     public PermFactory commandPermission() {
-        return parent(Perm.getCommandPerm(pluginClass));
+        return parent(Permission.getCommandPerm(pluginClass));
     }
 
     /**
@@ -282,7 +282,7 @@ public abstract class PermFactory {
 
     /**
      * Indicates that the permissions is only to be used with the specific node method
-     * {@link Perm#hasPermission(Permissible, String)}.
+     * {@link Permission#hasPermission(Permissible, String)}.
      * <p/>
      * This means that the name of the permission defined will not be registered in the server implementation and that
      * it only serves as a placeholder.
@@ -302,5 +302,5 @@ public abstract class PermFactory {
      *
      * @return a new Perm based on all the supplied values of this PermFactory.
      */
-    public abstract Perm build();
+    public abstract Permission build();
 }

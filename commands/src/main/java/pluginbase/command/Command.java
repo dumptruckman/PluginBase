@@ -5,7 +5,7 @@ import pluginbase.messages.Message;
 import pluginbase.messages.messaging.Messager;
 import pluginbase.messages.messaging.Messaging;
 import pluginbase.minecraft.BasePlayer;
-import pluginbase.permission.Perm;
+import pluginbase.permission.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,7 +62,7 @@ public abstract class Command<P extends CommandProvider & Messaging> {
      * @return the permission required to use this command or null if no permission is required.
      */
     @Nullable
-    public abstract Perm getPerm();
+    public abstract Permission getPermission();
 
     /**
      * Gets the permission denied message for this command.

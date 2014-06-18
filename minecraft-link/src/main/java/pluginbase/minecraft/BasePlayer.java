@@ -4,7 +4,7 @@
 package pluginbase.minecraft;
 
 import pluginbase.messages.messaging.MessageReceiver;
-import pluginbase.permission.Perm;
+import pluginbase.permission.Permission;
 import pluginbase.permission.Permissible;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,13 +56,13 @@ public abstract class BasePlayer implements MessageReceiver, Permissible {
 
     /** {@inheritDoc} */
     @Override
-    public boolean hasPerm(@NotNull final Perm perm) {
-        return hasPermission(perm.getName());
+    public boolean hasPerm(@NotNull final Permission permission) {
+        return hasPermission(permission.getName());
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean hasPerm(@NotNull final Perm perm, @NotNull final String specific) {
-        return hasPermission(perm.getName(specific));
+    public boolean hasPerm(@NotNull final Permission permission, @NotNull final String specific) {
+        return hasPermission(permission.getName(specific));
     }
 }

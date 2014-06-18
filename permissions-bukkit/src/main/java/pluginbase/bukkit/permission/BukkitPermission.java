@@ -3,10 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.bukkit.permission;
 
-import pluginbase.permission.Perm;
+import pluginbase.permission.Permission;
 import pluginbase.permission.PermDefault;
 import org.bukkit.Bukkit;
-import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.PluginManager;
 
@@ -19,22 +18,22 @@ import java.util.Map;
  * <p/>
  * This class must be implemented for your specific Minecraft Server implementation.  See {@link #verify(String)}.
  */
-public class BukkitPerm extends Perm {
+public class BukkitPermission extends Permission {
     
-    protected BukkitPerm(final Class pluginClass, final String name, final String description,
-               final Map<String, Boolean> children, final PermDefault permDefault, final Map<String, Boolean> parents,
-               final boolean baseName, final boolean specificOnly) {
+    protected BukkitPermission(final Class pluginClass, final String name, final String description,
+                               final Map<String, Boolean> children, final PermDefault permDefault,
+                               final Map<String, Boolean> parents, final boolean baseName, final boolean specificOnly) {
         super(pluginClass, name, description, children, permDefault, parents, baseName, specificOnly);
         if (!specificOnly) {
             verify(getName());
         }
     }
 
-    private Permission setupPermission(final String name) {
+    private org.bukkit.permissions.Permission setupPermission(final String name) {
         final PluginManager pluginManager = Bukkit.getPluginManager();
-        Permission permission = pluginManager.getPermission(name.toLowerCase());
+        org.bukkit.permissions.Permission permission = pluginManager.getPermission(name.toLowerCase());
         if (permission == null) {
-            permission = new Permission(name, getDescription(), getPermissionDefault(), getChildren());
+            permission = new org.bukkit.permissions.Permission(name, getDescription(), getPermissionDefault(), getChildren());
             for (Map.Entry<String, Boolean> parent : parents.entrySet()) {
                 permission.addParent(parent.getKey(), parent.getValue());
             }
@@ -65,7 +64,7 @@ public class BukkitPerm extends Perm {
     /** {@inheritDoc} */
     @Override
     protected void verify(final String name) {
-        final Permission permission = setupPermission(name);
+        final org.bukkit.permissions.Permission permission = setupPermission(name);
         if (permission != null) {
             try {
                 Bukkit.getPluginManager().recalculatePermissionDefaults(permission);
@@ -93,7 +92,7 @@ public class BukkitPerm extends Perm {
      *
      * @return the Bukkit permission linked to this Perm object.
      */
-    public final Permission getPermission() {
+    public final org.bukkit.permissions.Permission getPermission() {
         return Bukkit.getPluginManager().getPermission(getName());
     }
 
@@ -103,7 +102,7 @@ public class BukkitPerm extends Perm {
      * @param specific The specific sub node to get permission for.
      * @return the Bukkit permission linked to this Perm object for the specific sub node.
      */
-    public final Permission getPermission(final String specific) {
+    public final org.bukkit.permissions.Permission getPermission(final String specific) {
         return Bukkit.getPluginManager().getPermission(getName(specific));
     }
 

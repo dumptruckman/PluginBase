@@ -1,6 +1,5 @@
 package pluginbase.command;
 
-import pluginbase.logging.LogProvider;
 import pluginbase.logging.PluginLogger;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.Message;
@@ -226,7 +225,7 @@ public abstract class CommandHandler<P extends CommandProvider & Messaging> {
             ((DirectoryCommand) command).runCommand(player, args[0], commandTree.getTreeAt(args[0]));
             return true;
         }
-        if (command.getPerm() != null && !command.getPerm().hasPermission(player)) {
+        if (command.getPermission() != null && !command.getPermission().hasPermission(player)) {
             BundledMessage permissionMessage = command.getPermissionMessage();
             if (permissionMessage == null) {
                 permissionMessage = Message.bundleMessage(PERMISSION_DENIED);

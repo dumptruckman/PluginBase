@@ -25,18 +25,18 @@ public interface Permissible {
      * <p/>
      * If a permission override is not set on this object, the default value of the permission will be returned.
      *
-     * @param perm permission to get.
+     * @param permission permission to get.
      * @return value of permission.
      */
-    public boolean hasPerm(@NotNull final Perm perm);
+    public boolean hasPerm(@NotNull final Permission permission);
 
     /**
      * Gets the value of the specified permission, if set.
      * <p/>
      * If a permission override is not set on this object, the default value of the permission will be returned.
      *
-     * @param perm permission to get.
+     * @param permission permission to get.
      * @return value of permission.
      */
-    public boolean hasPerm(@NotNull final Perm perm, @NotNull final String specific);
+    public boolean hasPerm(@NotNull final Permission permission, @NotNull final String specific);
 }
