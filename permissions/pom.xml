@@ -2,11 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-        <artifactId>PluginBase</artifactId>
+        <groupId>com.supaham.pluginbase</groupId>
+        <artifactId>pluginbase</artifactId>
         <version>1.5-SNAPSHOT</version>
     </parent>
-    <artifactId>Permissions</artifactId>
+    <artifactId>permissions</artifactId>
     <version>${permissions.version}</version>
 
     <build>

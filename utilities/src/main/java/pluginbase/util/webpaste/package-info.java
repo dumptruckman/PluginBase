@@ -1,6 +1,6 @@
 /**
  * This package contains web-paste utilities.
  * <p/>
- * Part of com.dumptruckman.minecraft.pluginbase:Utilities
+ * Part of com.supaham.pluginbase:utilities
  */
 package pluginbase.util.webpaste;

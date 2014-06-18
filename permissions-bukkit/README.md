@@ -81,7 +81,7 @@ And then shade/relocate it into your plugin with:
                 </artifactSet>
                 <relocations>
                     <relocation>
-                        <pattern>com.dumptruckman.minecraft.pluginbase</pattern>
+                        <pattern>com.supaham.pluginbase</pattern>
                         <shadedPattern>your.namespace.here.pluginbase</shadedPattern>
                     </relocation>
                 </relocations>

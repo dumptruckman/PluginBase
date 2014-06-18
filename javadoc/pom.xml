@@ -2,11 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-        <artifactId>PluginBase</artifactId>
+        <groupId>com.supaham.pluginbase</groupId>
+        <artifactId>pluginbase</artifactId>
         <version>1.5-SNAPSHOT</version>
     </parent>
-    <artifactId>PluginBase-javadoc</artifactId>
+    <artifactId>pluginbase-javadoc</artifactId>
 
     <repositories>
         <repository>
@@ -17,106 +17,106 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Logging</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>logging</artifactId>
             <version>${logging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Messages</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>messages</artifactId>
             <version>${messages.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Messaging</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>messaging</artifactId>
             <version>${messaging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Commands</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>commands</artifactId>
             <version>${commands.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Minecraft-Link</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>minecraft-link</artifactId>
             <version>${minecraft-link.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Permissions</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>permissions</artifactId>
             <version>${permissions.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Permissions-Bukkit</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>permissions-bukkit</artifactId>
             <version>${permissions-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Properties</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>properties</artifactId>
             <version>${properties.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Properties-Bukkit</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>properties-bukkit</artifactId>
             <version>${properties-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Utilities</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>utilities</artifactId>
             <version>${utilities.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Plugin</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>plugin</artifactId>
             <version>${plugin.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Plugin-Bukkit</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>plugin-bukkit</artifactId>
             <version>${plugin-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Serializable-Config</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>serializable-config</artifactId>
             <version>${serializable-config.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Serializable-Config-Bukkit</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>serializable-config-bukkit</artifactId>
             <version>${serializable-config-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>File-Comments</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>file-comments</artifactId>
             <version>${file-comments.version}</version>
             <type>jar</type>
             <scope>compile</scope>

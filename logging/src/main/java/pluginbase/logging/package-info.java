@@ -3,6 +3,6 @@
  * <p/>
  * It is highly recommended that the classes in this package are relocated with the maven shade plugin.
  * <p/>
- * This is part of com.dumptruckman.minecraft.pluginbase:Logging.
+ * This is part of com.supaham.pluginbase:Logging.
  */
 package pluginbase.logging;

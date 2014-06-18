@@ -5,6 +5,6 @@
  * your main plugin class extend AbstractBukkitPlugin instead of JavaPlugin and a slew of built in features will be
  * available for your plugin.
  * <p/>
- * Part of com.dumptruckman.minecraft.pluginbase:Bukkit.
+ * Part of com.supaham.pluginbase:Bukkit.
  */
 package pluginbase.bukkit;

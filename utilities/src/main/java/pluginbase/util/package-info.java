@@ -1,7 +1,7 @@
 /**
  * A set of classes with various utility methods.
  * <p/>
- * Part of com.dumptruckman.minecraft.pluginbase:Utilities
+ * Part of com.supaham.pluginbase:utilities
  */
 package pluginbase.util;
 

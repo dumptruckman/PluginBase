@@ -1,27 +1,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-    <artifactId>PluginBase</artifactId>
+
+    <groupId>com.supaham.pluginbase</groupId>
+    <artifactId>pluginbase</artifactId>
     <version>1.5-SNAPSHOT</version>
-    <name>PluginBase</name>
-    <url>http://ci.onarandombox.org</url>
-    <description>dumptruckman's plugin template and tools</description>
     <packaging>pom</packaging>
 
+    <name>PluginBase</name>
+    <description>SupaHam's plugin template and tools</description>
+
     <scm>
-        <connection>scm:git:git://github.com/dumptruckman/PluginBase.git</connection>
-        <url>https://github.com/dumptruckman/PluginBase</url>
-        <developerConnection>scm:git:git@github.com:dumptruckman/PluginBase.git</developerConnection>
+        <connection>scm:git:git://github.com/SupaHam/PluginBase.git</connection>
+        <url>https://github.com/SupaHam/PluginBase</url>
+        <developerConnection>scm:git:git@github.com:SupaHam/PluginBase.git</developerConnection>
     </scm>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.number>UNKNOWN</project.build.number>
+        
+        <annotations.version>13.0</annotations.version>
         <!-- Bukkit Version -->
         <bukkit.version>1.6.2-R1.0</bukkit.version>
+        
         <!-- PluginBase Version -->
         <pluginbase.version>1.5-SNAPSHOT</pluginbase.version>
+        
         <!-- PluginBase Module Versions -->
         <plugin.version>${pluginbase.version}</plugin.version>
         <plugin-bukkit.version>${pluginbase.version}</plugin-bukkit.version>
@@ -45,43 +50,6 @@
         <jdbc.version>0.1-SNAPSHOT</jdbc.version>
         <jdbc-spring.version>0.1-SNAPSHOT</jdbc-spring.version>
     </properties>
-
-    <ciManagement>
-        <system>jenkins</system>
-        <url>http://ci.onarandombox.com</url>
-    </ciManagement>
-
-    <repositories>
-        <repository>
-            <id>onarandombox</id>
-            <url>http://repo.onarandombox.com/content/groups/public/</url>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>onarandombox-3rdparty</id>
-            <url>http://repo.onarandombox.com/content/repositories/thirdparty</url>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <!-- Profiles are used to detect whether this is a local or Jenkins build and adjust the build number accordingly -->
-    <profiles>
-        <profile>
-            <id>jenkins</id>
-            <activation>
-                <property>
-                    <name>env.BUILD_NUMBER</name>
-                </property>
-            </activation>
-            <properties>
-                <project.build.number>${env.BUILD_NUMBER}</project.build.number>
-            </properties>
-            <modules>
-                <module>javadoc</module>
-            </modules>
-        </profile>
-    </profiles>
 
     <!-- Modules -->
     <modules>
@@ -111,23 +79,27 @@
 
     <distributionManagement>
         <repository>
-            <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/thirdparty/</url>
+            <id>releases</id>
+            <name>SupaHam's Releases</name>
+            <url>http://repo.supaham.com/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
-            <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/thirdparty-dev/</url>
+            <id>releases</id>
+            <name>SupaHam's Snapshots</name>
+            <url>http://repo.supaham.com/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
     <dependencies>
+        <!-- Intellij annotations! -->
         <dependency>
-            <groupId>com.intellij</groupId>
+            <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>12.0</version>
+            <version>${annotations.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        
         <!-- Start of Test Dependencies -->
         <dependency>
             <groupId>junit</groupId>

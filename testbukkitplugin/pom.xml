@@ -2,11 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-        <artifactId>PluginBase</artifactId>
+        <groupId>com.supaham.pluginbase</groupId>
+        <artifactId>pluginbase</artifactId>
         <version>1.5-SNAPSHOT</version>
     </parent>
-    <artifactId>TestBukkitPlugin</artifactId>
+    <artifactId>test-bukkit-plugin</artifactId>
     <version>${testbukkitplugin.version}</version>
 
     <repositories>
@@ -19,8 +19,8 @@
     <dependencies>
         <!-- Start of PluginBase Dependency -->
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Plugin-Bukkit</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>plugin-bukkit</artifactId>
             <version>${plugin-bukkit.version}</version>
             <type>jar</type>
             <scope>compile</scope>
@@ -34,8 +34,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>JDBC-Spring</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>jdbc-spring</artifactId>
             <version>${jdbc-spring.version}</version>
             <scope>compile</scope>
         </dependency>
@@ -87,8 +87,8 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Plugin-Bukkit</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:JDBC-Spring</include>
+                                    <include>com.supaham.pluginbase:plugin-bukkit</include>
+                                    <include>com.supaham.pluginbase:jdbc-spring</include>
                                     <include>com.h2database:h2</include>
                                 </includes>
                             </artifactSet>

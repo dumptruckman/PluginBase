@@ -4,6 +4,6 @@
  * CommandHandler must be implemented for the specific server implementation and your plugin class needs to implement
  * {@link CommandProvider} and {@link pluginbase.messages.messaging.Messaging}.
  * <p/>
- * Part of com.dumptruckman.minecraft.pluginbase:Commands.
+ * Part of com.supaham.pluginbase:Commands.
  */
 package pluginbase.command;

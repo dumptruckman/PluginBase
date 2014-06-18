@@ -2,11 +2,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-        <artifactId>PluginBase</artifactId>
+        <groupId>com.supaham.pluginbase</groupId>
+        <artifactId>pluginbase</artifactId>
         <version>1.5-SNAPSHOT</version>
     </parent>
-    <artifactId>Plugin</artifactId>
+    <artifactId>plugin</artifactId>
     <version>${plugin.version}</version>
 
     <repositories>
@@ -18,57 +18,57 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Logging</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>logging</artifactId>
             <version>${logging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Utilities</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>utilities</artifactId>
             <version>${utilities.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Permissions</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>permissions</artifactId>
             <version>${permissions.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Messaging</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>messaging</artifactId>
             <version>${messaging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Serializable-Config</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>serializable-config</artifactId>
             <version>${serializable-config.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Minecraft-Link</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>minecraft-link</artifactId>
             <version>${minecraft-link.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Commands</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>commands</artifactId>
             <version>${commands.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>JDBC</artifactId>
+            <groupId>com.supaham.pluginbase</groupId>
+            <artifactId>jdbc</artifactId>
             <version>${jdbc.version}</version>
             <type>jar</type>
             <scope>compile</scope>
@@ -129,14 +129,14 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Logging</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Utilities</include>
+                                    <include>com.supaham.pluginbase:logging</include>
+                                    <include>com.supaham.pluginbase:utilities</include>
                                     <include>org.apache.commons:commons-io</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Messaging</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Minecraft-Link</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Commands</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Serializable-Config</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:JDBC</include>
+                                    <include>com.supaham.pluginbase:messaging</include>
+                                    <include>com.supaham.pluginbase:minecraft-link</include>
+                                    <include>com.supaham.pluginbase:commands</include>
+                                    <include>com.supaham.pluginbase:serializable-config</include>
+                                    <include>com.supaham.pluginbase:jdbc</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
