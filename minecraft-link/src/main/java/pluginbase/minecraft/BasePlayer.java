@@ -3,11 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.minecraft;
 
-import pluginbase.messages.messaging.MessageReceiver;
-import pluginbase.permission.Permission;
-import pluginbase.permission.Permissible;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.messages.messaging.MessageReceiver;
+import pluginbase.permission.Permissible;
+import pluginbase.permission.Permission;
 
 /**
  * Represents a player/user currently on a Minecraft server.
@@ -20,19 +20,25 @@ public abstract class BasePlayer implements MessageReceiver, Permissible {
     /**
      * Gets the name of this player/user.
      *
-     * @return the name of this player/user.
+     * @return the name of this player/user
      */
     public abstract String getName();
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public abstract boolean hasPermission(@NotNull final String perm);
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public abstract void sendMessage(@NotNull final String message);
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean equals(@Nullable final Object other) {
         if (!(other instanceof BasePlayer)) {
@@ -42,25 +48,33 @@ public abstract class BasePlayer implements MessageReceiver, Permissible {
         return other2.getName().equals(getName());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int hashCode() {
         return getName().hashCode();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isPlayer() {
         return true;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasPerm(@NotNull final Permission permission) {
         return hasPermission(permission.getName());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasPerm(@NotNull final Permission permission, @NotNull final String specific) {
         return hasPermission(permission.getName(specific));

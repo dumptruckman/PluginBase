@@ -10,7 +10,9 @@ import pluginbase.minecraft.location.Vector;
 public interface Entity {
 
     /**
-     * @return This {@link Entity}'s current location.
+     * Gets this {@link Entity}'s {@link EntityCoordinates}.
+     *
+     * @return this {@link Entity}'s current location
      */
     @NotNull
     EntityCoordinates getLocation();
