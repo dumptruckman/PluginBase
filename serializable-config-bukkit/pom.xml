@@ -48,7 +48,7 @@
     </dependencies>
 
     <build>
-        <defaultGoal>clean package -Dmaven.test.skip=true</defaultGoal>
+        <defaultGoal>clean package</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
