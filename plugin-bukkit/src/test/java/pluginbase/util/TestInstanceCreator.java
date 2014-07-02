@@ -7,11 +7,8 @@
 
 package pluginbase.util;
 
-import org.bukkit.craftbukkit.v1_6_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_6_R2.help.SimpleHelpMap;
-import org.bukkit.help.HelpMap;
-import pluginbase.bukkit.BukkitHelper;
 import junit.framework.Assert;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -20,8 +17,11 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.craftbukkit.v1_7_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_7_R3.help.SimpleHelpMap;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.help.HelpMap;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -36,6 +36,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.MockGateway;
+import pluginbase.bukkit.BukkitHelper;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -46,7 +47,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.anyLong;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TestInstanceCreator {
     private MockPlugin plugin;
@@ -60,7 +67,7 @@ public class TestInstanceCreator {
     public static final File worldsDirectory = new File("bin/test/server");
 
     public boolean setUp() throws Exception {
-        org.apache.commons.io.FileUtils.deleteDirectory(serverDirectory);
+        FileUtils.deleteDirectory(serverDirectory);
         try {
             pluginDirectory.mkdirs();
             Assert.assertTrue(pluginDirectory.exists());
