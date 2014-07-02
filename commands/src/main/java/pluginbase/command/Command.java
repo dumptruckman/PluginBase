@@ -15,14 +15,12 @@ import org.jetbrains.annotations.Nullable;
  * <br/>
  * Commands for PluginBase's command handler <b>must</b> implement this class AND annotate it with the
  * {@link CommandInfo} annotation.
- * <p/>
- * <b>Note:</b> If you are using the Plugin module you should be extending PluginCommand instead.
  *
  * @param <P> the plugin that this command belongs to.
  */
 public abstract class Command<P> {
 
-    private CommandProvider<P> commandProvider;
+    private final CommandProvider<P> commandProvider;
 
     /**
      * Constructs a command.

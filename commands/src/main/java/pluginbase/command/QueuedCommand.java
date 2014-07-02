@@ -19,8 +19,6 @@ import pluginbase.util.time.Duration;
  * <br/>
  * Queued commands for PluginBase's command handler <b>must</b> implement this class AND annotate it with the
  * {@link CommandInfo} annotation.
- * <p/>
- * <b>Note:</b> If you are using the Plugin module you should be extending QueuedPluginCommand instead.
  *
  * @param <P> the plugin that this command belongs to.
  */
