@@ -7,11 +7,21 @@
 
 package pluginbase;
 
-import org.bukkit.craftbukkit.v1_6_R2.CraftServer;
+import org.bukkit.Server;
+import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_7_R3.CraftServer;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.jdbc.core.JdbcTemplate;
-import pluginbase.bukkit.minecraft.BukkitTools;
 import pluginbase.bukkit.command.CommandUtil;
+import pluginbase.bukkit.minecraft.BukkitTools;
 import pluginbase.config.serializers.Serializers;
 import pluginbase.messages.MessageProvider;
 import pluginbase.plugin.Settings.Language;
@@ -19,21 +29,18 @@ import pluginbase.util.MockConfig;
 import pluginbase.util.MockMessages;
 import pluginbase.util.MockPlugin;
 import pluginbase.util.TestInstanceCreator;
-import org.bukkit.Server;
-import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.SimplePluginManager;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ JavaPlugin.class, SimplePluginManager.class, CraftServer.class })

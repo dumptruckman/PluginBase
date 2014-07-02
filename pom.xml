@@ -20,8 +20,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
         <annotations.version>13.0</annotations.version>
-        <!-- Bukkit Version -->
-        <spigot.version>1.7.9-R0.1</spigot.version>
+        <!-- Spigot Version -->
+        <spigot.version>1.7.9-R0.1-SNAPSHOT</spigot.version>
         
         <!-- PluginBase Version -->
         <pluginbase.version>1.5-SNAPSHOT</pluginbase.version>

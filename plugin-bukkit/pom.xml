@@ -7,7 +7,7 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>plugin-bukkit</artifactId>
-    <version>${plugin-bukkit.version}</version>
+    <version>1.5-SNAPSHOT</version> <!-- TODO remember to update with pluginbase version -->
 
     <repositories>
         <repository>
@@ -60,16 +60,16 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>${bukkit.version}</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot-api</artifactId>
+            <version>${spigot.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>${bukkit.version}</version>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>${spigot.version}</version>
             <type>jar</type>
             <scope>test</scope>
         </dependency>
@@ -94,7 +94,7 @@
     </dependencies>
 
     <build>
-        <defaultGoal>clean package</defaultGoal>
+        <defaultGoal>clean package -Dmaven.test.skip=true</defaultGoal>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
