@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.number>UNKNOWN</project.build.number>
         <!-- Bukkit Version -->
-        <bukkit.version>1.6.2-R1.0</bukkit.version>
+        <bukkit.version>1.7.9-R0.2</bukkit.version>
         <!-- PluginBase Version -->
         <pluginbase.version>1.5-SNAPSHOT</pluginbase.version>
         <!-- PluginBase Module Versions -->

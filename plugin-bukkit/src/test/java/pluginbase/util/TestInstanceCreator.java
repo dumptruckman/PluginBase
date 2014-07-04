@@ -7,8 +7,8 @@
 
 package pluginbase.util;
 
-import org.bukkit.craftbukkit.v1_6_R2.CraftServer;
-import org.bukkit.craftbukkit.v1_6_R2.help.SimpleHelpMap;
+import org.bukkit.craftbukkit.v1_7_R3.CraftServer;
+import org.bukkit.craftbukkit.v1_7_R3.help.SimpleHelpMap;
 import org.bukkit.help.HelpMap;
 import pluginbase.bukkit.BukkitHelper;
 import junit.framework.Assert;

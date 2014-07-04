@@ -7,7 +7,7 @@
 
 package pluginbase;
 
-import org.bukkit.craftbukkit.v1_6_R2.CraftServer;
+import org.bukkit.craftbukkit.v1_7_R3.CraftServer;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.springframework.jdbc.core.JdbcTemplate;
 import pluginbase.bukkit.minecraft.BukkitTools;

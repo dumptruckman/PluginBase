@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.bukkit.minecraft;
 
+import org.bukkit.Material;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.minecraft.location.Vector;
 import pluginbase.util.MinecraftTools;
@@ -31,7 +32,7 @@ public class BukkitTools extends MinecraftTools {
      */
     public static ItemStack[] fillWithAir(@NotNull final ItemStack[] items) {
         for (int i = 0; i < items.length; i++) {
-            items[i] = new ItemStack(0);
+            items[i] = new ItemStack(Material.AIR);
         }
         return items;
     }
