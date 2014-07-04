@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -58,20 +60,32 @@ class CommandTree {
 
     public String[] joinArgsForKnownCommands(String[] args) {
         CommandTree tree = this;
+        CommandTree lastTree = null;
         CommandKey key = null;
         int commandArgLength = 0;
         for (int i = 0; i < args.length; i++) {
-            commandArgLength++;
             String lowerName = args[i].toLowerCase();
             key = tree.keyMap.get(lowerName);
             tree = tree.treeMap.get(lowerName);
             if (tree == null) {
                 break;
             }
+            commandArgLength++;
+            lastTree = tree;
         }
+        String name = null;
         if (key != null) {
+            if (tree == null || tree.name == null || !tree.name.equals(key.getName())) {
+                commandArgLength++;
+            }
+            name = key.getName();
+        } else if (lastTree != null) {
+            //commandArgLength--;
+            name = lastTree.name;
+        }
+        if (name != null) {
             String[] newArgs = new String[args.length - (commandArgLength - 1)];
-            newArgs[0] = key.getName();
+            newArgs[0] = name;
             if (args.length > 1) {
                 System.arraycopy(args, commandArgLength, newArgs, 1, args.length - commandArgLength);
             }
@@ -108,6 +122,14 @@ class CommandTree {
             subCommands.add(key.getName());
         }
         return subCommands;
+    }
+
+    Set<String> getSubDirectories() {
+        return treeMap.keySet();
+    }
+
+    Set<String> getSubCommands() {
+        return keyMap.keySet();
     }
 
     private static class CommandKey {

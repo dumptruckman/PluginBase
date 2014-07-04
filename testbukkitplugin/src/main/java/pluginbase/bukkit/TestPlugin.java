@@ -19,6 +19,9 @@ public class TestPlugin extends JavaPlugin {
     public TestPlugin() {
         pluginAgent = BukkitPluginAgent.getPluginAgent(TestPlugin.class, this, "pb");
         pluginAgent.registerCommand(TestCommand.class);
+        pluginAgent.registerCommand(Test2Command.class);
+        pluginAgent.registerCommand(TealPieCommand.class);
+        pluginAgent.registerCommand(TealPeaPieCommand.class);
     }
 
     public void onLoad() {

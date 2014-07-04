@@ -1,5 +1,6 @@
 package pluginbase.command;
 
+import org.jetbrains.annotations.Nullable;
 import pluginbase.logging.PluginLogger;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.Message;
@@ -11,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -205,6 +207,26 @@ public abstract class CommandHandler {
         }
     }
 
+    @Nullable
+    protected final Command getCommand(@NotNull String[] args) {
+        args = commandDetection(args);
+        return _getCommand(args[0]);
+    }
+
+    @Nullable
+    private Command _getCommand(@NotNull String baseCommandArg) {
+        final Class<? extends Command> commandClass = registeredCommandClasses.get(baseCommandArg);
+        if (commandClass == null) {
+            getLog().severe("Could not locate registered command '" + baseCommandArg + "'");
+            return null;
+        }
+        final CommandProvider commandProviderForCommand = commandProviderMap.get(commandClass);
+        if (commandProviderForCommand == null) {
+            throw new IllegalStateException("CommandProvider not registered for " + commandClass);
+        }
+        return CommandLoader.loadCommand(commandProviderForCommand, commandClass);
+    }
+
     /**
      * Locates and runs a command executed by a user.
      *
@@ -231,16 +253,10 @@ public abstract class CommandHandler {
             }
             return true;
         }
-        final Class<? extends Command> commandClass = registeredCommandClasses.get(args[0]);
-        if (commandClass == null) {
-            getLog().severe("Could not locate registered command '" + args[0] + "'");
+        final Command command = _getCommand(args[0]);
+        if (command == null) {
             return false;
         }
-        final CommandProvider commandProviderForCommand = commandProviderMap.get(commandClass);
-        if (commandProviderForCommand == null) {
-            throw new IllegalStateException("CommandProvider not registered for " + commandClass);
-        }
-        final Command command = CommandLoader.loadCommand(commandProviderForCommand, commandClass);
         if (command instanceof DirectoryCommand) {
             ((DirectoryCommand) command).runCommand(player, args[0], commandTree.getTreeAt(args[0]));
             return true;
@@ -400,5 +416,88 @@ public abstract class CommandHandler {
         public CommandProvider getRegisteredWith() {
             return registeredWith;
         }
+    }
+
+    public List<String> tabComplete(@NotNull final BasePlayer player, @NotNull String[] args) {
+        if (args.length > 1) {
+            String[] newArgs = new String[args.length - 1];
+            System.arraycopy(args, 0, newArgs, 0, args.length - 1);
+            String lastArg = args[args.length - 1];
+            newArgs = commandDetection(newArgs);
+            args = new String[newArgs.length + 1];
+            System.arraycopy(newArgs, 0, args, 0, newArgs.length);
+            args[args.length - 1] = lastArg;
+        }
+        final Command command = _getCommand(args[0]);
+        if (command != null) {
+            if (args.length == 2 && command instanceof DirectoryCommand) {
+                return tabCompleteDirectory(player, args);
+            } else if (args.length > 1 && (command.getPerm() == null || command.getPerm().hasPermission(player))) {
+                final CommandInfo cmdInfo = command.getClass().getAnnotation(CommandInfo.class);
+                if (cmdInfo != null) {
+                    final Set<Character> valueFlags = new HashSet<Character>();
+
+                    char[] flags = cmdInfo.flags().toCharArray();
+                    final Set<Character> newFlags = new HashSet<Character>();
+                    for (int i = 0; i < flags.length; ++i) {
+                        if (flags.length > i + 1 && flags[i + 1] == ':') {
+                            valueFlags.add(flags[i]);
+                            ++i;
+                        }
+                        newFlags.add(flags[i]);
+                    }
+                    try {
+                        CommandContext context = new CommandContext(args, valueFlags);
+                        return command.tabComplete(player, context);
+                    } catch (CommandException ignore) { }
+                }
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    private List<String> tabCompleteDirectory(@NotNull final BasePlayer player, @NotNull String[] args) {
+        CommandTree directoryTree = commandTree.getTreeAt(args[0]);
+        Set<String> subDirectories = directoryTree.getSubDirectories();
+        Set<String> subCommands = directoryTree.getSubCommands();
+        Set<String> tabCompleteSet = new HashSet<String>(subDirectories.size() + subCommands.size() + 1);
+
+        args[1] = args[1].trim().toLowerCase();
+
+        for (String subDirectory : subDirectories) {
+            if (subDirectory.startsWith(args[1])) {
+                tabCompleteSet.add(subDirectory);
+            }
+        }
+
+        List<String> potentialSubCommands = new ArrayList<String>(subCommands.size());
+        for (String subCommand : subCommands) {
+            if (subCommand.startsWith(args[1])) {
+                potentialSubCommands.add(subCommand);
+            }
+        }
+
+        for (String potentialSubCommand : potentialSubCommands) {
+            Command subCommand = _getCommand(args[0] + " " + potentialSubCommand);
+            if (subCommand != null && (!player.isPlayer() || (subCommand.getPerm() == null || player.hasPerm(subCommand.getPerm())))) {
+                tabCompleteSet.add(potentialSubCommand);
+            }
+        }
+
+        if (commandProvider.useQueuedCommands()
+                && !registeredCommandClasses.containsKey(commandProvider.getCommandPrefix() + "confirm")
+                && commandProvider.getCommandPrefix().equalsIgnoreCase(args[0])
+                && "confirm".startsWith(args[1])) {
+            tabCompleteSet.add("confirm");
+        }
+
+        List<String> tabCompleteList = new ArrayList<String>(tabCompleteSet);
+
+        if (tabCompleteList.size() == 1 && tabCompleteList.get(0).equals(args[1])) {
+            return Collections.emptyList();
+        }
+
+        Collections.sort(tabCompleteList);
+        return tabCompleteList;
     }
 }

@@ -3,6 +3,8 @@ package pluginbase.command;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class CommandTreeTest {
@@ -16,6 +18,7 @@ public class CommandTreeTest {
         commandTree.registerKeysForAlias("two args");
         commandTree.registerKeysForAlias("parent");
         commandTree.registerKeysForAlias("parent child");
+        commandTree.registerKeysForAlias("parent child baby");
         commandTree.registerKeysForAlias("unused first");
         commandTree.registerKeysForAlias("unused second");
     }
@@ -70,7 +73,7 @@ public class CommandTreeTest {
     @Test
     public void test1ArgParentCommandWith2Args() throws Exception {
         String[] args = commandTree.joinArgsForKnownCommands(new String[] {"parent", "one"});
-        assertArrayEquals(new String[] {"parent", "one"}, args);
+        assertArrayEquals(new String[]{"parent", "one"}, args);
     }
 
     @Test
@@ -95,6 +98,24 @@ public class CommandTreeTest {
     public void test2ArgChildCommandWith4Args() throws Exception {
         String[] args = commandTree.joinArgsForKnownCommands(new String[] {"parent", "child", "one", "two"});
         assertArrayEquals(new String[] {"parent child", "one", "two"}, args);
+    }
+
+    @Test
+    public void test3ArgChildCommandWith3Args() throws Exception {
+        String[] args = commandTree.joinArgsForKnownCommands(new String[] {"parent", "child", "baby"});
+        assertArrayEquals(new String[] {"parent child baby"}, args);
+    }
+
+    @Test
+    public void test3ArgChildCommandWith4Args() throws Exception {
+        String[] args = commandTree.joinArgsForKnownCommands(new String[] {"parent", "child", "baby", "one"});
+        assertArrayEquals(new String[] {"parent child baby", "one"}, args);
+    }
+
+    @Test
+    public void test3ArgChildCommandWith5Args() throws Exception {
+        String[] args = commandTree.joinArgsForKnownCommands(new String[] {"parent", "child", "baby", "one", "two"});
+        assertArrayEquals(new String[] {"parent child baby", "one", "two"}, args);
     }
 
     @Test

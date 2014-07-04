@@ -24,28 +24,35 @@ package pluginbase.bukkit.command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginIdentifiableCommand;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.Plugin;
 import pluginbase.messages.messaging.Messaging;
 
 import java.util.Arrays;
+import java.util.List;
 
 class DynamicPluginCommand<P extends Messaging> extends org.bukkit.command.Command implements PluginIdentifiableCommand {
 
-    protected final CommandExecutor owner;
+    protected final TabExecutor executor;
     protected final P registeredWith;
     protected final Plugin owningPlugin;
     protected String[] permissions = new String[0];
 
-    DynamicPluginCommand(String[] aliases, String desc, String usage, CommandExecutor owner, P registeredWith, Plugin plugin) {
+    DynamicPluginCommand(String[] aliases, String desc, String usage, TabExecutor executor, P registeredWith, Plugin plugin) {
         super(aliases[0], desc, usage, Arrays.asList(aliases));
-        this.owner = owner;
+        this.executor = executor;
         this.owningPlugin = plugin;
         this.registeredWith = registeredWith;
     }
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
-        return owner.onCommand(sender, this, label, args);
+        return executor.onCommand(sender, this, label, args);
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        return executor.onTabComplete(sender, this, alias, args);
     }
 
     public void setPermissions(String[] permissions) {

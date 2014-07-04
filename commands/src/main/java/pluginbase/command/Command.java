@@ -8,6 +8,9 @@ import pluginbase.permission.Perm;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * A PluginBase user command.
  * <p/>
@@ -100,4 +103,8 @@ public abstract class Command<P> {
      * of this command.
      */
     public abstract boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context);
+
+    public List<String> tabComplete(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
+        return Collections.emptyList();
+    }
 }
