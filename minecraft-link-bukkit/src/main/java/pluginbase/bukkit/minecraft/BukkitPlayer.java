@@ -23,7 +23,7 @@ class BukkitPlayer extends AbstractBukkitCommandSender<Player> implements Entity
     /** {@inheritDoc} */
     @Override
     public boolean isPlayer() {
-        return false;
+        return true;
     }
 
     /** {@inheritDoc} */
