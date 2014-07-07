@@ -54,7 +54,6 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
         // Initialize our logging.
         logger = PluginLogger.getLogger(this);
 
-        System.out.println("Plugin Class: " + getPluginClass());
         // Register the permission name for the plugin.
         PermFactory.registerPermissionName(getPluginClass(), pluginAgent.getPermissionPrefix());
 
