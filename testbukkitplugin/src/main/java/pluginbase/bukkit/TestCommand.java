@@ -2,6 +2,7 @@ package pluginbase.bukkit;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.bukkit.Language.Nest;
 import pluginbase.command.Command;
 import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
@@ -34,7 +35,8 @@ public class TestCommand extends Command<TestPlugin> {
 
     @Override
     public boolean runCommand(@NotNull BasePlayer sender, @NotNull CommandContext context) {
-        sender.sendMessage("test worked.");
+        getMessager().message(sender, Language.TEST_MESSAGE);
+        getMessager().message(sender, Nest.NESTED_TEST_MESSAGE);
         return true;
     }
 }
