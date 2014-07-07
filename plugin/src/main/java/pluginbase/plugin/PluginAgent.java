@@ -105,7 +105,7 @@ public abstract class PluginAgent<P> {
         getPluginBase().onLoad();
 
         // Setup messages
-        Messages.registerMessages(getPluginBase(), Properties.class);
+        Messages.registerMessages(getCommandProvider(), Properties.class);
         registerMessages();
 
         loaded = true;
@@ -152,7 +152,15 @@ public abstract class PluginAgent<P> {
         }
     }
 
-    public void registerMessage(Class messageContainerClass) {
+    /**
+     * Registers the {@link pluginbase.messages.Message} objects in the given class and any subclasses for usage
+     * in your plugin.
+     *
+     * The {@link pluginbase.messages.Message} objects in the given class <b>must</b> be static and final.
+     *
+     * @param messageContainerClass The class that contains your {@link pluginbase.messages.Message} objects.
+     */
+    public void registerMessages(@NotNull Class messageContainerClass) {
         if (messageClassesToRegister == null) {
             throw new IllegalStateException("Message registration must be done before loadPlugin is called.");
         }
@@ -161,7 +169,7 @@ public abstract class PluginAgent<P> {
 
     void registerMessages() {
         for (Class messageContainerClass : messageClassesToRegister) {
-            Messages.registerMessages(getPluginBase(), messageContainerClass);
+            Messages.registerMessages(getCommandProvider(), messageContainerClass);
         }
         messageClassesToRegister = null;
     }
@@ -310,4 +318,14 @@ public abstract class PluginAgent<P> {
     protected abstract ServerInterface getServerInterface();
 
     protected abstract void saveSettings() throws SendablePluginBaseException;
+
+    @Override
+    public String toString() {
+        return "PluginAgent{" +
+                "plugin=" + plugin +
+                ", pluginClass=" + pluginClass +
+                ", loaded=" + loaded +
+                ", permissionPrefix='" + permissionPrefix + '\'' +
+                '}';
+    }
 }

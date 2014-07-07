@@ -44,6 +44,7 @@ class DefaultMessageProvider implements MessageProvider {
                     "You may insert color into the strings by preceding the color code with &."
                             + "\nExample: &cThis is red\n\nAny place where there is %s represents data"
                             + " to be filled in by the plugin.\nMAKE SURE THESE REMAIN IN ANY REPLACEMENTS!");
+            getLog().fine("Saved language file %s", languageFile);
         } catch (IOException e) {
             getLog().warning("Problem saving language file '%s'", languageFile);
             e.printStackTrace();
@@ -69,11 +70,12 @@ class DefaultMessageProvider implements MessageProvider {
     }
 
     @NotNull
-    private Properties getProperties(@NotNull final LocalizablePlugin localizable, @NotNull final File languageFile){
+    private Properties getProperties(@NotNull final LocalizablePlugin localizable, @NotNull final File languageFile) {
         final Properties language = new Properties();
         if (!languageFile.exists()) {
             try {
                 languageFile.createNewFile();
+                getLog().fine("Created language file %s", languageFile);
             } catch (IOException e) {
                 getLog().warning("Problem creating language file '%s'", languageFile);
                 e.printStackTrace();
@@ -84,6 +86,7 @@ class DefaultMessageProvider implements MessageProvider {
             try {
                 reader = new FileReader(languageFile);
                 language.load(reader);
+                getLog().fine("Loaded language file %s", languageFile);
             } catch (IOException e) {
                 getLog().warning("Problem loading language file '%s'", languageFile);
                 e.printStackTrace();
@@ -96,11 +99,11 @@ class DefaultMessageProvider implements MessageProvider {
             }
         }
         for (final String key : Messages.getMessageKeys(localizable)) {
-
             if (!language.containsKey(key)) {
                 final Message message = Messages.getMessage(localizable, key);
                 if (message != null) {
                     language.put(key, message.getDefault());
+                    getLog().finest("Created new message in language file: %s", message);
                 }
             } else {
                 final Message message = Messages.getMessage(localizable, key);

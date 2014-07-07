@@ -19,7 +19,7 @@ public class TestPlugin extends JavaPlugin {
     public TestPlugin() {
         pluginAgent = BukkitPluginAgent.getPluginAgent(TestPlugin.class, this, "pb");
 
-        pluginAgent.registerMessage(Language.class);
+        pluginAgent.registerMessages(Language.class);
 
         pluginAgent.registerCommand(TestCommand.class);
         pluginAgent.registerCommand(Test2Command.class);

@@ -148,7 +148,7 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
 
     private void loadLanguage() {
         Language languageSettings = settings.getLanguageSettings();
-        pluginAgent.getCommandProvider().loadMessages(new File(getDataFolder(), languageSettings.getLanguageFile()), languageSettings.getLocale());
+        loadMessages(new File(getDataFolder(), languageSettings.getLanguageFile()), languageSettings.getLocale());
     }
 
     /** {@inheritDoc} */
@@ -239,5 +239,12 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     @Override
     public String getName() {
         return getPluginInfo().getName();
+    }
+
+    @Override
+    public String toString() {
+        return "PluginBase{" +
+                "pluginAgent=" + pluginAgent +
+                '}';
     }
 }

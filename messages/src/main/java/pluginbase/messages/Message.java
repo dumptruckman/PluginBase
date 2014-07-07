@@ -145,4 +145,13 @@ public final class Message {
     public int getArgCount() {
         return argCount;
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "def='" + def + '\'' +
+                ", key='" + key + '\'' +
+                ", argCount=" + argCount +
+                '}';
+    }
 }

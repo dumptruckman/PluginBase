@@ -87,6 +87,7 @@ public class Messages {
      * @param clazz the class that contains the definition of the messages.
      */
     public static void registerMessages(@NotNull final LocalizablePlugin localizablePlugin, @NotNull final Class clazz) {
+        Logging.finer("Registering messages in class %s to %s", clazz, localizablePlugin);
         if (clazz.equals(Messages.class)) {
             return;
         }

@@ -16,7 +16,6 @@ import pluginbase.plugin.Settings;
 import pluginbase.plugin.VersionInfoModifier;
 
 import java.io.File;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -40,7 +39,7 @@ public class MockPlugin extends JavaPlugin {
                 return jdbcAgent;
             }
         });
-        pluginAgent.registerMessage(MockMessages.class);
+        pluginAgent.registerMessages(MockMessages.class);
         pluginAgent.loadPluginBase();
     }
 
