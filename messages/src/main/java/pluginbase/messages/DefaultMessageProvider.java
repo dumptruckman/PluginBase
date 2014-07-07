@@ -164,7 +164,7 @@ class DefaultMessageProvider implements MessageProvider {
     public String getLocalizedMessage(@NotNull final String key, @NotNull final Object... args) {
         final String message = _getMessage(key);
         try {
-            return format(locale, _getMessage(key), args);
+            return format(locale, message, args);
         } catch (IllegalFormatException e) {
             getLog().warning("Language string format is incorrect: %s: %s", key, message);
             for (final StackTraceElement ste : Thread.currentThread().getStackTrace()) {
