@@ -120,7 +120,7 @@ class DefaultMessageProvider implements MessageProvider {
         final String message = this.messages.getProperty(key);
         if (message == null) {
             getLog().warning("There is not language entry for %s.  Was it registered?", key);
-            return "";
+            return key;
         }
         return message;
     }

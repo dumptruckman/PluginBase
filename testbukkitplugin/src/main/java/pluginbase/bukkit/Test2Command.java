@@ -38,7 +38,7 @@ public class Test2Command extends Command<TestPlugin> {
 
     @Override
     public boolean runCommand(@NotNull BasePlayer sender, @NotNull CommandContext context) {
-        sender.sendMessage("test worked.");
+        getMessager().message(sender, UnregisteredLanguage.TEST);
         return true;
     }
 
