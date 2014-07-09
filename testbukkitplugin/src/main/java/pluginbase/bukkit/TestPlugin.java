@@ -56,9 +56,4 @@ public class TestPlugin extends JavaPlugin {
     public JdbcAgent getJdbcAgent() {
         return pluginAgent.getPluginBase().getJdbcAgent();
     }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        return pluginAgent.callCommand(sender, command, label, args);
-    }
 }
