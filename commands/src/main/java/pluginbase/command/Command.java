@@ -101,8 +101,12 @@ public abstract class Command<P> {
      * @param context contextual information about the execution of this command.
      * @return true if the command executed as expected or false if the user should be informed about correct usage
      * of this command.
+     * @throws CommandException uncaught command exceptions thrown by this method will be message the user with
+     * the message in {@link pluginbase.command.CommandException#getBundledMessage()}.  If the exception is an instance
+     * of {@link pluginbase.command.CommandUsageException} the command sender will also be messaged the usage for the
+     * command as listed in this command's {@link pluginbase.command.CommandInfo} annotation.
      */
-    public abstract boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context);
+    public abstract boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) throws CommandException;
 
     public List<String> tabComplete(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
         return Collections.emptyList();

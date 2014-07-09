@@ -108,7 +108,7 @@ public abstract class QueuedCommand<P> extends Command<P> implements Runnable {
 
     /** {@inheritDoc} */
     @Override
-    public final boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) {
+    public final boolean runCommand(@NotNull final BasePlayer sender, @NotNull final CommandContext context) throws CommandException {
         this.sender = sender;
         this.context = context;
         getCommandProvider().scheduleQueuedCommandExpiration(this);
