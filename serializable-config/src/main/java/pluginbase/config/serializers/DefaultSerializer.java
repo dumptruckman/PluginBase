@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DefaultSerializer implements Serializer<Object> {
@@ -40,6 +41,8 @@ public class DefaultSerializer implements Serializer<Object> {
         map.put(byte.class, Byte.class);
         map.put(short.class, Short.class);
         PRIMITIVE_WRAPPER_MAP = Collections.unmodifiableMap(map);
+
+        SerializationRegistrar.registerClass(UUID.class);
     }
 
     @NotNull
@@ -71,11 +74,15 @@ public class DefaultSerializer implements Serializer<Object> {
             return null;
         }
 
-        if (SerializationRegistrar.isClassRegistered(object.getClass())) {
-            if (object.getClass().getAnnotation(FauxEnum.class) == null) {
+        Class clazz = object.getClass();
+
+        if (SerializationRegistrar.isClassRegistered(clazz)) {
+            if (clazz.equals(UUID.class)) {
+                return serializeUUID(object);
+            } else if (clazz.getAnnotation(FauxEnum.class) == null) {
                 return serializeRegisteredType(object);
             } else {
-                return serializeFauxEnum(object, object.getClass());
+                return serializeFauxEnum(object, clazz);
             }
         } else if (object instanceof Map) {
             return serializeMap((Map) object);
@@ -84,12 +91,24 @@ public class DefaultSerializer implements Serializer<Object> {
         } else if (object instanceof Enum) {
             return ((Enum) object).name();
         } else if (object instanceof String
-                || PRIMITIVE_WRAPPER_MAP.containsKey(object.getClass())
-                || PRIMITIVE_WRAPPER_MAP.containsValue(object.getClass())) {
+                || PRIMITIVE_WRAPPER_MAP.containsKey(clazz)
+                || PRIMITIVE_WRAPPER_MAP.containsValue(clazz)) {
             return object;
         } else {
-            throw new IllegalArgumentException(object.getClass() + " is not registered for serialization.");
+            throw new IllegalArgumentException(clazz + " is not registered for serialization.");
         }
+    }
+
+    @NotNull
+    protected Map<String, Object> serializeUUID(@NotNull Object object) {
+        if (!object.getClass().equals(UUID.class)) {
+            throw new IllegalArgumentException("You may only use this method to serialize UUID objects.");
+        }
+        UUID uuid = (UUID) object;
+        Map<String, Object> serializedMap = new LinkedHashMap<String, Object>(3);
+        serializedMap.put(ConfigSerializer.SERIALIZED_TYPE_KEY, SerializationRegistrar.getAlias(object.getClass()));
+        serializedMap.put("stringForm", uuid.toString());
+        return serializedMap;
     }
 
     @NotNull
@@ -192,6 +211,13 @@ public class DefaultSerializer implements Serializer<Object> {
         } else {
             Class clazz = ConfigSerializer.getClassFromSerializedData(data);
             if (clazz != null) {
+                if (clazz.equals(UUID.class)) {
+                    try {
+                        return createUUID(data);
+                    } catch (RuntimeException e) {
+                        throw new IllegalArgumentException("The serialized form does not contain enough information to deserialize", e);
+                    }
+                }
                 typeInstance = createInstance(clazz);
             } else {
                 try {
@@ -240,6 +266,10 @@ public class DefaultSerializer implements Serializer<Object> {
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected UUID createUUID(Map data) {
+        return UUID.fromString(data.get("stringForm").toString());
     }
 
     public Object deserializeToObject(@NotNull Map data, @NotNull Object object) {
