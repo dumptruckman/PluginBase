@@ -51,7 +51,6 @@ public class BukkitPerm extends Perm {
                 changed = true;
             }
             if (!permission.getChildren().equals(getChildren())) {
-                permission.getChildren().clear();
                 permission.getChildren().putAll(getChildren());
                 changed = true;
             }
