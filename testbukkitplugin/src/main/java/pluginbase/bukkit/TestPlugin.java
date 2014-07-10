@@ -4,13 +4,19 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.config.SerializationRegistrar;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.jdbc.SpringDatabaseSettings;
 import pluginbase.jdbc.SpringJdbcAgent;
+import pluginbase.plugin.Settings;
 
 import java.util.concurrent.Callable;
 
 public class TestPlugin extends JavaPlugin {
+
+    static {
+        SerializationRegistrar.registerClass(TestConfig.class);
+    }
 
     JdbcAgent jdbcAgent;
 
@@ -18,6 +24,12 @@ public class TestPlugin extends JavaPlugin {
 
     public TestPlugin() {
         pluginAgent = BukkitPluginAgent.getPluginAgent(TestPlugin.class, this, "pb");
+        pluginAgent.setDefaultSettingsCallable(new Callable<Settings>() {
+            @Override
+            public Settings call() throws Exception {
+                return new TestConfig();
+            }
+        });
 
         pluginAgent.registerMessages(Language.class);
 

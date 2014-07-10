@@ -41,8 +41,6 @@ public class DefaultSerializer implements Serializer<Object> {
         map.put(byte.class, Byte.class);
         map.put(short.class, Short.class);
         PRIMITIVE_WRAPPER_MAP = Collections.unmodifiableMap(map);
-
-        SerializationRegistrar.registerClass(UUID.class);
     }
 
     @NotNull
@@ -77,9 +75,7 @@ public class DefaultSerializer implements Serializer<Object> {
         Class clazz = object.getClass();
 
         if (SerializationRegistrar.isClassRegistered(clazz)) {
-            if (clazz.equals(UUID.class)) {
-                return serializeUUID(object);
-            } else if (clazz.getAnnotation(FauxEnum.class) == null) {
+            if (clazz.getAnnotation(FauxEnum.class) == null) {
                 return serializeRegisteredType(object);
             } else {
                 return serializeFauxEnum(object, clazz);
@@ -94,6 +90,8 @@ public class DefaultSerializer implements Serializer<Object> {
                 || PRIMITIVE_WRAPPER_MAP.containsKey(clazz)
                 || PRIMITIVE_WRAPPER_MAP.containsValue(clazz)) {
             return object;
+        } else if (object instanceof UUID) {
+            return object.toString();
         } else {
             throw new IllegalArgumentException(clazz + " is not registered for serialization.");
         }
@@ -196,6 +194,9 @@ public class DefaultSerializer implements Serializer<Object> {
         if (serialized instanceof Map && Map.class.isAssignableFrom(wantedType)) {
             return deserializeMap((Map) serialized, (Class<? extends Map>) wantedType);
         }
+        if (wantedType.equals(UUID.class)) {
+            return UUID.fromString(serialized.toString());
+        }
         try {
             Method valueOf = wantedType.getMethod("valueOf", String.class);
             return valueOf.invoke(null, serialized.toString());
@@ -211,13 +212,6 @@ public class DefaultSerializer implements Serializer<Object> {
         } else {
             Class clazz = ConfigSerializer.getClassFromSerializedData(data);
             if (clazz != null) {
-                if (clazz.equals(UUID.class)) {
-                    try {
-                        return createUUID(data);
-                    } catch (RuntimeException e) {
-                        throw new IllegalArgumentException("The serialized form does not contain enough information to deserialize", e);
-                    }
-                }
                 typeInstance = createInstance(clazz);
             } else {
                 try {
