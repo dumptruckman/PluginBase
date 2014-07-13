@@ -10,9 +10,9 @@ public enum Serializers {
 
     private static final Map<Class<? extends Serializer>, Serializer> SERIALIZER_MAP = new HashMap<Class<? extends Serializer>, Serializer>();
 
-    public static <S extends Serializer> Serializer getSerializer(Class<S> serializerClass) {
+    public static <S extends Serializer> S getSerializer(Class<S> serializerClass) {
         if (SERIALIZER_MAP.containsKey(serializerClass)) {
-            return SERIALIZER_MAP.get(serializerClass);
+            return (S) SERIALIZER_MAP.get(serializerClass);
         }
         try {
             Constructor<S> constructor = serializerClass.getDeclaredConstructor();
