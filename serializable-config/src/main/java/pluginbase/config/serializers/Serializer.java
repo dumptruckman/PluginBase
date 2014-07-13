@@ -33,5 +33,5 @@ public interface Serializer<T> {
      * @throws IllegalArgumentException if the serialized object's type is not deserializable.
      */
     @Nullable
-    T deserialize(@Nullable Object serialized, @NotNull Class<T> wantedType) throws IllegalArgumentException;
+    T deserialize(@Nullable Object serialized, @NotNull Class wantedType) throws IllegalArgumentException;
 }
