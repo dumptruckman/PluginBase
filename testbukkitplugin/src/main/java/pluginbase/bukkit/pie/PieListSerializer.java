@@ -18,7 +18,8 @@ public class PieListSerializer implements Serializer<List<Pie>> {
         }
         List<Object> serialized = new ArrayList<Object>(pieList.size());
         for (Pie pie : pieList) {
-            serialized.add(Serializers.getDefaultSerializer().serialize(pie));
+            Object serializedPie = Serializers.getDefaultSerializer().serialize(pie);
+            serialized.add(serializedPie);
         }
         return serialized;
     }
@@ -31,7 +32,8 @@ public class PieListSerializer implements Serializer<List<Pie>> {
         }
         List<Pie> deserialized = new ArrayList<Pie>(((List) serializedList).size());
         for (Object serialized : (List) serializedList) {
-            deserialized.add((Pie) Serializers.getDefaultSerializer().deserialize(serialized, Pie.class));
+            Pie pie = (Pie) Serializers.getDefaultSerializer().deserialize(serialized, Pie.class);
+            deserialized.add(pie);
         }
         return deserialized;
     }

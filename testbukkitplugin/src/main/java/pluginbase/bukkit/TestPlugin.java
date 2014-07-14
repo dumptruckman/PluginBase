@@ -22,6 +22,8 @@ public class TestPlugin extends JavaPlugin {
 
     static {
         SerializationRegistrar.registerClass(TestConfig.class);
+        SerializationRegistrar.registerClass(Pie.class);
+        SerializationRegistrar.registerClass(PieProperties.class);
     }
 
     JdbcAgent jdbcAgent;
@@ -83,8 +85,6 @@ public class TestPlugin extends JavaPlugin {
                 e.printStackTrace();
             }
         }
-
-        System.out.println(getSettings().getPieList());
     }
 
     public TestConfig getSettings() {

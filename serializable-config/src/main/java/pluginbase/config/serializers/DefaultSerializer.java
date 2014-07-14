@@ -3,6 +3,7 @@ package pluginbase.config.serializers;
 import pluginbase.config.ConfigSerializer;
 import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.annotation.FauxEnum;
+import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.field.Field;
 import pluginbase.config.field.FieldMap;
 import pluginbase.config.field.FieldMapper;
@@ -49,6 +50,15 @@ public class DefaultSerializer implements Serializer<Object> {
         return serializer;
     }
 
+    @Nullable
+    protected Serializer getSerializer(@NotNull Class clazz) {
+        SerializeWith serializeWith = (SerializeWith) clazz.getAnnotation(SerializeWith.class);
+        if (serializeWith != null) {
+            return Serializers.getSerializer(serializeWith.value());
+        }
+        return null;
+    }
+
     /**
      * Transforms the specified object of type {@code T} to a type recognized by a configuration.
      * <p/>
@@ -73,6 +83,11 @@ public class DefaultSerializer implements Serializer<Object> {
         }
 
         Class clazz = object.getClass();
+
+        Serializer otherSerializer = getSerializer(clazz);
+        if (otherSerializer != null && !otherSerializer.getClass().equals(getClass())) {
+            return otherSerializer.serialize(object);
+        }
 
         if (SerializationRegistrar.isClassRegistered(clazz)) {
             if (clazz.getAnnotation(FauxEnum.class) == null) {
@@ -177,6 +192,12 @@ public class DefaultSerializer implements Serializer<Object> {
         if (wantedType.equals(serialized.getClass())) {
             return serialized;
         }
+
+        Serializer otherSerializer = getSerializer(wantedType);
+        if (otherSerializer != null && !otherSerializer.getClass().equals(getClass())) {
+            return otherSerializer.deserialize(serialized, wantedType);
+        }
+
         if (SerializationRegistrar.isClassRegistered(wantedType)) {
             if (wantedType.isAssignableFrom(serialized.getClass())) {
                 return serialized;

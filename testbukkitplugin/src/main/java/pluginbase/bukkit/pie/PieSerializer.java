@@ -13,7 +13,8 @@ public class PieSerializer implements Serializer<Pie> {
         if (pie == null) {
             return null;
         }
-        return Serializers.getDefaultSerializer().serialize(pie.properties);
+        Object serializedPie = Serializers.getDefaultSerializer().serialize(pie.properties);
+        return serializedPie;
     }
 
     @Nullable
@@ -22,6 +23,7 @@ public class PieSerializer implements Serializer<Pie> {
         if (serialized == null) {
             return null;
         }
-        return new Pie((PieProperties) Serializers.getDefaultSerializer().deserialize(serialized, PieProperties.class));
+        PieProperties pieProperties = (PieProperties) Serializers.getDefaultSerializer().deserialize(serialized, PieProperties.class);
+        return new Pie(pieProperties);
     }
 }
