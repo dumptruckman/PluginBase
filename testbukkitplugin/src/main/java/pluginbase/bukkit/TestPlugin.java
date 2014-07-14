@@ -1,9 +1,11 @@
 package pluginbase.bukkit;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.bukkit.commands.TealPeaPieCommand;
+import pluginbase.bukkit.commands.TealPieCommand;
+import pluginbase.bukkit.commands.Test2Command;
+import pluginbase.bukkit.commands.TestCommand;
 import pluginbase.config.SerializationRegistrar;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.jdbc.SpringDatabaseSettings;

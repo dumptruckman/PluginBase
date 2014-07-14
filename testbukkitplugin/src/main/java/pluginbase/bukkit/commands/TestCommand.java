@@ -1,7 +1,10 @@
-package pluginbase.bukkit;
+package pluginbase.bukkit.commands;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.bukkit.Language;
+import pluginbase.bukkit.Language.Nest;
+import pluginbase.bukkit.TestPlugin;
 import pluginbase.command.Command;
 import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
@@ -10,17 +13,13 @@ import pluginbase.messages.Message;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
 
-import java.util.Arrays;
-import java.util.List;
-
 @CommandInfo(
-        primaryAlias = "test2",
-        desc = "Just another test command.",
-        usage = "<name> [action]"
+        primaryAlias = "test",
+        desc = "Just a test command."
 )
-public class Test2Command extends Command<TestPlugin> {
+public class TestCommand extends Command<TestPlugin> {
 
-    public Test2Command(@NotNull CommandProvider<TestPlugin> commandProvider) {
+    public TestCommand(@NotNull CommandProvider<TestPlugin> commandProvider) {
         super(commandProvider);
     }
 
@@ -38,12 +37,8 @@ public class Test2Command extends Command<TestPlugin> {
 
     @Override
     public boolean runCommand(@NotNull BasePlayer sender, @NotNull CommandContext context) {
-        getMessager().message(sender, UnregisteredLanguage.TEST);
+        getMessager().message(sender, Language.TEST_MESSAGE);
+        getMessager().message(sender, Nest.NESTED_TEST_MESSAGE);
         return true;
-    }
-
-    @Override
-    public List<String> tabComplete(@NotNull BasePlayer sender, @NotNull CommandContext context) {
-        return Arrays.asList("crape");
     }
 }

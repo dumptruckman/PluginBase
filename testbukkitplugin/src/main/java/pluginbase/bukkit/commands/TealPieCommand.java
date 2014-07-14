@@ -1,8 +1,9 @@
-package pluginbase.bukkit;
+package pluginbase.bukkit.commands;
 
 import org.bukkit.command.PluginCommand;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.bukkit.TestPlugin;
 import pluginbase.command.Command;
 import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
