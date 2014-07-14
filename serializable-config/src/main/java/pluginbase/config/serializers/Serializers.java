@@ -1,5 +1,8 @@
 package pluginbase.config.serializers;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -47,5 +50,13 @@ public enum Serializers {
 
     public static <T extends Serializer> void registerSerializerInstance(Class<T> serializerClass, T serializer) {
         SERIALIZER_MAP.put(serializerClass, serializer);
+    }
+
+    public static <T> T defaultDeserialize(@Nullable Object serialized, @NotNull Class<T> wantedType) {
+        return (T) getDefaultSerializer().deserialize(serialized, wantedType);
+    }
+
+    public static Object defaultSerialize(@Nullable Object object) {
+        return getDefaultSerializer().serialize(object);
     }
 }
