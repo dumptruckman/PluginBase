@@ -3,6 +3,7 @@ package pluginbase.config.serializers;
 import pluginbase.config.ConfigSerializer;
 import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.annotation.FauxEnum;
+import pluginbase.config.annotation.NoTypeKey;
 import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.field.Field;
 import pluginbase.config.field.FieldMap;
@@ -131,7 +132,9 @@ public class DefaultSerializer implements Serializer<Object> {
         }
         FieldMap fieldMap = FieldMapper.getFieldMap(object.getClass());
         Map<String, Object> serializedMap = new LinkedHashMap<String, Object>(fieldMap.size() + 1);
-        serializedMap.put(ConfigSerializer.SERIALIZED_TYPE_KEY, SerializationRegistrar.getAlias(object.getClass()));
+        if (!(object.getClass().getAnnotation(NoTypeKey.class) != null && Modifier.isFinal(object.getClass().getModifiers()))) {
+            serializedMap.put(ConfigSerializer.SERIALIZED_TYPE_KEY, SerializationRegistrar.getAlias(object.getClass()));
+        }
         for (Field field : fieldMap) {
             if (field.isPersistable()) {
                 serializedMap.put(field.getName(), serializeField(object, field));

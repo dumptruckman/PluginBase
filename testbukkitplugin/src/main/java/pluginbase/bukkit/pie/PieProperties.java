@@ -1,9 +1,9 @@
 package pluginbase.bukkit.pie;
 
-import pluginbase.config.annotation.SerializableAs;
+import pluginbase.config.annotation.NoTypeKey;
 
-@SerializableAs("Pie")
-public class PieProperties {
+@NoTypeKey
+public final class PieProperties {
 
     private String name = "";
 
