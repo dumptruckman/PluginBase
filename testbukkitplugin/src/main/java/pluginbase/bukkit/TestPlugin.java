@@ -6,12 +6,16 @@ import pluginbase.bukkit.commands.TealPeaPieCommand;
 import pluginbase.bukkit.commands.TealPieCommand;
 import pluginbase.bukkit.commands.Test2Command;
 import pluginbase.bukkit.commands.TestCommand;
+import pluginbase.bukkit.pie.Pie;
+import pluginbase.bukkit.pie.PieProperties;
 import pluginbase.config.SerializationRegistrar;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.jdbc.SpringDatabaseSettings;
 import pluginbase.jdbc.SpringJdbcAgent;
+import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.plugin.Settings;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 public class TestPlugin extends JavaPlugin {
@@ -60,6 +64,31 @@ public class TestPlugin extends JavaPlugin {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+
+        List<Pie> pieList = getSettings().getPieList();
+        if (pieList.isEmpty()) {
+            Pie pie = new Pie(new PieProperties());
+            pie.setName("Pie 1");
+            pie.setNumber(1);
+            pie.setTime(System.nanoTime());
+            pieList.add(pie);
+            pie = new Pie(new PieProperties());
+            pie.setName("Pie 2");
+            pie.setNumber(2);
+            pie.setTime(System.nanoTime());
+            pieList.add(pie);
+            try {
+                pluginAgent.getPluginBase().saveSettings();
+            } catch (SendablePluginBaseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println(getSettings().getPieList());
+    }
+
+    public TestConfig getSettings() {
+        return (TestConfig) pluginAgent.getPluginBase().getSettings();
     }
 
     public void onDisable() {
