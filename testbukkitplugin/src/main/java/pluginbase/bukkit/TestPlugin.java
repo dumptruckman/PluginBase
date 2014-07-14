@@ -69,6 +69,7 @@ public class TestPlugin extends JavaPlugin {
 
         List<Pie> pieList = getSettings().getPieList();
         if (pieList.isEmpty()) {
+            System.out.println("Baking some pies...");
             Pie pie = new Pie(new PieProperties());
             pie.setName("Pie 1");
             pie.setNumber(1);

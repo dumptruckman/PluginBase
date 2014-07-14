@@ -128,7 +128,7 @@ public class BukkitPluginAgent<P> extends PluginAgent<P> {
             getLog().fine("Loaded config file!");
         } catch (PluginBaseException e) {  // Catch errors loading the config file and exit out if found.
             getLog().severe("Error loading config file!");
-            e.logException(getLog(), Level.SEVERE);
+            e.printStackTrace();
             disablePlugin();
         } catch (IOException e) {
             getLog().severe("There was a problem saving the config file!");
