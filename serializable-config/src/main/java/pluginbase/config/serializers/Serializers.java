@@ -37,7 +37,7 @@ public enum Serializers {
         }
     }
 
-    public static Serializer<Object> getDefaultSerializer() {
+    public static Serializer getDefaultSerializer() {
         return getSerializer(DefaultSerializer.class);
     }
 
