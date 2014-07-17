@@ -1,0 +1,433 @@
+package pluginbase.config.serializers;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import pluginbase.config.ConfigSerializer;
+import pluginbase.config.SerializationRegistrar;
+import pluginbase.config.annotation.FauxEnum;
+import pluginbase.config.annotation.NoTypeKey;
+import pluginbase.config.annotation.SerializeWith;
+import pluginbase.config.field.Field;
+import pluginbase.config.field.FieldMap;
+import pluginbase.config.field.FieldMapper;
+import pluginbase.config.field.PropertyVetoException;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+public abstract class AbstractSerializer implements Serializer<Object> {
+
+    private static final Class[] EMPTY_PARAM_TYPE_ARRAY = new Class[0];
+    private static final Object[] EMPTY_PARAM_VALUE_ARRAY = new Object[0];
+    private static final Class[] SIZE_PARAM_TYPE_ARRAY = new Class[] {Integer.class};
+
+    /** Contains a mapping of primitive classes to their object forms. */
+    protected static final Map<Class, Class> PRIMITIVE_WRAPPER_MAP;
+
+    static {
+        Map<Class, Class> map = new HashMap<>();
+        map.put(int.class, Integer.class);
+        map.put(boolean.class, Boolean.class);
+        map.put(long.class, Long.class);
+        map.put(double.class, Double.class);
+        map.put(float.class, Float.class);
+        map.put(byte.class, Byte.class);
+        map.put(short.class, Short.class);
+        PRIMITIVE_WRAPPER_MAP = Collections.unmodifiableMap(map);
+    }
+
+    /**
+     * Retrieves the {@link pluginbase.config.serializers.Serializer} for the given field.
+     * <p/>
+     * If no serializer has been specified with the {@link pluginbase.config.annotation.SerializeWith} annotation then
+     * then default serializer will be returned.
+     *
+     * @param field The field to get the serializer for.
+     * @return The serializer for the field.
+     */
+    @NotNull
+    protected Serializer getSerializer(@NotNull Field field) {
+        Serializer serializer = field.getSerializer();
+        return serializer;
+    }
+
+    /**
+     * Retrieves the {@link pluginbase.config.serializers.Serializer} for the given class.
+     * <p/>
+     * If no serializer has been specified with the {@link pluginbase.config.annotation.SerializeWith} annotation then
+     * then default serializer will be returned.
+     *
+     * @param clazz The class to get the serializer for.
+     * @return The serializer for the class.
+     */
+    @NotNull
+    protected Serializer getSerializer(@NotNull Class clazz) {
+        SerializeWith serializeWith = (SerializeWith) clazz.getAnnotation(SerializeWith.class);
+        if (serializeWith != null) {
+            return Serializers.getSerializer(serializeWith.value());
+        }
+        return this;
+    }
+
+    /** {@inheritDoc} */
+    @Nullable
+    @Override
+    public final Object serialize(@Nullable Object object) {
+        if (object == null) {
+            return null;
+        }
+
+        Class clazz = object.getClass();
+
+        Serializer otherSerializer = getSerializer(clazz);
+        if (!(otherSerializer instanceof AbstractSerializer)) {
+            return otherSerializer.serialize(object);
+        }
+        AbstractSerializer serializer = (AbstractSerializer) otherSerializer;
+
+        if (SerializationRegistrar.isClassRegistered(clazz)) {
+            if (clazz.getAnnotation(FauxEnum.class) == null) {
+                return serializer.serializeRegisteredType(object);
+            } else {
+                return serializer.serializeFauxEnum(object, clazz);
+            }
+        } else if (object instanceof Map) {
+            return serializer.serializeMap((Map) object);
+        } else if (object instanceof Collection) {
+            return serializer.serializeCollection((Collection) object);
+        } else if (object instanceof Enum) {
+            return serializer.serializeEnum((Enum) object);
+        } else if (object instanceof String) {
+            return serializer.serializeString((String) object);
+        } else if (object instanceof UUID) {
+            return serializer.serializeUUID((UUID) object);
+        } else if (PRIMITIVE_WRAPPER_MAP.containsValue(clazz) || PRIMITIVE_WRAPPER_MAP.containsKey(clazz)) {
+            return serializer.serializePrimitive(object);
+        } else {
+            throw new IllegalArgumentException(clazz + " is not registered for serialization.");
+        }
+    }
+
+    @Nullable
+    protected Object serializeEnum(@NotNull Enum e) {
+        return e.name();
+    }
+
+    @Nullable
+    protected Object serializeString(@NotNull String string) {
+        return string;
+    }
+
+    @Nullable
+    protected Object serializeUUID(@NotNull UUID uuid) {
+        return uuid.toString();
+    }
+
+    @Nullable
+    protected Object serializePrimitive(@NotNull Object primitive) {
+        return primitive;
+    }
+
+    @Nullable
+    protected Map<String, Object> serializeMap(@NotNull Map<?, ?> map) {
+        Map<String, Object> result = new LinkedHashMap<>(map.size());
+        for (Map.Entry entry : map.entrySet()) {
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+            if (key != null && value != null) {
+                result.put(key.toString(), serialize(entry.getValue()));
+            }
+        }
+        return result;
+    }
+
+    @Nullable
+    protected List<Object> serializeCollection(@NotNull Collection collection) {
+        return new CopyOnWriteArrayList<Object>(collection);
+    }
+
+    @Nullable
+    protected String serializeFauxEnum(@NotNull Object fauxEnumValue, Class fauxEnumClass) {
+        try {
+            Method method = fauxEnumClass.getMethod("name");
+            return (String) method.invoke(fauxEnumValue);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("The class " + fauxEnumClass + " is annotated as a FauxEnum but is lacking the required name method.");
+        }
+    }
+
+    @Nullable
+    protected Object serializeRegisteredType(@NotNull Object object) {
+        if (!SerializationRegistrar.isClassRegistered(object.getClass())) {
+            throw new IllegalArgumentException(object.getClass() + " is not registered for serialization.");
+        }
+        FieldMap fieldMap = FieldMapper.getFieldMap(object.getClass());
+        Map<String, Object> serializedMap = new LinkedHashMap<String, Object>(fieldMap.size() + 1);
+        if (!(object.getClass().getAnnotation(NoTypeKey.class) != null && Modifier.isFinal(object.getClass().getModifiers()))) {
+            serializedMap.put(ConfigSerializer.SERIALIZED_TYPE_KEY, SerializationRegistrar.getAlias(object.getClass()));
+        }
+        for (Field field : fieldMap) {
+            if (field.isPersistable()) {
+                serializedMap.put(field.getName(), serializeField(object, field));
+            }
+        }
+        return serializedMap;
+    }
+
+    @Nullable
+    protected Object serializeField(@NotNull Object object, @NotNull Field field) {
+        Object value = field.getValue(object);
+        Serializer serializer = getSerializer(field);
+        return serializer.serialize(value);
+    }
+
+    @NotNull
+    @Override
+    public Object deserialize(@NotNull Object serialized, @NotNull Class wantedType) throws IllegalArgumentException {
+        if (PRIMITIVE_WRAPPER_MAP.containsKey(wantedType)) {
+            wantedType = PRIMITIVE_WRAPPER_MAP.get(wantedType);
+        }
+        if (wantedType.equals(serialized.getClass())) {
+            return serialized;
+        }
+
+        Serializer otherSerializer = getSerializer(wantedType);
+        if (!(otherSerializer instanceof AbstractSerializer)) {
+            return otherSerializer.deserialize(serialized, wantedType);
+        }
+        AbstractSerializer serializer = (AbstractSerializer) otherSerializer;
+
+        if (SerializationRegistrar.isClassRegistered(wantedType)) {
+            if (wantedType.isAssignableFrom(serialized.getClass())) {
+                return serialized;
+            }else if (serialized instanceof Map) {
+                return serializer.deserializeRegisteredType((Map) serialized, wantedType);
+            } else if (wantedType.getAnnotation(FauxEnum.class) != null && serialized instanceof String) {
+                return serializer.deserializeFauxEnum((String) serialized, wantedType);
+            } else {
+                throw new IllegalArgumentException("Deserializing the registered type '" + wantedType + "' requires serialized data to be a Map or FauxEnum but is instead: " + serialized);
+            }
+        }
+        if (serialized instanceof Collection && Collection.class.isAssignableFrom(wantedType)) {
+            return serializer.deserializeCollection((Collection) serialized, (Class<? extends Collection>) wantedType);
+        }
+        if (serialized instanceof Map && Map.class.isAssignableFrom(wantedType)) {
+            return serializer.deserializeMap((Map) serialized, (Class<? extends Map>) wantedType);
+        }
+        if (wantedType.equals(UUID.class)) {
+            return UUID.fromString(serialized.toString());
+        }
+        try {
+            Method valueOf = wantedType.getMethod("valueOf", String.class);
+            return valueOf.invoke(null, serialized.toString());
+        } catch (Exception e) {
+            return serializer.deserializeUnknownType(serialized);
+        }
+    }
+
+    protected Object deserializeRegisteredType(@NotNull Map data, @NotNull Class wantedType) {
+        Object typeInstance;
+        if (Modifier.isFinal(wantedType.getModifiers())) {
+            typeInstance = createInstance(wantedType);
+        } else {
+            Class clazz = ConfigSerializer.getClassFromSerializedData(data);
+            if (clazz != null) {
+                typeInstance = createInstance(clazz);
+            } else {
+                try {
+                    typeInstance = createInstance(wantedType);
+                } catch (RuntimeException e) {
+                    throw new IllegalArgumentException("The serialized form does not contain enough information to deserialize", e);
+                }
+            }
+        }
+        return deserializeToObject(data, typeInstance);
+    }
+
+    protected Object deserializeFauxEnum(String value, Class fauxEnumClass) {
+        try {
+            Method valueOfMethod = fauxEnumClass.getDeclaredMethod("valueOf", String.class);
+            return valueOfMethod.invoke(null, value);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("The class " + fauxEnumClass + " is annotated as a FauxEnum but is lacking the required valueOf method.");
+        }
+    }
+
+    protected <T> T createInstance(Class<T> wantedType) {
+        return createInstance(wantedType, EMPTY_PARAM_TYPE_ARRAY, EMPTY_PARAM_VALUE_ARRAY);
+    }
+
+    protected <T> T createInstance(Class<T> wantedType, Class[] parameterTypes, Object[] parameterValues) {
+        try {
+            Constructor<T> constructor = wantedType.getDeclaredConstructor(parameterTypes);
+            boolean accessible = constructor.isAccessible();
+            if (!accessible) {
+                constructor.setAccessible(true);
+            }
+            try {
+                return constructor.newInstance(parameterValues);
+            } finally {
+                if (!accessible) {
+                    constructor.setAccessible(false);
+                }
+            }
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected UUID createUUID(Map data) {
+        return UUID.fromString(data.get("stringForm").toString());
+    }
+
+    public Object deserializeToObject(@NotNull Map data, @NotNull Object object) {
+        if (!SerializationRegistrar.isClassRegistered(object.getClass())) {
+            throw new IllegalArgumentException(object.getClass() + " is not registered for serialization.");
+        }
+        FieldMap fieldMap = FieldMapper.getFieldMap(object.getClass());
+        for (Object key : data.keySet()) {
+            if (key.equals(ConfigSerializer.SERIALIZED_TYPE_KEY)) {
+                continue;
+            }
+            Field field = fieldMap.getField(key.toString());
+            if (field != null) {
+                Object fieldValue = field.getValue(object);
+                Object serializedFieldData = data.get(key);
+                if (serializedFieldData == null) {
+                    fieldValue = null;
+                } else {
+                    if (isEligibleForDeserializationToObject(serializedFieldData, fieldValue)) {
+                        fieldValue = deserializeFieldAs(field, serializedFieldData, fieldValue.getClass());
+                    } else {
+                        fieldValue = deserializeField(field, serializedFieldData);
+                    }
+                }
+                try {
+                    field.forceSet(object, fieldValue);
+                } catch (PropertyVetoException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                // TODO fail silently or no?
+            }
+        }
+        return object;
+    }
+
+    protected boolean isEligibleForDeserializationToObject(@NotNull Object data, @Nullable Object object) {
+        return object != null && SerializationRegistrar.isClassRegistered(object.getClass()) && data instanceof Map;
+    }
+
+    protected Object deserializeFieldAs(@NotNull Field field, @NotNull Object data, @NotNull Class asClass) {
+        Serializer serializer = getSerializer(field);
+        try {
+            return serializer.deserialize(data, asClass);
+        } catch (Exception e) {
+            throw new RuntimeException("Exception while deserializing field '" + field + "' as class '" + asClass + "'", e);
+        }
+    }
+
+    protected Object deserializeField(Field field, Object data) {
+        Serializer serializer = getSerializer(field);
+        try {
+            return serializer.deserialize(data, field.getType());
+        } catch (Exception e) {
+            throw new RuntimeException("Exception while deserializing field: " + field, e);
+        }
+    }
+
+    protected Object deserializeCollection(@NotNull Collection data, @NotNull Class<? extends Collection> wantedType) {
+        Collection collection = createCollection(wantedType, data.size());
+        for (Object object : data) {
+            collection.add(deserializeUnknownType(object));
+        }
+        return collection;
+    }
+
+    protected Collection createCollection(Class<? extends Collection> wantedType, int size) {
+        if (wantedType.isInterface()) {
+            return new ArrayList(size);
+        } else {
+            try {
+                Object[] paramValues = new Object[] { size };
+                return createInstance(wantedType, SIZE_PARAM_TYPE_ARRAY, paramValues);
+            } catch (RuntimeException e) {
+                if (e.getCause() instanceof NoSuchMethodException) {
+                    try {
+                        return createInstance(wantedType);
+                    } catch (RuntimeException e1) {
+                        if (e1.getCause() instanceof NoSuchMethodException) {
+                            return new ArrayList(size);
+                        } else {
+                            throw e;
+                        }
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
+    }
+
+    protected Object deserializeUnknownType(Object object) {
+        if (object instanceof Map) {
+            Map map = (Map) object;
+            if (ConfigSerializer.getClassFromSerializedData(map) != null) {
+                return ConfigSerializer.deserialize(map);
+            } else {
+                return deserializeMap(map, map.getClass());
+            }
+        } else if (object instanceof Collection) {
+            Collection coll = (Collection) object;
+            return deserializeCollection(coll, coll.getClass());
+        } else {
+            return object;
+        }
+    }
+
+    protected Object deserializeMap(@NotNull Map<?, ?> data, @NotNull Class<? extends Map> wantedType) {
+        if (data.containsKey(ConfigSerializer.SERIALIZED_TYPE_KEY)) {
+            return ConfigSerializer.deserialize(data);
+        }
+        Map map = createMap(wantedType, data.size());
+        for (Map.Entry entry : data.entrySet()) {
+            map.put(deserializeUnknownType(entry.getKey()), deserializeUnknownType(entry.getValue()));
+        }
+        return map;
+    }
+
+    protected Map createMap(Class<? extends Map> wantedType, int size) {
+        if (wantedType.isInterface()) {
+            return new LinkedHashMap(size);
+        } else {
+            try {
+                Object[] paramValues = new Object[] { size };
+                return createInstance(wantedType, SIZE_PARAM_TYPE_ARRAY, paramValues);
+            } catch (RuntimeException e) {
+                if (e.getCause() instanceof NoSuchMethodException) {
+                    try {
+                        return createInstance(wantedType);
+                    } catch (RuntimeException e1) {
+                        if (e1.getCause() instanceof NoSuchMethodException) {
+                            return new LinkedHashMap(size);
+                        } else {
+                            throw e;
+                        }
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
+    }
+}
