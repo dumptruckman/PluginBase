@@ -11,6 +11,7 @@ import java.util.Map;
 public enum Serializers {
     ;
 
+    private static final DefaultSerializer DEFAULT_SERIALIZER = new DefaultSerializer();
     private static final Map<Class<? extends Serializer>, Serializer> SERIALIZER_MAP = new HashMap<Class<? extends Serializer>, Serializer>();
 
     public static <S extends Serializer> S getSerializer(Class<S> serializerClass) {
@@ -40,12 +41,8 @@ public enum Serializers {
         }
     }
 
-    public static Serializer getDefaultSerializer() {
-        return getSerializer(DefaultSerializer.class);
-    }
-
-    public static void setDefaultSerializer(Serializer<Object> serializer) {
-        SERIALIZER_MAP.put(DefaultSerializer.class, serializer);
+    public static DefaultSerializer getDefaultSerializer() {
+        return DEFAULT_SERIALIZER;
     }
 
     public static <T extends Serializer> void registerSerializerInstance(Class<T> serializerClass, T serializer) {
