@@ -1,5 +1,6 @@
 package pluginbase.bukkit.config;
 
+import org.bukkit.ChatColor;
 import pluginbase.config.examples.Child;
 import pluginbase.config.examples.Comprehensive;
 import pluginbase.config.examples.FakeEnum;
@@ -46,7 +47,7 @@ public class YamlConfigurationTest extends BukkitConfigurationTest {
             "- 4\n" +
             "- 5\n" +
             "'42': The Answer\n" +
-            "section-test: §4\n";
+            "section-test: " + ChatColor.COLOR_CHAR + "4\n";
     }
 
     @Test
