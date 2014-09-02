@@ -262,4 +262,35 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
         assertFalse(parent.equals(config.get("test")));
         assertEquals(parent, config.getToObject("test", new Parent(new Child(false))));
     }
+
+    @Test
+    public void testSaveLoadSaveLoad_File() throws Exception {
+        FileConfiguration config = getConfig();
+        File file = testFolder.newFile("test.config");
+
+        for (Map.Entry<String, Object> entry : getTestValues().entrySet()) {
+            config.set(entry.getKey(), entry.getValue());
+        }
+        config.save(file);
+
+        final String saved = getTestValuesString();
+
+        config.load(file);
+        Map<String, Object> values = getTestValues();
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            assertEquals(entry.getValue(), config.get(entry.getKey()));
+        }
+        assertEquals(values.keySet(), config.getKeys(true));
+        assertEquals(saved, config.saveToString());
+
+        config.save(file);
+        config.load(file);
+
+        values = getTestValues();
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            assertEquals(entry.getValue(), config.get(entry.getKey()));
+        }
+        assertEquals(values.keySet(), config.getKeys(true));
+        assertEquals(saved, config.saveToString());
+    }
 }

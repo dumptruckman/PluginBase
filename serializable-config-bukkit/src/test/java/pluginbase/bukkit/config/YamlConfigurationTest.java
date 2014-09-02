@@ -45,7 +45,8 @@ public class YamlConfigurationTest extends BukkitConfigurationTest {
             "- 3\n" +
             "- 4\n" +
             "- 5\n" +
-            "'42': The Answer\n";
+            "'42': The Answer\n" +
+            "section-test: §4\n";
     }
 
     @Test

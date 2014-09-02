@@ -86,42 +86,6 @@ public abstract class BukkitConfiguration extends FileConfiguration {
     }
 
     @Override
-    public void load(@NotNull final InputStream stream) throws IOException, InvalidConfigurationException {
-        InputStreamReader reader = new InputStreamReader(stream, UTF8);
-        StringBuilder builder = new StringBuilder();
-        BufferedReader input = new BufferedReader(reader);
-
-        try {
-            String line;
-            while ((line = input.readLine()) != null) {
-                builder.append(line);
-                builder.append('\n');
-            }
-        } finally {
-            input.close();
-        }
-
-        loadFromString(builder.toString());
-    }
-
-    @Override
-    public void save(@NotNull final File file) throws IOException {
-        Files.createParentDirs(file);
-
-        final String data = saveToString();
-
-        BufferedWriter writer = null;
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), UTF8));
-            writer.write(data);
-        } finally {
-            if (writer != null) {
-                writer.close();
-            }
-        }
-    }
-
-    @Override
     protected abstract String buildHeader();
 
     /**
