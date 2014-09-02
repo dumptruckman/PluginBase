@@ -34,6 +34,8 @@ enum CommandLoader {
                     }
                 }
             }
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("A command class must have a constructor that takes a single CommandProvider instance only.", e);
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
