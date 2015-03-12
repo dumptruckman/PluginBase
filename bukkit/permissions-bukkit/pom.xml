@@ -7,14 +7,7 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Permissions-Bukkit</artifactId>
-    <version>${permissions-bukkit.version}</version>
-
-    <repositories>
-        <repository>
-            <id>bukkit</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
-    </repositories>
+    <version>${permissions.version}</version>
 
     <dependencies>
         <dependency>

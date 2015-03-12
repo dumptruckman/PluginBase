@@ -7,14 +7,7 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Messaging-Bukkit</artifactId>
-    <version>${messaging-bukkit.version}</version>
-
-    <repositories>
-        <repository>
-            <id>bukkit</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
-    </repositories>
+    <version>${messaging.version}</version>
 
     <dependencies>
         <dependency>

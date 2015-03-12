@@ -7,8 +7,11 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Base</artifactId>
-    <version>1.5-SNAPSHOT</version>
     <packaging>pom</packaging>
+
+    <properties>
+
+    </properties>
 
     <!-- Modules -->
     <modules>

@@ -7,21 +7,11 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Bukkit</artifactId>
-    <version>1.5-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
         <!-- Bukkit Version -->
         <bukkit.version>1.7.9-R0.2</bukkit.version>
-        <!-- PluginBase Module Versions -->
-        <plugin-bukkit.version>${plugin.version}</plugin-bukkit.version>
-        <commands-bukkit.version>${commands.version}</commands-bukkit.version>
-        <messaging-bukkit.version>${messaging.version}</messaging-bukkit.version>
-        <minecraft-link-bukkit.version>${minecraft-link.version}</minecraft-link-bukkit.version>
-        <permissions-bukkit.version>${permissions.version}</permissions-bukkit.version>
-        <properties-bukkit.version>${properties.version}</properties-bukkit.version>
-        <serializable-config-bukkit.version>${serializable-config.version}</serializable-config-bukkit.version>
-        <testbukkitplugin.version>${plugin.version}</testbukkitplugin.version>
     </properties>
 
     <!-- Modules -->
@@ -35,6 +25,13 @@
         <module>testbukkitplugin</module>
         <module>serializable-config-bukkit</module>
     </modules>
+
+    <repositories>
+        <repository>
+            <id>bukkit</id>
+            <url>http://repo.bukkit.org/content/groups/public/</url>
+        </repository>
+    </repositories>
 
     <dependencies>
         <dependency>

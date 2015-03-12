@@ -7,14 +7,7 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Minecraft-Link-Bukkit</artifactId>
-    <version>${minecraft-link-bukkit.version}</version>
-
-    <repositories>
-        <repository>
-            <id>bukkit</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
-    </repositories>
+    <version>${minecraft-link.version}</version>
 
     <dependencies>
         <dependency>

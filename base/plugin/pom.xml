@@ -7,7 +7,7 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Plugin</artifactId>
-    <version>${plugin.version}</version>
+    <version>${pluginbase.version}</version>
 
     <repositories>
         <repository>

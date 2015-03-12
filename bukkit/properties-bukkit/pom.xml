@@ -7,14 +7,7 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Properties-Bukkit</artifactId>
-    <version>${properties-bukkit.version}</version>
-
-    <repositories>
-        <repository>
-            <id>bukkit</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
-    </repositories>
+    <version>${properties.version}</version>
 
     <dependencies>
         <dependency>

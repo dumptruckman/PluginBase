@@ -78,6 +78,7 @@
     <modules>
         <module>base</module>
         <module>bukkit</module>
+        <module>sponge</module>
         <!--module>javadoc</module-->
     </modules>
 

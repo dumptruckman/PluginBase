@@ -7,21 +7,14 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>TestBukkitPlugin</artifactId>
-    <version>${testbukkitplugin.version}</version>
-
-    <repositories>
-        <repository>
-            <id>bukkit</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
-    </repositories>
+    <version>${pluginbase.version}</version>
 
     <dependencies>
         <!-- Start of PluginBase Dependency -->
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Plugin-Bukkit</artifactId>
-            <version>${plugin-bukkit.version}</version>
+            <version>${plugin.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>

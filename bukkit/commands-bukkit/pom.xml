@@ -7,14 +7,7 @@
         <version>1.5-SNAPSHOT</version>
     </parent>
     <artifactId>Commands-Bukkit</artifactId>
-    <version>${commands-bukkit.version}</version>
-
-    <repositories>
-        <repository>
-            <id>bukkit</id>
-            <url>http://repo.bukkit.org/content/groups/public/</url>
-        </repository>
-    </repositories>
+    <version>${commands.version}</version>
 
     <dependencies>
         <dependency>
@@ -27,14 +20,14 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Messaging-Bukkit</artifactId>
-            <version>${messaging-bukkit.version}</version>
+            <version>${messaging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Minecraft-Link-Bukkit</artifactId>
-            <version>${minecraft-link-bukkit.version}</version>
+            <version>${minecraft-link.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
