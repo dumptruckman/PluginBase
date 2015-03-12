@@ -62,33 +62,43 @@ public abstract class PermFactory {
     }
 
     static PermFactory newUncheckedPerm(final Class pluginClass, final String permName) {
-        final boolean access = factory.isAccessible();
-        try {
-            if (!access) {
-                factory.setAccessible(true);
-            }
-            return factory.newInstance(pluginClass, permName);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } finally {
-            if (!access) {
-                factory.setAccessible(false);
+        if (factory != null) {
+            final boolean access = factory.isAccessible();
+            try {
+                if (!access) {
+                    factory.setAccessible(true);
+                }
+                return factory.newInstance(pluginClass, permName);
+            } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                e.printStackTrace();
+            } finally {
+                if (!access) {
+                    factory.setAccessible(false);
+                }
             }
         }
-        return new PermFactory(pluginClass, permName) {
-            @Override
-            public Perm build() {
-                return new Perm(pluginClass, this.name, this.description, this.children, this.permissionDefault,
-                        this.parents, this.baseName, this.specificOnly) {
-                    @Override
-                    protected void verify(final String name) { }
-                };
+        return new BasicPermFactory(pluginClass, permName);
+    }
+
+    private static class BasicPermFactory extends PermFactory {
+        BasicPermFactory(Class pluginClass, String permName) {
+            super(pluginClass, permName);
+        }
+
+        @Override
+        public Perm build() {
+            return new BasicPerm(pluginClass, this.name, this.description, this.children, this.permissionDefault,
+                    this.parents, this.baseName, this.specificOnly);
+        }
+
+        private static class BasicPerm  extends Perm {
+            BasicPerm(Class declaringPluginClass, String name, String description, Map<String, Boolean> children, PermDefault permDefault, Map<String, Boolean> parents, boolean baseName, boolean specificOnly) {
+                super(declaringPluginClass, name, description, children, permDefault, parents, baseName, specificOnly);
             }
-        };
+
+            @Override
+            protected void verify(final String name) { }
+        }
     }
 
     /**
@@ -104,6 +114,18 @@ public abstract class PermFactory {
     public static void registerPermissionFactory(final Class<? extends PermFactory> clazz) {
         try {
             factory = clazz.getDeclaredConstructor(Class.class, String.class);
+            Perm.init();
+        } catch (NoSuchMethodException e) {
+            throw new IllegalArgumentException("PermFactory must have constructor accepting single string!");
+        }
+    }
+
+    /**
+     * Instructs PermFactory to create basic permissions that require no special handling by the implementation.
+     */
+    public static void useBasicPermissionFactory() {
+        try {
+            factory = BasicPermFactory.class.getDeclaredConstructor(Class.class, String.class);
             Perm.init();
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException("PermFactory must have constructor accepting single string!");
