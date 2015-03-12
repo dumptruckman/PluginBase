@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+        <artifactId>PluginBase</artifactId>
+        <version>1.5-SNAPSHOT</version>
+    </parent>
+    <artifactId>Bukkit</artifactId>
+    <version>1.5-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <!-- Bukkit Version -->
+        <bukkit.version>1.7.9-R0.2</bukkit.version>
+        <!-- PluginBase Module Versions -->
+        <plugin-bukkit.version>${plugin.version}</plugin-bukkit.version>
+        <commands-bukkit.version>${commands.version}</commands-bukkit.version>
+        <messaging-bukkit.version>${messaging.version}</messaging-bukkit.version>
+        <minecraft-link-bukkit.version>${minecraft-link.version}</minecraft-link-bukkit.version>
+        <permissions-bukkit.version>${permissions.version}</permissions-bukkit.version>
+        <properties-bukkit.version>${properties.version}</properties-bukkit.version>
+        <serializable-config-bukkit.version>${serializable-config.version}</serializable-config-bukkit.version>
+        <testbukkitplugin.version>${plugin.version}</testbukkitplugin.version>
+    </properties>
+
+    <!-- Modules -->
+    <modules>
+        <module>messaging-bukkit</module>
+        <module>permissions-bukkit</module>
+        <module>properties-bukkit</module>
+        <module>minecraft-link-bukkit</module>
+        <module>commands-bukkit</module>
+        <module>plugin-bukkit</module>
+        <module>testbukkitplugin</module>
+        <module>serializable-config-bukkit</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <version>${bukkit.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+</project>
