@@ -11,6 +11,7 @@ import pluginbase.bukkit.command.BukkitCommandProvider;
 import pluginbase.bukkit.config.BukkitConfiguration;
 import pluginbase.bukkit.config.YamlConfiguration;
 import pluginbase.bukkit.messaging.BukkitMessager;
+import pluginbase.bukkit.messaging.BukkitMessagerProvider;
 import pluginbase.bukkit.minecraft.BukkitTools;
 import pluginbase.bukkit.permission.BukkitPermFactory;
 import pluginbase.command.CommandHandler;
@@ -18,6 +19,7 @@ import pluginbase.command.CommandProvider;
 import pluginbase.jdbc.DatabaseSettings;
 import pluginbase.messages.PluginBaseException;
 import pluginbase.messages.messaging.Messager;
+import pluginbase.messages.messaging.MessagerFactory;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.PermFactory;
@@ -36,6 +38,7 @@ public class BukkitPluginAgent<P> extends PluginAgent<P> {
 
     static {
         PermFactory.registerPermissionFactory(BukkitPermFactory.class);
+        MessagerFactory.registerMessagerProvider(new BukkitMessagerProvider());
     }
 
     @NotNull

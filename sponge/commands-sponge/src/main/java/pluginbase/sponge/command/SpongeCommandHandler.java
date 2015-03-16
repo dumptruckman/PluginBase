@@ -20,7 +20,8 @@ public class SpongeCommandHandler extends CommandHandler implements CommandCompl
 
     @Override
     protected boolean register(@NotNull CommandRegistration commandInfo, @NotNull Command command) {
-        return false;
+        SpongeCommand spongeCommand = new SpongeCommand(commandProvider, command, commandInfo.getUsage(), commandInfo.getDesc());
+        return SpongeTools.getGame().getCommandDispatcher().register(commandProvider, spongeCommand, commandInfo.getAliases()).isPresent();
     }
 
     @NotNull
