@@ -21,6 +21,7 @@
         <module>serializable-config-sponge</module>
         <module>minecraft-link-sponge</module>
         <module>commands-sponge</module>
+        <module>plugin-sponge</module>
     </modules>
 
     <repositories>

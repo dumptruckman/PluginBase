@@ -20,6 +20,14 @@ public class SpongeCommandProvider<P> extends AbstractCommandProvider<P> {
     private final File dataFolder;
     private final SpongeCommandHandler commandHandler;
 
+    public static <P> SpongeCommandProvider<P> getSpongeCommandProvider(P plugin, String pluginName, String commandPrefix, File dataFolder) {
+        return new SpongeCommandProvider<P>(plugin, commandPrefix, true, pluginName, dataFolder);
+    }
+
+    public static <P> SpongeCommandProvider<P> getSpongeCommandProviderNoQueuedCommands(P plugin, String pluginName, String commandPrefix, File dataFolder) {
+        return new SpongeCommandProvider<P>(plugin, commandPrefix, false, pluginName, dataFolder);
+    }
+
     private SpongeCommandProvider(P plugin, String commandPrefix, boolean useQueuedCommands,
                                   String pluginName, File dataFolder) {
         super(plugin, commandPrefix, useQueuedCommands);
