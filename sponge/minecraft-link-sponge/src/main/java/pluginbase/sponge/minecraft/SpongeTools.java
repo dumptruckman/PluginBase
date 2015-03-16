@@ -75,7 +75,7 @@ public class SpongeTools {
      * Converts {@link com.flowpowered.math.vector.Vector3d} objects to
      * {@link pluginbase.minecraft.location.Vector} objects.
      *
-     * @param v The Bukkit vector.
+     * @param v The Sponge vector.
      * @return The PluginBase vector.
      */
     @NotNull
@@ -88,7 +88,7 @@ public class SpongeTools {
      * to {@link com.flowpowered.math.vector.Vector3d} objects.
      *
      * @param v The PluginBase vector.
-     * @return The Bukkit vector.
+     * @return The Sponge vector.
      */
     @NotNull
     public static Vector3d convertVector(final Vector v) {
