@@ -1,3 +1,5 @@
+package pluginbase.sponge;
+
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.plugin.PluginContainer;
 import pluginbase.plugin.PluginInfo;

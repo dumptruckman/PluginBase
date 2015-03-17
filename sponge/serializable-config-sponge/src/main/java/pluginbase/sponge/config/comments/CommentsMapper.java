@@ -2,7 +2,6 @@ package pluginbase.sponge.config.comments;
 
 import pluginbase.comments.yaml.YamlFileCommentInstrumenter;
 import pluginbase.config.SerializationRegistrar;
-import pluginbase.sponge.config.YamlConfiguration;
 import pluginbase.config.field.Field;
 import pluginbase.config.field.FieldMap;
 import pluginbase.config.field.FieldMapper;
@@ -11,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class CommentsMapper {
-
+/* TODO make comments work!
     @NotNull
     private String currentPath;
     private Map<?, ?> configMap = null;
@@ -89,5 +88,5 @@ public class CommentsMapper {
     private String getNewPath(Field field) {
         return currentPath + (currentPath.isEmpty() ? "" : ".") + field.getName();
     }
-
+*/
 }

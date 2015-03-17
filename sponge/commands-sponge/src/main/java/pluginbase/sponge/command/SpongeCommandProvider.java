@@ -2,17 +2,10 @@ package pluginbase.sponge.command;
 
 import org.jetbrains.annotations.NotNull;
 import pluginbase.command.AbstractCommandProvider;
-import pluginbase.command.Command;
 import pluginbase.command.CommandHandler;
-import pluginbase.command.CommandProvider;
 import pluginbase.command.QueuedCommand;
-import pluginbase.logging.PluginLogger;
-import pluginbase.messages.messaging.Messager;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 
 public class SpongeCommandProvider<P> extends AbstractCommandProvider<P> {
 

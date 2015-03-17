@@ -1,4 +1,4 @@
-package pluginbase.bukkit;
+package pluginbase.testplugin;
 
 import pluginbase.messages.Message;
 

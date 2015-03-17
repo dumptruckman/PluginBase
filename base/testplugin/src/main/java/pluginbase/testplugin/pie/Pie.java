@@ -1,4 +1,4 @@
-package pluginbase.bukkit.pie;
+package pluginbase.testplugin.pie;
 
 import pluginbase.config.annotation.SerializeWith;
 

@@ -1,4 +1,4 @@
-package pluginbase.bukkit.pie;
+package pluginbase.testplugin.pie;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

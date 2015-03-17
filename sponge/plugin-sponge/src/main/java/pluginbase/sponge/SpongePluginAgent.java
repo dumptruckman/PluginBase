@@ -1,3 +1,5 @@
+package pluginbase.sponge;
+
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -1,13 +1,16 @@
-package pluginbase.bukkit;
+package pluginbase.testbukkitplugin;
 
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
-import pluginbase.bukkit.commands.TealPeaPieCommand;
-import pluginbase.bukkit.commands.TealPieCommand;
-import pluginbase.bukkit.commands.Test2Command;
-import pluginbase.bukkit.commands.TestCommand;
-import pluginbase.bukkit.pie.Pie;
-import pluginbase.bukkit.pie.PieProperties;
+import pluginbase.bukkit.BukkitPluginAgent;
+import pluginbase.testplugin.Language;
+import pluginbase.testplugin.TestConfig;
+import pluginbase.testplugin.commands.TealPeaPieCommand;
+import pluginbase.testbukkitplugin.command.TealPieCommand;
+import pluginbase.testplugin.commands.Test2Command;
+import pluginbase.testplugin.commands.TestCommand;
+import pluginbase.testplugin.pie.Pie;
+import pluginbase.testplugin.pie.PieProperties;
 import pluginbase.config.SerializationRegistrar;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.jdbc.SpringDatabaseSettings;

@@ -3,17 +3,17 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-        <artifactId>Bukkit</artifactId>
+        <artifactId>Sponge</artifactId>
         <version>1.5-SNAPSHOT</version>
     </parent>
-    <artifactId>TestBukkitPlugin</artifactId>
+    <artifactId>TestSpongePlugin</artifactId>
     <version>${pluginbase.version}</version>
 
     <dependencies>
         <!-- Start of PluginBase Dependency -->
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Plugin-Bukkit</artifactId>
+            <artifactId>Plugin-Sponge</artifactId>
             <version>${plugin.version}</version>
             <type>jar</type>
             <scope>compile</scope>
@@ -79,7 +79,7 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Plugin-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Plugin-Sponge</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:TestPlugin</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:JDBC-Spring</include>
                                     <include>com.h2database:h2</include>

@@ -1,8 +1,7 @@
-package pluginbase.bukkit.commands;
+package pluginbase.testplugin.commands;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pluginbase.bukkit.TestPlugin;
 import pluginbase.command.Command;
 import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
@@ -10,15 +9,15 @@ import pluginbase.command.CommandProvider;
 import pluginbase.messages.Message;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
+import pluginbase.testplugin.Language;
 
 @CommandInfo(
-        primaryAlias = "teal pea pie",
-        desc = "Weirdly named command #2.",
-        usage = "[happy]"
+        primaryAlias = "test",
+        desc = "Just a test command."
 )
-public class TealPeaPieCommand extends Command<TestPlugin> {
+public class TestCommand extends Command {
 
-    public TealPeaPieCommand(@NotNull CommandProvider<TestPlugin> commandProvider) {
+    public TestCommand(@NotNull CommandProvider commandProvider) {
         super(commandProvider);
     }
 
@@ -36,7 +35,8 @@ public class TealPeaPieCommand extends Command<TestPlugin> {
 
     @Override
     public boolean runCommand(@NotNull BasePlayer sender, @NotNull CommandContext context) {
-        sender.sendMessage("test worked.");
+        getMessager().message(sender, Language.TEST_MESSAGE);
+        getMessager().message(sender, Language.Nest.NESTED_TEST_MESSAGE);
         return true;
     }
 }

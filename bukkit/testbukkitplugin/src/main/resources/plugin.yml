@@ -1,4 +1,4 @@
 name: TestPluginBase
-main: pluginbase.bukkit.TestPlugin
+main: TestPlugin
 version: maven-version-number
 author: dumptruckman

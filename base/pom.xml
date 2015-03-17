@@ -28,6 +28,7 @@
         <module>file-comments</module>
         <module>jdbc</module>
         <module>jdbc-spring</module>
+        <module>testplugin</module>
         <!--module>javadoc</module-->
     </modules>
 </project>

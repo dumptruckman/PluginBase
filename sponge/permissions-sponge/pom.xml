@@ -60,7 +60,7 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Messaging</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Permissions</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

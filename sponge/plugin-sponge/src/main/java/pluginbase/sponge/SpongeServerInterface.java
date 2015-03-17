@@ -1,3 +1,5 @@
+package pluginbase.sponge;
+
 import com.google.common.base.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

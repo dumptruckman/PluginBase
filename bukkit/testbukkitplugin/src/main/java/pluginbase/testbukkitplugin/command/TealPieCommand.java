@@ -1,9 +1,9 @@
-package pluginbase.bukkit.commands;
+package pluginbase.testbukkitplugin.command;
 
 import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import pluginbase.bukkit.TestPlugin;
 import pluginbase.command.Command;
 import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
@@ -11,6 +11,7 @@ import pluginbase.command.CommandProvider;
 import pluginbase.messages.Message;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
+import pluginbase.testbukkitplugin.TestPlugin;
 
 @CommandInfo(
         primaryAlias = "teal pie",

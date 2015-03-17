@@ -1,7 +1,7 @@
-package pluginbase.bukkit;
+package pluginbase.testplugin;
 
-import pluginbase.bukkit.pie.Pie;
-import pluginbase.bukkit.pie.PieListSerializer;
+import pluginbase.testplugin.pie.Pie;
+import pluginbase.testplugin.pie.PieListSerializer;
 import pluginbase.config.annotation.SerializeWith;
 import pluginbase.plugin.Settings;
 

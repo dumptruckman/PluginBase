@@ -22,6 +22,7 @@
         <module>minecraft-link-sponge</module>
         <module>commands-sponge</module>
         <module>plugin-sponge</module>
+        <module>testspongeplugin</module>
     </modules>
 
     <repositories>
