@@ -108,23 +108,36 @@ public class HoconSerializableConfigLoader extends HoconConfigurationLoader {
     @Override
     public void loadInternal(CommentedConfigurationNode node, BufferedReader reader) throws IOException {
         super.loadInternal(node, reader);
-        node.setValue(ConfigSerializer.deserialize(node.getValue()));
+        Object value = node.getValue();
+        if (value != null && node.hasMapChildren()) {
+            node.setValue(ConfigSerializer.deserialize(node.getValue()));
+        }
     }
 
     @Override
     protected void saveInternal(ConfigurationNode node, Writer writer) throws IOException {
+        Object value = node.getValue();
+        if (value != null) {
+            final ConfigValue newValue = ConfigValueFactory.fromAnyRef(ConfigSerializer.serialize(node.getValue()), "serializable-config-hocon");
+            traverseForComments(newValue, node);
+            final String renderedValue = newValue.render(render);
+            writer.write(renderedValue);
+        } else {
+            writer.write(LINE_SEPARATOR);
+            return;
+        }
+        /*
         if (!node.hasMapChildren()) {
             if (node.getValue() == null) {
-                writer.write(LINE_SEPARATOR);
-                return;
+
             } else {
+                System.out.println(node.getValue());
                 throw new IOException("HOCON cannot write nodes not in map format!");
             }
         }
-        final ConfigValue value = ConfigValueFactory.fromAnyRef(ConfigSerializer.serialize(node.getValue()), "serializable-config-hocon");
-        traverseForComments(value, node);
-        final String renderedValue = value.render(render);
-        writer.write(renderedValue);
+        */
+
+
     }
 
     @Override

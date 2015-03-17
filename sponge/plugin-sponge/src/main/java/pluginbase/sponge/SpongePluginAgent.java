@@ -9,6 +9,7 @@ import pluginbase.jdbc.DatabaseSettings;
 import pluginbase.messages.PluginBaseException;
 import pluginbase.messages.messaging.MessagerFactory;
 import pluginbase.messages.messaging.SendablePluginBaseException;
+import pluginbase.permission.PermFactory;
 import pluginbase.plugin.PluginAgent;
 import pluginbase.plugin.PluginInfo;
 import pluginbase.plugin.ServerInterface;
@@ -25,6 +26,7 @@ import java.util.logging.Level;
 public class SpongePluginAgent<P> extends PluginAgent<P> {
 
     static {
+        PermFactory.useBasicPermissionFactory();
         MessagerFactory.registerMessagerProvider(new SpongeMessagerProvider());
     }
 
@@ -114,7 +116,7 @@ public class SpongePluginAgent<P> extends PluginAgent<P> {
         DatabaseSettings settings = defaults;
         try {
             HoconSerializableConfigLoader loader = HoconSerializableConfigLoader.builder().setFile(new File(getDataFolder(),
-                    "settings.conf")).build();
+                    "database-settings.conf")).build();
             config = loader.load();
             Object value = config.getValue();
             if (value != null && value instanceof DatabaseSettings) {

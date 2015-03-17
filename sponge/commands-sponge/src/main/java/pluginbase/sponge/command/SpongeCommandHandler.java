@@ -10,6 +10,7 @@ import pluginbase.command.CommandProvider;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.sponge.minecraft.SpongeTools;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class SpongeCommandHandler extends CommandHandler implements CommandCompleter {
@@ -21,7 +22,7 @@ public class SpongeCommandHandler extends CommandHandler implements CommandCompl
     @Override
     protected boolean register(@NotNull CommandRegistration commandInfo, @NotNull Command command) {
         SpongeCommand spongeCommand = new SpongeCommand(commandProvider, command, commandInfo.getUsage(), commandInfo.getDesc());
-        return SpongeTools.getGame().getCommandDispatcher().register(commandProvider, spongeCommand, commandInfo.getAliases()).isPresent();
+        return SpongeTools.getGame().getCommandDispatcher().register(commandProvider.getPlugin(), spongeCommand, commandInfo.getAliases()).isPresent();
     }
 
     @NotNull
