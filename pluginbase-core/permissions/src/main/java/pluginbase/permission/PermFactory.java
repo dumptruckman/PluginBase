@@ -14,8 +14,12 @@ import java.util.Map;
  * This class will function without any initialization but should generally be registered with a Minecraft server
  * implementation specific implementation of itself via {@link #registerPermissionFactory(Class)}.
  * This allows the PermFactory to create properly implemented permissions.
+ * @param <FACTORY_IMPL> Curiously Recurring Generic Pattern. Specify the implementation of this class
+ *                      as the generic type.
+ * @param <PERM_IMPL> Curiously Recurring Generic Pattern. Specify the implementation of the Perm class
+ *                   as the generic type.
  */
-public abstract class PermFactory {
+public abstract class PermFactory<FACTORY_IMPL, PERM_IMPL> {
 
     private static Constructor<? extends PermFactory> factory;
     /** Represents the information for the plugin utilizing this PermFactory. */
@@ -165,9 +169,10 @@ public abstract class PermFactory {
      * @param description The description.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory desc(final String description) {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL desc(final String description) {
         this.description = description;
-        return this;
+        return (FACTORY_IMPL) this;
     }
 
     /**
@@ -176,8 +181,9 @@ public abstract class PermFactory {
      * @param perm The child permission to add.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory child(final Perm perm) {
-        return child(perm.getName());
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL child(final Perm perm) {
+        return (FACTORY_IMPL) child(perm.getName());
     }
 
     /**
@@ -186,7 +192,8 @@ public abstract class PermFactory {
      * @param name The child permission to add.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory child(final String name) {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL child(final String name) {
         return child(name, true);
     }
 
@@ -197,7 +204,8 @@ public abstract class PermFactory {
      * @param state The default value for the child.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory child(final Perm perm, final boolean state) {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL child(final Perm perm, final boolean state) {
         return child(perm.getName(), state);
     }
 
@@ -208,9 +216,10 @@ public abstract class PermFactory {
      * @param state The default value for the child.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory child(final String name, final boolean state) {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL child(final String name, final boolean state) {
         children.put(name, state);
-        return this;
+        return (FACTORY_IMPL) this;
     }
 
     /**
@@ -219,7 +228,8 @@ public abstract class PermFactory {
      * @param perm The parent permission to add.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory parent(final Perm perm) {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL parent(final Perm perm) {
         return parent(perm.getName());
     }
 
@@ -229,7 +239,8 @@ public abstract class PermFactory {
      * @param name The parent permission to add.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory parent(final String name) {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL parent(final String name) {
         return parent(name.toLowerCase(), true);
     }
 
@@ -240,7 +251,8 @@ public abstract class PermFactory {
      * @param state The default state for this permission when given the parent.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory parent(final Perm perm, final boolean state) {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL parent(final Perm perm, final boolean state) {
         return parent(perm.getName(), state);
     }
 
@@ -251,9 +263,10 @@ public abstract class PermFactory {
      * @param state The default state for this permission when given the parent.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory parent(final String name, final boolean state) {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL parent(final String name, final boolean state) {
         parents.put(name.toLowerCase(), state);
-        return this;
+        return (FACTORY_IMPL) this;
     }
 
     /**
@@ -261,7 +274,8 @@ public abstract class PermFactory {
      *
      * @return this PermFactory for method chaining.
      */
-    public PermFactory addToAll() {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL addToAll() {
         return parent(Perm.getAllPerm(pluginClass));
     }
 
@@ -270,7 +284,8 @@ public abstract class PermFactory {
      *
      * @return this PermFactory for method chaining.
      */
-    public PermFactory commandPermission() {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL commandPermission() {
         return parent(Perm.getCommandPerm(pluginClass));
     }
 
@@ -282,9 +297,10 @@ public abstract class PermFactory {
      * @param permissionDefault The default for this permission.
      * @return this PermFactory for method chaining.
      */
-    public PermFactory def(final PermDefault permissionDefault) {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL def(final PermDefault permissionDefault) {
         this.permissionDefault = permissionDefault;
-        return this;
+        return (FACTORY_IMPL) this;
     }
 
     /**
@@ -297,9 +313,10 @@ public abstract class PermFactory {
      *
      * @return this PermFactory for method chaining.
      */
-    public PermFactory usePluginName() {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL usePluginName() {
         baseName = true;
-        return this;
+        return (FACTORY_IMPL) this;
     }
 
     /**
@@ -311,9 +328,10 @@ public abstract class PermFactory {
      *
      * @return this PermFactory for method chaining.
      */
-    public PermFactory specificOnly() {
+    @SuppressWarnings("unchecked")
+    public FACTORY_IMPL specificOnly() {
         specificOnly = true;
-        return this;
+        return (FACTORY_IMPL) this;
     }
 
     /**
@@ -324,5 +342,6 @@ public abstract class PermFactory {
      *
      * @return a new Perm based on all the supplied values of this PermFactory.
      */
-    public abstract Perm build();
+    @SuppressWarnings("unchecked")
+    public abstract PERM_IMPL build();
 }
