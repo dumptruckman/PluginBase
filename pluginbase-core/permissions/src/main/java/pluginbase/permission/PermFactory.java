@@ -19,7 +19,7 @@ import java.util.Map;
  * @param <PERM_IMPL> Curiously Recurring Generic Pattern. Specify the implementation of the Perm class
  *                   as the generic type.
  */
-public abstract class PermFactory<FACTORY_IMPL, PERM_IMPL> {
+public abstract class PermFactory<FACTORY_IMPL extends PermFactory, PERM_IMPL extends Perm> {
 
     private static Constructor<? extends PermFactory> factory;
     /** Represents the information for the plugin utilizing this PermFactory. */
