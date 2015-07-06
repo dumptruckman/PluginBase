@@ -142,7 +142,7 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
      * Tells the plugin to reload the configuration and other data files.
      */
     public void reloadConfig() {
-        Settings settings = pluginAgent.loadSettings();
+        this.settings = pluginAgent.loadSettings();
         loadLanguage();
     }
 
