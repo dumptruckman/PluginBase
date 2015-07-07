@@ -40,7 +40,14 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Messaging-Bukkit</artifactId>
-            <version>${messaging-bukkit.version}</version>
+            <version>${messaging.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Messaging-Sponge</artifactId>
+            <version>${messaging.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -54,7 +61,14 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Commands-Bukkit</artifactId>
-            <version>${commands-bukkit.version}</version>
+            <version>${commands.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Commands-Sponge</artifactId>
+            <version>${commands.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -68,7 +82,14 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Minecraft-Link-Bukkit</artifactId>
-            <version>${minecraft-link-bukkit.version}</version>
+            <version>${minecraft-link.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Minecraft-Link-Sponge</artifactId>
+            <version>${minecraft-link.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -82,7 +103,14 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Permissions-Bukkit</artifactId>
-            <version>${permissions-bukkit.version}</version>
+            <version>${permissions.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Permissions-Sponge</artifactId>
+            <version>${permissions.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -96,7 +124,7 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Properties-Bukkit</artifactId>
-            <version>${properties-bukkit.version}</version>
+            <version>${properties.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -131,7 +159,14 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Plugin-Bukkit</artifactId>
-            <version>${plugin-bukkit.version}</version>
+            <version>${plugin.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Plugin-Sponge</artifactId>
+            <version>${plugin.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -145,7 +180,14 @@
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Serializable-Config-Bukkit</artifactId>
-            <version>${serializable-config-bukkit.version}</version>
+            <version>${serializable-config.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Serializable-Config-Sponge</artifactId>
+            <version>${serializable-config.version}</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
