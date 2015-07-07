@@ -2,8 +2,11 @@ package pluginbase.sponge.command;
 
 import com.google.common.base.Optional;
 import org.jetbrains.annotations.NotNull;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.command.CommandCallable;
 import org.spongepowered.api.util.command.CommandException;
+import org.spongepowered.api.util.command.CommandResult;
 import org.spongepowered.api.util.command.CommandSource;
 import pluginbase.command.Command;
 import pluginbase.command.CommandProvider;
@@ -12,7 +15,6 @@ import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
 import pluginbase.sponge.minecraft.SpongeTools;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,19 +32,19 @@ class SpongeCommand implements CommandCallable {
         this.desc = desc;
     }
 
+    // FIXME BAD THINGS WERE DONE TO GET THINGS FLOWING AGAIN, UNTESTED CODE! - SupaHam
+    @NotNull
     @Override
-    public boolean call(@NotNull CommandSource commandSource, @NotNull String arguments, @NotNull List<String> parents) throws CommandException {
+    public Optional<CommandResult> process(@NotNull CommandSource commandSource, @NotNull String arguments) throws CommandException {
         List<String> args = Arrays.asList(arguments.split("\\s"));
-        List<String> allArgs = new ArrayList<>(parents.size() + args.size());
-        allArgs.addAll(parents);
-        allArgs.addAll(args);
         BasePlayer basePlayer = SpongeTools.wrapSender(commandSource);
         try {
-            return provider.getCommandHandler().locateAndRunCommand(basePlayer, allArgs.toArray(new String[allArgs.size()]));
+            return Optional.of(provider.getCommandHandler().locateAndRunCommand(basePlayer, args.toArray(new String[args.size()])) 
+                    ? CommandResult.success() : CommandResult.empty());
         } catch (pluginbase.command.CommandException e) {
             e.sendException(provider.getMessager(), basePlayer);
         }
-        return false;
+        return Optional.of(CommandResult.empty());
     }
 
     @Override
@@ -56,25 +58,25 @@ class SpongeCommand implements CommandCallable {
 
     @NotNull
     @Override
-    public Optional<String> getShortDescription() {
-        return Optional.of(desc);
+    public Optional<Text> getShortDescription(@NotNull CommandSource commandSource) {
+        return Optional.<Text>of(Texts.of(desc));
     }
 
     @NotNull
     @Override
-    public Optional<String> getHelp() {
+    public Optional<Text> getHelp(@NotNull CommandSource commandSource) {
         Message helpMessage = command.getHelp();
         if (helpMessage != null) {
             String localizedHelp = provider.getMessager().getLocalizedMessage(helpMessage);
-            return Optional.of(localizedHelp);
+            return Optional.<Text>of(Texts.of(localizedHelp));
         }
         return Optional.absent();
     }
 
     @NotNull
     @Override
-    public String getUsage() {
-        return usage;
+    public Text getUsage(@NotNull CommandSource commandSource) {
+        return Texts.of(usage);
     }
 
     @NotNull
