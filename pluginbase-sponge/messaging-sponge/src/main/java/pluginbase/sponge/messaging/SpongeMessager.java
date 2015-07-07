@@ -5,21 +5,19 @@ package pluginbase.sponge.messaging;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.api.util.command.source.ConsoleSource;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.ChatColor;
-import pluginbase.messages.LocalizablePlugin;
 import pluginbase.messages.Message;
 import pluginbase.messages.MessageProvider;
 import pluginbase.messages.Messages;
 import pluginbase.messages.messaging.MessageReceiver;
 import pluginbase.messages.messaging.Messager;
 
-import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * A Sponge specific implementation of {@link pluginbase.messages.messaging.Messager}.
@@ -71,7 +69,7 @@ public class SpongeMessager extends Messager {
 
     public void message(@NotNull final CommandSource player, @NotNull final List<String> messages) {
         for (String s : messages) {
-            player.sendMessage(s);
+            player.sendMessage(Texts.of(s));
         }
     }
 
@@ -100,7 +98,9 @@ public class SpongeMessager extends Messager {
     }
 
     protected void sendMessages(@NotNull final CommandSource player, @NotNull final String[] messages) {
-        player.sendMessage(messages);
+        for (String message : messages) {
+            player.sendMessage(Texts.of(message));
+        }
     }
 
     public void messageAndLog(@NotNull final CommandSource sender, @NotNull final Message message, @NotNull final Object... args) {

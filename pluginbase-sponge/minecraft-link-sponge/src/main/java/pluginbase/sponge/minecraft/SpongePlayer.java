@@ -1,10 +1,9 @@
 package pluginbase.sponge.minecraft;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.flowpowered.math.vector.Vector3f;
+import com.google.common.base.Optional;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.api.Server;
-import org.spongepowered.api.block.BlockLoc;
+import org.spongepowered.api.data.manipulators.entities.VelocityData;
 import org.spongepowered.api.entity.player.Player;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -21,26 +20,32 @@ public class SpongePlayer extends AbstractSpongeCommandSource<Player> implements
         super(source);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isPlayer() {
         return true;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @NotNull
     @Override
     public EntityCoordinates getLocation() {
-        BlockLoc l = getSender().getLocation().getBlock();
+        Location l = getSender().getLocation();
         String worldName = "";
         if (l.getExtent() instanceof World) {
             worldName = ((World) l.getExtent()).getName();
         }
-        Vector3f r = getSender().getRotation();
-        return Locations.getEntityCoordinates(worldName, l.getX(), l.getY(), l.getZ(), r.getX(), r.getY());
+        Vector3d r = getSender().getRotation();
+        return Locations.getEntityCoordinates(worldName, l.getX(), l.getY(), l.getZ(), (float) r.getX(), (float) r.getY());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean teleport(@NotNull final EntityCoordinates location) {
         final World world = SpongeTools.getServer().getWorld(location.getWorld()).get();
@@ -49,18 +54,30 @@ public class SpongePlayer extends AbstractSpongeCommandSource<Player> implements
             return false;
         }
         final Location l = new Location(world, new Vector3d(location.getX(), location.getY(), location.getZ()));
-        return getSender().setLocation(l);
+        getSender().setLocation(l);
+        return true;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Vector getVelocity() {
-        return SpongeTools.convertVector(getSender().getVelocity());
+        Optional<VelocityData> velocityData = getSender().getData(VelocityData.class);
+        if (velocityData.isPresent()) {
+            return SpongeTools.convertVector(velocityData.get().getVelocity());
+        }
+        return null; // TODO should we just return zero?
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setVelocity(final Vector v) {
-        getSender().setVelocity(SpongeTools.convertVector(v));
+        Optional<VelocityData> velocityData = getSender().getData(VelocityData.class);
+        if (velocityData.isPresent()) {
+            velocityData.get().setVelocity(SpongeTools.convertVector(v));
+        }
     }
 }

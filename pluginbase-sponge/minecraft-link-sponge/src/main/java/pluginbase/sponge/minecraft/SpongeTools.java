@@ -33,7 +33,7 @@ public class SpongeTools {
     }
 
     public static Server getServer() {
-        return GAME.getServer().get();
+        return GAME.getServer();
     }
 
     /**
