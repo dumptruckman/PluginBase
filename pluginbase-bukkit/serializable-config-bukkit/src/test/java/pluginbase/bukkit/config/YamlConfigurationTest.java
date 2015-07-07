@@ -47,7 +47,7 @@ public class YamlConfigurationTest extends BukkitConfigurationTest {
             "- 4\n" +
             "- 5\n" +
             "'42': The Answer\n" +
-            "section-test: " + ChatColor.COLOR_CHAR + "4\n";
+            "section-test: " + '\u00a7' + "4\n";
     }
 
     @Test

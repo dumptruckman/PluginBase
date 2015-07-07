@@ -32,7 +32,7 @@ public abstract class ConfigurationTest extends TestBase {
         result.put("vector", new Vector(12345.67, 64, -12345.6789));
         result.put("list", Arrays.asList(1, 2, 3, 4, 5));
         result.put("42", "The Answer");
-        result.put("section-test", ChatColor.COLOR_CHAR + "4");
+        result.put("section-test", '\u00a7' + "4");
 
         return result;
     }
