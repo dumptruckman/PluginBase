@@ -1,5 +1,6 @@
 package pluginbase.bukkit.config;
 
+import com.google.common.base.Charsets;
 import pluginbase.config.ConfigSerializer;
 import pluginbase.config.examples.Child;
 import pluginbase.config.examples.Parent;
@@ -10,7 +11,10 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -81,14 +85,11 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
     public void testLoad_File() throws Exception {
         FileConfiguration config = getConfig();
         File file = testFolder.newFile("test.config");
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         String saved = getTestValuesString();
         Map<String, Object> testValues = getTestValues();
 
-        try {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), Charsets.UTF_8)) {
             writer.write(saved);
-        } finally {
-            writer.close();
         }
 
         config.load(file);
@@ -104,14 +105,11 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
     public void testLoad_String() throws Exception {
         FileConfiguration config = getConfig();
         File file = testFolder.newFile("test.config");
-        BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         String saved = getTestValuesString();
         Map<String, Object> testValues = getTestValues();
 
-        try {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(file), Charsets.UTF_8)) {
             writer.write(saved);
-        } finally {
-            writer.close();
         }
 
         config.load(file.getAbsolutePath());
