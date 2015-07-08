@@ -83,7 +83,7 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
         File file = testFolder.newFile("test.config");
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         String saved = getTestValuesString();
-        Map<String, Object> values = getTestValues();
+        Map<String, Object> testValues = getTestValues();
 
         try {
             writer.write(saved);
@@ -93,11 +93,11 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
 
         config.load(file);
 
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
+        for (Map.Entry<String, Object> entry : testValues.entrySet()) {
             assertEquals(entry.getValue(), config.get(entry.getKey()));
         }
 
-        assertEquals(values.keySet(), config.getKeys(true));
+        assertEquals(testValues.keySet(), config.getKeys(true));
     }
 
     @Test
@@ -106,7 +106,7 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
         File file = testFolder.newFile("test.config");
         BufferedWriter writer = new BufferedWriter(new FileWriter(file));
         String saved = getTestValuesString();
-        Map<String, Object> values = getTestValues();
+        Map<String, Object> testValues = getTestValues();
 
         try {
             writer.write(saved);
@@ -116,26 +116,26 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
 
         config.load(file.getAbsolutePath());
 
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
+        for (Map.Entry<String, Object> entry : testValues.entrySet()) {
             assertEquals(entry.getValue(), config.get(entry.getKey()));
         }
 
-        assertEquals(values.keySet(), config.getKeys(true));
+        assertEquals(testValues.keySet(), config.getKeys(true));
     }
 
     @Test
     public void testLoadFromString() throws Exception {
         FileConfiguration config = getConfig();
-        Map<String, Object> values = getTestValues();
+        Map<String, Object> testValues = getTestValues();
         String saved = getTestValuesString();
 
         config.loadFromString(saved);
 
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
+        for (Map.Entry<String, Object> entry : testValues.entrySet()) {
             assertEquals(entry.getValue(), config.get(entry.getKey()));
         }
 
-        assertEquals(values.keySet(), config.getKeys(true));
+        assertEquals(testValues.keySet(), config.getKeys(true));
         assertEquals(saved, config.saveToString());
     }
 
@@ -178,7 +178,7 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
     public void testCopyHeader() throws Exception {
         FileConfiguration config = getConfig();
         FileConfiguration defaults = getConfig();
-        Map<String, Object> values = getTestValues();
+        Map<String, Object> testValues = getTestValues();
         String saved = getTestValuesString();
         String header = getTestHeaderResult();
         String expected = getTestHeaderInput();
@@ -190,11 +190,11 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
         assertNull(config.options().header());
         assertEquals(expected, defaults.options().header());
 
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
+        for (Map.Entry<String, Object> entry : testValues.entrySet()) {
             assertEquals(entry.getValue(), config.get(entry.getKey()));
         }
 
-        assertEquals(values.keySet(), config.getKeys(true));
+        assertEquals(testValues.keySet(), config.getKeys(true));
         assertEquals(header + "\n" + saved, config.saveToString());
 
         config = getConfig();
@@ -276,21 +276,21 @@ public abstract class BukkitConfigurationTest extends MemoryConfigurationTest {
         final String saved = getTestValuesString();
 
         config.load(file);
-        Map<String, Object> values = getTestValues();
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
+        Map<String, Object> testValues = getTestValues();
+        for (Map.Entry<String, Object> entry : testValues.entrySet()) {
             assertEquals(entry.getValue(), config.get(entry.getKey()));
         }
-        assertEquals(values.keySet(), config.getKeys(true));
+        assertEquals(testValues.keySet(), config.getKeys(true));
         assertEquals(saved, config.saveToString());
 
         config.save(file);
         config.load(file);
 
-        values = getTestValues();
-        for (Map.Entry<String, Object> entry : values.entrySet()) {
+        testValues = getTestValues();
+        for (Map.Entry<String, Object> entry : testValues.entrySet()) {
             assertEquals(entry.getValue(), config.get(entry.getKey()));
         }
-        assertEquals(values.keySet(), config.getKeys(true));
+        assertEquals(testValues.keySet(), config.getKeys(true));
         assertEquals(saved, config.saveToString());
     }
 }
