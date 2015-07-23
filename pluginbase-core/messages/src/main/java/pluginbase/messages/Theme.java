@@ -161,6 +161,16 @@ public enum Theme {
     }
 
     /**
+     * Gets the Minecraft color string associated with the given theme tag, if any.
+     *
+     * @param themeTag the theme tag to convert to color
+     * @return the Minecraft color code string or null if themeTag is not valid.
+     */
+    public static String getColorByTag(char themeTag) {
+        return tagMap.get(themeTag);
+    }
+
+    /**
      * The character that indicates a theme tag is being used.
      */
     public static final char THEME_MARKER = '$';
