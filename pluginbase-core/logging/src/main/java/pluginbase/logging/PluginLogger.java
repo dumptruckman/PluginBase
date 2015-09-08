@@ -9,6 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.logging.Filter;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -148,7 +151,7 @@ public class PluginLogger extends Logger {
     }
 
     private synchronized void privateLog(@NotNull final LogRecord record) {
-        super.log(record);
+        logger.log(record);
         if (getDebugLevel() > 0) {
             getDebugLog().log(record);
         }
@@ -401,4 +404,83 @@ public class PluginLogger extends Logger {
         log(Level.SEVERE, message, args);
     }
 
+    @Override
+    public Handler[] getHandlers() {
+        return logger.getHandlers();
+    }
+
+    @Override
+    public void setUseParentHandlers(boolean useParentHandlers) {
+        logger.setUseParentHandlers(useParentHandlers);
+    }
+
+    @Override
+    public boolean getUseParentHandlers() {
+        return logger.getUseParentHandlers();
+    }
+
+    @Override
+    public void setResourceBundle(ResourceBundle bundle) {
+        logger.setResourceBundle(bundle);
+    }
+
+    @Override
+    public void setParent(Logger parent) {
+        logger.setParent(parent);
+    }
+
+    @Override
+    public Logger getParent() {
+        return logger.getParent();
+    }
+
+    @Override
+    public void addHandler(Handler handler) throws SecurityException {
+        logger.addHandler(handler);
+    }
+
+    @Override
+    public void removeHandler(Handler handler) throws SecurityException {
+        logger.removeHandler(handler);
+    }
+
+    @Override
+    public String getName() {
+        return logger.getName();
+    }
+
+    @Override
+    public Level getLevel() {
+        return logger.getLevel();
+    }
+
+    @Override
+    public void setLevel(Level newLevel) throws SecurityException {
+        logger.setLevel(newLevel);
+    }
+
+    @Override
+    public boolean isLoggable(Level level) {
+        return logger.isLoggable(level);
+    }
+
+    @Override
+    public Filter getFilter() {
+        return logger.getFilter();
+    }
+
+    @Override
+    public void setFilter(Filter newFilter) throws SecurityException {
+        logger.setFilter(newFilter);
+    }
+
+    @Override
+    public String getResourceBundleName() {
+        return logger.getResourceBundleName();
+    }
+
+    @Override
+    public ResourceBundle getResourceBundle() {
+        return logger.getResourceBundle();
+    }
 }
