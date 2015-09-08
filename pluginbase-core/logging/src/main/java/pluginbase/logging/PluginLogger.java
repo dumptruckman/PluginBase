@@ -84,7 +84,32 @@ public class PluginLogger extends Logger {
         return logging;
     }
 
-    private PluginLogger(@NotNull final LoggablePlugin plugin,
+    /**
+     * Gets the existing logger for this plugin or prepares a new one with a specified parent logger if non-existent.
+     * <p/>
+     * Debugging will default to disabled when initialized.
+     * <p/>
+     * This should be called early on in plugin initialization, such as during onLoad() or onEnable().
+     * <p/>
+     * If a logger has already been created for the plugin passed then that will be returned with no additional
+     * initialization steps.
+     *
+     * @param plugin The plugin using this logger.
+     * @param parentLogger The parent logger to use for the new logger if a PluginLogger hasn't already been created for the given plugin.
+     * @return A logger for your plugin.
+     */
+    public static synchronized PluginLogger getLogger(@NotNull final LoggablePlugin plugin, @NotNull final Logger parentLogger) {
+        PluginLogger logging = INITIALIZED_LOGGERS.get(plugin.getName());
+        if (logging == null) {
+            final Logger logger = Logger.getLogger(plugin.getName());
+            logger.setParent(parentLogger);
+            logging = new PluginLogger(plugin, logger);
+            INITIALIZED_LOGGERS.put(plugin.getName(), logging);
+        }
+        return logging;
+    }
+
+    protected PluginLogger(@NotNull final LoggablePlugin plugin,
                          @NotNull final Logger logger) {
         super(logger.getName(), logger.getResourceBundleName());
         this.logger = logger;
