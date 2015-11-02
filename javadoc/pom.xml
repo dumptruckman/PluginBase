@@ -219,8 +219,8 @@
                         </goals>
                         <configuration>
                             <links>
-                                <link>http://jd.bukkit.org/apidocs/</link>
-                                <link>http://mythcraft.dyndns.org/javadoc/vault/</link>
+                                <link>https://hub.spigotmc.org/javadocs/bukkit/</link>
+                                <link>http://milkbowl.github.io/VaultAPI/</link>
                             </links>
                             <linksource>true</linksource>
                             <includeDependencySources>true</includeDependencySources>
