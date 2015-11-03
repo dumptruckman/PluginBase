@@ -1,5 +1,6 @@
 package pluginbase.bukkit;
 
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import pluginbase.bukkit.minecraft.BukkitTools;
 import pluginbase.minecraft.BasePlayer;
@@ -50,8 +51,9 @@ class BukkitServerInterface implements ServerInterface {
     /** {@inheritDoc} */
     @Nullable
     @Override
-    public BasePlayer getPlayer(final String name) {
-        return BukkitTools.wrapPlayer(plugin.getServer().getPlayer(name));
+    public BasePlayer getPlayer(final @NotNull String name) {
+        Player player = plugin.getServer().getPlayer(name);
+        return player == null ? null : BukkitTools.wrapPlayer(player);
     }
 
     /** {@inheritDoc} */
