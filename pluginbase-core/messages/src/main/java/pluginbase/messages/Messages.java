@@ -126,7 +126,7 @@ public class Messages {
                     if (message == null) {
                         continue;
                     }
-                    if (!messages.containsKey(message.getKey())) {
+                    if (message.getKey() != null && !messages.containsKey(message.getKey())) {
                         messages.put(message.getKey(), message);
                     }
                 } catch (IllegalAccessException e) {

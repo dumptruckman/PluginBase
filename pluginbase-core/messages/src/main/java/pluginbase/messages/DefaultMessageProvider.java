@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.messages;
 
+import org.jetbrains.annotations.Nullable;
 import pluginbase.logging.PluginLogger;
 import org.jetbrains.annotations.NotNull;
 
@@ -156,6 +157,9 @@ class DefaultMessageProvider implements MessageProvider {
     @Override
     @NotNull
     public String getLocalizedMessage(@NotNull final Message key, @NotNull final Object... args) {
+        if (key.getKey() == null) {
+            return formatMessage(null, key.getDefault(), args);
+        }
         return getLocalizedMessage(key.getKey(), args);
     }
 
@@ -163,6 +167,10 @@ class DefaultMessageProvider implements MessageProvider {
     @Override
     public String getLocalizedMessage(@NotNull final String key, @NotNull final Object... args) {
         final String message = _getMessage(key);
+        return formatMessage(key, message, args);
+    }
+
+    private String formatMessage(@Nullable String key, @NotNull String message, @NotNull final Object... args) {
         try {
             return format(locale, message, args);
         } catch (IllegalFormatException e) {

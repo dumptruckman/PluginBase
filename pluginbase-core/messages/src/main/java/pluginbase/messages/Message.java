@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.messages;
 
+import org.jetbrains.annotations.Nullable;
 import pluginbase.logging.Logging;
 import org.jetbrains.annotations.NotNull;
 import org.xml.sax.SAXException;
@@ -52,11 +53,12 @@ public final class Message {
     @NotNull
     private final String def;
 
+    @Nullable
     private final String key;
 
     private final int argCount;
 
-    private Message(@NotNull final String key, @NotNull final String def) {
+    private Message(@Nullable final String key, @NotNull final String def) {
         this.key = key;
         this.def = Theme.parseMessage(def);
         this.argCount = countArgs(this.def);
@@ -96,6 +98,18 @@ public final class Message {
     }
 
     /**
+     * Creates a new message that will not be localized.
+     * <p/>
+     * This is intended to be used sparingly or to provide a simpler api for 3rd parties. These messages will not have
+     * an entry in any language files.
+     *
+     * @param message The non localized message.
+     */
+    public static Message createStaticMessage(@NotNull final String message) {
+        return new Message(null, message);
+    }
+
+    /**
      * Bundles a {@link Message} with preset arguments.
      * <p/>
      * Can be used in cases where you are required to return a message of some sort and it is otherwise impossible to
@@ -129,7 +143,7 @@ public final class Message {
      *
      * @return The localization key for the message.
      */
-    @NotNull
+    @Nullable
     public String getKey() {
         return key;
     }
