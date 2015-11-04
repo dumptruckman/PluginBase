@@ -115,11 +115,13 @@ class DebugLog {
         try {
             fileHandler = new FileHandler(debugFolder + File.separator
                     + DEBUG_FILE_DATE_FORMAT.format(System.currentTimeMillis()) + ".log", true);
+            /*
             final Set<Handler> toRemove = new HashSet<Handler>(log.getHandlers().length);
             Collections.addAll(toRemove, log.getHandlers());
             for (Handler handler : toRemove) {
                 log.removeHandler(handler);
             }
+            */
             log.addHandler(fileHandler);
             log.setLevel(Level.ALL);
             fileHandler.setFormatter(new LogFormatter());
@@ -131,31 +133,12 @@ class DebugLog {
     }
 
     /**
-     * Logs a log record to the debug file.
-     *
-     * @param record The log record to record to file.
-     */
-    public void log(@NotNull final LogRecord record) {
-        log.log(record);
-    }
-
-    /**
      * Checks whether or not the debug file handle is open or close.
      *
      * @return True if the
      */
     public boolean isClosed() {
         return fileHandler == null;
-    }
-
-    /**
-     * Log a message at a certain level.
-     *
-     * @param level The log-{@link java.util.logging.Level}.
-     * @param msg the message.
-     */
-    public void log(@NotNull final Level level, @NotNull final String msg) {
-        log(new LogRecord(level, msg));
     }
 
     /**

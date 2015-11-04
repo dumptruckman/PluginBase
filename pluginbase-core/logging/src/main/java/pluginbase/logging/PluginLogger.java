@@ -152,9 +152,12 @@ public class PluginLogger extends Logger {
 
     private synchronized void privateLog(@NotNull final LogRecord record) {
         logger.log(record);
+        /*
         if (getDebugLevel() > 0) {
             getDebugLog().log(record);
+        } else {
         }
+        */
     }
 
     /** {@inheritDoc} */
