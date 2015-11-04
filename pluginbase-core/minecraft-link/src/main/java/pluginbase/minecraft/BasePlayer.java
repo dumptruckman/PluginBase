@@ -65,4 +65,9 @@ public abstract class BasePlayer implements MessageReceiver, Permissible {
     public boolean hasPerm(@NotNull final Perm perm, @NotNull final String specific) {
         return hasPermission(perm.getName(specific));
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
