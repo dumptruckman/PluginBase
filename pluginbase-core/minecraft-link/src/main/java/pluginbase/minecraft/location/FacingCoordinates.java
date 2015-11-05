@@ -36,4 +36,25 @@ public interface FacingCoordinates extends Coordinates {
     /** {@inheritDoc} */
     @Override
     FacingCoordinates getMidpoint(@NotNull final Coordinates o);
+
+    /**
+     * Creates a Vector object representing this FacingCoordinates object.
+     *
+     * @return a Vector object representing this FacingCoordinates object.
+     */
+    default Vector getDirection() {
+        double vecX = 0, vecY = 0, vecZ = 0;
+
+        double rotX = this.getYaw();
+        double rotY = this.getPitch();
+
+        vecY = -Math.sin(Math.toRadians(rotY));
+
+        double xz = Math.cos(Math.toRadians(rotY));
+
+        vecX = -xz * Math.sin(Math.toRadians(rotX));
+        vecZ = xz * Math.cos(Math.toRadians(rotX));
+
+        return new Vector(vecX, vecY, vecZ);
+    }
 }
