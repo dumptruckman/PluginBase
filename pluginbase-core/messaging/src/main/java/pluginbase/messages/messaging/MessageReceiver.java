@@ -11,6 +11,14 @@ import org.jetbrains.annotations.NotNull;
 public interface MessageReceiver {
 
     /**
+     * Gets the name of this MessageReceiver.
+     *
+     * @return the name of this MessageReceiver.
+     */
+    @NotNull
+    String getName();
+
+    /**
      * Sends the message to the this MessageReceiver.
      *
      * @param message the message to send.

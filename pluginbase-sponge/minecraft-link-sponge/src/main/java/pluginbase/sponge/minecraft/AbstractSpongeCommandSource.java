@@ -33,6 +33,7 @@ public class AbstractSpongeCommandSource<S extends CommandSource> extends BasePl
     }
 
     @Override
+    @NotNull
     public String getName() {
         return source.getName();
     }

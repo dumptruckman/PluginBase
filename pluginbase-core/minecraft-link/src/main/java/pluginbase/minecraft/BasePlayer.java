@@ -17,21 +17,6 @@ import org.jetbrains.annotations.Nullable;
  */
 public abstract class BasePlayer implements MessageReceiver, Permissible {
 
-    /**
-     * Gets the name of this player/user.
-     *
-     * @return the name of this player/user.
-     */
-    public abstract String getName();
-
-    /** {@inheritDoc} */
-    @Override
-    public abstract boolean hasPermission(@NotNull final String perm);
-
-    /** {@inheritDoc} */
-    @Override
-    public abstract void sendMessage(@NotNull final String message);
-
     /** {@inheritDoc} */
     @Override
     public boolean equals(@Nullable final Object other) {

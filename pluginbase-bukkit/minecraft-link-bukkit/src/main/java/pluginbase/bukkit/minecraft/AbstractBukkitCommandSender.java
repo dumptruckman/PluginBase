@@ -33,6 +33,7 @@ abstract class AbstractBukkitCommandSender<S extends CommandSender> extends Base
 
     /** {@inheritDoc} */
     @Override
+    @NotNull
     public String getName() {
         return getSender().getName();
     }

@@ -1,13 +1,16 @@
 package pluginbase.minecraft;
 
+import pluginbase.messages.messaging.MessageReceiver;
 import pluginbase.minecraft.location.EntityCoordinates;
 import pluginbase.minecraft.location.Vector;
 import org.jetbrains.annotations.NotNull;
+import pluginbase.permission.Permissible;
 
 /**
  * Describes an entity in minecraft which is anything that is not a block or an item in an inventory.
  */
-public interface Entity {
+public interface Entity extends MessageReceiver, Permissible {
+
     /**
      * @return This entity's current location.
      */
