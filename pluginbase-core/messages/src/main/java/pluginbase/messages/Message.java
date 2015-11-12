@@ -92,9 +92,16 @@ public final class Message {
      *
      * @param key The localization key for this message.
      * @param def The default message in whatever your plugin's primary language is.
+     * @param additionalLines This param allows additional lines to be added to the message. This is optional and
+     *                        multiline messages can be given in the original parameter by using line break characters.
      */
-    public static Message createMessage(@NotNull final String key, @NotNull final String def) {
-        return new Message(key, def);
+    public static Message createMessage(@NotNull final String key, @NotNull final String def, final String... additionalLines) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(def);
+        for (String line : additionalLines) {
+            buffer.append("\n").append(line);
+        }
+        return new Message(key, buffer.toString());
     }
 
     /**
@@ -104,9 +111,16 @@ public final class Message {
      * an entry in any language files.
      *
      * @param message The non localized message.
+     * @param additionalLines This param allows additional lines to be added to the message. This is optional and
+     *                        multiline messages can be given in the original parameter by using line break characters.
      */
-    public static Message createStaticMessage(@NotNull final String message) {
-        return new Message(null, message);
+    public static Message createStaticMessage(@NotNull final String message, final String... additionalLines) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append(message);
+        for (String line : additionalLines) {
+            buffer.append("\n").append(line);
+        }
+        return new Message(null, buffer.toString());
     }
 
     /**
