@@ -16,7 +16,7 @@ import java.util.List;
 
 public class PropertiesWrapper implements Properties {
 
-    private static final transient String SEPARATOR = "";
+    private static final transient String SEPARATOR = ".";
     private static final transient String SEPARATOR_REGEX = "\\.";
 
     @Immutable
