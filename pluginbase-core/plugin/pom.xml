@@ -14,6 +14,10 @@
             <id>onarandombox</id>
             <url>http://repo.onarandombox.com/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>onarandombox-bukkit-3rdparty</id>
+            <url>http://repo.onarandombox.com/content/repositories/bukkit-thirdparty/</url>
+        </repository>
     </repositories>
 
     <dependencies>
