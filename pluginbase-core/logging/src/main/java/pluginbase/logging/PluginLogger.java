@@ -7,9 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.logging.Filter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -38,6 +36,8 @@ import java.util.logging.Logger;
  */
 public class PluginLogger extends Logger {
 
+    public static final String DEBUG_BROADCAST_PREFIX = "[Logged to %s]";
+
     /** The original debug suffix. */
     static final String ORIGINAL_DEBUG = "-Debug";
     private static final boolean SHOW_CONFIG = true;
@@ -50,12 +50,16 @@ public class PluginLogger extends Logger {
     final String pluginName;
     /** The debug log instance for this PluginLogger. */
     @NotNull
+    final String loggerName;
+    @NotNull
     private DebugLog debugLog;
     @Nullable
     PluginLogger alternateDebugLog = null;
     /** The loggable plugin we use for this Plugin Logger. */
     @NotNull
     final LoggablePlugin plugin;
+    @NotNull
+    final Set<DebugSubscription> debugSubscriptions = new HashSet<>();
 
     @NotNull
     private volatile String debugString = ORIGINAL_DEBUG;
@@ -119,6 +123,33 @@ public class PluginLogger extends Logger {
         this.debugLog = DebugLog.getDebugLog(logger, getDebugFolder(plugin));
         this.plugin = plugin;
         this.pluginName = plugin.getName();
+        this.loggerName = pluginName + " PluginLogger";
+    }
+
+    public boolean subscribeToDebugBroadcast(@NotNull DebugSubscription subscription) {
+        synchronized (debugSubscriptions) {
+            if (!debugSubscriptions.contains(subscription)) {
+                debugSubscriptions.add(subscription);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public boolean unsubscribeFromDebugBroadcast(@NotNull DebugSubscription subscription) {
+        synchronized (debugSubscriptions) {
+            if (debugSubscriptions.contains(subscription)) {
+                debugSubscriptions.remove(subscription);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    public boolean hasDebugBroadcastSubscription(@NotNull DebugSubscription subscription) {
+        synchronized (debugSubscriptions) {
+            return debugSubscriptions.contains(subscription);
+        }
     }
 
     /**
@@ -152,6 +183,9 @@ public class PluginLogger extends Logger {
 
     private synchronized void privateLog(@NotNull final LogRecord record) {
         logger.log(record);
+        for (DebugSubscription subscription : debugSubscriptions) {
+            subscription.messageRecord(String.format(DEBUG_BROADCAST_PREFIX, this) + "[" + record.getLevel() + "]" + record.getMessage());
+        }
         /*
         if (getDebugLevel() > 0) {
             getDebugLog().log(record);
@@ -485,5 +519,9 @@ public class PluginLogger extends Logger {
     @Override
     public ResourceBundle getResourceBundle() {
         return logger.getResourceBundle();
+    }
+
+    public String toString() {
+        return loggerName;
     }
 }

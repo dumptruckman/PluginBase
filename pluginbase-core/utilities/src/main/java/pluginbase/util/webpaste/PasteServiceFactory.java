@@ -18,6 +18,8 @@ public class PasteServiceFactory {
                 return new PastebinPasteService(isPrivate);
             case PASTIE:
                 return new PastiePasteService(isPrivate);
+            case HASTEBIN:
+                return new HastebinPasteService();
             default:
                 return null;
         }

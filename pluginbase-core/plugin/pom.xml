@@ -51,6 +51,13 @@
         </dependency>
         <dependency>
             <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
+            <artifactId>Debug-Session</artifactId>
+            <version>${debug-session.version}</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
             <artifactId>Serializable-Config</artifactId>
             <version>${serializable-config.version}</version>
             <type>jar</type>

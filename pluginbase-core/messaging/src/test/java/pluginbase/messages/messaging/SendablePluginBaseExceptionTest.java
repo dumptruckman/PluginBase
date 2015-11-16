@@ -1,13 +1,9 @@
 package pluginbase.messages.messaging;
 
-import pluginbase.logging.Logging;
-import pluginbase.logging.PluginLogger;
 import pluginbase.messages.BundledMessage;
-import pluginbase.messages.LocalizablePlugin;
 import pluginbase.messages.Message;
 import pluginbase.messages.Messages;
 import pluginbase.messages.PluginBaseException;
-import org.jetbrains.annotations.NotNull;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,17 +17,12 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
-public class SendablePluginBaseExceptionTest implements LocalizablePlugin {
+public class SendablePluginBaseExceptionTest {
 
     private static final BundledMessage TEST_1 = Message.bundleMessage(Message.createMessage("test.1", "test message 1"));
     private static final BundledMessage TEST_2 = Message.bundleMessage(Message.createMessage("test.1", "test message 2"));
     private static final BundledMessage TEST_3 = Message.bundleMessage(Message.createMessage("test.1", "test message 3"));
     private static final BundledMessage TEST_4 = Message.bundleMessage(Message.createMessage("test.1", "test message 4"));
-
-    @NotNull
-    public PluginLogger getLog() {
-        return Logging.getLogger();
-    }
 
     private Messager messager;
     private MessageReceiver receiver;
@@ -39,8 +30,9 @@ public class SendablePluginBaseExceptionTest implements LocalizablePlugin {
     @Before
     public void setUp() throws Exception {
         MockGateway.MOCK_STANDARD_METHODS = false;
-        Messages.registerMessages(this, this.getClass());
-        messager = spy(new Messager(new TestMessageProvider(this)));
+        TestMessagingPlugin provider = new TestMessagingPlugin();
+        Messages.registerMessages(provider, provider.getClass());
+        messager = spy(provider.getMessager());
         receiver = mock(MessageReceiver.class);
         doAnswer(new Answer<Void>() {
             @Override

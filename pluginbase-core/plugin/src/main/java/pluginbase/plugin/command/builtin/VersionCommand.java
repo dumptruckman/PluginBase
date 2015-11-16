@@ -5,7 +5,6 @@ package pluginbase.plugin.command.builtin;
 
 import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
-import pluginbase.logging.PluginLogger;
 import pluginbase.messages.Message;
 import pluginbase.messages.Theme;
 import pluginbase.minecraft.BasePlayer;
@@ -13,17 +12,12 @@ import pluginbase.permission.Perm;
 import pluginbase.permission.PermFactory;
 import pluginbase.plugin.PluginBase;
 import pluginbase.util.webpaste.BitlyURLShortener;
-import pluginbase.util.webpaste.PasteFailedException;
-import pluginbase.util.webpaste.PasteService;
-import pluginbase.util.webpaste.PasteServiceFactory;
-import pluginbase.util.webpaste.PasteServiceType;
 import pluginbase.util.webpaste.URLShortener;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
 /**
  * Produces version information related to this plugin.
@@ -34,7 +28,7 @@ import java.util.logging.Level;
 @CommandInfo(
         primaryAlias = "version",
         desc = "Prints useful version information to the console.",
-        flags = "pb"
+        flags = "pbh"
 )
 public class VersionCommand extends BuiltInCommand {
 
@@ -91,52 +85,8 @@ public class VersionCommand extends BuiltInCommand {
 
         final Set<Character> flags = new LinkedHashSet<Character>(context.getFlags());
         if (!flags.isEmpty()) {
-            getCommandProvider().getServerInterface().runTaskAsynchronously(new Runnable() {
-                @Override
-                public void run() {
-                    for (Character flag : flags) {
-                        final String pasteUrl;
-                        if (flag.equals('p')) {
-                            pasteUrl = postToService(PasteServiceType.PASTIE, true, versionInfoDump, getCommandProvider().getLog());
-                        } else if (flag.equals('b')) {
-                            pasteUrl = postToService(PasteServiceType.PASTEBIN, true, versionInfoDump, getCommandProvider().getLog());
-                        } else {
-                            continue;
-                        }
-                        getCommandProvider().getServerInterface().runTask(new Runnable() {
-                            @Override
-                            public void run() {
-                                getMessager().message(sender, VERSION_INFO_DUMPED, pasteUrl);
-                            }
-                        });
-                    }
-                }
-            });
+            getCommandProvider().getServerInterface().runTaskAsynchronously(new PasteServiceTask(getCommandProvider(), flags, versionInfoDump, sender, VERSION_INFO_DUMPED));
         }
         return true;
-    }
-
-    /**
-     * Send the current contents of this.pasteBinBuffer to a web service.
-     *
-     * @param type      Service type to send to
-     * @param isPrivate Should the paste be marked as private.
-     * @return URL of visible paste
-     */
-    private static String postToService(PasteServiceType type, boolean isPrivate, List<String> pasteData, @NotNull final PluginLogger logger) {
-        StringBuilder buffer = new StringBuilder();
-        for (String data : pasteData) {
-            if (!buffer.toString().isEmpty()) {
-                buffer.append('\n');
-            }
-            buffer.append(data);
-        }
-        PasteService ps = PasteServiceFactory.getService(type, isPrivate);
-        try {
-            return SHORTENER.shorten(ps.postData(ps.encodeData(buffer.toString()), ps.getPostURL()));
-        } catch (PasteFailedException e) {
-            logger.log(Level.WARNING, "Error pasting version information: ", e);
-            return "Error posting to service";
-        }
     }
 }

@@ -75,4 +75,9 @@ class SpongeServerInterface implements ServerInterface {
     public int runTaskTimerAsynchronously(@NotNull Runnable runnable, long delay, long period) {
         return 0;
     }
+
+    @Override
+    public void cancelTask(int taskId) {
+
+    }
 }

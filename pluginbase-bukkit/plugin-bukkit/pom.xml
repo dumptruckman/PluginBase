@@ -126,6 +126,7 @@
                                     <include>com.dumptruckman.minecraft.pluginbase:Messaging-Bukkit</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Serializable-Config-Bukkit</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:File-Comments</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Debug-Session</include>
                                     <include>org.mcstats:metrics</include>
                                 </includes>
                             </artifactSet>

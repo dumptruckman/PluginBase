@@ -8,6 +8,8 @@ import pluginbase.command.CommandInfo;
 import pluginbase.command.CommandProvider;
 import pluginbase.command.CommandUsageException;
 import pluginbase.config.properties.Properties;
+import pluginbase.debugsession.DebugSession;
+import pluginbase.debugsession.DebugSessionManager;
 import pluginbase.jdbc.DatabaseSettings;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.logging.PluginLogger;
@@ -18,6 +20,7 @@ import pluginbase.minecraft.BasePlayer;
 import pluginbase.plugin.command.builtin.BuiltInCommand;
 import pluginbase.plugin.command.builtin.ConfirmCommand;
 import pluginbase.plugin.command.builtin.DebugCommand;
+import pluginbase.plugin.command.builtin.DebugSessionCommand;
 import pluginbase.plugin.command.builtin.ReloadCommand;
 import pluginbase.plugin.command.builtin.VersionCommand;
 
@@ -72,6 +75,7 @@ public abstract class PluginAgent<P> {
         _registerCommand(DebugCommand.class);
         _registerCommand(ReloadCommand.class);
         _registerCommand(VersionCommand.class);
+        _registerCommand(DebugSessionCommand.class);
         if (commandProvider.useQueuedCommands()) {
             _registerCommand(ConfirmCommand.class);
         }
@@ -106,6 +110,7 @@ public abstract class PluginAgent<P> {
 
         // Setup messages
         Messages.registerMessages(getCommandProvider(), Properties.class);
+        Messages.registerMessages(getCommandProvider(), DebugSessionManager.class);
         registerMessages();
 
         loaded = true;

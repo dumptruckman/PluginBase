@@ -29,6 +29,7 @@
         <messaging.version>0.1-SNAPSHOT</messaging.version>
         <minecraft-link.version>0.1-SNAPSHOT</minecraft-link.version>
         <permissions.version>0.1-SNAPSHOT</permissions.version>
+        <debug-session.version>0.1-SNAPSHOT</debug-session.version>
         <properties.version>0.1-SNAPSHOT</properties.version>
         <serializable-config.version>0.1-SNAPSHOT</serializable-config.version>
         <utilities.version>0.1-SNAPSHOT</utilities.version>

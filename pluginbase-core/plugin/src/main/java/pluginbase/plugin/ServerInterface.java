@@ -64,4 +64,6 @@ public interface ServerInterface {
     int runTaskTimer(@NotNull final Runnable runnable, long delay, long period);
 
     int runTaskTimerAsynchronously(@NotNull final Runnable runnable, long delay, long period);
+
+    void cancelTask(int taskId);
 }

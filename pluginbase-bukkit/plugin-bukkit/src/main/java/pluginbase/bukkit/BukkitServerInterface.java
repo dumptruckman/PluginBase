@@ -91,4 +91,9 @@ class BukkitServerInterface implements ServerInterface {
     public int runTaskTimerAsynchronously(@NotNull final Runnable runnable, final long delay, final long period) {
         return plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, period).getTaskId();
     }
+
+    @Override
+    public void cancelTask(int taskId) {
+        plugin.getServer().getScheduler().cancelTask(taskId);
+    }
 }

@@ -29,6 +29,7 @@
         <module>jdbc</module>
         <module>jdbc-spring</module>
         <module>testplugin</module>
+        <module>debug-session</module>
         <!--module>javadoc</module-->
     </modules>
 </project>

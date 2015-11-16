@@ -8,9 +8,11 @@ import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandProvider;
 import pluginbase.command.QueuedCommand;
 import pluginbase.config.SerializationRegistrar;
+import pluginbase.debugsession.DebugSessionManager;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.logging.LoggablePlugin;
 import pluginbase.logging.PluginLogger;
+import pluginbase.messages.Messages;
 import pluginbase.messages.messaging.Messager;
 import pluginbase.messages.messaging.Messaging;
 import pluginbase.messages.messaging.SendablePluginBaseException;
@@ -40,6 +42,7 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     @NotNull
     private final PluginAgent<P> pluginAgent;
     private PluginLogger logger;
+    private DebugSessionManager debugSessionManager;
     private Settings settings = null;
 
     PluginBase(@NotNull PluginAgent<P> pluginAgent) {
@@ -65,6 +68,8 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
         // Loads the configuration.
         settings = pluginAgent.loadSettings();
 
+        debugSessionManager = new DebugSessionManager(this);
+
         // Set up commands.
         pluginAgent.registerCommands();
 
@@ -86,6 +91,7 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     }
 
     void onDisable() {
+        debugSessionManager.shutdown();
         getLog().shutdown();
     }
 
@@ -246,5 +252,9 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
         return "PluginBase{" +
                 "pluginAgent=" + pluginAgent +
                 '}';
+    }
+
+    public DebugSessionManager getDebugSessionManager() {
+        return debugSessionManager;
     }
 }

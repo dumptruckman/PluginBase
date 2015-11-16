@@ -7,12 +7,17 @@ import pluginbase.messages.Message;
 import pluginbase.messages.MessageProvider;
 import org.jetbrains.annotations.NotNull;
 
-public class TestMessageProvider implements MessageProvider {
+import java.io.File;
+import java.util.Locale;
 
-    private LocalizablePlugin plugin;
+public class TestMessagingPlugin implements MessageProvider, Messaging {
 
-    public TestMessageProvider(LocalizablePlugin plugin) {
-        this.plugin = plugin;
+    private Messager messager = new Messager(this);
+
+    @NotNull
+    @Override
+    public PluginLogger getLog() {
+        return Logging.getLogger();
     }
 
     @NotNull
@@ -30,6 +35,17 @@ public class TestMessageProvider implements MessageProvider {
     @NotNull
     @Override
     public LocalizablePlugin getPlugin() {
-        return plugin;
+        return this;
+    }
+
+    @NotNull
+    @Override
+    public Messager getMessager() {
+        return messager;
+    }
+
+    @Override
+    public void loadMessages(@NotNull File languageFile, @NotNull Locale locale) {
+
     }
 }

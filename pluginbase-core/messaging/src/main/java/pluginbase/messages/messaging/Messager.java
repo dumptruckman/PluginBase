@@ -14,13 +14,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * This interface describes a Messager which sends localized messages to {@link MessageReceiver}s.
  */
 public class Messager implements MessageProvider {
+
+    public static final String DEBUG_BROADCAST_PREFIX = "[Message sent to %s] ";
 
     @Nullable
     private static WeakReference<Messager> staticMessager = null;
@@ -40,6 +41,8 @@ public class Messager implements MessageProvider {
 
     @NotNull
     private final MessageProvider provider;
+    @NotNull
+    final Map<MessageReceiver, MessagerDebugBroadcast> debugBroadcastMap = new HashMap<>();
 
     /**
      * Creates a new messager backed by the given message provider.
@@ -124,6 +127,10 @@ public class Messager implements MessageProvider {
      */
     public void message(@NotNull MessageReceiver sender, @NotNull String message) {
         sender.sendMessage(message);
+        if (debugBroadcastMap.containsKey(sender)) {
+            MessagerDebugBroadcast broadcast = debugBroadcastMap.get(sender);
+            broadcast.messageRecord(String.format(DEBUG_BROADCAST_PREFIX, sender) + message);
+        }
     }
 
     /**
@@ -135,6 +142,10 @@ public class Messager implements MessageProvider {
     public void message(@NotNull MessageReceiver sender, @NotNull List<String> messages) {
         for (String s : messages) {
             sender.sendMessage(s);
+            if (debugBroadcastMap.containsKey(sender)) {
+                MessagerDebugBroadcast broadcast = debugBroadcastMap.get(sender);
+                broadcast.messageRecord(String.format(DEBUG_BROADCAST_PREFIX, sender) + s);
+            }
         }
     }
 
@@ -205,6 +216,10 @@ public class Messager implements MessageProvider {
     protected void sendMessages(@NotNull MessageReceiver player, @NotNull String[] messages) {
         for (String s : messages) {
             player.sendMessage(s);
+            if (debugBroadcastMap.containsKey(player)) {
+                MessagerDebugBroadcast broadcast = debugBroadcastMap.get(player);
+                broadcast.messageRecord(String.format(DEBUG_BROADCAST_PREFIX, player) + s);
+            }
         }
     }
 
@@ -231,6 +246,31 @@ public class Messager implements MessageProvider {
     @NotNull
     protected PluginLogger getLog() {
         return getPlugin().getLog();
+    }
+
+    /**
+     * Returns the debug broadcaster for the given MessageReceiver if it exists.
+     *
+     * @param messageReceiver the MessageReceiver to get the broadcaster for
+     * @return the debug broadcaster for the given MessageReceiver or null if it does not exist.
+     */
+    @Nullable
+    MessagerDebugBroadcast getDebugBroadcast(@NotNull MessageReceiver messageReceiver) {
+        return debugBroadcastMap.get(messageReceiver);
+    }
+
+    public boolean subscribeToDebugBroadcast(@NotNull MessagerDebugSubscription subscription) {
+        MessagerDebugBroadcast broadcast = getDebugBroadcast(subscription.getSubscriber());
+        if (broadcast == null) {
+            broadcast = new MessagerDebugBroadcast();
+            debugBroadcastMap.put(subscription.getSubscriber(), broadcast);
+        }
+        return broadcast.acceptSubscription(subscription);
+    }
+
+    public boolean unsubscribeFromDebugBroadcast(@NotNull MessagerDebugSubscription subscription) {
+        MessagerDebugBroadcast broadcast = getDebugBroadcast(subscription.getSubscriber());
+        return broadcast != null && broadcast.cancelSubscription(subscription);
     }
 }
 
