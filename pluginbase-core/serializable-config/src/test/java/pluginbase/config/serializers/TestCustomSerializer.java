@@ -17,7 +17,7 @@ public class TestCustomSerializer extends TestBase {
         Field field = fieldMap.getField("name");
         assertNotNull(field);
         Serializer serializer = field.getSerializer();
-        assertEquals(DefaultSerializer.class, serializer.getClass());
+        assertEquals(StringSerializer.class, serializer.getClass());
 
         field = fieldMap.getField("custom");
         assertNotNull(field);

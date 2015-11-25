@@ -10,7 +10,6 @@ import org.spongepowered.api.event.state.ServerStoppingEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.ConfigDir;
-import pluginbase.config.SerializationRegistrar;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.jdbc.SpringDatabaseSettings;
 import pluginbase.jdbc.SpringJdbcAgent;
@@ -31,12 +30,6 @@ import java.util.concurrent.Callable;
 
 @Plugin(id = "TestSpongePlugin", name = "TestSpongePlugin")
 public class TestPlugin {
-
-    static {
-        SerializationRegistrar.registerClass(TestConfig.class);
-        SerializationRegistrar.registerClass(Pie.class);
-        SerializationRegistrar.registerClass(PieProperties.class);
-    }
 
     JdbcAgent jdbcAgent;
 

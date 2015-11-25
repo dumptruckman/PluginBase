@@ -177,27 +177,6 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Serializable-Config-Bukkit</artifactId>
-            <version>${serializable-config.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Serializable-Config-Sponge</artifactId>
-            <version>${serializable-config.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>File-Comments</artifactId>
-            <version>${file-comments.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
 
     <build>

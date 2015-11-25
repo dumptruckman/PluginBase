@@ -46,13 +46,6 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-            <artifactId>Serializable-Config-Bukkit</artifactId>
-            <version>${serializable-config.version}</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>1.3.174</version>
@@ -69,6 +62,27 @@
             <artifactId>JDBC-Spring</artifactId>
             <version>${jdbc-spring.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ninja.leaping.configurate</groupId>
+            <artifactId>configurate-hocon</artifactId>
+            <version>3.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ninja.leaping.configurate</groupId>
+            <artifactId>configurate-core</artifactId>
+            <version>3.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.3.0</version>
+            <type>jar</type>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -109,29 +123,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.1</version>
+                <version>2.3</version>
                 <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Plugin</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Permissions-Bukkit</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Commands-Bukkit</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Minecraft-Link-Bukkit</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Messaging-Bukkit</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Serializable-Config-Bukkit</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:File-Comments</include>
-                                    <include>com.dumptruckman.minecraft.pluginbase:Debug-Session</include>
-                                    <include>org.mcstats:metrics</include>
-                                </includes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>spring</id>
                         <phase>package</phase>
@@ -149,7 +142,6 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>commons-logging</id>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
@@ -157,6 +149,16 @@
                         <configuration>
                             <artifactSet>
                                 <includes>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Plugin</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Permissions-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Commands-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Minecraft-Link-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Messaging-Bukkit</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Debug-Session</include>
+                                    <include>org.mcstats:metrics</include>
+                                    <include>ninja.leaping.configurate:configurate-core</include>
+                                    <include>ninja.leaping.configurate:configurate-hocon</include>
+                                    <include>com.typesafe:config</include>
                                     <include>commons-logging:commons-logging</include>
                                 </includes>
                             </artifactSet>

@@ -11,7 +11,7 @@ public class CustomSerializer2 implements Serializer<Custom> {
 
     @Nullable
     @Override
-    public Object serialize(@Nullable Custom object) {
+    public Object serialize(@Nullable Custom object, @NotNull SerializerSet serializerSet) {
         if (object == null) {
             return null;
         } else {
@@ -23,7 +23,7 @@ public class CustomSerializer2 implements Serializer<Custom> {
 
     @Nullable
     @Override
-    public Custom deserialize(@Nullable Object serialized, @NotNull Class wantedType) throws IllegalArgumentException {
+    public Custom deserialize(@Nullable Object serialized, @NotNull Class wantedType, @NotNull SerializerSet serializerSet) throws IllegalArgumentException {
         if (serialized instanceof Map) {
             return new Custom(((Map) serialized).get("name").toString());
         } else {

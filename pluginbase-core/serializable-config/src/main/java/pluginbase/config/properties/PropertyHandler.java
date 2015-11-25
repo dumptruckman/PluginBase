@@ -6,6 +6,11 @@ import pluginbase.config.field.Field;
 import pluginbase.config.field.FieldInstance;
 import pluginbase.config.field.PropertyVetoException;
 
+/**
+ * A property handler defines how to a property's value is changeable through the methods in {@link Properties}.
+ *
+ * @param <T> The type of value this handler is responsible for.
+ */
 public interface PropertyHandler<T> {
 
     void set(@NotNull FieldInstance field, @NotNull String newValue) throws PropertyVetoException, UnsupportedOperationException;

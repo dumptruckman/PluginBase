@@ -11,7 +11,6 @@ import pluginbase.testplugin.commands.Test2Command;
 import pluginbase.testplugin.commands.TestCommand;
 import pluginbase.testplugin.pie.Pie;
 import pluginbase.testplugin.pie.PieProperties;
-import pluginbase.config.SerializationRegistrar;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.jdbc.SpringDatabaseSettings;
 import pluginbase.jdbc.SpringJdbcAgent;
@@ -22,12 +21,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 public class TestPlugin extends JavaPlugin {
-
-    static {
-        SerializationRegistrar.registerClass(TestConfig.class);
-        SerializationRegistrar.registerClass(Pie.class);
-        SerializationRegistrar.registerClass(PieProperties.class);
-    }
 
     JdbcAgent jdbcAgent;
 

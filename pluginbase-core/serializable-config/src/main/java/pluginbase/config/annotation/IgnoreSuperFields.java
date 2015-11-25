@@ -12,6 +12,8 @@ import java.lang.annotation.Target;
  * <p/>
  * If this is present on a parent of a child class it will include the fields of both the parent and child but will not
  * include any from the parent's parent.
+ * <p/>
+ * This may only work when not using a custom serializer for the annotated type.
  */
 @Documented
 @Target(ElementType.TYPE)

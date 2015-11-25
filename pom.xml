@@ -19,11 +19,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.number>UNKNOWN</project.build.number>
         <!-- PluginBase Version -->
-        <pluginbase.version>1.5-SNAPSHOT</pluginbase.version>
+        <pluginbase.version>1.5.1-SNAPSHOT</pluginbase.version>
         <!-- PluginBase Module Versions -->
         <plugin.version>${pluginbase.version}</plugin.version>
         <commands.version>0.1-SNAPSHOT</commands.version>
-        <file-comments.version>0.1-SNAPSHOT</file-comments.version>
         <logging.version>0.1-SNAPSHOT</logging.version>
         <messages.version>0.1-SNAPSHOT</messages.version>
         <messaging.version>0.1-SNAPSHOT</messaging.version>
@@ -31,7 +30,7 @@
         <permissions.version>0.1-SNAPSHOT</permissions.version>
         <debug-session.version>0.1-SNAPSHOT</debug-session.version>
         <properties.version>0.1-SNAPSHOT</properties.version>
-        <serializable-config.version>0.1-SNAPSHOT</serializable-config.version>
+        <serializable-config.version>0.2-SNAPSHOT</serializable-config.version>
         <utilities.version>0.1-SNAPSHOT</utilities.version>
         <jdbc.version>0.1-SNAPSHOT</jdbc.version>
         <jdbc-spring.version>0.1-SNAPSHOT</jdbc-spring.version>

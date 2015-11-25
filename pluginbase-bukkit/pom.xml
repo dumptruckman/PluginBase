@@ -23,7 +23,6 @@
         <module>commands-bukkit</module>
         <module>plugin-bukkit</module>
         <module>testbukkitplugin</module>
-        <module>serializable-config-bukkit</module>
     </modules>
 
     <repositories>

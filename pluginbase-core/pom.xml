@@ -25,7 +25,6 @@
         <module>utilities</module>
         <module>plugin</module>
         <module>serializable-config</module>
-        <module>file-comments</module>
         <module>jdbc</module>
         <module>jdbc-spring</module>
         <module>testplugin</module>

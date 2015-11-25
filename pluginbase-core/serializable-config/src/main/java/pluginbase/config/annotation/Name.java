@@ -7,11 +7,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Tells the serializer to use this name as an identifier instead of the name of the field.
+ * Tells the serializer to use this name as an identifier key instead of the name of the field.
+ *
+ * @see SerializableAs
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 public @interface Name {
-    public String value();
+    String value();
 }

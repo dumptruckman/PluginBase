@@ -11,6 +11,7 @@ import pluginbase.config.field.Validator;
 import pluginbase.config.field.Validators;
 import pluginbase.config.properties.PropertiesWrapper;
 import pluginbase.config.serializers.Serializer;
+import pluginbase.config.serializers.SerializerSet;
 import pluginbase.logging.PluginLogger;
 import pluginbase.messages.Message;
 import pluginbase.messages.MessageProvider;
@@ -97,13 +98,13 @@ public class Settings extends PropertiesWrapper {
 
             @Nullable
             @Override
-            public Object serialize(@Nullable Locale locale) {
+            public Object serialize(@Nullable Locale locale, @NotNull SerializerSet serializerSet) {
                 return locale != null ? locale.toString() : MessageProvider.DEFAULT_LOCALE.toString();
             }
 
             @Nullable
             @Override
-            public Locale deserialize(@Nullable Object object, @NotNull Class wantedType) throws IllegalArgumentException {
+            public Locale deserialize(@Nullable Object object, @NotNull Class wantedType, @NotNull SerializerSet serializerSet) throws IllegalArgumentException {
                 if (object == null) {
                     return MessageProvider.DEFAULT_LOCALE;
                 }

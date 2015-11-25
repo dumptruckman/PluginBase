@@ -1,15 +1,9 @@
 package pluginbase.jdbc;
 
-import pluginbase.config.SerializationRegistrar;
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.properties.PropertiesWrapper;
 
 public class SpringDatabaseSettings extends PropertiesWrapper implements DatabaseSettings {
-
-    static {
-        SerializationRegistrar.registerClass(SpringDatabaseSettings.class);
-        SerializationRegistrar.registerClass(SpringDatabaseConnectionInfo.class);
-    }
 
     @Comment({
             "What type of database to use.",

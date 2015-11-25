@@ -64,7 +64,7 @@ public class YamlProperties extends AbstractFileProperties implements Properties
         private boolean autoDefaults = true;
 
         /**
-         * Creates a new loader for a YamlProperties object.
+         * Creates a new datasource for a YamlProperties object.
          * <p/>
          * By default, the loaded YamlProperties will have comments and automatically set defaults.
          * Use the optional methods in this class to change these options.

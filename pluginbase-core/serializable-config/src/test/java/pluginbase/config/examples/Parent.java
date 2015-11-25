@@ -10,7 +10,7 @@ public final class Parent {
     }
 
     @Comment({"# Test comment 1", "Test comment 2"})
-    private Child aChild;
+    public Child aChild;
 
     private Parent() { }
 

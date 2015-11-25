@@ -5,6 +5,7 @@ import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.Description;
 import pluginbase.config.annotation.HandlePropertyWith;
 import pluginbase.config.annotation.Immutable;
+import pluginbase.config.annotation.SerializableAs;
 import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.annotation.ValidateWith;
 import pluginbase.config.field.FieldInstance;
@@ -23,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+@Comment({"Test the header out", "\"It works,\" they say"})
+@SerializableAs("ComprehensiveTestClass")
 public class Comprehensive extends PropertiesWrapper {
 
     public static final int A_INT = 200;

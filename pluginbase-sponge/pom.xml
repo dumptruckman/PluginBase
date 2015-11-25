@@ -18,7 +18,6 @@
     <modules>
         <module>messaging-sponge</module>
         <module>permissions-sponge</module>
-        <module>serializable-config-sponge</module>
         <module>minecraft-link-sponge</module>
         <module>commands-sponge</module>
         <module>plugin-sponge</module>

@@ -11,17 +11,17 @@ import pluginbase.config.annotation.ValidateWith;
 import pluginbase.config.properties.PropertyAliases;
 import pluginbase.config.properties.PropertyHandler;
 import pluginbase.config.properties.PropertyHandlers;
-import pluginbase.config.serializers.DefaultSerializer;
 import pluginbase.config.serializers.Serializer;
+import pluginbase.config.serializers.SerializerSet;
 import pluginbase.config.serializers.Serializers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.config.util.PrimitivesUtil;
 
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
-import java.util.Arrays;
 import java.util.Collection;
 
 public class Field extends FieldMap {
@@ -108,7 +108,7 @@ public class Field extends FieldMap {
     @NotNull
     private Class determineTypeClass(@NotNull Type type) {
         if (type instanceof Class) {
-            return (Class) type;
+            return PrimitivesUtil.switchForWrapper((Class) type);
         } else {
             if (type instanceof WildcardType) {
                 return Object.class;
@@ -214,9 +214,28 @@ public class Field extends FieldMap {
         return immutable;
     }
 
+    @Nullable
+    public Class getSerializerClass() {
+        return serializerClass;
+    }
+
     @NotNull
     public Serializer getSerializer() {
-        return serializerClass != null ? Serializers.getSerializer(serializerClass) : Serializers.getDefaultSerializer();
+        return getSerializer(SerializerSet.defaultSet());
+    }
+
+    @NotNull
+    public Serializer getSerializer(@NotNull SerializerSet serializerSet) {
+        /* TODO: decide if override serializers are higher priority than @SerializeWith on a field. For now, they are lower priority.
+        Serializer serializer = serializerSet.getOverrideSerializer(field.getType());
+        if (serializer != null) {
+            return serializer;
+        }
+        */
+        if (getSerializerClass() != null) {
+            return Serializers.getSerializerInstance(getSerializerClass());
+        }
+        return Serializers.getClassSerializer(getType(), serializerSet);
     }
 
     @Nullable

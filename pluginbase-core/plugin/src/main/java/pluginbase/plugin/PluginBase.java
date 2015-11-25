@@ -7,12 +7,10 @@ import pluginbase.command.Command;
 import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandProvider;
 import pluginbase.command.QueuedCommand;
-import pluginbase.config.SerializationRegistrar;
 import pluginbase.debugsession.DebugSessionManager;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.logging.LoggablePlugin;
 import pluginbase.logging.PluginLogger;
-import pluginbase.messages.Messages;
 import pluginbase.messages.messaging.Messager;
 import pluginbase.messages.messaging.Messaging;
 import pluginbase.messages.messaging.SendablePluginBaseException;
@@ -33,11 +31,6 @@ import java.util.Locale;
  * Provides numerous useful methods for general plugin self-management.
  */
 public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandProvider<P> {
-
-    static {
-        SerializationRegistrar.registerClass(Settings.class);
-        SerializationRegistrar.registerClass(Language.class);
-    }
 
     @NotNull
     private final PluginAgent<P> pluginAgent;

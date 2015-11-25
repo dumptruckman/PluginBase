@@ -5,7 +5,7 @@ import pluginbase.config.annotation.Comment;
 public final class Child {
 
     @Comment("# Test boolean comments")
-    private boolean aBoolean;
+    public boolean aBoolean;
 
     private Child() { }
 

@@ -1,11 +1,13 @@
 package pluginbase.config.field;
 
-import pluginbase.config.SerializationRegistrar;
+import pluginbase.config.annotation.FauxEnum;
 import pluginbase.config.annotation.IgnoreSuperFields;
 import org.jetbrains.annotations.NotNull;
+import pluginbase.config.serializers.SerializerSet;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -48,9 +50,6 @@ public class FieldMapper {
     }
 
     private FieldMapper(@NotNull Class clazz) {
-        if (!SerializationRegistrar.isClassRegistered(clazz)) {
-            throw new IllegalArgumentException(clazz + " is not registered for serialization/deserialization.");
-        }
         this.clazz = clazz;
     }
 
@@ -60,13 +59,16 @@ public class FieldMapper {
         for (java.lang.reflect.Field field : allFields) {
             if (!Modifier.isStatic(field.getModifiers())) {
                 Field localField;
-                if (SerializationRegistrar.isClassRegistered(field.getType())) {
+                if (Map.class.isAssignableFrom(field.getType())
+                        || Collection.class.isAssignableFrom(field.getType())
+                        || field.getType().isAnnotationPresent(FauxEnum.class)
+                        || SerializerSet.defaultSet().hasSerializerForClass(field.getType())) {
+                    localField = new Field(field);
+                } else {
                     if (field.getType().equals(clazz)) {
                         throw new IllegalStateException("Mapping fields for " + clazz + " would result in infinite recursion due self containment.");
                     }
                     localField = new Field(field, getFieldMap(field.getType()));
-                } else {
-                    localField = new Field(field);
                 }
                 resultMap.put(localField.getName().toLowerCase(), localField);
             }

@@ -7,14 +7,15 @@ import pluginbase.command.CommandException;
 import pluginbase.command.CommandInfo;
 import pluginbase.command.CommandProvider;
 import pluginbase.command.CommandUsageException;
+import pluginbase.config.datasource.hocon.HoconDataSource;
 import pluginbase.config.properties.Properties;
-import pluginbase.debugsession.DebugSession;
 import pluginbase.debugsession.DebugSessionManager;
 import pluginbase.jdbc.DatabaseSettings;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.logging.PluginLogger;
+import pluginbase.messages.Message;
 import pluginbase.messages.Messages;
-import pluginbase.messages.messaging.Messager;
+import pluginbase.messages.PluginBaseException;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.plugin.command.builtin.BuiltInCommand;
@@ -25,6 +26,7 @@ import pluginbase.plugin.command.builtin.ReloadCommand;
 import pluginbase.plugin.command.builtin.VersionCommand;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -43,7 +45,9 @@ public abstract class PluginAgent<P> {
     private boolean loaded = false;
 
     private File configFile;
+    private HoconDataSource configDataSource = null;
     private File sqlConfigFile;
+    private HoconDataSource sqlConfigDataSource = null;
 
     @Nullable
     private Callable<? extends Settings> settingsCallable;
@@ -93,18 +97,34 @@ public abstract class PluginAgent<P> {
         return getPluginBase().getLog();
     }
 
-    protected File getConfigFile() {
+    protected File getConfigFile() throws PluginBaseException {
+        if (!configFile.exists()) {
+            configFile.getParentFile().mkdirs();
+            try {
+                configFile.createNewFile();
+            } catch (IOException e) {
+                throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
+            }
+        }
         return configFile;
     }
 
-    protected File getSqlConfigFile() {
+    protected File getSqlConfigFile() throws PluginBaseException {
+        if (!sqlConfigFile.exists()) {
+            sqlConfigFile.getParentFile().mkdirs();
+            try {
+                sqlConfigFile.createNewFile();
+            } catch (IOException e) {
+                throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
+            }
+        }
         return sqlConfigFile;
     }
 
     public void loadPluginBase() {
         // Setup config file.
-        configFile = new File(getDataFolder(), "config.yml");
-        sqlConfigFile = new File(getDataFolder(), "db_config.yml");
+        configFile = new File(getDataFolder(), "plugin.conf");
+        sqlConfigFile = new File(getDataFolder(), "database.conf");
 
         getPluginBase().onLoad();
 
@@ -313,16 +333,55 @@ public abstract class PluginAgent<P> {
     protected abstract File getDataFolder();
 
     @NotNull
-    protected abstract Settings loadSettings();
+    protected Settings loadSettings() {
+        Settings defaults = getDefaultSettings();
+        Settings settings = defaults;
+        try {
+            if (configDataSource == null) {
+                configDataSource = HoconDataSource.builder().setFile(getConfigFile()).build();
+            }
+            settings = configDataSource.loadToObject(defaults);
+            if (settings == null) {
+                settings = defaults;
+            }
+            configDataSource.save(settings);
+            getLog().fine("Loaded config file!");
+        } catch (PluginBaseException e) {  // Catch errors loading the config file and exit out if found.
+            getLog().severe("Error loading config file!");
+            e.printStackTrace();
+            disablePlugin();
+        }
+        getLog().setDebugLevel(getLog().getDebugLevel());
+        return settings;
+    }
 
     @NotNull
-    public abstract DatabaseSettings loadDatabaseSettings(@NotNull DatabaseSettings defaults);
+    public DatabaseSettings loadDatabaseSettings(@NotNull DatabaseSettings defaults) {
+        DatabaseSettings settings = defaults;
+        try {
+            if (sqlConfigDataSource == null) {
+                sqlConfigDataSource = HoconDataSource.builder().setFile(getSqlConfigFile()).build();
+            }
+            settings = sqlConfigDataSource.loadToObject(defaults);
+            if (settings == null) {
+                settings = defaults;
+            }
+            sqlConfigDataSource.save(settings);
+            getLog().fine("Loaded db config file!");
+        } catch (PluginBaseException e) {
+            getLog().severe("Could not create db_config.yml!");
+            e.printStackTrace();
+        }
+        return settings;
+    }
 
     protected abstract void disablePlugin();
 
     protected abstract ServerInterface getServerInterface();
 
-    protected abstract void saveSettings() throws SendablePluginBaseException;
+    protected void saveSettings() throws SendablePluginBaseException {
+        configDataSource.save(getPluginBase().getSettings());
+    }
 
     @Override
     public String toString() {
