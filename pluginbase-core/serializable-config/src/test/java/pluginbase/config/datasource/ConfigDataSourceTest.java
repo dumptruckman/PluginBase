@@ -24,7 +24,16 @@ public class ConfigDataSourceTest extends TestBase {
     Comprehensive expected;
 
     @Before
-    public void setup() {
+    public void setup() throws Exception {
+        hoconFile.getParentFile().mkdirs();
+        hoconFile.createNewFile();
+        jsonFile.getParentFile().mkdirs();
+        jsonFile.createNewFile();
+        gsonFile.getParentFile().mkdirs();
+        gsonFile.createNewFile();
+        yamlFile.getParentFile().mkdirs();
+        yamlFile.createNewFile();
+
         expected = new Comprehensive();
         expected.aInt = 5;
         ((Parent) expected.stringObjectMap.get("parent")).aChild.aBoolean = false;
