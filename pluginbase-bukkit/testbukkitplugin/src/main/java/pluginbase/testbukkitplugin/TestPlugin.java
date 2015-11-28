@@ -1,5 +1,8 @@
 package pluginbase.testbukkitplugin;
 
+import org.bukkit.Server;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.bukkit.BukkitPluginAgent;
@@ -17,6 +20,7 @@ import pluginbase.jdbc.SpringJdbcAgent;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.plugin.Settings;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -24,9 +28,18 @@ public class TestPlugin extends JavaPlugin {
 
     JdbcAgent jdbcAgent;
 
-    final BukkitPluginAgent pluginAgent;
+    BukkitPluginAgent pluginAgent;
+
+    TestPlugin(PluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, server, description, dataFolder, file);
+        init();
+    }
 
     public TestPlugin() {
+        init();
+    }
+
+    private void init() {
         pluginAgent = BukkitPluginAgent.getPluginAgent(TestPlugin.class, this, "pb");
         pluginAgent.setDefaultSettingsCallable(new Callable<Settings>() {
             @Override
