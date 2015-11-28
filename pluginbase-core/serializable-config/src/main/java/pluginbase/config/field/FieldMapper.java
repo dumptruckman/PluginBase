@@ -57,12 +57,13 @@ public class FieldMapper {
         java.lang.reflect.Field[] allFields = collectAllFieldsForClass(clazz);
         Map<String, Field> resultMap = new LinkedHashMap<String, Field>(allFields.length);
         for (java.lang.reflect.Field field : allFields) {
-            if (!Modifier.isStatic(field.getModifiers())) {
+            if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())) {
                 Field localField;
                 if (Map.class.isAssignableFrom(field.getType())
                         || Collection.class.isAssignableFrom(field.getType())
                         || field.getType().isAnnotationPresent(FauxEnum.class)
-                        || SerializerSet.defaultSet().hasSerializerForClass(field.getType())) {
+                        || SerializerSet.defaultSet().hasSerializerForClass(field.getType())
+                        || VirtualField.class.isAssignableFrom(field.getType())) {
                     localField = new Field(field);
                 } else {
                     if (field.getType().equals(clazz)) {
