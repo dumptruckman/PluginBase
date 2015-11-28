@@ -1,10 +1,7 @@
 package pluginbase.config.field;
 
 import pluginbase.config.TestBase;
-import pluginbase.config.examples.Child;
-import pluginbase.config.examples.Comprehensive;
-import pluginbase.config.examples.Parent;
-import pluginbase.config.examples.Recursive;
+import pluginbase.config.examples.*;
 import pluginbase.config.serializers.CustomSerializer;
 import pluginbase.config.serializers.CustomSerializer2;
 import org.junit.Test;
@@ -76,5 +73,21 @@ public class FieldMapperTest extends TestBase {
         Field field = fieldMap.getField("aInt");
         assertNotNull(field);
         assertArrayEquals(Comprehensive.A_INT_COMMENTS, field.getComments());
+    }
+
+    @Test
+    public void testMapFields() {
+        Comprehensive expected = new Comprehensive();
+        expected.aInt = 125612;
+        expected.custom.name = "asdhhojao";
+        expected.simpleList.add(new Simple("asdfaghrhah"));
+        expected.custom2 = new Custom("135r3trgah");
+
+        Comprehensive actual = new Comprehensive();
+        assertFalse(expected.equals(actual));
+
+        FieldMapper.mapFields(expected, actual);
+
+        assertEquals(expected, actual);
     }
 }

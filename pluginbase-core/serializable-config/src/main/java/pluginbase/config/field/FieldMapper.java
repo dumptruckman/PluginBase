@@ -4,13 +4,11 @@ import pluginbase.config.annotation.FauxEnum;
 import pluginbase.config.annotation.IgnoreSuperFields;
 import org.jetbrains.annotations.NotNull;
 import pluginbase.config.serializers.SerializerSet;
+import pluginbase.config.util.PrimitivesUtil;
+import pluginbase.logging.Logging;
 
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class FieldMapper {
 
@@ -54,22 +52,26 @@ public class FieldMapper {
     }
 
     private Map<String, Field> mapFields() {
+        Logging.finer("Mapping fields for %s", this);
         java.lang.reflect.Field[] allFields = collectAllFieldsForClass(clazz);
         Map<String, Field> resultMap = new LinkedHashMap<String, Field>(allFields.length);
         for (java.lang.reflect.Field field : allFields) {
+            Class fieldType = PrimitivesUtil.switchForWrapper(field.getType());
+            Logging.finest("Mapping %s of type %s", field, fieldType);
             if (!Modifier.isStatic(field.getModifiers()) && !Modifier.isTransient(field.getModifiers())) {
                 Field localField;
-                if (Map.class.isAssignableFrom(field.getType())
-                        || Collection.class.isAssignableFrom(field.getType())
+                if (Map.class.isAssignableFrom(fieldType)
+                        || Collection.class.isAssignableFrom(fieldType)
+                        || Enum.class.isAssignableFrom(fieldType)
                         || field.getType().isAnnotationPresent(FauxEnum.class)
-                        || SerializerSet.defaultSet().hasSerializerForClass(field.getType())
-                        || VirtualField.class.isAssignableFrom(field.getType())) {
+                        || SerializerSet.defaultSet().hasSerializerForClass(fieldType)
+                        || VirtualField.class.isAssignableFrom(fieldType)) {
                     localField = new Field(field);
                 } else {
-                    if (field.getType().equals(clazz)) {
+                    if (fieldType.equals(clazz)) {
                         throw new IllegalStateException("Mapping fields for " + clazz + " would result in infinite recursion due self containment.");
                     }
-                    localField = new Field(field, getFieldMap(field.getType()));
+                    localField = new Field(field, getFieldMap(fieldType));
                 }
                 resultMap.put(localField.getName().toLowerCase(), localField);
             }
@@ -90,5 +92,12 @@ public class FieldMapper {
             System.arraycopy(superFields, 0, declaredFields, length, superFields.length);
         }
         return declaredFields;
+    }
+
+    @Override
+    public String toString() {
+        return "FieldMapper{" +
+                "clazz=" + clazz +
+                '}';
     }
 }
