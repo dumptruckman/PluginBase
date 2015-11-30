@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import pluginbase.config.SerializableConfig;
 import pluginbase.config.annotation.FauxEnum;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
@@ -37,6 +38,7 @@ public final class SerializerSet {
      *     <li>{@link String}</li>
      *     <li>{@link Locale}</li>
      *     <li>All {@link Enum} types</li>
+     *     <li>All array types</li>
      *     <li>Classes annotated with {@link FauxEnum}</li>
      *     <li>Classes implementing {@link Collection}</li>
      *     <li>Classes implementing {@link Map}</li>
@@ -245,6 +247,9 @@ public final class SerializerSet {
 
         serializer = new LocaleSerializer();
         serializers.put(Locale.class, serializer);
+
+        serializer = new ArraySerializer();
+        serializers.put(Array.class, serializer);
 
         DEFAULT_SET = new SerializerSet(serializers, new HashMap<>(), Serializers.DEFAULT_SERIALIZER);
     }

@@ -66,6 +66,7 @@ public class FieldMapper {
                         || Enum.class.isAssignableFrom(fieldType)
                         || field.getType().isAnnotationPresent(FauxEnum.class)
                         || field.isAnnotationPresent(SerializeWith.class)
+                        || field.getType().isArray()
                         || SerializerSet.defaultSet().hasSerializerForClass(fieldType)
                         || VirtualField.class.isAssignableFrom(fieldType)) {
                     localField = new Field(field);

@@ -6,6 +6,7 @@ import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.util.PrimitivesUtil;
 import pluginbase.logging.Logging;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.Map;
@@ -85,6 +86,8 @@ public enum Serializers {
             serializer = serializerSet.getSerializer(Map.class);
         } else if (Enum.class.isAssignableFrom(clazz)) {
             serializer = serializerSet.getSerializer(Enum.class);
+        } else if (clazz.isArray()) {
+            serializer = serializerSet.getSerializer(Array.class);
         }
 
         if (serializer != null) {

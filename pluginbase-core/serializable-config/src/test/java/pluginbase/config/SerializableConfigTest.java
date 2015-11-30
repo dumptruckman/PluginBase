@@ -6,6 +6,10 @@ import pluginbase.config.examples.Parent;
 import pluginbase.config.examples.Unknown;
 import org.junit.Test;
 import pluginbase.config.examples.Unregistered;
+import pluginbase.config.field.FieldMap;
+import pluginbase.config.field.FieldMapper;
+import pluginbase.config.serializers.CustomSerializer;
+import pluginbase.config.serializers.CustomSerializer2;
 
 import static org.junit.Assert.*;
 
@@ -47,5 +51,20 @@ public class SerializableConfigTest extends TestBase {
         Unregistered deserialized = (Unregistered) SerializableConfig.deserialize(unregistered);
         assertEquals(unregistered, deserialized);
         assertEquals(comprehensive, deserialized);
+    }
+
+    @Test
+    public void testSerializeWithFieldSerializer() {
+        Comprehensive expected = new Comprehensive();
+        expected.custom2.name = "aogrohjaha";
+        expected.custom.data.array = new Object[] {1};
+        expected.custom2.data.array = new Object[] {5,5,5};
+
+        FieldMap fieldMap = FieldMapper.getFieldMap(Comprehensive.class);
+        assertEquals(CustomSerializer.class, fieldMap.getField("custom").getSerializer().getClass());
+        assertEquals(CustomSerializer2.class, fieldMap.getField("custom2").getSerializer().getClass());
+
+        Comprehensive actual = SerializableConfig.deserializeAs(SerializableConfig.serialize(expected), Comprehensive.class);
+        assertEquals(expected, actual);
     }
 }

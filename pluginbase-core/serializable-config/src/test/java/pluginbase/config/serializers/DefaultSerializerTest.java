@@ -1,7 +1,9 @@
 package pluginbase.config.serializers;
 
+import pluginbase.config.SerializableConfig;
 import pluginbase.config.TestBase;
 import pluginbase.config.examples.Comprehensive;
+import pluginbase.config.examples.Custom;
 import pluginbase.config.examples.Unknown;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,5 +47,12 @@ public class DefaultSerializerTest extends TestBase {
 
     public void testSerializeUnknownObject() throws Exception {
         assertNotNull(serializer.serialize(new Unknown(), SerializerSet.defaultSet()));
+    }
+
+    @Test
+    public void testSerializeCustom() {
+        assertEquals(CustomSerializer.class, Serializers.getClassSerializer(Custom.class, SerializerSet.defaultSet()).getClass());
+        Custom custom = new Custom("test");
+        System.out.println(SerializableConfig.serialize(custom));
     }
 }

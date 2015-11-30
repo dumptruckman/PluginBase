@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -42,7 +43,8 @@ public class Comprehensive extends PropertiesWrapper {
     public static final Parent PARENT = new Parent(CHILD);
     public static final List<Object> RANDOM_LIST = new ArrayList<Object>();
     public static final Map<String, Object> STRING_OBJECT_MAP = new HashMap<String, Object>();
-    public static final Custom CUSTOM = new Custom("Custom");
+    public static final Custom CUSTOM = new Custom("custom");
+    public static final Locale LOCALE = Locale.ENGLISH;
 
     static {
         WORD_LIST.add("test");
@@ -137,6 +139,7 @@ public class Comprehensive extends PropertiesWrapper {
         }
     };
     public FakeEnum fakeEnum = FakeEnum.FAKE_2;
+    public Locale locale = LOCALE;
 
     private VirtualField<List<?>> testWildCardListVirtualProp;
     private VirtualField<?> testWildCardVirtualProp;
@@ -170,6 +173,7 @@ public class Comprehensive extends PropertiesWrapper {
         if (!finalString.equals(that.finalString)) return false;
         if (!virtualEnum.get().equals(that.virtualEnum.get())) return false;
         if (!simple.equals(that.simple)) return false;
+        if (!locale.equals(that.locale)) return false;
 
         return true;
     }
@@ -191,6 +195,7 @@ public class Comprehensive extends PropertiesWrapper {
         result = 31 * result + virtualEnum.hashCode();
         result = 31 * result + simple.hashCode();
         result = 31 * result + fakeEnum.hashCode();
+        result = 31 * result + locale.hashCode();
         return result;
     }
 
@@ -212,6 +217,7 @@ public class Comprehensive extends PropertiesWrapper {
                 ", virtualEnum=" + virtualEnum.get() +
                 ", simple=" + simple +
                 ", fakeEnum=" + fakeEnum +
+                ", locale=" + locale +
                 '}';
     }
 }
