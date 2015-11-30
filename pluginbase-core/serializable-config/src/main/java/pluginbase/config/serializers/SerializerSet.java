@@ -35,6 +35,7 @@ public final class SerializerSet {
      *     <li>{@link AtomicInteger}</li>
      *     <li>{@link AtomicLong}</li>
      *     <li>{@link String}</li>
+     *     <li>{@link Locale}</li>
      *     <li>All {@link Enum} types</li>
      *     <li>Classes annotated with {@link FauxEnum}</li>
      *     <li>Classes implementing {@link Collection}</li>
@@ -241,6 +242,9 @@ public final class SerializerSet {
 
         serializer = new MapSerializer();
         serializers.put(Map.class, serializer);
+
+        serializer = new LocaleSerializer();
+        serializers.put(Locale.class, serializer);
 
         DEFAULT_SET = new SerializerSet(serializers, new HashMap<>(), Serializers.DEFAULT_SERIALIZER);
     }
