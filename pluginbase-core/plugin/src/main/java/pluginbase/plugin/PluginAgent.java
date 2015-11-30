@@ -67,6 +67,7 @@ public abstract class PluginAgent<P> {
     private Map<Class<? extends Command>, List<String>> additionalCommandAliases = new HashMap<Class<? extends Command>, List<String>>();
 
     private String permissionPrefix;
+    String languageFilePrefix = "messages";
 
     protected PluginAgent(@NotNull Class<P> pluginClass, @NotNull P plugin, @NotNull CommandProvider commandProvider) {
         this.pluginClass = pluginClass;
@@ -83,6 +84,20 @@ public abstract class PluginAgent<P> {
         if (commandProvider.useQueuedCommands()) {
             _registerCommand(ConfirmCommand.class);
         }
+    }
+
+    /**
+     * Sets the language filename prefix. That is, the text that prepends the locale tag. The default is "language".
+     * This must be called before enabling PluginBase or before reloading.
+     *
+     * @param languageFilePrefix The new language file prefix
+     */
+    public void setLanguageFilePrefix(@NotNull String languageFilePrefix) {
+        this.languageFilePrefix = languageFilePrefix;
+    }
+
+    public String getLanguageFileName() {
+        return this.languageFilePrefix + "_" + getPluginBase().getSettings().getLocale().toString() + ".properties";
     }
 
     protected P getPlugin() {

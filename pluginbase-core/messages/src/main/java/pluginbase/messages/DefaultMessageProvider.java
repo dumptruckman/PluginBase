@@ -126,34 +126,6 @@ class DefaultMessageProvider implements MessageProvider {
         return message;
     }
 
-    /**
-     * Formats a string by replacing ampersand with the Section symbol and %s with the corresponding args
-     * object in a fashion similar to String.format().
-     *
-     * @param string String to format.
-     * @param args   Arguments to pass in via %n.
-     * @return The formatted string.
-     */
-    @NotNull
-    private static String format(@NotNull final Locale locale, @NotNull String string, @NotNull final Object... args) throws IllegalFormatException {
-        // Replaces & with the Section character
-        string = ChatColor.translateAlternateColorCodes('&', string);
-        // If there are arguments, %n notations in the message will be
-        // replaced
-        /*if (args != null) {
-            for (int j = 0; j < args.length; j++) {
-                if (args[j] == null) {
-                    args[j] = "NULL";
-                }
-                string = string.replace("%" + (j + 1), args[j].toString());
-            }
-        }*/
-        // Format for locale
-        // TODO need a fix for this when language vars are not passed in as args.
-        string = String.format(locale, string, args);
-        return string;
-    }
-
     @Override
     @NotNull
     public String getLocalizedMessage(@NotNull final Message key, @NotNull final Object... args) {
@@ -172,7 +144,7 @@ class DefaultMessageProvider implements MessageProvider {
 
     private String formatMessage(@Nullable String key, @NotNull String message, @NotNull final Object... args) {
         try {
-            return format(locale, message, args);
+            return MessageUtil.formatMessage(locale, message, args);
         } catch (IllegalFormatException e) {
             getLog().warning("Language string format is incorrect: %s: %s", key, message);
             for (final StackTraceElement ste : Thread.currentThread().getStackTrace()) {

@@ -11,16 +11,18 @@ import pluginbase.debugsession.DebugSessionManager;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.logging.LoggablePlugin;
 import pluginbase.logging.PluginLogger;
+import pluginbase.messages.Message;
+import pluginbase.messages.MessageUtil;
 import pluginbase.messages.messaging.Messager;
 import pluginbase.messages.messaging.Messaging;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.permission.PermFactory;
-import pluginbase.plugin.Settings.Language;
 import pluginbase.plugin.command.builtin.VersionCommand;
 
 import java.io.File;
+import java.util.IllegalFormatException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -146,8 +148,8 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     }
 
     private void loadLanguage() {
-        Language languageSettings = settings.getLanguageSettings();
-        loadMessages(new File(getDataFolder(), languageSettings.getLanguageFile()), languageSettings.getLocale());
+        Locale locale = settings.getLocale();
+        loadMessages(new File(getDataFolder(), pluginAgent.getLanguageFileName()), locale);
     }
 
     /** {@inheritDoc} */
@@ -170,13 +172,25 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     @NotNull
     public List<String> dumpVersionInfo() {
         List<String> buffer = new LinkedList<String>();
-        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_PLUGIN_VERSION, getPluginInfo().getName(), getPluginInfo().getVersion()));
-        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_SERVER_NAME, getServerInterface().getName()));
-        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_SERVER_VERSION, getServerInterface().getVersion()));
-        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_LANG_FILE, getSettings().getLanguageSettings().getLanguageFile()));
-        buffer.add(getMessager().getLocalizedMessage(VersionCommand.VERSION_DEBUG_MODE, getSettings().getDebugLevel()));
+        buffer.add(formatVersionMessage(VersionCommand.VERSION_PLUGIN_VERSION, getPluginInfo().getName(), getPluginInfo().getVersion()));
+        buffer.add(formatVersionMessage(VersionCommand.VERSION_SERVER_NAME, getServerInterface().getName()));
+        buffer.add(formatVersionMessage(VersionCommand.VERSION_SERVER_VERSION, getServerInterface().getVersion()));
+        buffer.add(formatVersionMessage(VersionCommand.VERSION_LANG_FILE, pluginAgent.getLanguageFileName()));
+        buffer.add(formatVersionMessage(VersionCommand.VERSION_DEBUG_MODE, getSettings().getDebugLevel()));
         buffer = pluginAgent.getModifiedVersionInfo(buffer);
         return buffer;
+    }
+
+    private String formatVersionMessage(@NotNull Message message, Object... args) {
+        try {
+            return MessageUtil.formatMessage(getSettings().getLocale(), message.getDefault(), args);
+        } catch (IllegalFormatException e) {
+            getLog().warning("Language string format is incorrect: %s: %s", message.getKey(), message.getDefault());
+            for (final StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                getLog().warning(ste.toString());
+            }
+            return message.getDefault();
+        }
     }
 
     /** {@inheritDoc} */

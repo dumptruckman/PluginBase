@@ -97,6 +97,10 @@ public class TestPlugin extends JavaPlugin {
         }
     }
 
+    public void reloadConfig() {
+        pluginAgent.getPluginBase().reloadConfig();
+    }
+
     public TestConfig getSettings() {
         return (TestConfig) pluginAgent.getPluginBase().getSettings();
     }

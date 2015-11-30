@@ -16,10 +16,7 @@ public interface MessageProvider {
 
     /** The default locale. */
     @NotNull
-    Locale DEFAULT_LOCALE = Locale.ENGLISH;
-    /** The default message/language file */
-    @NotNull
-    String DEFAULT_LANGUAGE_FILE_NAME = "english.txt";
+    Locale DEFAULT_LOCALE = Locale.US;
 
     /**
      * Returns a message (as {@link String}) for the specified key (as {@link pluginbase.messages.Messages}).

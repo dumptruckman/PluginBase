@@ -21,10 +21,6 @@ import java.util.Locale;
 
 public class Settings extends PropertiesWrapper {
 
-    @Comment("Settings related to language/locale.")
-    @NotNull
-    private Language language = new Language();
-
     @Comment("0 = off, 1-3 display debug info with increasing granularity.")
     @ValidateWith(DebugLevelValidator.class)
     private final VirtualDebug debugLevel = new VirtualDebug();
@@ -32,16 +28,16 @@ public class Settings extends PropertiesWrapper {
     @Comment("Will make the plugin perform tasks only done on a first run (if any.)")
     private boolean firstRun = true;
 
+    @Comment({"This is the locale you wish to use for messages.", "The general format is a 2 character language code followed by an underscore and a 2 character capitalized country code"})
+    @SerializeWith(LocaleSerializer.class)
+    @NotNull
+    private Locale locale = MessageProvider.DEFAULT_LOCALE;
+
     public Settings(@NotNull PluginBase plugin) {
         this.debugLevel.setLogger(plugin.getLog());
     }
 
     protected Settings() { }
-
-    @NotNull
-    public Language getLanguageSettings() {
-        return language;
-    }
 
     public int getDebugLevel() {
         Integer level = debugLevel.get();
@@ -61,66 +57,13 @@ public class Settings extends PropertiesWrapper {
         this.firstRun = firstRun;
     }
 
-    public static class Language {
+    @NotNull
+    public Locale getLocale() {
+        return locale;
+    }
 
-        @Comment("This is the locale you wish to use for messages.")
-        @SerializeWith(LocaleSerializer.class)
-        @NotNull
-        private Locale locale = MessageProvider.DEFAULT_LOCALE;
-
-        @Comment("The language file that contains localized messages.")
-        @NotNull
-        private String languageFile = MessageProvider.DEFAULT_LANGUAGE_FILE_NAME;
-
-        protected Language() { }
-
-        @NotNull
-        public Locale getLocale() {
-            return locale;
-        }
-
-        public void setLocale(@NotNull Locale locale) {
-            this.locale = locale;
-        }
-
-        @NotNull
-        public String getLanguageFile() {
-            return languageFile;
-        }
-
-        public void setLanguageFile(@NotNull String languageFile) {
-            this.languageFile = languageFile;
-        }
-
-        public static class LocaleSerializer implements Serializer<Locale> {
-
-            private LocaleSerializer() { }
-
-            @Nullable
-            @Override
-            public Object serialize(@Nullable Locale locale, @NotNull SerializerSet serializerSet) {
-                return locale != null ? locale.toString() : MessageProvider.DEFAULT_LOCALE.toString();
-            }
-
-            @Nullable
-            @Override
-            public Locale deserialize(@Nullable Object object, @NotNull Class wantedType, @NotNull SerializerSet serializerSet) throws IllegalArgumentException {
-                if (object == null) {
-                    return MessageProvider.DEFAULT_LOCALE;
-                }
-                String[] split = object.toString().split("_");
-                switch (split.length) {
-                    case 1:
-                        return new Locale(split[0]);
-                    case 2:
-                        return new Locale(split[0], split[1]);
-                    case 3:
-                        return new Locale(split[0], split[1], split[2]);
-                    default:
-                        return new Locale(object.toString());
-                }
-            }
-        }
+    public void setLocale(@NotNull Locale locale) {
+        this.locale = locale;
     }
 
     private static class DebugLevelValidator implements Validator<Integer> {
@@ -161,6 +104,36 @@ public class Settings extends PropertiesWrapper {
         @Override
         protected void setDependentValue(@Nullable Integer value) {
             getDependency().setDebugLevel(value != null ? value : 0);
+        }
+    }
+
+    public static class LocaleSerializer implements Serializer<Locale> {
+
+        private LocaleSerializer() { }
+
+        @Nullable
+        @Override
+        public Object serialize(@Nullable Locale locale, @NotNull SerializerSet serializerSet) {
+            return locale != null ? locale.toString() : MessageProvider.DEFAULT_LOCALE.toString();
+        }
+
+        @Nullable
+        @Override
+        public Locale deserialize(@Nullable Object object, @NotNull Class wantedType, @NotNull SerializerSet serializerSet) throws IllegalArgumentException {
+            if (object == null) {
+                return MessageProvider.DEFAULT_LOCALE;
+            }
+            String[] split = object.toString().split("_");
+            switch (split.length) {
+                case 1:
+                    return new Locale(split[0]);
+                case 2:
+                    return new Locale(split[0], split[1]);
+                case 3:
+                    return new Locale(split[0], split[1], split[2]);
+                default:
+                    return new Locale(object.toString());
+            }
         }
     }
 }

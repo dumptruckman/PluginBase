@@ -19,4 +19,14 @@ public class TestConfig extends Settings {
     public List<Pie> getPieList() {
         return pieList;
     }
+
+    @Override
+    public String toString() {
+        return "TestConfig{" +
+                "debugLevel=" + getDebugLevel() +
+                ", locale=" + getLocale() +
+                ", testUUID=" + testUUID +
+                ", pieList=" + pieList +
+                '}';
+    }
 }

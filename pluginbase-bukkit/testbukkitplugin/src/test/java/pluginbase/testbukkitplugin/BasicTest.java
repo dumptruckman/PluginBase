@@ -5,12 +5,19 @@ import org.bukkit.Server;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.junit.Test;
+import pluginbase.config.datasource.DataSource;
+import pluginbase.config.datasource.hocon.HoconDataSource;
+import pluginbase.messages.MessageProvider;
+import pluginbase.plugin.Settings;
 import pluginbase.testingbukkit.ServerFactory;
 import pluginbase.testingbukkit.TestingServer;
+import pluginbase.testplugin.TestConfig;
 
+import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Locale;
 
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 public class BasicTest extends PluginTest {
 
@@ -55,4 +62,17 @@ public class BasicTest extends PluginTest {
 
     @Test
     public void testNoErrors() { }
+
+    @Test
+    public void testLocaleChange() throws Exception {
+        assertEquals(MessageProvider.DEFAULT_LOCALE, plugin.getSettings().getLocale());
+        DataSource dataSource = HoconDataSource.builder().setFile(new File(plugin.getDataFolder(), "plugin.conf")).build();
+        Settings settings = dataSource.load(TestConfig.class);
+        assertNotNull(settings);
+        settings.setLocale(Locale.CANADA_FRENCH);
+        assertEquals(Locale.CANADA_FRENCH, settings.getLocale());
+        dataSource.save(settings);
+        plugin.reloadConfig();
+        assertEquals(Locale.CANADA_FRENCH, plugin.getSettings().getLocale());
+    }
 }
