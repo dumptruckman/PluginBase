@@ -3,6 +3,7 @@ package pluginbase.config.field;
 import pluginbase.config.annotation.FauxEnum;
 import pluginbase.config.annotation.IgnoreSuperFields;
 import org.jetbrains.annotations.NotNull;
+import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.serializers.SerializerSet;
 import pluginbase.config.util.PrimitivesUtil;
 import pluginbase.logging.Logging;
@@ -64,6 +65,7 @@ public class FieldMapper {
                         || Collection.class.isAssignableFrom(fieldType)
                         || Enum.class.isAssignableFrom(fieldType)
                         || field.getType().isAnnotationPresent(FauxEnum.class)
+                        || field.isAnnotationPresent(SerializeWith.class)
                         || SerializerSet.defaultSet().hasSerializerForClass(fieldType)
                         || VirtualField.class.isAssignableFrom(fieldType)) {
                     localField = new Field(field);
