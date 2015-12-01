@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ArraySerializer implements Serializer {
+class ArraySerializer implements Serializer {
 
     @Nullable
     @Override

@@ -3,7 +3,7 @@ package pluginbase.config.serializers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CharacterSerializer implements Serializer<Character> {
+class CharacterSerializer implements Serializer<Character> {
 
     @Nullable
     @Override

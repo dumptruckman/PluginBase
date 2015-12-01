@@ -4,6 +4,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.config.SerializableConfig;
 import pluginbase.config.annotation.FauxEnum;
+import pluginbase.config.serializers.NumberSerializer.AtomicIntegerSerializer;
+import pluginbase.config.serializers.NumberSerializer.AtomicLongSerializer;
+import pluginbase.config.serializers.NumberSerializer.BigNumberSerializer;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
@@ -219,9 +222,15 @@ public final class SerializerSet {
         serializers.put(Float.class, serializer);
         serializers.put(Byte.class, serializer);
         serializers.put(Short.class, serializer);
+
+        serializer = new BigNumberSerializer();
         serializers.put(BigInteger.class, serializer);
         serializers.put(BigDecimal.class, serializer);
+
+        serializer = new AtomicIntegerSerializer();
         serializers.put(AtomicInteger.class, serializer);
+
+        serializer = new AtomicLongSerializer();
         serializers.put(AtomicLong.class, serializer);
 
         serializer = new BooleanSerializer();
