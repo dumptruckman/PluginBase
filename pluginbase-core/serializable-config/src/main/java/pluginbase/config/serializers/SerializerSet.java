@@ -227,6 +227,9 @@ public final class SerializerSet {
         serializer = new BooleanSerializer();
         serializers.put(Boolean.class, serializer);
 
+        serializer = new CharacterSerializer();
+        serializers.put(Character.class, serializer);
+
         serializer = new StringSerializer();
         serializers.put(String.class, serializer);
 

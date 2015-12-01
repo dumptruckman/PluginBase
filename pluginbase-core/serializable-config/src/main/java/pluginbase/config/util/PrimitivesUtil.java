@@ -24,6 +24,7 @@ public enum PrimitivesUtil {
         map.put(float.class, Float.class);
         map.put(byte.class, Byte.class);
         map.put(short.class, Short.class);
+        map.put(char.class, Character.class);
         PRIMITIVE_WRAPPER_MAP = Collections.unmodifiableMap(map);
     }
 
