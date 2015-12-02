@@ -11,7 +11,7 @@ class CharacterSerializer implements Serializer<Character> {
         if (object == null) {
             return null;
         }
-        return object.toString();
+        return object;
     }
 
     @Nullable
