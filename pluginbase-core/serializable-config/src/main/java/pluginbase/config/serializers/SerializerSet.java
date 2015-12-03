@@ -66,7 +66,19 @@ public final class SerializerSet {
      */
     @NotNull
     public static Builder builder() {
-        return new Builder();
+        return builder(defaultSet());
+    }
+
+    /**
+     * Creates a Builder object to construct an immutable SerializerSet.
+     * <p/>
+     * This set will begin with all serializers that exist in the given copy set.
+     *
+     * @param setToCopy the set of serializers to use as the base for the new serializer set.
+     * @return a Builder object to construct an immutable SerializerSet.
+     */
+    public static Builder builder(@NotNull SerializerSet setToCopy) {
+        return new Builder(setToCopy);
     }
 
     @NotNull
@@ -86,10 +98,12 @@ public final class SerializerSet {
         @NotNull
         private final Map<Class, Serializer> overrideSerializers = new HashMap<>();
         @NotNull
-        private Serializer fallbackSerializer = Serializers.DEFAULT_SERIALIZER;
+        private Serializer fallbackSerializer;
 
-        private Builder() {
-            serializers.putAll(DEFAULT_SET.serializers);
+        private Builder(@NotNull SerializerSet setToCopy) {
+            serializers.putAll(setToCopy.serializers);
+            overrideSerializers.putAll(setToCopy.overrideSerializers);
+            fallbackSerializer = setToCopy.fallbackSerializer;
         }
 
         /**
