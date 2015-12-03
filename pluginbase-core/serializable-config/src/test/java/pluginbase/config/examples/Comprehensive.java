@@ -18,6 +18,8 @@ import pluginbase.config.properties.PropertyHandler;
 import pluginbase.config.serializers.CustomSerializer2;
 import org.jetbrains.annotations.Nullable;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +31,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @SerializableAs("ComprehensiveTestClass")
 public class Comprehensive extends PropertiesWrapper {
 
-    public static final int A_INT = 200;
+    public static final int A_INT = 2123012310;
+    public static final long A_LONG = 1293750971209172093L;
+    public static final double A_DOUBLE = 304205905924.34925710270957D;
+    public static final float A_FLOAT = 12305012.3451231F;
+    public static final short A_SHORT = 12125;
+    public static final byte A_BYTE = 124;
+    public static final boolean A_BOOLEAN = true;
+    public static final char A_CHAR = 'h';
+    public static final BigInteger BIG_INTEGER = new BigInteger("12395357293415971941723985719273123");
+    public static final BigDecimal BIG_DECIMAL = new BigDecimal("123105810586823404825141235.112038105810831029301581028");
     public static final String A_INT_DESCRIPTION = "Just some int";
     public static final String A_INT_COMMENT_1 = "Just some int";
     public static final String A_INT_COMMENT_2 = "Really.";
@@ -112,6 +123,18 @@ public class Comprehensive extends PropertiesWrapper {
     @Description(A_INT_DESCRIPTION)
     @Comment({A_INT_COMMENT_1, A_INT_COMMENT_2})
     public int aInt = A_INT;
+
+    public long aLong = A_LONG;
+    public double aDouble = A_DOUBLE;
+    public float aFloat = A_FLOAT;
+    public short aShort = A_SHORT;
+    public byte aByte = A_BYTE;
+    public boolean aBoolean = A_BOOLEAN;
+    public char aChar = A_CHAR;
+
+    public BigInteger bigInteger = BIG_INTEGER;
+    public BigDecimal bigDecimal = BIG_DECIMAL;
+
     public transient int tInt = T_INT;
     @ValidateWith(NameValidator.class)
     public String name = NAME;
@@ -127,7 +150,8 @@ public class Comprehensive extends PropertiesWrapper {
     public String immutableString = NAME;
     public final Simple simple = new Simple();
     public final String finalString = NAME;
-    public final VirtualField<Anum> virtualEnum = new VirtualField<Anum>() {
+    public final VirtualField<Anum> virtualEnum = new AnumField();
+    static class AnumField implements VirtualField<Anum> {
         private Anum actual = Anum.A;
         @Override
         public Anum get() {
@@ -137,7 +161,19 @@ public class Comprehensive extends PropertiesWrapper {
         public void set(final Anum newValue) {
             actual = newValue;
         }
-    };
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            AnumField anumField = (AnumField) o;
+            return actual == anumField.actual;
+        }
+        @Override
+        public int hashCode() {
+            return actual.hashCode();
+        }
+    }
+
     public FakeEnum fakeEnum = FakeEnum.FAKE_2;
     public Locale locale = LOCALE;
 
@@ -155,32 +191,58 @@ public class Comprehensive extends PropertiesWrapper {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Comprehensive)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        final Comprehensive that = (Comprehensive) o;
+        Comprehensive that = (Comprehensive) o;
 
         if (aInt != that.aInt) return false;
+        if (aLong != that.aLong) return false;
+        if (Double.compare(that.aDouble, aDouble) != 0) return false;
+        if (Float.compare(that.aFloat, aFloat) != 0) return false;
+        if (aShort != that.aShort) return false;
+        if (aByte != that.aByte) return false;
+        if (aBoolean != that.aBoolean) return false;
+        if (aChar != that.aChar) return false;
         if (tInt != that.tInt) return false;
-        if (!custom.equals(that.custom)) return false;
-        if (!custom2.equals(that.custom2)) return false;
-        if (!listList.equals(that.listList)) return false;
+        if (!bigInteger.equals(that.bigInteger)) return false;
+        if (!bigDecimal.equals(that.bigDecimal)) return false;
         if (!name.equals(that.name)) return false;
-        if (!randomList.equals(that.randomList)) return false;
-        if (!stringObjectMap.equals(that.stringObjectMap)) return false;
         if (!wordList.equals(that.wordList)) return false;
         if (!wordList2.equals(that.wordList2)) return false;
+        if (!listList.equals(that.listList)) return false;
+        if (!randomList.equals(that.randomList)) return false;
+        if (!stringObjectMap.equals(that.stringObjectMap)) return false;
+        if (!custom.equals(that.custom)) return false;
+        if (!custom2.equals(that.custom2)) return false;
         if (!immutableString.equals(that.immutableString)) return false;
-        if (!finalString.equals(that.finalString)) return false;
-        if (!virtualEnum.get().equals(that.virtualEnum.get())) return false;
         if (!simple.equals(that.simple)) return false;
+        if (!finalString.equals(that.finalString)) return false;
+        if (!virtualEnum.equals(that.virtualEnum)) return false;
+        if (!fakeEnum.equals(that.fakeEnum)) return false;
         if (!locale.equals(that.locale)) return false;
+        //if (!testWildCardListVirtualProp.equals(that.testWildCardListVirtualProp)) return false;
+        //if (!testWildCardVirtualProp.equals(that.testWildCardVirtualProp)) return false;
+        //if (!testTypedVirtualProp.equals(that.testTypedVirtualProp)) return false;
+        if (!genericList.equals(that.genericList)) return false;
+        return simpleList.equals(that.simpleList);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = aInt;
+        int result;
+        long temp;
+        result = aInt;
+        result = 31 * result + (int) (aLong ^ (aLong >>> 32));
+        temp = Double.doubleToLongBits(aDouble);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (aFloat != +0.0f ? Float.floatToIntBits(aFloat) : 0);
+        result = 31 * result + (int) aShort;
+        result = 31 * result + (int) aByte;
+        result = 31 * result + (aBoolean ? 1 : 0);
+        result = 31 * result + (int) aChar;
+        result = 31 * result + bigInteger.hashCode();
+        result = 31 * result + bigDecimal.hashCode();
         result = 31 * result + tInt;
         result = 31 * result + name.hashCode();
         result = 31 * result + wordList.hashCode();
@@ -191,11 +253,16 @@ public class Comprehensive extends PropertiesWrapper {
         result = 31 * result + custom.hashCode();
         result = 31 * result + custom2.hashCode();
         result = 31 * result + immutableString.hashCode();
+        result = 31 * result + simple.hashCode();
         result = 31 * result + finalString.hashCode();
         result = 31 * result + virtualEnum.hashCode();
-        result = 31 * result + simple.hashCode();
         result = 31 * result + fakeEnum.hashCode();
         result = 31 * result + locale.hashCode();
+        result = 31 * result + testWildCardListVirtualProp.hashCode();
+        result = 31 * result + testWildCardVirtualProp.hashCode();
+        result = 31 * result + testTypedVirtualProp.hashCode();
+        result = 31 * result + genericList.hashCode();
+        result = 31 * result + simpleList.hashCode();
         return result;
     }
 
@@ -203,6 +270,15 @@ public class Comprehensive extends PropertiesWrapper {
     public String toString() {
         return "Comprehensive{" +
                 "aInt=" + aInt +
+                ", aLong=" + aLong +
+                ", aDouble=" + aDouble +
+                ", aFloat=" + aFloat +
+                ", aShort=" + aShort +
+                ", aByte=" + aByte +
+                ", aBoolean=" + aBoolean +
+                ", aChar=" + aChar +
+                ", bigInteger=" + bigInteger +
+                ", bigDecimal=" + bigDecimal +
                 ", tInt=" + tInt +
                 ", name='" + name + '\'' +
                 ", wordList=" + wordList +
@@ -212,12 +288,17 @@ public class Comprehensive extends PropertiesWrapper {
                 ", stringObjectMap=" + stringObjectMap +
                 ", custom=" + custom +
                 ", custom2=" + custom2 +
-                ", immutableString=" + immutableString +
-                ", finalString='" + finalString + '\'' +
-                ", virtualEnum=" + virtualEnum.get() +
+                ", immutableString='" + immutableString + '\'' +
                 ", simple=" + simple +
+                ", finalString='" + finalString + '\'' +
+                ", virtualEnum=" + virtualEnum +
                 ", fakeEnum=" + fakeEnum +
                 ", locale=" + locale +
+                ", testWildCardListVirtualProp=" + testWildCardListVirtualProp +
+                ", testWildCardVirtualProp=" + testWildCardVirtualProp +
+                ", testTypedVirtualProp=" + testTypedVirtualProp +
+                ", genericList=" + genericList +
+                ", simpleList=" + simpleList +
                 '}';
     }
 }
