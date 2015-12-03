@@ -12,12 +12,7 @@ public class HoconDataSource extends AbstractDataSource {
 
     @NotNull
     public static Builder builder() {
-        return new Builder(SerializerSet.defaultSet());
-    }
-
-    @NotNull
-    public static Builder builder(@NotNull SerializerSet serializerSet) {
-        return new Builder(serializerSet);
+        return new Builder();
     }
 
     /**
@@ -29,9 +24,7 @@ public class HoconDataSource extends AbstractDataSource {
 
         private final HoconConfigurationLoader.Builder builder = HoconConfigurationLoader.builder();
 
-        protected Builder(@NotNull SerializerSet serializerSet) {
-            super(serializerSet);
-        }
+        protected Builder() { }
 
         @NotNull
         public ConfigRenderOptions getRenderOptions() {
@@ -58,7 +51,7 @@ public class HoconDataSource extends AbstractDataSource {
         @NotNull
         @Override
         public HoconDataSource build() {
-            return new HoconDataSource(builder.setSource(source).setSink(sink).build(), serializerSet);
+            return new HoconDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet());
         }
     }
 

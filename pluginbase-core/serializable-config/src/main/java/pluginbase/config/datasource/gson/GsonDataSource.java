@@ -8,33 +8,44 @@ import pluginbase.config.serializers.SerializerSet;
 
 public class GsonDataSource extends AbstractDataSource {
 
-    @NotNull
-    public static Builder builder() {
-        return new Builder(SerializerSet.defaultSet());
+    private static final SerializerSet DEFAULT_SERIALIZER_SET = SerializerSet.builder().addSerializer(Long.class, new GsonLongSerializer()).build();
+
+    /**
+     * Returns the default serializer set used for a Gson data source.
+     * <p/>
+     * Long values are given special treatment in this set.
+     *
+     * @return the default serializer set used for a Gson data source.
+     */
+    public static SerializerSet defaultSerializerSet() {
+        return DEFAULT_SERIALIZER_SET;
     }
 
     @NotNull
-    public static Builder builder(@NotNull SerializerSet serializerSet) {
-        return new Builder(serializerSet);
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static class Builder extends AbstractDataSource.Builder<Builder> {
 
         private final GsonConfigurationLoader.Builder builder = GsonConfigurationLoader.builder();
 
-        protected Builder(@NotNull SerializerSet serializerSet) {
-            super(serializerSet);
-        }
+        protected Builder() { }
 
         public Builder setLenient(boolean lenient) {
             builder.setLenient(lenient);
             return this;
         }
 
+        @Override
+        protected SerializerSet getDataSourceDefaultSerializerSet() {
+            return DEFAULT_SERIALIZER_SET;
+        }
+
         @NotNull
         @Override
         public GsonDataSource build() {
-            return new GsonDataSource(builder.setSource(source).setSink(sink).build(), serializerSet);
+            return new GsonDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet());
         }
     }
 

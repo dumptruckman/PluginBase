@@ -12,21 +12,14 @@ public class JsonDataSource extends AbstractDataSource {
 
     @NotNull
     public static Builder builder() {
-        return new Builder(SerializerSet.defaultSet());
-    }
-
-    @NotNull
-    public static Builder builder(@NotNull SerializerSet serializerSet) {
-        return new Builder(serializerSet);
+        return new Builder();
     }
 
     public static class Builder extends AbstractDataSource.Builder<Builder> {
 
         private final JSONConfigurationLoader.Builder builder = JSONConfigurationLoader.builder();
 
-        protected Builder(@NotNull SerializerSet serializerSet) {
-            super(serializerSet);
-        }
+        protected Builder() { }
 
         public JsonFactory getFactory() {
             return this.builder.getFactory();
@@ -45,7 +38,7 @@ public class JsonDataSource extends AbstractDataSource {
         @NotNull
         @Override
         public JsonDataSource build() {
-            return new JsonDataSource(builder.setSource(source).setSink(sink).build(), serializerSet);
+            return new JsonDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet());
         }
     }
 

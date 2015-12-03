@@ -13,6 +13,7 @@ import pluginbase.config.annotation.Comment;
 import pluginbase.config.field.Field;
 import pluginbase.config.field.FieldMap;
 import pluginbase.config.field.FieldMapper;
+import pluginbase.config.serializers.Serializer;
 import pluginbase.config.serializers.SerializerSet;
 import pluginbase.messages.Message;
 import pluginbase.messages.Messages;
@@ -52,11 +53,10 @@ public abstract class AbstractDataSource implements DataSource {
 
         protected Callable<BufferedReader> source;
         protected Callable<BufferedWriter> sink;
-        protected final SerializerSet serializerSet;
+        private SerializerSet.Builder serializerSet;
+        private SerializerSet alternateSet;
 
-        protected Builder(SerializerSet serializerSet) {
-            this.serializerSet = serializerSet;
-        }
+        protected Builder() { }
 
         @NotNull
         @SuppressWarnings("unchecked")
@@ -110,6 +110,83 @@ public abstract class AbstractDataSource implements DataSource {
         public T setSink(@NotNull Callable<BufferedWriter> sink) {
             this.sink = sink;
             return self();
+        }
+
+        /**
+         * Refer to the docs for {@link SerializerSet.Builder#addSerializer(Class, Serializer)}.
+         * <br/>
+         * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
+         * to be replaced!
+         */
+        @NotNull
+        public T addSerializer(@NotNull Class<T> clazz, @NotNull Serializer<T> serializer) {
+            alternateSet = null;
+            getSSBuilder().addSerializer(clazz, serializer);
+            return self();
+        }
+
+        /**
+         * Refer to the docs for {@link SerializerSet.Builder#setFallbackSerializer(Serializer)}.
+         * <br/>
+         * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
+         * to be replaced!
+         */
+        public T setFallbackSerializer(@NotNull Serializer<Object> fallbackSerializer) {
+            alternateSet = null;
+            getSSBuilder().setFallbackSerializer(fallbackSerializer);
+            return self();
+        }
+
+        /**
+         * Refer to the docs for {@link SerializerSet.Builder#addOverrideSerializer(Class, Serializer)}.
+         * <br/>
+         * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
+         * to be replaced!
+         */
+        @NotNull
+        public T addOverrideSerializer(@NotNull Class<T> clazz, @NotNull Serializer<T> serializer) {
+            alternateSet = null;
+            getSSBuilder().addOverrideSerializer(clazz, serializer);
+            return self();
+        }
+
+        private SerializerSet.Builder getSSBuilder() {
+            if (serializerSet == null) {
+                serializerSet = SerializerSet.builder(getDataSourceDefaultSerializerSet());
+            }
+            return serializerSet;
+        }
+
+        /**
+         * Normally a DataSource will be built with a copy of the {@link SerializerSet#defaultSet()}. This method
+         * allows for specifying an alternate already built set.
+         * <br/>
+         * <strong>Note:</strong> some DataSource implementations may introduce custom serializers by default to handle
+         * any special cases in their format. In this case, the implementation should provide a way to obtain a set
+         * containing the special serializers so that a copy can be made if required. Additionally, the implementation
+         * will typically add any special serializers to the set being built by this builder.
+         *
+         * @param serializerSet a replacement SerializerSet for the DataSource being built.
+         * @return this builder object.
+         */
+        @NotNull
+        public T setAlternateSerializerSet(@NotNull SerializerSet serializerSet) {
+            this.alternateSet = serializerSet;
+            return self();
+        }
+
+        @NotNull
+        protected final SerializerSet getBuiltSerializerSet() {
+            return alternateSet != null ? alternateSet : serializerSet != null ? serializerSet.build() : getDataSourceDefaultSerializerSet();
+        }
+
+        /**
+         * Returns the default SerializerSet to use for this DataSource type.
+         *
+         * @return the default SerializerSet to use for this DataSource type.
+         */
+        protected SerializerSet getDataSourceDefaultSerializerSet() {
+            return SerializerSet.defaultSet();
         }
 
         /**

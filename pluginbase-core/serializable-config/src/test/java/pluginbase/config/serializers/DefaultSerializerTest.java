@@ -53,6 +53,5 @@ public class DefaultSerializerTest extends TestBase {
     public void testSerializeCustom() {
         assertEquals(CustomSerializer.class, Serializers.getClassSerializer(Custom.class, SerializerSet.defaultSet()).getClass());
         Custom custom = new Custom("test");
-        System.out.println(SerializableConfig.serialize(custom));
     }
 }

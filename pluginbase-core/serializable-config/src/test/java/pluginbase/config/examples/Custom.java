@@ -23,7 +23,6 @@ public class Custom {
         final Custom custom = (Custom) o;
 
         if (!name.equals(custom.name)) return false;
-        System.out.println("custom.name");
         return data.equals(custom.data);
 
     }

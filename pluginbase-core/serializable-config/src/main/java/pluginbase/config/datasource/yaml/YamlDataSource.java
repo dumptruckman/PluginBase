@@ -10,21 +10,14 @@ public class YamlDataSource extends AbstractDataSource {
 
     @NotNull
     public static Builder builder() {
-        return new Builder(SerializerSet.defaultSet());
-    }
-
-    @NotNull
-    public static Builder builder(@NotNull SerializerSet serializerSet) {
-        return new Builder(serializerSet);
+        return new Builder();
     }
 
     public static class Builder extends AbstractDataSource.Builder<Builder> {
 
         private final YamlConfigLoader.Builder builder = YamlConfigLoader.builder();
 
-        protected Builder(@NotNull SerializerSet serializerSet) {
-            super(serializerSet);
-        }
+        protected Builder() { }
 
         public Builder setIndent(int indent) {
             builder.setIndent(indent);
@@ -63,7 +56,7 @@ public class YamlDataSource extends AbstractDataSource {
         @NotNull
         @Override
         public YamlDataSource build() {
-            return new YamlDataSource(builder.setSource(source).setSink(sink).build(), serializerSet);
+            return new YamlDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet());
         }
     }
 
