@@ -32,7 +32,7 @@ class NumberSerializer<N extends Number> implements Serializer<N> {
         @Nullable
         @Override
         public Object serialize(@Nullable N object, @NotNull SerializerSet serializerSet) throws IllegalArgumentException {
-            return object;
+            return object.toString();
         }
 
         @Nullable

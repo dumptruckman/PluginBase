@@ -23,6 +23,7 @@ public class Custom {
         final Custom custom = (Custom) o;
 
         if (!name.equals(custom.name)) return false;
+        System.out.println("custom.name");
         return data.equals(custom.data);
 
     }
@@ -53,9 +54,16 @@ public class Custom {
 
             final Data data = (Data) o;
 
-            // Probably incorrect - comparing Object[] arrays with Arrays.equals
-            return Arrays.equals(array, data.array);
+            if (array == null && data.array == null) return true;
+            if (array == null || data.array == null) return false;
+            if (array.length != data.array.length) return false;
 
+            for (int i = 0; i < array.length; i++) {
+                if (!array[i].equals(data.array[i])) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         @Override

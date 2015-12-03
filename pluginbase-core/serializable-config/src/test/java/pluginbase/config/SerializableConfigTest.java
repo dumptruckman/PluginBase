@@ -1,5 +1,6 @@
 package pluginbase.config;
 
+import com.fasterxml.jackson.core.JsonGenerator.Feature;
 import org.junit.Before;
 import pluginbase.config.datasource.DataSource;
 import pluginbase.config.datasource.gson.GsonDataSource;
@@ -13,7 +14,6 @@ import pluginbase.config.examples.FakeEnum;
 import pluginbase.config.examples.Parent;
 import pluginbase.config.examples.Unknown;
 import org.junit.Test;
-import pluginbase.config.examples.Unregistered;
 import pluginbase.config.field.FieldMap;
 import pluginbase.config.field.FieldMapper;
 import pluginbase.config.serializers.CustomSerializer;
@@ -136,18 +136,6 @@ public class SerializableConfigTest extends TestBase {
     }
 
     @Test
-    public void testSerializeUnregistered() {
-        Unregistered unregistered = new Unregistered();
-        Comprehensive comprehensive = new Comprehensive();
-        assertEquals(comprehensive, unregistered);
-        Object serialized = SerializableConfig.serialize(unregistered);
-        assertNotNull(serialized);
-        Unregistered deserialized = (Unregistered) SerializableConfig.deserialize(unregistered);
-        assertEquals(unregistered, deserialized);
-        assertEquals(comprehensive, deserialized);
-    }
-
-    @Test
     public void testSerializeWithFieldSerializer() {
         Comprehensive expected = new Comprehensive();
         expected.custom2.name = "aogrohjaha";
@@ -207,6 +195,7 @@ public class SerializableConfigTest extends TestBase {
     @Test
     public void testJson() throws Exception {
         JsonDataSource.Builder builder = JsonDataSource.builder();
+        builder.getFactory().enable(Feature.WRITE_NUMBERS_AS_STRINGS);
         DataSource dataSource = builder.setSink(sink).setSource(source).build();
         fileSerializeComprehensive(dataSource);
         //fileSerializeCommonTypes(dataSource);

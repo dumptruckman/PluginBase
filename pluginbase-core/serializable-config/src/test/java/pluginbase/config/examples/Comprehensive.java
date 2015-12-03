@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Comment({"Test the header out", "\"It works,\" they say"})
@@ -39,8 +40,9 @@ public class Comprehensive extends PropertiesWrapper {
     public static final byte A_BYTE = 124;
     public static final boolean A_BOOLEAN = true;
     public static final char A_CHAR = 'h';
-    public static final BigInteger BIG_INTEGER = new BigInteger("12395357293415971941723985719273123");
-    public static final BigDecimal BIG_DECIMAL = new BigDecimal("123105810586823404825141235.112038105810831029301581028");
+    public static final BigInteger A_BIG_INTEGER = new BigInteger("12395357293415971941723985719273123");
+    public static final BigDecimal A_BIG_DECIMAL = new BigDecimal("123105810586823404825141235.112038105810831029301581028");
+    public static final UUID A_UUID = UUID.randomUUID();
     public static final String A_INT_DESCRIPTION = "Just some int";
     public static final String A_INT_COMMENT_1 = "Just some int";
     public static final String A_INT_COMMENT_2 = "Really.";
@@ -132,8 +134,10 @@ public class Comprehensive extends PropertiesWrapper {
     public boolean aBoolean = A_BOOLEAN;
     public char aChar = A_CHAR;
 
-    public BigInteger bigInteger = BIG_INTEGER;
-    public BigDecimal bigDecimal = BIG_DECIMAL;
+    public BigInteger aBigInteger = A_BIG_INTEGER;
+    public BigDecimal aBigDecimal = A_BIG_DECIMAL;
+
+    public UUID aUUID = A_UUID;
 
     public transient int tInt = T_INT;
     @ValidateWith(NameValidator.class)
@@ -204,8 +208,8 @@ public class Comprehensive extends PropertiesWrapper {
         if (aBoolean != that.aBoolean) return false;
         if (aChar != that.aChar) return false;
         if (tInt != that.tInt) return false;
-        if (!bigInteger.equals(that.bigInteger)) return false;
-        if (!bigDecimal.equals(that.bigDecimal)) return false;
+        if (!aBigInteger.equals(that.aBigInteger)) return false;
+        if (!aBigDecimal.equals(that.aBigDecimal)) return false;
         if (!name.equals(that.name)) return false;
         if (!wordList.equals(that.wordList)) return false;
         if (!wordList2.equals(that.wordList2)) return false;
@@ -220,6 +224,7 @@ public class Comprehensive extends PropertiesWrapper {
         if (!virtualEnum.equals(that.virtualEnum)) return false;
         if (!fakeEnum.equals(that.fakeEnum)) return false;
         if (!locale.equals(that.locale)) return false;
+        if (!aUUID.equals(that.aUUID)) return false;
         //if (!testWildCardListVirtualProp.equals(that.testWildCardListVirtualProp)) return false;
         //if (!testWildCardVirtualProp.equals(that.testWildCardVirtualProp)) return false;
         //if (!testTypedVirtualProp.equals(that.testTypedVirtualProp)) return false;
@@ -241,8 +246,8 @@ public class Comprehensive extends PropertiesWrapper {
         result = 31 * result + (int) aByte;
         result = 31 * result + (aBoolean ? 1 : 0);
         result = 31 * result + (int) aChar;
-        result = 31 * result + bigInteger.hashCode();
-        result = 31 * result + bigDecimal.hashCode();
+        result = 31 * result + aBigInteger.hashCode();
+        result = 31 * result + aBigDecimal.hashCode();
         result = 31 * result + tInt;
         result = 31 * result + name.hashCode();
         result = 31 * result + wordList.hashCode();
@@ -258,11 +263,9 @@ public class Comprehensive extends PropertiesWrapper {
         result = 31 * result + virtualEnum.hashCode();
         result = 31 * result + fakeEnum.hashCode();
         result = 31 * result + locale.hashCode();
-        result = 31 * result + testWildCardListVirtualProp.hashCode();
-        result = 31 * result + testWildCardVirtualProp.hashCode();
-        result = 31 * result + testTypedVirtualProp.hashCode();
         result = 31 * result + genericList.hashCode();
         result = 31 * result + simpleList.hashCode();
+        result = 31 * result + aUUID.hashCode();
         return result;
     }
 
@@ -277,8 +280,9 @@ public class Comprehensive extends PropertiesWrapper {
                 ", aByte=" + aByte +
                 ", aBoolean=" + aBoolean +
                 ", aChar=" + aChar +
-                ", bigInteger=" + bigInteger +
-                ", bigDecimal=" + bigDecimal +
+                ", aBigInteger=" + aBigInteger +
+                ", aBigDecimal=" + aBigDecimal +
+                ", aUUID=" + aUUID +
                 ", tInt=" + tInt +
                 ", name='" + name + '\'' +
                 ", wordList=" + wordList +
@@ -294,9 +298,6 @@ public class Comprehensive extends PropertiesWrapper {
                 ", virtualEnum=" + virtualEnum +
                 ", fakeEnum=" + fakeEnum +
                 ", locale=" + locale +
-                ", testWildCardListVirtualProp=" + testWildCardListVirtualProp +
-                ", testWildCardVirtualProp=" + testWildCardVirtualProp +
-                ", testTypedVirtualProp=" + testTypedVirtualProp +
                 ", genericList=" + genericList +
                 ", simpleList=" + simpleList +
                 '}';
