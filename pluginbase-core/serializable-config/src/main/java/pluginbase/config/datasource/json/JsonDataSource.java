@@ -6,9 +6,16 @@ import ninja.leaping.configurate.json.FieldValueSeparatorStyle;
 import ninja.leaping.configurate.json.JSONConfigurationLoader;
 import org.jetbrains.annotations.NotNull;
 import pluginbase.config.datasource.AbstractDataSource;
+import pluginbase.config.datasource.serializers.DoubleAsStringSerializer;
+import pluginbase.config.datasource.serializers.LongAsStringSerializer;
 import pluginbase.config.serializers.SerializerSet;
 
 public class JsonDataSource extends AbstractDataSource {
+
+    private static final SerializerSet DEFAULT_SERIALIZER_SET = SerializerSet.builder()
+            .addSerializer(Long.class, new LongAsStringSerializer())
+            .addSerializer(Double.class, new DoubleAsStringSerializer())
+            .build();
 
     @NotNull
     public static Builder builder() {
@@ -33,6 +40,11 @@ public class JsonDataSource extends AbstractDataSource {
         public Builder setFieldValueSeparatorStyle(FieldValueSeparatorStyle style) {
             builder.setFieldValueSeparatorStyle(style);
             return this;
+        }
+
+        @Override
+        protected SerializerSet getDataSourceDefaultSerializerSet() {
+            return DEFAULT_SERIALIZER_SET;
         }
 
         @NotNull

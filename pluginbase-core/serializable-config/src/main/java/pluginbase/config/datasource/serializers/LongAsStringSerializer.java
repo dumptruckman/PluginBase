@@ -1,16 +1,16 @@
-package pluginbase.config.datasource.gson;
+package pluginbase.config.datasource.serializers;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.config.serializers.Serializer;
 import pluginbase.config.serializers.SerializerSet;
 
-public class GsonLongSerializer implements Serializer<Long> {
+public class LongAsStringSerializer implements Serializer<Long> {
 
     @Nullable
     @Override
     public Object serialize(@Nullable Long object, @NotNull SerializerSet serializerSet) throws IllegalArgumentException {
-        return object.toString();
+        return object != null ? object.toString() : null;
     }
 
     @Nullable

@@ -4,11 +4,12 @@ package pluginbase.config.datasource.gson;
 import ninja.leaping.configurate.gson.GsonConfigurationLoader;
 import org.jetbrains.annotations.NotNull;
 import pluginbase.config.datasource.AbstractDataSource;
+import pluginbase.config.datasource.serializers.LongAsStringSerializer;
 import pluginbase.config.serializers.SerializerSet;
 
 public class GsonDataSource extends AbstractDataSource {
 
-    private static final SerializerSet DEFAULT_SERIALIZER_SET = SerializerSet.builder().addSerializer(Long.class, new GsonLongSerializer()).build();
+    private static final SerializerSet DEFAULT_SERIALIZER_SET = SerializerSet.builder().addSerializer(Long.class, new LongAsStringSerializer()).build();
 
     /**
      * Returns the default serializer set used for a Gson data source.
