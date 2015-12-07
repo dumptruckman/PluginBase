@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import pluginbase.config.examples.Custom.Data;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CustomSerializer2 implements Serializer<Custom> {
@@ -29,7 +30,11 @@ public class CustomSerializer2 implements Serializer<Custom> {
     public Custom deserialize(@Nullable Object serialized, @NotNull Class wantedType, @NotNull SerializerSet serializerSet) throws IllegalArgumentException {
         if (serialized instanceof Map) {
             Custom custom = new Custom(((Map) serialized).get("name").toString().toLowerCase());
-            custom.data = SerializableConfig.deserializeAs(((Map) serialized).get("data"), Data.class);
+            List<?> data = ((List<?>)((Map)((Map) serialized).get("data")).get("array"));
+            custom.data.array = data.toArray(new Object[data.size()]);
+            for (int i = 0; i < data.size(); i++) {
+                custom.data.array[i] = Integer.valueOf(String.valueOf(data.get(i)));
+            }
             return custom;
         } else {
             throw new IllegalArgumentException("serialized form must be a map");

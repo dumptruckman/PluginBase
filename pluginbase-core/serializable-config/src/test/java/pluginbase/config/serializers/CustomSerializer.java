@@ -29,8 +29,11 @@ public class CustomSerializer implements Serializer<Custom> {
     public Custom deserialize(@Nullable Object serialized, @NotNull Class wantedType, @NotNull SerializerSet serializerSet) throws IllegalArgumentException {
         if (serialized instanceof Map) {
             Custom custom = new Custom(((Map) serialized).get("name").toString());
-            List<Integer> data = ((List<Integer>)((Map) serialized).get("data"));
+            List<?> data = ((List<?>)((Map) serialized).get("data"));
             custom.data.array = data.toArray(new Object[data.size()]);
+            for (int i = 0; i < data.size(); i++) {
+                custom.data.array[i] = Integer.valueOf(String.valueOf(data.get(i)));
+            }
             return custom;
         } else {
             throw new IllegalArgumentException("serialized form must be a map");
