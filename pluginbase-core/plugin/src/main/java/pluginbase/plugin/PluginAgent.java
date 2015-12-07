@@ -353,7 +353,7 @@ public abstract class PluginAgent<P> {
         Settings settings = defaults;
         try {
             if (configDataSource == null) {
-                configDataSource = HoconDataSource.builder().setFile(getConfigFile()).build();
+                configDataSource = HoconDataSource.builder().setCommentsEnabled(true).setFile(getConfigFile()).build();
             }
             settings = configDataSource.loadToObject(defaults);
             if (settings == null) {
@@ -375,7 +375,7 @@ public abstract class PluginAgent<P> {
         DatabaseSettings settings = defaults;
         try {
             if (sqlConfigDataSource == null) {
-                sqlConfigDataSource = HoconDataSource.builder().setFile(getSqlConfigFile()).build();
+                sqlConfigDataSource = HoconDataSource.builder().setCommentsEnabled(true).setFile(getSqlConfigFile()).build();
             }
             settings = sqlConfigDataSource.loadToObject(defaults);
             if (settings == null) {
