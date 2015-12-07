@@ -11,6 +11,7 @@ import pluginbase.config.field.FieldMapper;
 import pluginbase.config.field.PropertyVetoException;
 
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -103,10 +104,15 @@ class DefaultSerializer implements Serializer<Object> {
                 if (serializedFieldData == null) {
                     fieldValue = null;
                 } else {
-                    if (isEligibleForDeserializationToObject(serializedFieldData, fieldValue)) {
+                    Class asClass = fieldValue != null ? fieldValue.getClass() : field.getType();
+                    if (Collection.class.isAssignableFrom(field.getType()) && serializedFieldData instanceof Collection) {
+                        fieldValue = deserializeCollection(field, (Collection<?>) serializedFieldData, asClass, serializerSet);
+                    } else if (Map.class.isAssignableFrom(field.getType()) && serializedFieldData instanceof Map) {
+                        fieldValue = deserializeMap(field, (Map<?, ?>) serializedFieldData, asClass, serializerSet);
+                    } else if (fieldValue != null && serializedFieldData instanceof Map) {
                         fieldValue = deserializeFieldAs(field, serializedFieldData, fieldValue.getClass(), serializerSet);
                     } else {
-                        fieldValue = deserializeField(field, serializedFieldData, serializerSet);
+                        fieldValue = deserializeFieldAs(field, serializedFieldData, field.getType(), serializerSet);
                     }
                 }
                 try {
@@ -121,8 +127,30 @@ class DefaultSerializer implements Serializer<Object> {
         return object;
     }
 
-    protected boolean isEligibleForDeserializationToObject(@NotNull Object data, @Nullable Object object) {
-        return object != null && data instanceof Map;
+    protected Collection<?> deserializeCollection(@NotNull Field field, @NotNull Collection<?> data, @NotNull Class asClass, @NotNull SerializerSet serializerSet) {
+        Collection collection = CollectionSerializer.createCollection(asClass, data.size());
+        for (Object object : data) {
+            Class collectionType = field.getCollectionType();
+            if (collectionType != null && !collectionType.equals(Object.class)) {
+                collection.add(SerializableConfig.deserializeAs(object, field.getCollectionType(), serializerSet));
+            } else {
+                collection.add(SerializableConfig.deserialize(object, serializerSet));
+            }
+        }
+        return collection;
+    }
+
+    protected Map<?, ?> deserializeMap(@NotNull Field field, @NotNull Map<?, ?> data, @NotNull Class asClass, @NotNull SerializerSet serializerSet) {
+        Map map = MapSerializer.createMap(asClass, data.size());
+        for (Map.Entry entry : data.entrySet()) {
+            Class mapType = field.getMapType();
+            if (mapType != null && !mapType.equals(Object.class)) {
+                map.put(SerializableConfig.deserialize(entry.getKey(), serializerSet), SerializableConfig.deserializeAs(entry.getValue(), mapType, serializerSet));
+            } else {
+                map.put(SerializableConfig.deserialize(entry.getKey(), serializerSet), SerializableConfig.deserialize(entry.getValue(), serializerSet));
+            }
+        }
+        return map;
     }
 
     protected Object deserializeFieldAs(@NotNull Field field, @NotNull Object data, @NotNull Class asClass, @NotNull SerializerSet serializerSet) {
@@ -130,14 +158,6 @@ class DefaultSerializer implements Serializer<Object> {
             return field.getSerializer(serializerSet).deserialize(data, asClass, serializerSet);
         } catch (Exception e) {
             throw new RuntimeException("Exception while deserializing field '" + field + "' as class '" + asClass + "'", e);
-        }
-    }
-
-    protected Object deserializeField(Field field, Object data, @NotNull SerializerSet serializerSet) {
-        try {
-            return field.getSerializer(serializerSet).deserialize(data, field.getType(), serializerSet);
-        } catch (Exception e) {
-            throw new RuntimeException("Exception while deserializing field: " + field, e);
         }
     }
 }

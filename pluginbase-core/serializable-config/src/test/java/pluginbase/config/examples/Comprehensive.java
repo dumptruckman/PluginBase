@@ -58,6 +58,7 @@ public class Comprehensive extends PropertiesWrapper {
     public static final Map<String, Object> STRING_OBJECT_MAP = new HashMap<String, Object>();
     public static final Custom CUSTOM = new Custom("custom");
     public static final Locale LOCALE = Locale.ENGLISH;
+    public static final List<Double> DOUBLE_LIST = new ArrayList<>();
 
     static {
         WORD_LIST.add("test");
@@ -74,6 +75,8 @@ public class Comprehensive extends PropertiesWrapper {
         STRING_OBJECT_MAP.put("String", "String");
         STRING_OBJECT_MAP.put("list", WORD_LIST);
         RANDOM_LIST.add(STRING_OBJECT_MAP);
+        DOUBLE_LIST.add(123151512615D);
+        DOUBLE_LIST.add(62342362.1231231251515D);
         PropertyAliases.createAlias(Comprehensive.class, "cname", "custom", "name");
     }
 
@@ -138,6 +141,8 @@ public class Comprehensive extends PropertiesWrapper {
     public BigDecimal aBigDecimal = A_BIG_DECIMAL;
 
     public UUID aUUID = A_UUID;
+
+    public List<Double> doubleList = DOUBLE_LIST;
 
     public transient int tInt = T_INT;
     @ValidateWith(NameValidator.class)
@@ -225,6 +230,7 @@ public class Comprehensive extends PropertiesWrapper {
         if (!fakeEnum.equals(that.fakeEnum)) return false;
         if (!locale.equals(that.locale)) return false;
         if (!aUUID.equals(that.aUUID)) return false;
+        if (!doubleList.equals(that.doubleList)) return false;
         //if (!testWildCardListVirtualProp.equals(that.testWildCardListVirtualProp)) return false;
         //if (!testWildCardVirtualProp.equals(that.testWildCardVirtualProp)) return false;
         //if (!testTypedVirtualProp.equals(that.testTypedVirtualProp)) return false;
@@ -266,6 +272,7 @@ public class Comprehensive extends PropertiesWrapper {
         result = 31 * result + genericList.hashCode();
         result = 31 * result + simpleList.hashCode();
         result = 31 * result + aUUID.hashCode();
+        result = 31 * result + doubleList.hashCode();
         return result;
     }
 
@@ -300,6 +307,7 @@ public class Comprehensive extends PropertiesWrapper {
                 ", locale=" + locale +
                 ", genericList=" + genericList +
                 ", simpleList=" + simpleList +
+                ", doubleList=" + doubleList +
                 '}';
     }
 }

@@ -45,7 +45,7 @@ class MapSerializer implements Serializer<Map<?, ?>> {
     }
 
     @NotNull
-    protected Map createMap(@NotNull Class<? extends Map> wantedType, int size) {
+    protected static Map createMap(@NotNull Class<? extends Map> wantedType, int size) {
         if (wantedType.isInterface()) {
             return new LinkedHashMap(size);
         } else {

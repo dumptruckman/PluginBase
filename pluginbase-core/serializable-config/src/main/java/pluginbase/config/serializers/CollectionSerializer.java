@@ -43,7 +43,7 @@ class CollectionSerializer implements Serializer<Collection> {
     }
 
     @NotNull
-    protected Collection createCollection(@NotNull Class<? extends Collection> wantedType, int size) {
+    protected static Collection createCollection(@NotNull Class<? extends Collection> wantedType, int size) {
         if (wantedType.isInterface()) {
             return new ArrayList(size);
         } else {

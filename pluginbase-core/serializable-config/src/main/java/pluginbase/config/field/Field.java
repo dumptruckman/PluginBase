@@ -23,6 +23,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
 import java.util.Collection;
+import java.util.Map;
 
 public class Field extends FieldMap {
 
@@ -34,6 +35,7 @@ public class Field extends FieldMap {
     private final Type type;
     private final Class typeClass;
     private final Class collectionType;
+    private final Class mapType;
     @Nullable
     private final Class<? extends PropertyHandler> propertyHandlerClass;
     @Nullable
@@ -72,6 +74,7 @@ public class Field extends FieldMap {
         this.type = determineActualType(field);
         this.typeClass = determineTypeClass(type);
         this.collectionType = determineCollectionType(type);
+        this.mapType = determineMapType(type);
         this.propertyHandlerClass = getPropertyHandlerClass(field);
         this.serializerClass = getSerializerClass(field);
         this.validatorClass = getValidatorClass(field);
@@ -133,6 +136,25 @@ public class Field extends FieldMap {
                 return Object.class;
             }
             return GenericTypeReflector.erase(collectionType);
+        }
+        return null;
+    }
+
+    @Nullable
+    private Class determineMapType(@NotNull Type type) {
+        if (Map.class.isAssignableFrom(getType())) {
+            Type mapType = GenericTypeReflector.getExactSuperType(type, Map.class);
+            if (mapType instanceof ParameterizedType) {
+                ParameterizedType parameterizedType = (ParameterizedType) mapType;
+                mapType = parameterizedType.getActualTypeArguments()[1];
+                if (mapType instanceof Class) {
+                    return (Class) mapType;
+                }
+            }
+            if (mapType instanceof WildcardType) {
+                return Object.class;
+            }
+            return GenericTypeReflector.erase(mapType);
         }
         return null;
     }
@@ -331,6 +353,11 @@ public class Field extends FieldMap {
     @Nullable
     public Class getCollectionType() {
         return collectionType;
+    }
+
+    @Nullable
+    public Class getMapType() {
+        return mapType;
     }
 
     @NotNull
