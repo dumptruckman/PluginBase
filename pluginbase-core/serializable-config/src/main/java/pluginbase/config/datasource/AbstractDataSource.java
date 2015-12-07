@@ -202,7 +202,7 @@ public abstract class AbstractDataSource implements DataSource {
          * @param commentsEnabled whether or not the DataSource should write comments when saving data to a file.
          * @return
          */
-        public Builder setCommentsEnabled(boolean commentsEnabled) {
+        public T setCommentsEnabled(boolean commentsEnabled) {
             this.commentsEnabled = commentsEnabled;
             return self();
         }
