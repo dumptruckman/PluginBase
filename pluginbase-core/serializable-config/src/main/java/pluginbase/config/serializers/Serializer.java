@@ -53,4 +53,14 @@ public interface Serializer<T> {
      */
     @Nullable
     T deserialize(@Nullable Object serialized, @NotNull Class wantedType, @NotNull SerializerSet serializerSet) throws IllegalArgumentException;
+
+    @Nullable
+    default Object serialize(@Nullable T object) throws IllegalArgumentException {
+        return serialize(object, SerializerSet.defaultSet());
+    }
+
+    @Nullable
+    default T deserialize(@Nullable Object serialized, @NotNull Class wantedType) throws IllegalArgumentException {
+        return deserialize(serialized, wantedType, SerializerSet.defaultSet());
+    }
 }
