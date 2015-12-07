@@ -40,6 +40,7 @@ public abstract class AbstractDataSource implements DataSource {
     private final AbstractConfigurationLoader loader;
     @NotNull
     private final SerializerSet serializerSet;
+    private final boolean commentsEnabled;
 
     /**
      * This builder class is used to properly configure and create a DataSource object.
@@ -55,6 +56,7 @@ public abstract class AbstractDataSource implements DataSource {
         protected Callable<BufferedWriter> sink;
         private SerializerSet.Builder serializerSet;
         private SerializerSet alternateSet;
+        protected boolean commentsEnabled = false;
 
         protected Builder() { }
 
@@ -190,6 +192,22 @@ public abstract class AbstractDataSource implements DataSource {
         }
 
         /**
+         * Sets whether or not the DataSource should write comments when saving data to a file.
+         * <p/>
+         * Comments can be added to a data object via {@link Comment}.
+         * <p/>
+         * <strong>Note:</strong> Comments are not available on all DataSource implementations. Enabling comments on an
+         * implementation that does not support them will do nothing.
+         *
+         * @param commentsEnabled whether or not the DataSource should write comments when saving data to a file.
+         * @return
+         */
+        public Builder setCommentsEnabled(boolean commentsEnabled) {
+            this.commentsEnabled = commentsEnabled;
+            return self();
+        }
+
+        /**
          * Creates the data source using the options of this builder.
          *
          * @return a new DataSource object usings the options specified in this builder.
@@ -198,9 +216,10 @@ public abstract class AbstractDataSource implements DataSource {
         public abstract AbstractDataSource build();
     }
 
-    protected AbstractDataSource(@NotNull AbstractConfigurationLoader loader, @NotNull SerializerSet serializerSet) {
+    protected AbstractDataSource(@NotNull AbstractConfigurationLoader loader, @NotNull SerializerSet serializerSet, boolean commentsEnabled) {
         this.loader = loader;
         this.serializerSet = serializerSet;
+        this.commentsEnabled = commentsEnabled;
     }
 
     /** {@inheritDoc} */
@@ -261,7 +280,9 @@ public abstract class AbstractDataSource implements DataSource {
             Object serialized = SerializableConfig.serialize(object, serializerSet);
             node = node.setValue(serialized);
 
-            node = addComments(FieldMapper.getFieldMap(object.getClass()), node);
+            if (commentsEnabled) {
+                node = addComments(FieldMapper.getFieldMap(object.getClass()), node);
+            }
 
             getLoader().save(node);
         } catch (IOException e) {

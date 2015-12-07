@@ -18,14 +18,14 @@ import java.util.concurrent.Callable;
 class YamlConfigLoader extends AbstractConfigurationLoader<ConfigurationNode> {
 
     private final ThreadLocal<Yaml> yaml;
-    private final boolean doComments;
+    private final boolean commentsEnabled;
     private DumperOptions options;
     private Representer representer;
 
     public static class Builder extends AbstractConfigurationLoader.Builder<Builder> {
 
         private final DumperOptions options = new DumperOptions();
-        private boolean doComments = false;
+        private boolean commentsEnabled = false;
 
         protected Builder() {
             setIndent(4);
@@ -37,8 +37,8 @@ class YamlConfigLoader extends AbstractConfigurationLoader<ConfigurationNode> {
             return this;
         }
 
-        public Builder doComments(boolean doComments) {
-            this.doComments = doComments;
+        public Builder setCommentsEnabled(boolean commentsEnabled) {
+            this.commentsEnabled = commentsEnabled;
             return this;
         }
 
@@ -68,7 +68,7 @@ class YamlConfigLoader extends AbstractConfigurationLoader<ConfigurationNode> {
 
         @Override
         public YamlConfigLoader build() {
-            return new YamlConfigLoader(source, sink, options, preserveHeader, doComments);
+            return new YamlConfigLoader(source, sink, options, preserveHeader, commentsEnabled);
         }
     }
 
@@ -79,7 +79,7 @@ class YamlConfigLoader extends AbstractConfigurationLoader<ConfigurationNode> {
     private YamlConfigLoader(Callable<BufferedReader> source, Callable<BufferedWriter> sink, final DumperOptions options, boolean
             preservesHeader, boolean doComments) {
         super(source, sink, new CommentHandler[] {CommentHandlers.HASH}, preservesHeader);
-        this.doComments = false; // TODO fix broken comment instrumenter D:
+        this.commentsEnabled = false; // TODO fix broken comment instrumenter D:
         this.options = options;
         representer = new Representer();
         representer.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
@@ -98,7 +98,7 @@ class YamlConfigLoader extends AbstractConfigurationLoader<ConfigurationNode> {
 
     @Override
     protected void saveInternal(ConfigurationNode node, Writer writer) throws IOException {
-        if (doComments) {
+        if (commentsEnabled) {
             Object value = node.getValue();
             if (!(value instanceof Map)) {
                 throw new IOException("Data must be in the form of a Map");

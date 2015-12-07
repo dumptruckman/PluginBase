@@ -48,19 +48,21 @@ public class YamlDataSource extends AbstractDataSource {
             return this;
         }
 
-        public Builder doComments(boolean doComments) {
-            builder.doComments(doComments);
+        @Override
+        public Builder setCommentsEnabled(boolean commentsEnabled) {
+            super.setCommentsEnabled(commentsEnabled);
+            builder.setCommentsEnabled(commentsEnabled);
             return this;
         }
 
         @NotNull
         @Override
         public YamlDataSource build() {
-            return new YamlDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet());
+            return new YamlDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet(), commentsEnabled);
         }
     }
 
-    private YamlDataSource(@NotNull YamlConfigLoader loader, @NotNull SerializerSet serializerSet) {
-        super(loader, serializerSet);
+    private YamlDataSource(@NotNull YamlConfigLoader loader, @NotNull SerializerSet serializerSet, boolean commentsEnabled) {
+        super(loader, serializerSet, commentsEnabled);
     }
 }

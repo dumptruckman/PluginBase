@@ -55,6 +55,6 @@ public class JsonDataSource extends AbstractDataSource {
     }
 
     private JsonDataSource(@NotNull JSONConfigurationLoader loader, @NotNull SerializerSet serializerSet) {
-        super(loader, serializerSet);
+        super(loader, serializerSet, false);
     }
 }

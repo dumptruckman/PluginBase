@@ -51,11 +51,11 @@ public class HoconDataSource extends AbstractDataSource {
         @NotNull
         @Override
         public HoconDataSource build() {
-            return new HoconDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet());
+            return new HoconDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet(), commentsEnabled);
         }
     }
 
-    private HoconDataSource(@NotNull HoconConfigurationLoader loader, @NotNull SerializerSet serializerSet) {
-        super(loader, serializerSet);
+    private HoconDataSource(@NotNull HoconConfigurationLoader loader, @NotNull SerializerSet serializerSet, boolean commentsEnabled) {
+        super(loader, serializerSet, commentsEnabled);
     }
 }

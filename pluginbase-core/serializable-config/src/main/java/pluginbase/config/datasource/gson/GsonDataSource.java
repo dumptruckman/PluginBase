@@ -51,6 +51,6 @@ public class GsonDataSource extends AbstractDataSource {
     }
 
     private GsonDataSource(@NotNull GsonConfigurationLoader loader, @NotNull SerializerSet serializerSet) {
-        super(loader, serializerSet);
+        super(loader, serializerSet, false);
     }
 }
