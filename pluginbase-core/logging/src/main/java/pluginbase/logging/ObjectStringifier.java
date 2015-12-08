@@ -57,8 +57,10 @@ public class ObjectStringifier {
     }
 
     private static void buildUp(@NotNull StringBuilder buffer, @NotNull Class clazz, @NotNull Object o, boolean showClasses, int level) {
+        System.out.println(clazz);
         boolean first = true;
         for (Field field : clazz.getDeclaredFields()) {
+            System.out.println("Field: " + field);
             if (Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
@@ -77,26 +79,24 @@ public class ObjectStringifier {
 
             buffer.append(field.getName()).append("=");
 
-            Object value = null;
+            Object value;
             try {
                 value = field.get(o);
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
                 continue;
             }
-            if (value == null) {
-                buffer.append("null");
-                continue;
-            }
 
-            if (field.getType().isArray()) {
-                handleArray(buffer, (Object[]) value, showClasses, level);
-            } else if (Map.class.isAssignableFrom(field.getType())) {
-                handleMap(buffer, (Map<?, ?>) value, showClasses, level);
-            } else if (Collection.class.isAssignableFrom(field.getType())) {
-                handleCollection(buffer, (Collection<?>) value, showClasses, level);
+            if (clazz.isAssignableFrom(field.getType()) && value != null) {
+                if (showClasses) {
+                    buffer.append(clazz).append("{");
+                }
+                buffer.append(value.toString());
+                if (showClasses) {
+                    buffer.append(clazz).append("}");
+                }
             } else {
-                buffer.append(value.getClass().getName()).append("{").append(value.toString()).append("}");
+                handleValue(buffer, value, showClasses, level);
             }
 
             if (!accessible) {
@@ -105,9 +105,42 @@ public class ObjectStringifier {
         }
     }
 
-    private static void handleArray(@NotNull StringBuilder buffer, @NotNull Object[] array, boolean showClasses, int level) {
+    private static void handleValue(@NotNull StringBuilder buffer, @Nullable Object value, boolean showClasses, int level) {
+        if (value == null) {
+            buffer.append("null");
+            return;
+        }
+        Class clazz = value.getClass();
         if (showClasses) {
-            buffer.append(array.getClass()).append("{");
+            buffer.append(clazz).append("{");
+        }
+        if (clazz.isArray()) {
+            handleArray(buffer, (Object[]) value, showClasses, level);
+        } else if (Map.class.isAssignableFrom(clazz)) {
+            handleMap(buffer, (Map<?, ?>) value, showClasses, level);
+        } else if (Collection.class.isAssignableFrom(clazz)) {
+            handleCollection(buffer, (Collection<?>) value, showClasses, level);
+        } else if (clazz.isPrimitive()
+                || String.class.isAssignableFrom(clazz)
+                || Number.class.isAssignableFrom(clazz)
+                || Boolean.class.isAssignableFrom(clazz)
+                || Character.class.isAssignableFrom(clazz)) {
+            buffer.append(value.toString());
+        } else {
+            buffer.append(showClasses ? clazz.getName() : clazz.getSimpleName()).append("{");
+            buildUp(buffer, clazz, value, showClasses, level + 1);
+            buffer.append(LINE_BREAK);
+            addSpaces(buffer, level);
+            buffer.append("}");
+        }
+        if (showClasses) {
+            buffer.append(clazz).append("}");
+        }
+    }
+
+    private static void handleArray(@NotNull StringBuilder buffer, @NotNull Object[] array, boolean showClasses, int level) {
+        if (!showClasses) {
+            buffer.append(array.getClass().getSimpleName());
         }
         buffer.append("[");
 
@@ -120,30 +153,17 @@ public class ObjectStringifier {
             }
             buffer.append(LINE_BREAK);
             addSpaces(buffer, level + 1);
-            if (o == null) {
-                buffer.append("null");
-            } else if (o.getClass().isArray()) {
-                handleArray(buffer, (Object[]) o, showClasses, level + 1);
-            } else if (Map.class.isAssignableFrom(o.getClass())) {
-                handleMap(buffer, (Map<?, ?>) o, showClasses, level + 1);
-            } else if (Collection.class.isAssignableFrom(o.getClass())) {
-                handleCollection(buffer, (Collection<?>) o, showClasses, level + 1);
-            } else {
-                buffer.append(o.getClass().getName()).append("{").append(o.toString()).append("}");
-            }
+            handleValue(buffer, o, showClasses, level + 1);
         }
 
         buffer.append(LINE_BREAK);
         addSpaces(buffer, level);
         buffer.append("]");
-        if (showClasses) {
-            buffer.append("}");
-        }
     }
 
     private static void handleMap(@NotNull StringBuilder buffer, @NotNull Map<?, ?> map, boolean showClasses, int level) {
-        if (showClasses) {
-            buffer.append(map.getClass()).append("{");
+        if (!showClasses) {
+            buffer.append(map.getClass().getSimpleName());
         }
         buffer.append("{");
 
@@ -161,31 +181,17 @@ public class ObjectStringifier {
             buffer.append(key).append("=");
 
             Object o = entry.getValue();
-
-            if (o == null) {
-                buffer.append("null");
-            } else if (o.getClass().isArray()) {
-                handleArray(buffer, (Object[]) o, showClasses, level + 1);
-            } else if (Map.class.isAssignableFrom(o.getClass())) {
-                handleMap(buffer, (Map<?, ?>) o, showClasses, level + 1);
-            } else if (Collection.class.isAssignableFrom(o.getClass())) {
-                handleCollection(buffer, (Collection<?>) o, showClasses, level + 1);
-            } else {
-                buffer.append(o.getClass().getName()).append("{").append(o.toString()).append("}");
-            }
+            handleValue(buffer, o, showClasses, level + 1);
         }
 
         buffer.append(LINE_BREAK);
         addSpaces(buffer, level);
         buffer.append("}");
-        if (showClasses) {
-            buffer.append("}");
-        }
     }
 
     private static void handleCollection(@NotNull StringBuilder buffer, @NotNull Collection<?> collection, boolean showClasses, int level) {
-        if (showClasses) {
-            buffer.append(collection.getClass()).append("{");
+        if (!showClasses) {
+            buffer.append(collection.getClass().getSimpleName());
         }
         buffer.append("[");
 
@@ -198,25 +204,12 @@ public class ObjectStringifier {
             }
             buffer.append(LINE_BREAK);
             addSpaces(buffer, level + 1);
-            if (o == null) {
-                buffer.append("null");
-            } else if (o.getClass().isArray()) {
-                handleArray(buffer, (Object[]) o, showClasses, level + 1);
-            } else if (Map.class.isAssignableFrom(o.getClass())) {
-                handleMap(buffer, (Map<?, ?>) o, showClasses, level + 1);
-            } else if (Collection.class.isAssignableFrom(o.getClass())) {
-                handleCollection(buffer, (Collection<?>) o, showClasses, level + 1);
-            } else {
-                buffer.append(o.getClass().getName()).append("{").append(o.toString()).append("}");
-            }
+            handleValue(buffer, o, showClasses, level + 1);
         }
 
         buffer.append(LINE_BREAK);
         addSpaces(buffer, level);
         buffer.append("]");
-        if (showClasses) {
-            buffer.append("}");
-        }
     }
 
     private static void addSpaces(@NotNull StringBuilder buffer, int level) {
