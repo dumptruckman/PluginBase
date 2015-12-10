@@ -1,14 +1,18 @@
 package pluginbase.config.examples;
 
+import pluginbase.config.annotation.Comment;
 import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.serializers.CustomSerializer;
+import pluginbase.logging.ObjectStringifier;
 
 import java.util.Arrays;
 
 @SerializeWith(CustomSerializer.class)
 public class Custom {
 
+    @Comment("A name")
     public String name;
+    @Comment("Some data")
     public Data data = new Data();
 
     public Custom(String name) {
@@ -36,10 +40,7 @@ public class Custom {
 
     @Override
     public String toString() {
-        return "Custom{" +
-                "name='" + name + '\'' +
-                ", data=" + data +
-                '}';
+        return ObjectStringifier.toString(this, true);
     }
 
     public static class Data {
@@ -72,9 +73,7 @@ public class Custom {
 
         @Override
         public String toString() {
-            return "Data{" +
-                    "array=" + Arrays.toString(array) +
-                    '}';
+            return ObjectStringifier.toString(this, true);
         }
     }
 }

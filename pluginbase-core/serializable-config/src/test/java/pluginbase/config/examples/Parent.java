@@ -2,6 +2,7 @@ package pluginbase.config.examples;
 
 import pluginbase.config.annotation.Comment;
 import pluginbase.config.properties.PropertyAliases;
+import pluginbase.logging.ObjectStringifier;
 
 public final class Parent {
 
@@ -37,8 +38,6 @@ public final class Parent {
 
     @Override
     public String toString() {
-        return "Parent{" +
-                "aChild=" + aChild +
-                '}';
+        return ObjectStringifier.toString(this, true);
     }
 }

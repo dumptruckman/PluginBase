@@ -17,14 +17,17 @@ import pluginbase.config.properties.PropertyAliases;
 import pluginbase.config.properties.PropertyHandler;
 import pluginbase.config.serializers.CustomSerializer2;
 import org.jetbrains.annotations.Nullable;
+import pluginbase.logging.ObjectStringifier;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -49,13 +52,13 @@ public class Comprehensive extends PropertiesWrapper {
     public static final String[] A_INT_COMMENTS = {A_INT_COMMENT_1, A_INT_COMMENT_2};
     public static final int T_INT = 5;
     public static final String NAME = "Comprehensive";
-    public static final List<String> WORD_LIST = new ArrayList<String>();
-    public static final List<String> WORD_LIST_2 = new CopyOnWriteArrayList<String>();
-    public static final List<List<String>> LIST_LIST = new ArrayList<List<String>>();
+    public static final List<String> WORD_LIST = new ArrayList<>();
+    public static final List<String> WORD_LIST_2 = new CopyOnWriteArrayList<>();
+    public static final List<List<String>> LIST_LIST = new ArrayList<>();
     public static final Child CHILD = new Child(true);
     public static final Parent PARENT = new Parent(CHILD);
-    public static final List<Object> RANDOM_LIST = new ArrayList<Object>();
-    public static final Map<String, Object> STRING_OBJECT_MAP = new HashMap<String, Object>();
+    public static final List<Object> RANDOM_LIST = new ArrayList<>();
+    public static final Map<String, Object> STRING_OBJECT_MAP = new HashMap<>();
     public static final Custom CUSTOM = new Custom("custom");
     public static final Locale LOCALE = Locale.ENGLISH;
     public static final List<Double> DOUBLE_LIST = new ArrayList<>();
@@ -74,6 +77,8 @@ public class Comprehensive extends PropertiesWrapper {
         STRING_OBJECT_MAP.put("child", CHILD);
         STRING_OBJECT_MAP.put("String", "String");
         STRING_OBJECT_MAP.put("list", WORD_LIST);
+        STRING_OBJECT_MAP.put("custom1", CUSTOM);
+        STRING_OBJECT_MAP.put("custom2", CUSTOM);
         RANDOM_LIST.add(STRING_OBJECT_MAP);
         DOUBLE_LIST.add(123151512615D);
         DOUBLE_LIST.add(62342362.1231231251515D);
@@ -147,11 +152,11 @@ public class Comprehensive extends PropertiesWrapper {
     public transient int tInt = T_INT;
     @ValidateWith(NameValidator.class)
     public String name = NAME;
-    public List<String> wordList = new ArrayList<String>(WORD_LIST);
-    public List<String> wordList2 = new ArrayList<String>(WORD_LIST_2);
-    public List<List<String>> listList = new ArrayList<List<String>>(LIST_LIST);
-    public List<Object> randomList = new ArrayList<Object>(RANDOM_LIST);
-    public Map<String, Object> stringObjectMap = new HashMap<String, Object>(STRING_OBJECT_MAP);
+    public List<String> wordList = new ArrayList<>(WORD_LIST);
+    public List<String> wordList2 = new ArrayList<>(WORD_LIST_2);
+    public List<List<String>> listList = new ArrayList<>(LIST_LIST);
+    public List<Object> randomList = new ArrayList<>(RANDOM_LIST);
+    public Map<String, Object> stringObjectMap = new HashMap<>(STRING_OBJECT_MAP);
     public final Custom custom = new Custom(CUSTOM.name);
     @SerializeWith(CustomSerializer2.class)
     public Custom custom2 = new Custom(CUSTOM.name);
@@ -278,36 +283,6 @@ public class Comprehensive extends PropertiesWrapper {
 
     @Override
     public String toString() {
-        return "Comprehensive{" +
-                "aInt=" + aInt +
-                ", aLong=" + aLong +
-                ", aDouble=" + aDouble +
-                ", aFloat=" + aFloat +
-                ", aShort=" + aShort +
-                ", aByte=" + aByte +
-                ", aBoolean=" + aBoolean +
-                ", aChar=" + aChar +
-                ", aBigInteger=" + aBigInteger +
-                ", aBigDecimal=" + aBigDecimal +
-                ", aUUID=" + aUUID +
-                ", tInt=" + tInt +
-                ", name='" + name + '\'' +
-                ", wordList=" + wordList +
-                ", wordList2=" + wordList2 +
-                ", listList=" + listList +
-                ", randomList=" + randomList +
-                ", stringObjectMap=" + stringObjectMap +
-                ", custom=" + custom +
-                ", custom2=" + custom2 +
-                ", immutableString='" + immutableString + '\'' +
-                ", simple=" + simple +
-                ", finalString='" + finalString + '\'' +
-                ", virtualEnum=" + virtualEnum +
-                ", fakeEnum=" + fakeEnum +
-                ", locale=" + locale +
-                ", genericList=" + genericList +
-                ", simpleList=" + simpleList +
-                ", doubleList=" + doubleList +
-                '}';
+        return ObjectStringifier.toString(this);
     }
 }

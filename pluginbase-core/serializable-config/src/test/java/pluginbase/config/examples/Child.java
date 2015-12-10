@@ -1,6 +1,7 @@
 package pluginbase.config.examples;
 
 import pluginbase.config.annotation.Comment;
+import pluginbase.logging.ObjectStringifier;
 
 public final class Child {
 
@@ -32,8 +33,6 @@ public final class Child {
 
     @Override
     public String toString() {
-        return "Child{" +
-                "aBoolean=" + aBoolean +
-                '}';
+        return ObjectStringifier.toString(this, true);
     }
 }
