@@ -18,7 +18,8 @@ public class CustomSerializer2 implements Serializer<Custom> {
         if (object == null) {
             return null;
         } else {
-            Map<String, Object> result = new HashMap<String, Object>(1);
+            Map<String, Object> result = new HashMap<>(3);
+            result.put(SerializableConfig.SERIALIZED_TYPE_KEY, Custom.class.getName());
             result.put("name", object.name.toUpperCase());
             result.put("data", SerializableConfig.serialize(object.data));
             return result;

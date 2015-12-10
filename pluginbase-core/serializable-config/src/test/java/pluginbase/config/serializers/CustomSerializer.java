@@ -1,5 +1,6 @@
 package pluginbase.config.serializers;
 
+import pluginbase.config.SerializableConfig;
 import pluginbase.config.examples.Custom;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +18,8 @@ public class CustomSerializer implements Serializer<Custom> {
         if (object == null) {
             return null;
         } else {
-            Map<String, Object> result = new HashMap<String, Object>(1);
+            Map<String, Object> result = new HashMap<>(3);
+            result.put(SerializableConfig.SERIALIZED_TYPE_KEY, Custom.class.getName());
             result.put("name", object.name);
             result.put("data", Arrays.asList(object.data.array));
             return result;
