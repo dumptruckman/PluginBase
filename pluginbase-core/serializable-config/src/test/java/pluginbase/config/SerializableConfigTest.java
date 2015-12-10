@@ -212,7 +212,7 @@ public class SerializableConfigTest extends TestBase {
     @Test
     public void testHocon() throws Exception {
         HoconDataSource.Builder builder = HoconDataSource.builder();
-        DataSource dataSource = builder.setSink(sink).setSource(source).build();
+        DataSource dataSource = builder.setSink(sink).setCommentsEnabled(true).setSource(source).build();
         fileSerializeComprehensive(dataSource);
         //fileSerializeCommonTypes(dataSource);
     }
@@ -229,6 +229,7 @@ public class SerializableConfigTest extends TestBase {
 
     private void fileSerializeComprehensive(DataSource dataSource) throws Exception {
         dataSource.save(comprehensive);
+        System.out.println(writer.toString());
         assertEquals(comprehensive, dataSource.load(Comprehensive.class));
     }
 

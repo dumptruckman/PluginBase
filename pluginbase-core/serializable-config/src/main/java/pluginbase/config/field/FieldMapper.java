@@ -48,6 +48,20 @@ public class FieldMapper {
         return fieldMap;
     }
 
+    public static boolean isMappable(Class clazz) {
+        if (Map.class.isAssignableFrom(clazz)
+                        || Collection.class.isAssignableFrom(clazz)
+                        || Enum.class.isAssignableFrom(clazz)
+                        || clazz.isAnnotationPresent(FauxEnum.class)
+                        || clazz.isAnnotationPresent(SerializeWith.class)
+                        || clazz.isArray()
+                        || SerializerSet.defaultSet().hasSerializerForClass(clazz)
+                        || VirtualField.class.isAssignableFrom(clazz)) {
+            return false;
+        }
+        return true;
+    }
+
     private FieldMapper(@NotNull Class clazz) {
         this.clazz = clazz;
     }

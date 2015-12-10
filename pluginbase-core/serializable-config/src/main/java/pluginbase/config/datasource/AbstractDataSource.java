@@ -23,6 +23,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -281,7 +282,7 @@ public abstract class AbstractDataSource implements DataSource {
             node = node.setValue(serialized);
 
             if (commentsEnabled) {
-                node = addComments(FieldMapper.getFieldMap(object.getClass()), node);
+                node = addComments(FieldMapper.getFieldMap(object.getClass()), object, node);
             }
 
             getLoader().save(node);
@@ -319,7 +320,7 @@ public abstract class AbstractDataSource implements DataSource {
         return builder.toString();
     }
 
-    protected CommentedConfigurationNode addComments(@NotNull FieldMap fieldMap, @NotNull CommentedConfigurationNode node) {
+    protected CommentedConfigurationNode addComments(@NotNull FieldMap fieldMap, @Nullable Object object, @NotNull CommentedConfigurationNode node) {
         for (Map.Entry<Object, ? extends CommentedConfigurationNode> entry : node.getChildrenMap().entrySet()) {
             Field field = fieldMap.getField(entry.getKey().toString());
             if (field != null) {
@@ -327,18 +328,31 @@ public abstract class AbstractDataSource implements DataSource {
                 if (comments != null) {
                     entry.getValue().setComment(joinComments(comments, false));
                 }
-                digDeeper(field, entry.getValue());
+                digDeeper(field, object, entry.getValue());
             }
         }
         return node;
     }
 
-    protected void digDeeper(@NotNull Field field, @NotNull CommentedConfigurationNode node) {
+    protected void digDeeper(@NotNull Field field, @Nullable Object object, @NotNull CommentedConfigurationNode node) {
         if (node.hasMapChildren()) {
-            addComments(field, node);
+            if (object != null && field.getMapType() != null) {
+                Map<?, ?> map = (Map) field.getValue(object);
+                if (map != null) {
+                    for (Map.Entry<?, ?> entry : map.entrySet()) {
+                        Object o = entry.getValue();
+                        CommentedConfigurationNode childNode = node.getNode(entry.getKey());
+                        if (o != null && childNode != null && FieldMapper.isMappable(o.getClass())) {
+                            addComments(FieldMapper.getFieldMap(o.getClass()), o, childNode);
+                        }
+                    }
+                }
+            } else {
+                addComments(field, object, node);
+            }
         } else if (node.hasListChildren()) {
             for (CommentedConfigurationNode item : node.getChildrenList()) {
-                digDeeper(field, item);
+                digDeeper(field, object, item);
             }
         }
     }
