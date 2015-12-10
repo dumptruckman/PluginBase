@@ -57,10 +57,8 @@ public class ObjectStringifier {
     }
 
     private static void buildUp(@NotNull StringBuilder buffer, @NotNull Class clazz, @NotNull Object o, boolean showClasses, int level) {
-        System.out.println(clazz);
         boolean first = true;
         for (Field field : clazz.getDeclaredFields()) {
-            System.out.println("Field: " + field);
             if (Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
