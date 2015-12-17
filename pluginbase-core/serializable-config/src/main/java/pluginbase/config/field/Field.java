@@ -13,7 +13,6 @@ import pluginbase.config.properties.PropertyHandler;
 import pluginbase.config.properties.PropertyHandlers;
 import pluginbase.config.serializers.Serializer;
 import pluginbase.config.serializers.SerializerSet;
-import pluginbase.config.serializers.Serializers;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.config.util.PrimitivesUtil;
@@ -255,9 +254,9 @@ public class Field extends FieldMap {
         }
         */
         if (getSerializerClass() != null) {
-            return Serializers.getSerializerInstance(getSerializerClass());
+            return serializerSet.getSerializerInstance(getSerializerClass());
         }
-        return Serializers.getClassSerializer(getType(), serializerSet);
+        return serializerSet.getClassSerializer(getType());
     }
 
     @Nullable

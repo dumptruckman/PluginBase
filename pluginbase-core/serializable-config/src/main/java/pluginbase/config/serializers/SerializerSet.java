@@ -4,14 +4,19 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.config.SerializableConfig;
 import pluginbase.config.annotation.FauxEnum;
+import pluginbase.config.annotation.SerializeWith;
 import pluginbase.config.serializers.NumberSerializer.AtomicIntegerSerializer;
 import pluginbase.config.serializers.NumberSerializer.AtomicLongSerializer;
 import pluginbase.config.serializers.NumberSerializer.BigNumberSerializer;
+import pluginbase.config.util.PrimitivesUtil;
+import pluginbase.logging.Logging;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -22,8 +27,10 @@ import java.util.concurrent.atomic.AtomicLong;
  * in order to use custom serializers in cases where {@link pluginbase.config.annotation.SerializeWith} is not feasible.
  * <p/>
  * <strong>Note:</strong> Serializer sets are immutable once created.
+ * <p/>
+ * Serializers have a general order of priority in which they should be used. See {@link #getClassSerializer(Class)}
+ * for details.
  *
- * @see Serializers
  * @see SerializableConfig
  */
 public final class SerializerSet {
@@ -87,6 +94,8 @@ public final class SerializerSet {
     private final Map<Class, Serializer> overrideSerializers;
     @NotNull
     private final Serializer fallbackSerializer;
+    @NotNull
+    private final Map<Class<? extends Serializer>, Serializer> serializeWithSerializers;
 
     /**
      * A builder class used to construct an immutable SerializerSet.
@@ -99,11 +108,14 @@ public final class SerializerSet {
         private final Map<Class, Serializer> overrideSerializers = new HashMap<>();
         @NotNull
         private Serializer fallbackSerializer;
+        @NotNull
+        private final Map<Class<? extends Serializer>, Serializer> serializeWithSerializers;
 
         private Builder(@NotNull SerializerSet setToCopy) {
             serializers.putAll(setToCopy.serializers);
             overrideSerializers.putAll(setToCopy.overrideSerializers);
             fallbackSerializer = setToCopy.fallbackSerializer;
+            serializeWithSerializers = new HashMap<>(setToCopy.serializeWithSerializers);
         }
 
         /**
@@ -128,7 +140,7 @@ public final class SerializerSet {
          * Specifies an override serializer to be included in the SerializerSet built by the Builder object.
          * <p/>
          * If a serializer is defined here it will always be used for the given class except in the special case
-         * illustrated in {@link Serializers#getClassSerializer(Class, SerializerSet)}.
+         * illustrated in {@link #getClassSerializer(Class)}.
          *
          * @param clazz the class that the given serializer is responsible for serializing/deserializing.
          * @param serializer the instance of the serializer to be used for the given class type.
@@ -158,21 +170,114 @@ public final class SerializerSet {
         }
 
         /**
+         * Registers an instance of a given Serializer class for use with {@link SerializeWith}.
+         * <p/>
+         * For a class to be serialized by the serializer specified in {@link SerializeWith} the serializer must have a
+         * registered instance. If the serializer has a 0-arg constructor, an instance will be created automatically.
+         * This method allows for the registering of serializer instances for serializers without 0-arg constructors
+         * and also to replace previous instances should that be needed.
+         * <p/>
+         * If the given serializer class has already been registered this method will <strong>replace</strong> the previous
+         * instance with the given instance.
+         *
+         * @param serializerClass the serializer class to register an instance of.
+         * @param serializer the instance of the serializer class to use.
+         * @param <T> the serializer class type.
+         * @return this builder object.
+         */
+        private <T extends Serializer> Builder registerSerializeWithInstance(@NotNull Class<T> serializerClass, @NotNull T serializer) {
+            serializeWithSerializers.put(serializerClass, serializer);
+            return this;
+        }
+
+        /**
          * Constructs the immutable serializer set defined by this builder's methods.
          *
          * @return the immutable serializer set defined by this builder's methods.
          */
         @NotNull
         public SerializerSet build() {
-            return new SerializerSet(serializers, overrideSerializers, fallbackSerializer);
+            return new SerializerSet(serializers, overrideSerializers, fallbackSerializer, serializeWithSerializers);
         }
     }
 
     private SerializerSet(@NotNull Map<Class, Serializer> serializers, @NotNull Map<Class, Serializer> overrideSerializers,
-                          @NotNull Serializer fallbackSerializer) {
+                          @NotNull Serializer fallbackSerializer, @NotNull Map<Class<? extends Serializer>, Serializer> serializeWithSerializers) {
         this.serializers = Collections.unmodifiableMap(new HashMap<>(serializers));
         this.overrideSerializers = Collections.unmodifiableMap(new HashMap<>(overrideSerializers));
         this.fallbackSerializer = fallbackSerializer;
+        this.serializeWithSerializers = new ConcurrentHashMap<>(serializeWithSerializers);
+    }
+
+    /**
+     * Retrieves the most appropriate serializer instance capable of serializing/deserializing the given class.
+     * <p/>
+     * This is the primary method for obtaining a serializer instance to serialize a given class in nearly all
+     * scenarios. It will ensure that the most appropriate serializer is obtained.
+     * <p/>
+     * Special treatment is given to classes that extend {@link Collection} and {@link Map} and classes annotated by
+     * {@link FauxEnum}. When looking for a <em>non-override</em> serializer for these classes, if one is not found for
+     * the specific class, the serializer for Collection, Map, or FauxEnum, respectively, will be used instead. For
+     * other types, serializers are only returned for the exact type given.
+     * <p/>
+     * What serializer is returned is determined by the following priority order:
+     * <ol>
+     *     <li>An override serializer specified in the given SerializerSet</li>
+     *     <li>The serializer specified by @SerializeWith</li>
+     *     <li>A standard serializer specified in the given SerializerSet</li>
+     *     <li>The serializer set's fallback serializer</li>
+     * </ol>
+     * <strong>Note:</strong> An exception to this order is the case of a field (rather than a type) annotated by
+     * {@link SerializeWith}. The <em>default</em> fallback serializer will prefer the annotated field's
+     * {@link SerializeWith} serializer to all others. This may or may not hold true if a custom serializer is used on
+     * the object containing the field or the serializer set has a custom fallback serializer.
+     *
+     * @param clazz the class to get a serializer for.
+     * @return the most appropriate serializer for the given class.
+     */
+    @NotNull
+    public Serializer getClassSerializer(@NotNull Class<?> clazz) {
+        clazz = PrimitivesUtil.switchForWrapper(clazz);
+
+        Serializer serializer = getOverrideSerializer(clazz);
+        if (serializer != null) {
+            return serializer;
+        }
+
+        SerializeWith serializeWith = clazz.getAnnotation(SerializeWith.class);
+        if (serializeWith != null) {
+            try {
+                return getSerializerInstance(serializeWith.value());
+            } catch (Exception e) {
+                Logging.warning("Class %s is annotated with SerializeWith and specified the serializer class %s but "
+                                + "could not obtain an instance of that serializer. Consider registering the serializer "
+                                + "manually.",
+                        clazz, serializeWith.value());
+            }
+        }
+
+        serializer = getSerializer(clazz);
+        if (serializer != null) {
+            return serializer;
+        }
+
+        if (clazz.isAnnotationPresent(FauxEnum.class)) {
+            serializer = getSerializer(FauxEnum.class);
+        } else if (Collection.class.isAssignableFrom(clazz)) {
+            serializer = getSerializer(Collection.class);
+        } else if (Map.class.isAssignableFrom(clazz)) {
+            serializer = getSerializer(Map.class);
+        } else if (Enum.class.isAssignableFrom(clazz)) {
+            serializer = getSerializer(Enum.class);
+        } else if (clazz.isArray()) {
+            serializer = getSerializer(Array.class);
+        }
+
+        if (serializer != null) {
+            return serializer;
+        }
+
+        return getFallbackSerializer();
     }
 
     /**
@@ -186,10 +291,38 @@ public final class SerializerSet {
     }
 
     /**
+     * Retrieves the global instance for the given serializer class.
+     * <p/>
+     * If an instance has not be previously registered, the serializer will be instantiated and registered before being
+     * returned. If the serializer has not been previously registered and does not have a 0-arg constructor an exception
+     * will be thrown.
+     *
+     * @param serializerClass The serializer class to get the global instance for.
+     * @param <S> The serializer class type.
+     * @return The global instance of the given serializer class.
+     * @throws IllegalArgumentException thrown when a previously unregistered serializer class is given that does not
+     * have a 0-arg constructor.
+     */
+    @NotNull
+    @SuppressWarnings("unchecked")
+    public <S extends Serializer> S getSerializerInstance(@NotNull Class<S> serializerClass) throws IllegalArgumentException {
+        if (serializeWithSerializers.containsKey(serializerClass)) {
+            return (S) serializeWithSerializers.get(serializerClass);
+        }
+        try {
+            S serializer = createInstance(serializerClass);
+            registerSerializerInstance(serializerClass, serializer);
+            return serializer;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Could not instantiate " + serializerClass + ". Does it have a 0-arg constructor?", e);
+        }
+    }
+
+    /**
      * Retrieves the standard serializer for the specific given type. This is the last serializer choice checked before
      * the fallback serializer is used.
      *
-     * @see Serializers#getClassSerializer(Class, SerializerSet)
+     * @see #getClassSerializer(Class)
      *
      * @param serializableClass the class to get the serializer for.
      * @param <T> the type of the class.
@@ -197,7 +330,7 @@ public final class SerializerSet {
      */
     @Nullable
     @SuppressWarnings("unchecked")
-    public <T> Serializer<T> getSerializer(Class<T> serializableClass) {
+    private <T> Serializer<T> getSerializer(Class<T> serializableClass) {
         return serializers.get(serializableClass);
     }
 
@@ -205,7 +338,7 @@ public final class SerializerSet {
      * Retrieves the override serializer for the specific given type. This is the first serializer choice for a given
      * class except in rare circumstances.
      *
-     * @see Serializers#getClassSerializer(Class, SerializerSet)
+     * @see #getClassSerializer(Class)
      *
      * @param serializableClass the class to get the serializer for.
      * @param <T> the type of the class.
@@ -213,15 +346,62 @@ public final class SerializerSet {
      */
     @Nullable
     @SuppressWarnings("unchecked")
-    public <T> Serializer<T> getOverrideSerializer(Class<T> serializableClass) {
+    private <T> Serializer<T> getOverrideSerializer(Class<T> serializableClass) {
         return overrideSerializers.get(serializableClass);
     }
 
     @NotNull
-    public Serializer getFallbackSerializer() {
+    private Serializer getFallbackSerializer() {
         return fallbackSerializer;
     }
 
+    /**
+     * Tries to create and store an instance of the given serializer class. This will only work for serializers with a
+     * 0-arg constructor. If there is not a 0-arg constructor, nothing happens. Generally, {@link #registerSerializerInstance(Class, Serializer)}
+     * should be used instead.
+     */
+    private <S extends Serializer> void tryRegisterSerializer(@NotNull Class<S> serializerClass) {
+        try {
+            S serializer = createInstance(serializerClass);
+            registerSerializerInstance(serializerClass, serializer);
+        } catch (Exception ignore) { }
+    }
+
+    @NotNull
+    private <S extends Serializer> S createInstance(@NotNull Class<S> serializerClass) throws Exception {
+        Constructor<S> constructor = serializerClass.getDeclaredConstructor();
+        boolean accessible = constructor.isAccessible();
+        if (!accessible) {
+            constructor.setAccessible(true);
+        }
+        S serializer = constructor.newInstance();
+        registerSerializerInstance(serializerClass, serializer);
+        if (!accessible) {
+            constructor.setAccessible(false);
+        }
+        return serializer;
+    }
+
+    /**
+     * Registers a global instance of a given Serializer class for use with {@link SerializeWith}.
+     * <p/>
+     * For a class to be serialized by the serializer specified in {@link SerializeWith} the serializer must have a
+     * registered global instance. If the serializer has a 0-arg constructor, a global instance will be created
+     * automatically. This method allows for the registering of serializer instances for serializers without 0-arg
+     * constructors.
+     * <p/>
+     * If the given serializer class has already been registered this method will <strong>replace</strong> the previous
+     * global instance with the given instance.
+     *
+     * @param serializerClass the serializer class to register a global instance of.
+     * @param serializer the instance of the serializer class to use as the global instance.
+     * @param <T> the serializer class type.
+     */
+    private <T extends Serializer> void registerSerializerInstance(@NotNull Class<T> serializerClass, @NotNull T serializer) {
+        serializeWithSerializers.put(serializerClass, serializer);
+    }
+
+    private static final Serializer DEFAULT_SERIALIZER = new DefaultSerializer();
     private static final SerializerSet DEFAULT_SET;
 
     static {
@@ -277,6 +457,6 @@ public final class SerializerSet {
         serializer = new ArraySerializer();
         serializers.put(Array.class, serializer);
 
-        DEFAULT_SET = new SerializerSet(serializers, new HashMap<>(), Serializers.DEFAULT_SERIALIZER);
+        DEFAULT_SET = new SerializerSet(serializers, new HashMap<>(), DEFAULT_SERIALIZER, new HashMap<>());
     }
 }

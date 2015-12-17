@@ -21,7 +21,6 @@ import java.util.*;
  * <p/>
  * For simple and direct serialization to and from a storage medium, refer to {@link pluginbase.config.datasource}.
  *
- * @see Serializers
  * @see SerializerSet
  * @see pluginbase.config.datasource
  */
@@ -47,7 +46,7 @@ public enum SerializableConfig {
     public static Object serialize(@NotNull Object object, @NotNull SerializerSet serializerSet) {
         Class clazz = object.getClass();
         clazz = PrimitivesUtil.switchForWrapper(clazz);
-        return Serializers.getClassSerializer(clazz, serializerSet).serialize(object, serializerSet);
+        return serializerSet.getClassSerializer(clazz).serialize(object, serializerSet);
     }
 
     /**
@@ -88,7 +87,7 @@ public enum SerializableConfig {
     @SuppressWarnings("unchecked")
     public static <T> T deserializeAs(@NotNull Object data, @NotNull Class<T> clazz, @NotNull SerializerSet serializerSet) {
         clazz = PrimitivesUtil.switchForWrapper(clazz);
-        return (T) Serializers.getClassSerializer(clazz, serializerSet).deserialize(data, clazz, serializerSet);
+        return (T) serializerSet.getClassSerializer(clazz).deserialize(data, clazz, serializerSet);
     }
 
     /**
