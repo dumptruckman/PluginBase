@@ -229,7 +229,9 @@ public class SerializableConfigTest extends TestBase {
 
     private void fileSerializeComprehensive(DataSource dataSource) throws Exception {
         dataSource.save(comprehensive);
-        assertEquals(comprehensive, dataSource.load(Comprehensive.class));
+        Comprehensive comp = dataSource.load(Comprehensive.class);
+        assertNotSame(comprehensive, comp);
+        assertEquals(comprehensive, comp);
     }
 
     private void fileSerializeCommonTypes(DataSource dataSource) throws Exception {

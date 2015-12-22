@@ -16,9 +16,11 @@ import java.lang.reflect.Constructor;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Predicate;
 
 /**
  * A defined set of serializers used internally to lookup the appropriate serializer for various object types.
@@ -96,6 +98,8 @@ public final class SerializerSet {
     private final Serializer fallbackSerializer;
     @NotNull
     private final Map<Class<? extends Serializer>, Serializer> serializeWithSerializers;
+    @NotNull
+    private final Map<Predicate<Class<?>>, Class> classReplacements;
 
     /**
      * A builder class used to construct an immutable SerializerSet.
@@ -110,12 +114,15 @@ public final class SerializerSet {
         private Serializer fallbackSerializer;
         @NotNull
         private final Map<Class<? extends Serializer>, Serializer> serializeWithSerializers;
+        @NotNull
+        private final Map<Predicate<Class<?>>, Class> classReplacements;
 
         private Builder(@NotNull SerializerSet setToCopy) {
             serializers.putAll(setToCopy.serializers);
             overrideSerializers.putAll(setToCopy.overrideSerializers);
             fallbackSerializer = setToCopy.fallbackSerializer;
             serializeWithSerializers = new HashMap<>(setToCopy.serializeWithSerializers);
+            classReplacements = new LinkedHashMap<>(setToCopy.classReplacements);
         }
 
         /**
@@ -191,22 +198,73 @@ public final class SerializerSet {
         }
 
         /**
+         * Registers a {@link Predicate} that can be used to check if a class about to be serialized should be treated as the
+         * given replacement class for serialization purposes.
+         * <p/>
+         * A very common example for this is serializing all classes that extend a certain class. This can be done
+         * like so <code>registerClassReplacement(SomeClass.class::isAssignableFrom, SomeClass.class);</code>
+         * <p/>
+         * It is recommended that the overriden {@link Predicate#test(Object)} method be as fast as possible sine it
+         * will potentially be checked very frequently.
+         * <p/>
+         * Predicates will be checked in the order they are registered and the first one that matches will be used.
+         * There are a few default predicates that are registered in the following order:
+         * <ol>
+         *     <li>@FauxEnum annotation present (replaces with FauxEnum.class)</li>
+         *     <li>Instance of Collection (replaces with Collection.class)</li>
+         *     <li>Instance of Map (replaces with Map.class)</li>
+         *     <li>Instance of Enum (replaces with Enum.class)</li>
+         *     <li>An array (replaces with Array.class)</li>
+         * </ol>
+         *
+         * @param checker the Predicate used to check if a given class should be treated like the replacementClass for
+         *                serialization purposes.
+         * @param replacementClass the replacement class to use when the checker returns true.
+         * @return this builder object.
+         */
+        public Builder registerClassReplacement(@NotNull Predicate<Class<?>> checker, @NotNull Class replacementClass) {
+            classReplacements.put(checker, replacementClass);
+            return this;
+        }
+
+        /**
+         * Unregisters all {@link Predicate}s that will cause a replacement with the given replacementClass.
+         * <p/>
+         * This may be useful if the order of checks needs to be altered or one of the default predicates needs to be
+         * replaced.
+         *
+         * @param replacementClass The replacement class to unregister all predicates for.
+         * @return this builder object.
+         */
+        public Builder unregisterClassReplacement(@NotNull Class replacementClass) {
+            Iterator<Entry<Predicate<Class<?>>, Class>> replacementsIterator = classReplacements.entrySet().iterator();
+            while (replacementsIterator.hasNext()) {
+                if (replacementsIterator.next().getValue().equals(replacementClass)) {
+                    replacementsIterator.remove();
+                }
+            }
+            return this;
+        }
+
+        /**
          * Constructs the immutable serializer set defined by this builder's methods.
          *
          * @return the immutable serializer set defined by this builder's methods.
          */
         @NotNull
         public SerializerSet build() {
-            return new SerializerSet(serializers, overrideSerializers, fallbackSerializer, serializeWithSerializers);
+            return new SerializerSet(serializers, overrideSerializers, fallbackSerializer, serializeWithSerializers, classReplacements);
         }
     }
 
     private SerializerSet(@NotNull Map<Class, Serializer> serializers, @NotNull Map<Class, Serializer> overrideSerializers,
-                          @NotNull Serializer fallbackSerializer, @NotNull Map<Class<? extends Serializer>, Serializer> serializeWithSerializers) {
+                          @NotNull Serializer fallbackSerializer, @NotNull Map<Class<? extends Serializer>, Serializer> serializeWithSerializers,
+                          @NotNull Map<Predicate<Class<?>>, Class> classReplacements) {
         this.serializers = Collections.unmodifiableMap(new HashMap<>(serializers));
         this.overrideSerializers = Collections.unmodifiableMap(new HashMap<>(overrideSerializers));
         this.fallbackSerializer = fallbackSerializer;
         this.serializeWithSerializers = new ConcurrentHashMap<>(serializeWithSerializers);
+        this.classReplacements = Collections.unmodifiableMap(new LinkedHashMap<>(classReplacements));
     }
 
     /**
@@ -261,16 +319,11 @@ public final class SerializerSet {
             return serializer;
         }
 
-        if (clazz.isAnnotationPresent(FauxEnum.class)) {
-            serializer = getSerializer(FauxEnum.class);
-        } else if (Collection.class.isAssignableFrom(clazz)) {
-            serializer = getSerializer(Collection.class);
-        } else if (Map.class.isAssignableFrom(clazz)) {
-            serializer = getSerializer(Map.class);
-        } else if (Enum.class.isAssignableFrom(clazz)) {
-            serializer = getSerializer(Enum.class);
-        } else if (clazz.isArray()) {
-            serializer = getSerializer(Array.class);
+        for (Entry<Predicate<Class<?>>, Class> entry : classReplacements.entrySet()) {
+            if (entry.getKey().test(clazz)) {
+                serializer = getSerializer(entry.getValue());
+                break;
+            }
         }
 
         if (serializer != null) {
@@ -457,6 +510,13 @@ public final class SerializerSet {
         serializer = new ArraySerializer();
         serializers.put(Array.class, serializer);
 
-        DEFAULT_SET = new SerializerSet(serializers, new HashMap<>(), DEFAULT_SERIALIZER, new HashMap<>());
+        Map<Predicate<Class<?>>, Class> inheritanceReplacements = new LinkedHashMap<>(3);
+        inheritanceReplacements.put(c -> c.isAnnotationPresent(FauxEnum.class), FauxEnum.class);
+        inheritanceReplacements.put(Collection.class::isAssignableFrom, Collection.class);
+        inheritanceReplacements.put(Map.class::isAssignableFrom, Map.class);
+        inheritanceReplacements.put(Enum.class::isAssignableFrom, Enum.class);
+        inheritanceReplacements.put(Class::isArray, Array.class);
+
+        DEFAULT_SET = new SerializerSet(serializers, new HashMap<>(), DEFAULT_SERIALIZER, new HashMap<>(), inheritanceReplacements);
     }
 }

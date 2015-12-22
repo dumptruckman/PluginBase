@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.function.Predicate;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -160,6 +161,28 @@ public abstract class AbstractDataSource implements DataSource {
          */
         public <S extends Serializer> T registerSerializeWithInstance(@NotNull Class<S> serializerClass, @NotNull S serializer) {
             getSSBuilder().registerSerializeWithInstance(serializerClass, serializer);
+            return self();
+        }
+
+        /**
+         * Refer to the docs for {@link SerializerSet.Builder#registerClassReplacement(Predicate, Class)}.
+         * <br/>
+         * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
+         * to be replaced!
+         */
+        public T registerClassReplacement(@NotNull Predicate<Class<?>> checker, @NotNull Class replacementClass) {
+            getSSBuilder().registerClassReplacement(checker, replacementClass);
+            return self();
+        }
+
+        /**
+         * Refer to the docs for {@link SerializerSet.Builder#unregisterClassReplacement(Class)}.
+         * <br/>
+         * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
+         * to be replaced!
+         */
+        public T unregisterClassReplacement(@NotNull Class replacementClass) {
+            getSSBuilder().unregisterClassReplacement(replacementClass);
             return self();
         }
 
