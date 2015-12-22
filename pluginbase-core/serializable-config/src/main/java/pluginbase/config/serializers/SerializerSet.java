@@ -185,7 +185,7 @@ public final class SerializerSet {
          * @param <T> the serializer class type.
          * @return this builder object.
          */
-        private <T extends Serializer> Builder registerSerializeWithInstance(@NotNull Class<T> serializerClass, @NotNull T serializer) {
+        public <T extends Serializer> Builder registerSerializeWithInstance(@NotNull Class<T> serializerClass, @NotNull T serializer) {
             serializeWithSerializers.put(serializerClass, serializer);
             return this;
         }

@@ -152,6 +152,17 @@ public abstract class AbstractDataSource implements DataSource {
             return self();
         }
 
+        /**
+         * Refer to the docs for {@link SerializerSet.Builder#registerSerializeWithInstance(Class, Serializer)}.
+         * <br/>
+         * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
+         * to be replaced!
+         */
+        public <S extends Serializer> T registerSerializeWithInstance(@NotNull Class<S> serializerClass, @NotNull S serializer) {
+            getSSBuilder().registerSerializeWithInstance(serializerClass, serializer);
+            return self();
+        }
+
         private SerializerSet.Builder getSSBuilder() {
             if (serializerSet == null) {
                 serializerSet = SerializerSet.builder(getDataSourceDefaultSerializerSet());
