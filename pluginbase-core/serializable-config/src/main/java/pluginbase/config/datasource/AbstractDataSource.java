@@ -26,6 +26,7 @@ import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -116,50 +117,50 @@ public abstract class AbstractDataSource implements DataSource {
         }
 
         /**
-         * Refer to the docs for {@link SerializerSet.Builder#addSerializer(Class, Serializer)}.
+         * Refer to the docs for {@link SerializerSet.Builder#addSerializer(Class, Supplier)}.
          * <br/>
          * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
          * to be replaced!
          */
         @NotNull
-        public T addSerializer(@NotNull Class<T> clazz, @NotNull Serializer<T> serializer) {
+        public <S> T addSerializer(@NotNull Class<S> clazz, @NotNull Supplier<Serializer<S>> serializer) {
             alternateSet = null;
             getSSBuilder().addSerializer(clazz, serializer);
             return self();
         }
 
         /**
-         * Refer to the docs for {@link SerializerSet.Builder#setFallbackSerializer(Serializer)}.
+         * Refer to the docs for {@link SerializerSet.Builder#setFallbackSerializer(Supplier)}.
          * <br/>
          * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
          * to be replaced!
          */
-        public T setFallbackSerializer(@NotNull Serializer<Object> fallbackSerializer) {
+        public T setFallbackSerializer(@NotNull Supplier<Serializer<Object>> fallbackSerializer) {
             alternateSet = null;
             getSSBuilder().setFallbackSerializer(fallbackSerializer);
             return self();
         }
 
         /**
-         * Refer to the docs for {@link SerializerSet.Builder#addOverrideSerializer(Class, Serializer)}.
+         * Refer to the docs for {@link SerializerSet.Builder#addOverrideSerializer(Class, Supplier)}.
          * <br/>
          * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
          * to be replaced!
          */
         @NotNull
-        public T addOverrideSerializer(@NotNull Class<T> clazz, @NotNull Serializer<T> serializer) {
+        public <S> T addOverrideSerializer(@NotNull Class<S> clazz, @NotNull Supplier<Serializer<S>> serializer) {
             alternateSet = null;
             getSSBuilder().addOverrideSerializer(clazz, serializer);
             return self();
         }
 
         /**
-         * Refer to the docs for {@link SerializerSet.Builder#registerSerializeWithInstance(Class, Serializer)}.
+         * Refer to the docs for {@link SerializerSet.Builder#registerSerializeWithInstance(Class, Supplier)}.
          * <br/>
          * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
          * to be replaced!
          */
-        public <S extends Serializer> T registerSerializeWithInstance(@NotNull Class<S> serializerClass, @NotNull S serializer) {
+        public <S extends Serializer> T registerSerializeWithInstance(@NotNull Class<S> serializerClass, @NotNull Supplier<S> serializer) {
             getSSBuilder().registerSerializeWithInstance(serializerClass, serializer);
             return self();
         }

@@ -17,10 +17,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * A defined set of serializers used internally to lookup the appropriate serializer for various object types.
@@ -91,13 +93,13 @@ public final class SerializerSet {
     }
 
     @NotNull
-    private final Map<Class, Serializer> serializers;
+    private final Map<Class, Supplier<Serializer>> serializers;
     @NotNull
-    private final Map<Class, Serializer> overrideSerializers;
+    private final Map<Class, Supplier<Serializer>> overrideSerializers;
     @NotNull
-    private final Serializer fallbackSerializer;
+    private final Supplier<Serializer> fallbackSerializer;
     @NotNull
-    private final Map<Class<? extends Serializer>, Serializer> serializeWithSerializers;
+    private final Map<Class<? extends Serializer>, Supplier<Serializer>> serializeWithSerializers;
     @NotNull
     private final Map<Predicate<Class<?>>, Class> classReplacements;
 
@@ -107,13 +109,13 @@ public final class SerializerSet {
     public static class Builder {
 
         @NotNull
-        private final Map<Class, Serializer> serializers = new HashMap<>();
+        private final Map<Class, Supplier<Serializer>> serializers = new HashMap<>();
         @NotNull
-        private final Map<Class, Serializer> overrideSerializers = new HashMap<>();
+        private final Map<Class, Supplier<Serializer>> overrideSerializers = new HashMap<>();
         @NotNull
-        private Serializer fallbackSerializer;
+        private Supplier<Serializer> fallbackSerializer;
         @NotNull
-        private final Map<Class<? extends Serializer>, Serializer> serializeWithSerializers;
+        private final Map<Class<? extends Serializer>, Supplier<Serializer>> serializeWithSerializers;
         @NotNull
         private final Map<Predicate<Class<?>>, Class> classReplacements;
 
@@ -128,17 +130,17 @@ public final class SerializerSet {
         /**
          * Specifies a standard serializer to be included in the SerializerSet built by the Builder object.
          * <p/>
-         * This serializers will be used after any override serializers specified by {@link #addOverrideSerializer(Class, Serializer)}
+         * This serializers will be used after any override serializers specified by {@link #addOverrideSerializer(Class, Supplier)}
          * and any serializer specified by {@link pluginbase.config.annotation.SerializeWith}.
          *
          * @param clazz the class that the given serializer is responsible for serializing/deserializing.
-         * @param serializer the instance of the serializer to be used for the given class type.
+         * @param serializer A supplier that provides the instance of the serializer to be used for the given class type.
          * @param <T> the class type that the give serializer is for.
          * @return this builder object.
          */
         @NotNull
-        public <T> Builder addSerializer(@NotNull Class<T> clazz, @NotNull Serializer<T> serializer) {
-            serializers.put(clazz, serializer);
+        public <T> Builder addSerializer(@NotNull Class<T> clazz, @NotNull Supplier<Serializer<T>> serializer) {
+            serializers.put(clazz, serializer::get);
             return this;
         }
 
@@ -150,13 +152,13 @@ public final class SerializerSet {
          * illustrated in {@link #getClassSerializer(Class)}.
          *
          * @param clazz the class that the given serializer is responsible for serializing/deserializing.
-         * @param serializer the instance of the serializer to be used for the given class type.
+         * @param serializer A supplier that provides the instance of the serializer to be used for the given class type.
          * @param <T> the class type that the give serializer is for.
          * @return this builder object.
          */
         @NotNull
-        public <T> Builder addOverrideSerializer(@NotNull Class<T> clazz, @NotNull Serializer<T> serializer) {
-            overrideSerializers.put(clazz, serializer);
+        public <T> Builder addOverrideSerializer(@NotNull Class<T> clazz, @NotNull Supplier<Serializer<T>> serializer) {
+            overrideSerializers.put(clazz, serializer::get);
             return this;
         }
 
@@ -168,11 +170,12 @@ public final class SerializerSet {
          * The fallback serializer will handle all serialization that is not handled by a more specific serializer.
          * It should be capable of serializing any kind of object. It should also be thread safe.
          *
-         * @param fallbackSerializer the new fallback serializer to use in the SerializerSet built by this builder object.
+         * @param fallbackSerializer A supplier that provides the new fallback serializer to use in the SerializerSet
+         *                           built by this builder object.
          * @return this builder object.
          */
-        public Builder setFallbackSerializer(@NotNull Serializer<Object> fallbackSerializer) {
-            this.fallbackSerializer = fallbackSerializer;
+        public Builder setFallbackSerializer(@NotNull Supplier<Serializer<Object>> fallbackSerializer) {
+            this.fallbackSerializer = fallbackSerializer::get;
             return this;
         }
 
@@ -188,12 +191,12 @@ public final class SerializerSet {
          * instance with the given instance.
          *
          * @param serializerClass the serializer class to register an instance of.
-         * @param serializer the instance of the serializer class to use.
+         * @param serializer A supplier that provides the instance of the serializer class to use.
          * @param <T> the serializer class type.
          * @return this builder object.
          */
-        public <T extends Serializer> Builder registerSerializeWithInstance(@NotNull Class<T> serializerClass, @NotNull T serializer) {
-            serializeWithSerializers.put(serializerClass, serializer);
+        public <T extends Serializer> Builder registerSerializeWithInstance(@NotNull Class<T> serializerClass, @NotNull Supplier<T> serializer) {
+            serializeWithSerializers.put(serializerClass, serializer::get);
             return this;
         }
 
@@ -257,8 +260,8 @@ public final class SerializerSet {
         }
     }
 
-    private SerializerSet(@NotNull Map<Class, Serializer> serializers, @NotNull Map<Class, Serializer> overrideSerializers,
-                          @NotNull Serializer fallbackSerializer, @NotNull Map<Class<? extends Serializer>, Serializer> serializeWithSerializers,
+    private SerializerSet(@NotNull Map<Class, Supplier<Serializer>> serializers, @NotNull Map<Class, Supplier<Serializer>> overrideSerializers,
+                          @NotNull Supplier<Serializer> fallbackSerializer, @NotNull Map<Class<? extends Serializer>, Supplier<Serializer>> serializeWithSerializers,
                           @NotNull Map<Predicate<Class<?>>, Class> classReplacements) {
         this.serializers = Collections.unmodifiableMap(new HashMap<>(serializers));
         this.overrideSerializers = Collections.unmodifiableMap(new HashMap<>(overrideSerializers));
@@ -360,7 +363,7 @@ public final class SerializerSet {
     @SuppressWarnings("unchecked")
     public <S extends Serializer> S getSerializerInstance(@NotNull Class<S> serializerClass) throws IllegalArgumentException {
         if (serializeWithSerializers.containsKey(serializerClass)) {
-            return (S) serializeWithSerializers.get(serializerClass);
+            return (S) serializeWithSerializers.get(serializerClass).get();
         }
         try {
             S serializer = createInstance(serializerClass);
@@ -384,7 +387,8 @@ public final class SerializerSet {
     @Nullable
     @SuppressWarnings("unchecked")
     private <T> Serializer<T> getSerializer(Class<T> serializableClass) {
-        return serializers.get(serializableClass);
+        Supplier<Serializer> serializer = serializers.get(serializableClass);
+        return serializer != null ? serializer.get() : null;
     }
 
     /**
@@ -400,12 +404,13 @@ public final class SerializerSet {
     @Nullable
     @SuppressWarnings("unchecked")
     private <T> Serializer<T> getOverrideSerializer(Class<T> serializableClass) {
-        return overrideSerializers.get(serializableClass);
+        Supplier<Serializer> serializer = overrideSerializers.get(serializableClass);
+        return serializer != null ? serializer.get() : null;
     }
 
     @NotNull
     private Serializer getFallbackSerializer() {
-        return fallbackSerializer;
+        return fallbackSerializer.get();
     }
 
     /**
@@ -451,64 +456,64 @@ public final class SerializerSet {
      * @param <T> the serializer class type.
      */
     private <T extends Serializer> void registerSerializerInstance(@NotNull Class<T> serializerClass, @NotNull T serializer) {
-        serializeWithSerializers.put(serializerClass, serializer);
+        serializeWithSerializers.put(serializerClass, () -> serializer);
     }
 
     private static final Serializer DEFAULT_SERIALIZER = new DefaultSerializer();
     private static final SerializerSet DEFAULT_SET;
 
     static {
-        Map<Class, Serializer> serializers = new HashMap<>();
+        Map<Class, Supplier<Serializer>> serializers = new HashMap<>();
 
-        Serializer serializer;
+        // serializer;
 
-        serializer = new NumberSerializer();
-        serializers.put(Integer.class, serializer);
-        serializers.put(Long.class, serializer);
-        serializers.put(Double.class, serializer);
-        serializers.put(Float.class, serializer);
-        serializers.put(Byte.class, serializer);
-        serializers.put(Short.class, serializer);
+        final Serializer numberSerializer = new NumberSerializer();
+        serializers.put(Integer.class, () -> numberSerializer);
+        serializers.put(Long.class, () -> numberSerializer);
+        serializers.put(Double.class, () -> numberSerializer);
+        serializers.put(Float.class, () -> numberSerializer);
+        serializers.put(Byte.class, () -> numberSerializer);
+        serializers.put(Short.class, () -> numberSerializer);
 
-        serializer = new BigNumberSerializer();
-        serializers.put(BigInteger.class, serializer);
-        serializers.put(BigDecimal.class, serializer);
+        final Serializer bigNumberSerializer = new BigNumberSerializer();
+        serializers.put(BigInteger.class, () -> bigNumberSerializer);
+        serializers.put(BigDecimal.class, () -> bigNumberSerializer);
 
-        serializer = new AtomicIntegerSerializer();
-        serializers.put(AtomicInteger.class, serializer);
+        final Serializer atomicIntegerSerializer = new AtomicIntegerSerializer();
+        serializers.put(AtomicInteger.class, () -> atomicIntegerSerializer);
 
-        serializer = new AtomicLongSerializer();
-        serializers.put(AtomicLong.class, serializer);
+        final Serializer atomicLongSerializer = new AtomicLongSerializer();
+        serializers.put(AtomicLong.class, () -> atomicLongSerializer);
 
-        serializer = new BooleanSerializer();
-        serializers.put(Boolean.class, serializer);
+        final Serializer booleanSerializer = new BooleanSerializer();
+        serializers.put(Boolean.class, () -> booleanSerializer);
 
-        serializer = new CharacterSerializer();
-        serializers.put(Character.class, serializer);
+        final Serializer characterSerializer = new CharacterSerializer();
+        serializers.put(Character.class, () -> characterSerializer);
 
-        serializer = new StringSerializer();
-        serializers.put(String.class, serializer);
+        final Serializer stringSerializer = new StringSerializer();
+        serializers.put(String.class, () -> stringSerializer);
 
-        serializer = new EnumSerializer();
-        serializers.put(Enum.class, serializer);
+        final Serializer enumSerializer = new EnumSerializer();
+        serializers.put(Enum.class, () -> enumSerializer);
 
-        serializer = new UUIDSerializer();
-        serializers.put(UUID.class, serializer);
+        final Serializer uuidSerializer = new UUIDSerializer();
+        serializers.put(UUID.class, () -> uuidSerializer);
 
-        serializer = new FauxEnumSerializer();
-        serializers.put(FauxEnum.class, serializer);
+        final Serializer fauxEnumSerializer = new FauxEnumSerializer();
+        serializers.put(FauxEnum.class, () -> fauxEnumSerializer);
 
-        serializer = new CollectionSerializer();
-        serializers.put(Collection.class, serializer);
+        final Serializer collectionSerializer = new CollectionSerializer();
+        serializers.put(Collection.class, () -> collectionSerializer);
 
-        serializer = new MapSerializer();
-        serializers.put(Map.class, serializer);
+        final Serializer mapSerializer = new MapSerializer();
+        serializers.put(Map.class, () -> mapSerializer);
 
-        serializer = new LocaleSerializer();
-        serializers.put(Locale.class, serializer);
+        final Serializer localeSerializer = new LocaleSerializer();
+        serializers.put(Locale.class, () -> localeSerializer);
 
-        serializer = new ArraySerializer();
-        serializers.put(Array.class, serializer);
+        final Serializer arraySerializer = new ArraySerializer();
+        serializers.put(Array.class, () -> arraySerializer);
 
         Map<Predicate<Class<?>>, Class> inheritanceReplacements = new LinkedHashMap<>(3);
         inheritanceReplacements.put(c -> c.isAnnotationPresent(FauxEnum.class), FauxEnum.class);
@@ -517,6 +522,6 @@ public final class SerializerSet {
         inheritanceReplacements.put(Enum.class::isAssignableFrom, Enum.class);
         inheritanceReplacements.put(Class::isArray, Array.class);
 
-        DEFAULT_SET = new SerializerSet(serializers, new HashMap<>(), DEFAULT_SERIALIZER, new HashMap<>(), inheritanceReplacements);
+        DEFAULT_SET = new SerializerSet(serializers, new HashMap<>(), () -> DEFAULT_SERIALIZER, new HashMap<>(), inheritanceReplacements);
     }
 }

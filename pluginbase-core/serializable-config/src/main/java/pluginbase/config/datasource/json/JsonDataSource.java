@@ -12,9 +12,11 @@ import pluginbase.config.serializers.SerializerSet;
 
 public class JsonDataSource extends AbstractDataSource {
 
+    private static final LongAsStringSerializer LONG_AS_STRING_SERIALIZER = new LongAsStringSerializer();
+    private static final DoubleAsStringSerializer DOUBLE_AS_STRING_SERIALIZER  = new DoubleAsStringSerializer();
     private static final SerializerSet DEFAULT_SERIALIZER_SET = SerializerSet.builder()
-            .addSerializer(Long.class, new LongAsStringSerializer())
-            .addSerializer(Double.class, new DoubleAsStringSerializer())
+            .addSerializer(Long.class, () -> LONG_AS_STRING_SERIALIZER)
+            .addSerializer(Double.class, () -> DOUBLE_AS_STRING_SERIALIZER)
             .build();
 
     @NotNull

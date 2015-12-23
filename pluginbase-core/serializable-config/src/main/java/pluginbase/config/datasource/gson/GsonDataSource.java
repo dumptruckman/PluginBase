@@ -9,7 +9,8 @@ import pluginbase.config.serializers.SerializerSet;
 
 public class GsonDataSource extends AbstractDataSource {
 
-    private static final SerializerSet DEFAULT_SERIALIZER_SET = SerializerSet.builder().addSerializer(Long.class, new LongAsStringSerializer()).build();
+    private static final LongAsStringSerializer LONG_AS_STRING_SERIALIZER = new LongAsStringSerializer();
+    private static final SerializerSet DEFAULT_SERIALIZER_SET = SerializerSet.builder().addSerializer(Long.class, () -> LONG_AS_STRING_SERIALIZER).build();
 
     /**
      * Returns the default serializer set used for a Gson data source.
