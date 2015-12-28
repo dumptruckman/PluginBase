@@ -36,7 +36,7 @@ public enum PrimitivesUtil {
      * @return the primitive wrapper class for a primitive class input or the input argument if not a primitive class.
      */
     @NotNull
-    public static Class switchForWrapper(@NotNull Class clazz) {
+    public static <T> Class<T> switchForWrapper(@NotNull Class<T> clazz) {
         if (PRIMITIVE_WRAPPER_MAP.containsKey(clazz)) {
             clazz = PRIMITIVE_WRAPPER_MAP.get(clazz);
         }

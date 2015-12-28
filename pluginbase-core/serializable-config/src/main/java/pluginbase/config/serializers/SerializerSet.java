@@ -297,10 +297,10 @@ public final class SerializerSet {
      * @return the most appropriate serializer for the given class.
      */
     @NotNull
-    public Serializer getClassSerializer(@NotNull Class<?> clazz) {
+    public <T> Serializer<T> getClassSerializer(@NotNull Class<T> clazz) {
         clazz = PrimitivesUtil.switchForWrapper(clazz);
 
-        Serializer serializer = getOverrideSerializer(clazz);
+        Serializer<T> serializer = getOverrideSerializer(clazz);
         if (serializer != null) {
             return serializer;
         }
