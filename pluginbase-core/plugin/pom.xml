@@ -141,6 +141,7 @@
                             <artifactSet>
                                 <includes>
                                     <include>com.dumptruckman.minecraft.pluginbase:Logging</include>
+                                    <include>com.dumptruckman.minecraft.pluginbase:Debug-Session</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Utilities</include>
                                     <include>commons-io:commons-io</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Messaging</include>
