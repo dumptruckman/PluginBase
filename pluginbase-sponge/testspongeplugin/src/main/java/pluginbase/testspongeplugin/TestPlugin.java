@@ -1,10 +1,10 @@
 package pluginbase.testspongeplugin;
 
-import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStoppingEvent;
@@ -43,8 +43,8 @@ public class TestPlugin {
     @Inject
     private Game game;
 
-    @Subscribe
-    private void preInitialization(GamePreInitializationEvent event) {
+    @Listener
+    public void preInitialization(GamePreInitializationEvent event) {
         pluginAgent = SpongePluginAgent.getPluginAgent(game, TestPlugin.class, this, pluginContainer, "pb", dataFolder);
         pluginAgent.setDefaultSettingsCallable(new Callable<Settings>() {
             @Override
@@ -56,8 +56,8 @@ public class TestPlugin {
         pluginAgent.registerMessages(Language.class);
     }
 
-    @Subscribe
-    private void initialization(GameInitializationEvent event) {
+    @Listener
+    public void initialization(GameInitializationEvent event) {
         pluginAgent.registerCommand(TestCommand.class);
         pluginAgent.registerCommand(Test2Command.class);
         pluginAgent.registerCommand(TealPeaPieCommand.class);
@@ -71,6 +71,7 @@ public class TestPlugin {
         pluginAgent.loadPluginBase();
 
         pluginAgent.enablePluginBase();
+        System.out.println("Hello!");
         //getCommandHandler().registerCommand(new MockQueuedCommand(this));
         try {
             jdbcAgent = SpringJdbcAgent.createAgent(pluginAgent.loadDatabaseSettings(new SpringDatabaseSettings()), dataFolder, getClass().getClassLoader());
@@ -103,7 +104,7 @@ public class TestPlugin {
         return (TestConfig) pluginAgent.getPluginBase().getSettings();
     }
 
-    @Subscribe
+    @Listener
     private void serverStopping(GameStoppingEvent event) {
         pluginAgent.disablePluginBase();
     }
