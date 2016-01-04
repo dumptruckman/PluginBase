@@ -6,6 +6,7 @@ import ninja.leaping.configurate.SimpleConfigurationNode;
 import ninja.leaping.configurate.loader.AbstractConfigurationLoader;
 import ninja.leaping.configurate.loader.CommentHandler;
 import ninja.leaping.configurate.loader.CommentHandlers;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -68,7 +69,7 @@ class YamlConfigLoader extends AbstractConfigurationLoader<ConfigurationNode> {
 
         @Override
         public YamlConfigLoader build() {
-            return new YamlConfigLoader(source, sink, options, preserveHeader, commentsEnabled);
+            return new YamlConfigLoader(this, options, commentsEnabled);
         }
     }
 
@@ -76,10 +77,9 @@ class YamlConfigLoader extends AbstractConfigurationLoader<ConfigurationNode> {
         return new Builder();
     }
 
-    private YamlConfigLoader(Callable<BufferedReader> source, Callable<BufferedWriter> sink, final DumperOptions options, boolean
-            preservesHeader, boolean doComments) {
-        super(source, sink, new CommentHandler[] {CommentHandlers.HASH}, preservesHeader);
-        this.commentsEnabled = false; // TODO fix broken comment instrumenter D:
+    private YamlConfigLoader(@NotNull Builder builder, final DumperOptions options, boolean doComments) {
+        super(builder, new CommentHandler[] {CommentHandlers.HASH});
+        this.commentsEnabled = doComments; // TODO fix broken comment instrumenter D:
         this.options = options;
         representer = new Representer();
         representer.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);

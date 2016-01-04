@@ -34,28 +34,28 @@
         <dependency>
             <groupId>ninja.leaping.configurate</groupId>
             <artifactId>configurate-hocon</artifactId>
-            <version>3.0</version>
+            <version>3.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ninja.leaping.configurate</groupId>
             <artifactId>configurate-json</artifactId>
-            <version>3.0</version>
+            <version>3.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ninja.leaping.configurate</groupId>
             <artifactId>configurate-gson</artifactId>
-            <version>3.0</version>
+            <version>3.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ninja.leaping.configurate</groupId>
             <artifactId>configurate-yaml</artifactId>
-            <version>3.0</version>
+            <version>3.1</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
