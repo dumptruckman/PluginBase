@@ -1,10 +1,9 @@
 package pluginbase.sponge.minecraft;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.google.common.base.Optional;
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.api.data.manipulators.entities.VelocityData;
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import pluginbase.logging.Logging;
@@ -12,6 +11,8 @@ import pluginbase.minecraft.Entity;
 import pluginbase.minecraft.location.EntityCoordinates;
 import pluginbase.minecraft.location.Locations;
 import pluginbase.minecraft.location.Vector;
+
+import java.util.Optional;
 
 // TODO make this class safer... Location stuff is wacky because of how Extents work
 public class SpongePlayer extends AbstractSpongeCommandSource<Player> implements Entity {
@@ -63,9 +64,9 @@ public class SpongePlayer extends AbstractSpongeCommandSource<Player> implements
      */
     @Override
     public Vector getVelocity() {
-        Optional<VelocityData> velocityData = getSender().getData(VelocityData.class);
+        Optional<Vector3d> velocityData = getSender().get(Keys.VELOCITY);
         if (velocityData.isPresent()) {
-            return SpongeTools.convertVector(velocityData.get().getVelocity());
+            return SpongeTools.convertVector(velocityData.get());
         }
         return null; // TODO should we just return zero?
     }
@@ -75,9 +76,6 @@ public class SpongePlayer extends AbstractSpongeCommandSource<Player> implements
      */
     @Override
     public void setVelocity(final Vector v) {
-        Optional<VelocityData> velocityData = getSender().getData(VelocityData.class);
-        if (velocityData.isPresent()) {
-            velocityData.get().setVelocity(SpongeTools.convertVector(v));
-        }
+        getSender().offer(Keys.VELOCITY, SpongeTools.convertVector(v));
     }
 }

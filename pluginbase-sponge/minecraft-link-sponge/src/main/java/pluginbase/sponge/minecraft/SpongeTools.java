@@ -4,8 +4,8 @@ import com.flowpowered.math.vector.Vector3d;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.Server;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.util.command.CommandSource;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.minecraft.location.Vector;
 

@@ -1,27 +1,27 @@
 package pluginbase.sponge;
 
-import com.google.common.base.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.living.player.Player;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.plugin.ServerInterface;
 import pluginbase.sponge.minecraft.SpongeTools;
 
 import java.io.File;
+import java.util.Optional;
 
 class SpongeServerInterface implements ServerInterface {
 
     @NotNull
     @Override
     public String getName() {
-        return SpongeTools.getGame().getPlatform().name();
+        return SpongeTools.getGame().getPlatform().getImplementation().getName();
     }
 
     @NotNull
     @Override
     public String getVersion() {
-        return SpongeTools.getGame().getApiVersion();
+        return SpongeTools.getGame().getPlatform().getImplementation().getVersion();
     }
 
     @NotNull

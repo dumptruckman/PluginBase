@@ -5,9 +5,9 @@ package pluginbase.sponge.messaging;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.util.command.CommandSource;
-import org.spongepowered.api.util.command.source.ConsoleSource;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.source.ConsoleSource;
+import org.spongepowered.api.text.Text;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.ChatColor;
 import pluginbase.messages.Message;
@@ -69,7 +69,7 @@ public class SpongeMessager extends Messager {
 
     public void message(@NotNull final CommandSource player, @NotNull final List<String> messages) {
         for (String s : messages) {
-            player.sendMessage(Texts.of(s));
+            player.sendMessage(Text.of(s));
         }
     }
 
@@ -99,7 +99,7 @@ public class SpongeMessager extends Messager {
 
     protected void sendMessages(@NotNull final CommandSource player, @NotNull final String[] messages) {
         for (String message : messages) {
-            player.sendMessage(Texts.of(message));
+            player.sendMessage(Text.of(message));
         }
     }
 

@@ -1,7 +1,7 @@
 package pluginbase.sponge.minecraft;
 
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.api.util.command.CommandSource;
+import org.spongepowered.api.command.CommandSource;
 import pluginbase.messages.ChatColor;
 
 public class SpongeCommandSource extends AbstractSpongeCommandSource<CommandSource> {

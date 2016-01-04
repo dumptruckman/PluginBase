@@ -1,15 +1,15 @@
 package pluginbase.testspongeplugin;
 
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.api.Game;
-import org.spongepowered.api.event.Subscribe;
-import org.spongepowered.api.event.state.InitializationEvent;
-import org.spongepowered.api.event.state.PreInitializationEvent;
-import org.spongepowered.api.event.state.ServerStoppingEvent;
+import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStoppingEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.service.config.ConfigDir;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.jdbc.SpringDatabaseSettings;
 import pluginbase.jdbc.SpringJdbcAgent;
@@ -44,7 +44,7 @@ public class TestPlugin {
     private Game game;
 
     @Subscribe
-    private void preInitialization(PreInitializationEvent event) {
+    private void preInitialization(GamePreInitializationEvent event) {
         pluginAgent = SpongePluginAgent.getPluginAgent(game, TestPlugin.class, this, pluginContainer, "pb", dataFolder);
         pluginAgent.setDefaultSettingsCallable(new Callable<Settings>() {
             @Override
@@ -57,7 +57,7 @@ public class TestPlugin {
     }
 
     @Subscribe
-    private void initialization(InitializationEvent event) {
+    private void initialization(GameInitializationEvent event) {
         pluginAgent.registerCommand(TestCommand.class);
         pluginAgent.registerCommand(Test2Command.class);
         pluginAgent.registerCommand(TealPeaPieCommand.class);
@@ -104,7 +104,7 @@ public class TestPlugin {
     }
 
     @Subscribe
-    private void serverStopping(ServerStoppingEvent event) {
+    private void serverStopping(GameStoppingEvent event) {
         pluginAgent.disablePluginBase();
     }
 

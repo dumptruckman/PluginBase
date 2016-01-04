@@ -1,8 +1,8 @@
 package pluginbase.sponge.minecraft;
 
 import org.jetbrains.annotations.NotNull;
-import org.spongepowered.api.text.Texts;
-import org.spongepowered.api.util.command.CommandSource;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.text.Text;
 import pluginbase.minecraft.BasePlayer;
 
 /**
@@ -45,6 +45,6 @@ public class AbstractSpongeCommandSource<S extends CommandSource> extends BasePl
 
     @Override
     public void sendMessage(@NotNull String message) {
-        source.sendMessage(Texts.of(message));
+        source.sendMessage(Text.of(message));
     }
 }
