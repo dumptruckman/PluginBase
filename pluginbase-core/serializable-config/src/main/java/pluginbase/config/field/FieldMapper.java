@@ -26,7 +26,17 @@ public class FieldMapper {
     private static <T> T mapFields(FieldMap sourceMap, T source, T destination) {
         for (Field field : sourceMap) {
             if (field.hasChildFields()) {
-                mapFields(field, field.getValue(source), field.getValue(destination));
+                Object sourceChild = field.getValue(source);
+                Object destinationChild = field.getValue(destination);
+                if (destinationChild == null) {
+                    try {
+                        field.setValue(destination, sourceChild);
+                    } catch (PropertyVetoException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    mapFields(field, sourceChild, destinationChild);
+                }
             } else {
                 try {
                     field.setValue(destination, field.getValue(source));

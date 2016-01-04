@@ -11,6 +11,7 @@ import pluginbase.config.examples.Anum;
 import pluginbase.config.examples.Child;
 import pluginbase.config.examples.Comprehensive;
 import pluginbase.config.examples.FakeEnum;
+import pluginbase.config.examples.NullContainer;
 import pluginbase.config.examples.Parent;
 import pluginbase.config.examples.Unknown;
 import org.junit.Test;
@@ -260,5 +261,14 @@ public class SerializableConfigTest extends TestBase {
             System.out.println(list.get(i).getClass() + " vs " + newList.get(i).getClass());
             assertEquals(list.get(i), newList.get(i));
         }
+    }
+
+    @Test
+    public void testMapNullContainer() throws Exception {
+        NullContainer expected = new NullContainer();
+        expected.parent = Comprehensive.PARENT;
+        NullContainer actual = new NullContainer();
+        FieldMapper.mapFields(expected, actual);
+        assertEquals(expected, actual);
     }
 }
