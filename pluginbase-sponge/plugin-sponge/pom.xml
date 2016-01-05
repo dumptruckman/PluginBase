@@ -120,6 +120,12 @@
                                     <include>org.mcstats:metrics</include>
                                 </includes>
                             </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.apache</pattern>
+                                    <shadedPattern>pluginbase.apache</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                     <execution>
@@ -134,20 +140,6 @@
                                 <includes>
                                     <include>org.springframework:spring-jdbc</include>
                                     <include>org.springframework:spring-core</include>
-                                </includes>
-                            </artifactSet>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>commons-logging</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>commons-logging:commons-logging</include>
                                 </includes>
                             </artifactSet>
                         </configuration>

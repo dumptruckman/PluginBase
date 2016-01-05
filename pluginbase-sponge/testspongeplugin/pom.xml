@@ -69,7 +69,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>1.5</version>
+                <version>2.4.2</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -83,8 +83,15 @@
                                     <include>com.dumptruckman.minecraft.pluginbase:TestPlugin</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:JDBC-Spring</include>
                                     <include>com.h2database:h2</include>
+                                    <include>commons-logging:commons-logging</include>
                                 </includes>
                             </artifactSet>
+                            <relocations>
+                                <relocation>
+                                    <pattern>org.apache</pattern>
+                                    <shadedPattern>pluginbase.apache</shadedPattern>
+                                </relocation>
+                            </relocations>
                         </configuration>
                     </execution>
                 </executions>
