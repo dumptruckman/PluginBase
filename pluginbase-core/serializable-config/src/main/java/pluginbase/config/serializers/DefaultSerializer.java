@@ -74,7 +74,18 @@ class DefaultSerializer implements Serializer<Object> {
         }
         Map data = (Map) serialized;
         Object typeInstance;
-        if (Modifier.isFinal(wantedType.getModifiers())) {
+        if (wantedType.isEnum()) {
+            Object name = data.get("name");
+            if (name != null) {
+                try {
+                    typeInstance = Enum.valueOf(wantedType, name.toString());
+                } catch (IllegalArgumentException e) {
+                    typeInstance = Enum.valueOf(wantedType, name.toString().toUpperCase());;
+                }
+            } else {
+                throw new IllegalArgumentException("The serialized enum does not contain a name which is required for deserialization");
+            }
+        } else if (Modifier.isFinal(wantedType.getModifiers())) {
             typeInstance = InstanceUtil.createInstance(wantedType);
         } else {
             Class clazz = SerializableConfig.getClassFromSerializedData(data);
