@@ -23,6 +23,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.function.Predicate;
@@ -263,7 +264,11 @@ public abstract class AbstractDataSource implements DataSource {
     public Object load() throws SendablePluginBaseException {
         try {
             ConfigurationNode node = getLoader().load();
-            return SerializableConfig.deserialize(node.getValue(), serializerSet);
+            Object value = node.getValue();
+            if (value == null) {
+                return null;
+            }
+            return SerializableConfig.deserialize(value, serializerSet);
         } catch (IOException e) {
             throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
         }
@@ -275,7 +280,11 @@ public abstract class AbstractDataSource implements DataSource {
     public <ObjectType> ObjectType load(Class<ObjectType> wantedType) throws SendablePluginBaseException {
         try {
             ConfigurationNode node = getLoader().load();
-            return SerializableConfig.deserializeAs(node.getValue(), wantedType, serializerSet);
+            Object value = node.getValue();
+            if (value == null) {
+                return null;
+            }
+            return SerializableConfig.deserializeAs(value, wantedType, serializerSet);
         } catch (IOException e) {
             throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
         }
