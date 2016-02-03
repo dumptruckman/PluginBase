@@ -102,43 +102,7 @@ class DefaultSerializer implements Serializer<Object> {
         return deserializeToObject(data, typeInstance, serializerSet);
     }
 
-    public Object deserializeToObject(@NotNull Map data, @NotNull Object object, @NotNull SerializerSet serializerSet) {
-        FieldMap fieldMap = FieldMapper.getFieldMap(object.getClass());
-        for (Object key : data.keySet()) {
-            if (key.equals(SerializableConfig.SERIALIZED_TYPE_KEY)) {
-                continue;
-            }
-            Field field = fieldMap.getField(key.toString());
-            if (field != null) {
-                Object fieldValue = field.getValue(object);
-                Object serializedFieldData = data.get(key);
-                if (serializedFieldData == null) {
-                    fieldValue = null;
-                } else {
-                    Class asClass = fieldValue != null ? fieldValue.getClass() : field.getType();
-                    if (Collection.class.isAssignableFrom(field.getType()) && serializedFieldData instanceof Collection) {
-                        fieldValue = deserializeCollection(field, (Collection<?>) serializedFieldData, asClass, serializerSet);
-                    } else if (Map.class.isAssignableFrom(field.getType()) && serializedFieldData instanceof Map) {
-                        fieldValue = deserializeMap(field, (Map<?, ?>) serializedFieldData, asClass, serializerSet);
-                    } else if (fieldValue != null && serializedFieldData instanceof Map) {
-                        fieldValue = deserializeFieldAs(field, serializedFieldData, fieldValue.getClass(), serializerSet);
-                    } else {
-                        fieldValue = deserializeFieldAs(field, serializedFieldData, field.getType(), serializerSet);
-                    }
-                }
-                try {
-                    field.forceSet(object, fieldValue);
-                } catch (PropertyVetoException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                // TODO fail silently or no?
-            }
-        }
-        return object;
-    }
-
-    protected Collection<?> deserializeCollection(@NotNull Field field, @NotNull Collection<?> data, @NotNull Class asClass, @NotNull SerializerSet serializerSet) {
+    protected static Collection<?> deserializeCollection(@NotNull Field field, @NotNull Collection<?> data, @NotNull Class asClass, @NotNull SerializerSet serializerSet) {
         Collection collection = CollectionSerializer.createCollection(asClass, data.size());
         for (Object object : data) {
             Class collectionType = field.getCollectionType();
@@ -151,7 +115,7 @@ class DefaultSerializer implements Serializer<Object> {
         return collection;
     }
 
-    protected Map<?, ?> deserializeMap(@NotNull Field field, @NotNull Map<?, ?> data, @NotNull Class asClass, @NotNull SerializerSet serializerSet) {
+    protected static Map<?, ?> deserializeMap(@NotNull Field field, @NotNull Map<?, ?> data, @NotNull Class asClass, @NotNull SerializerSet serializerSet) {
         Map map = MapSerializer.createMap(asClass, data.size());
         for (Map.Entry entry : data.entrySet()) {
             Class mapType = field.getMapType();
@@ -164,7 +128,7 @@ class DefaultSerializer implements Serializer<Object> {
         return map;
     }
 
-    protected Object deserializeFieldAs(@NotNull Field field, @NotNull Object data, @NotNull Class asClass, @NotNull SerializerSet serializerSet) {
+    protected static Object deserializeFieldAs(@NotNull Field field, @NotNull Object data, @NotNull Class asClass, @NotNull SerializerSet serializerSet) {
         try {
             return field.getSerializer(serializerSet).deserialize(data, asClass, serializerSet);
         } catch (Exception e) {
