@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -408,8 +407,13 @@ public final class SerializerSet {
         return serializer != null ? serializer.get() : null;
     }
 
+    /**
+     * Retrieves the fallback serializer, which is used when no other appropriate serializer exists.
+     *
+     * @return the fallback serializer for this SerializerSet.
+     */
     @NotNull
-    private Serializer getFallbackSerializer() {
+    public Serializer getFallbackSerializer() {
         return fallbackSerializer.get();
     }
 
