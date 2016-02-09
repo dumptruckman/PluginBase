@@ -2,6 +2,7 @@ package pluginbase.config.datasource.yaml;
 
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.DumperOptions;
 import pluginbase.config.datasource.AbstractDataSource;
 import pluginbase.config.serializers.SerializerSet;
@@ -16,6 +17,7 @@ public class YamlDataSource extends AbstractDataSource {
     public static class Builder extends AbstractDataSource.Builder<Builder> {
 
         private final YamlConfigLoader.Builder builder = YamlConfigLoader.builder();
+        private final YamlConfigLoader.Builder defaultsBuilder = YamlConfigLoader.builder();
 
         protected Builder() { }
 
@@ -58,11 +60,13 @@ public class YamlDataSource extends AbstractDataSource {
         @NotNull
         @Override
         public YamlDataSource build() {
-            return new YamlDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet(), commentsEnabled);
+            return new YamlDataSource(builder.setSource(source).setSink(sink).build(),
+                    defaultsSource != null ? defaultsBuilder.setSource(defaultsSource).setSink(defaultsSink).build() : null
+                    , getBuiltSerializerSet(), commentsEnabled);
         }
     }
 
-    private YamlDataSource(@NotNull YamlConfigLoader loader, @NotNull SerializerSet serializerSet, boolean commentsEnabled) {
-        super(loader, serializerSet, commentsEnabled);
+    private YamlDataSource(@NotNull YamlConfigLoader loader, @Nullable YamlConfigLoader defaultsLoader, @NotNull SerializerSet serializerSet, boolean commentsEnabled) {
+        super(loader, defaultsLoader, serializerSet, commentsEnabled);
     }
 }

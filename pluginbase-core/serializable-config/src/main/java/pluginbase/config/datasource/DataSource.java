@@ -49,4 +49,8 @@ public interface DataSource {
      * @throws SendablePluginBaseException if any sort of error occurs with writing or generating the configuration.
      */
     void save(Object object) throws SendablePluginBaseException;
+
+    boolean hasDefaults();
+
+    void saveDefaults(Object object) throws SendablePluginBaseException;
 }

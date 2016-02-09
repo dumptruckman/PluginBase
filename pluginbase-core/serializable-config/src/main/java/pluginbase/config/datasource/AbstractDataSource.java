@@ -23,7 +23,6 @@ import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.function.Predicate;
@@ -41,6 +40,8 @@ public abstract class AbstractDataSource implements DataSource {
 
     @NotNull
     private final AbstractConfigurationLoader loader;
+    @Nullable
+    private final AbstractConfigurationLoader defaultsLoader;
     @NotNull
     private final SerializerSet serializerSet;
     private final boolean commentsEnabled;
@@ -57,6 +58,8 @@ public abstract class AbstractDataSource implements DataSource {
 
         protected Callable<BufferedReader> source;
         protected Callable<BufferedWriter> sink;
+        protected Callable<BufferedReader> defaultsSource;
+        protected Callable<BufferedWriter> defaultsSink;
         private SerializerSet.Builder serializerSet;
         private SerializerSet alternateSet;
         protected boolean commentsEnabled = false;
@@ -80,6 +83,11 @@ public abstract class AbstractDataSource implements DataSource {
             return setPath(file.toPath());
         }
 
+        @NotNull
+        public T setDefaultsFile(@NotNull File file) {
+            return setDefaultsPath(file.toPath());
+        }
+
         /**
          * A Path can be set to be used as a data source and sink.
          *
@@ -90,6 +98,13 @@ public abstract class AbstractDataSource implements DataSource {
         public T setPath(@NotNull Path path) {
             this.source = () -> Files.newBufferedReader(path, UTF_8);
             this.sink = AtomicFiles.createAtomicWriterFactory(path, UTF_8);
+            return self();
+        }
+
+        @NotNull
+        public T setDefaultsPath(@NotNull Path path) {
+            this.defaultsSource = () -> Files.newBufferedReader(path, UTF_8);
+            this.defaultsSink = AtomicFiles.createAtomicWriterFactory(path, UTF_8);
             return self();
         }
 
@@ -105,6 +120,11 @@ public abstract class AbstractDataSource implements DataSource {
             return self();
         }
 
+        public T setDefaultsURL(@NotNull URL url) {
+            this.defaultsSource = () -> new BufferedReader(new InputStreamReader(url.openConnection().getInputStream()));
+            return self();
+        }
+
         @NotNull
         public T setSource(@NotNull Callable<BufferedReader> source) {
             this.source = source;
@@ -112,8 +132,20 @@ public abstract class AbstractDataSource implements DataSource {
         }
 
         @NotNull
+        public T setDefaultsSource(@NotNull Callable<BufferedReader> source) {
+            this.defaultsSource = source;
+            return self();
+        }
+
+        @NotNull
         public T setSink(@NotNull Callable<BufferedWriter> sink) {
             this.sink = sink;
+            return self();
+        }
+
+        @NotNull
+        public T setDefaultsSink(@NotNull Callable<BufferedWriter> sink) {
+            this.defaultsSink = sink;
             return self();
         }
 
@@ -252,8 +284,9 @@ public abstract class AbstractDataSource implements DataSource {
         public abstract AbstractDataSource build();
     }
 
-    protected AbstractDataSource(@NotNull AbstractConfigurationLoader loader, @NotNull SerializerSet serializerSet, boolean commentsEnabled) {
+    protected AbstractDataSource(@NotNull AbstractConfigurationLoader loader, @Nullable AbstractConfigurationLoader defaultsLoader, @NotNull SerializerSet serializerSet, boolean commentsEnabled) {
         this.loader = loader;
+        this.defaultsLoader = loader;
         this.serializerSet = serializerSet;
         this.commentsEnabled = commentsEnabled;
     }
@@ -264,6 +297,10 @@ public abstract class AbstractDataSource implements DataSource {
     public Object load() throws SendablePluginBaseException {
         try {
             ConfigurationNode node = getLoader().load();
+            if (getDefaultsLoader() != null) {
+                ConfigurationNode defaultsNode = getDefaultsLoader().load();
+                node.mergeValuesFrom(defaultsNode);
+            }
             Object value = node.getValue();
             if (value == null) {
                 return null;
@@ -280,6 +317,10 @@ public abstract class AbstractDataSource implements DataSource {
     public <ObjectType> ObjectType load(Class<ObjectType> wantedType) throws SendablePluginBaseException {
         try {
             ConfigurationNode node = getLoader().load();
+            if (getDefaultsLoader() != null) {
+                ConfigurationNode defaultsNode = getDefaultsLoader().load();
+                node.mergeValuesFrom(defaultsNode);
+            }
             Object value = node.getValue();
             if (value == null) {
                 return null;
@@ -295,7 +336,12 @@ public abstract class AbstractDataSource implements DataSource {
     @SuppressWarnings("unchecked")
     public <ObjectType> ObjectType loadToObject(@NotNull ObjectType destination) throws SendablePluginBaseException {
         try {
-            Object value = getLoader().load().getValue();
+            ConfigurationNode node = getLoader().load();
+            if (getDefaultsLoader() != null) {
+                ConfigurationNode defaultsNode = getDefaultsLoader().load();
+                node.mergeValuesFrom(defaultsNode);
+            }
+            Object value = node.getValue();
             if (value == null) {
                 return null;
             }
@@ -334,10 +380,26 @@ public abstract class AbstractDataSource implements DataSource {
         }
     }
 
+    @Override
+    public boolean hasDefaults() {
+        return getDefaultsLoader() != null;
+    }
+
+    @Override
+    public void saveDefaults(Object object) throws SendablePluginBaseException {
+
+    }
+
     @NotNull
     protected AbstractConfigurationLoader getLoader() {
         return loader;
     }
+
+    @Nullable
+    protected AbstractConfigurationLoader getDefaultsLoader() {
+        return defaultsLoader;
+    }
+
 
     @Nullable
     protected String getComments(@NotNull Class clazz, boolean header) {

@@ -44,7 +44,9 @@ public abstract class PluginAgent<P> {
 
     private boolean loaded = false;
 
+    private File defaultsFolder;
     private File configFile;
+    private File defaultConfigFile;
     private HoconDataSource configDataSource = null;
     private File sqlConfigFile;
     private HoconDataSource sqlConfigDataSource = null;
@@ -113,32 +115,33 @@ public abstract class PluginAgent<P> {
     }
 
     protected File getConfigFile() throws PluginBaseException {
-        if (!configFile.exists()) {
-            configFile.getParentFile().mkdirs();
-            try {
-                configFile.createNewFile();
-            } catch (IOException e) {
-                throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
-            }
-        }
-        return configFile;
+        return createFileIfMissing(configFile);
+    }
+
+    protected File getDefaultConfigFile() throws PluginBaseException {
+        return createFileIfMissing(defaultConfigFile);
     }
 
     protected File getSqlConfigFile() throws PluginBaseException {
-        if (!sqlConfigFile.exists()) {
-            sqlConfigFile.getParentFile().mkdirs();
+        return createFileIfMissing(sqlConfigFile);
+    }
+
+    private File createFileIfMissing(@NotNull File file) throws PluginBaseException {
+        if (!file.exists()) {
+            file.getParentFile().mkdirs();
             try {
-                sqlConfigFile.createNewFile();
+                file.createNewFile();
             } catch (IOException e) {
                 throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
             }
         }
-        return sqlConfigFile;
+        return file;
     }
 
     public void loadPluginBase() {
         // Setup config file.
         configFile = new File(getDataFolder(), "plugin.conf");
+        defaultConfigFile = new File(getDefaultsFolder(), "plugin.conf");
         sqlConfigFile = new File(getDataFolder(), "database.conf");
 
         getPluginBase().onLoad();
@@ -348,12 +351,23 @@ public abstract class PluginAgent<P> {
     protected abstract File getDataFolder();
 
     @NotNull
+    protected File getDefaultsFolder() {
+        if (defaultsFolder == null) {
+            defaultsFolder = new File(getDataFolder(), "defaults");
+        }
+        if (!defaultsFolder.exists()) {
+            defaultsFolder.mkdirs();
+        }
+        return defaultsFolder;
+    }
+
+    @NotNull
     protected Settings loadSettings() {
         Settings defaults = getDefaultSettings();
         Settings settings = defaults;
         try {
             if (configDataSource == null) {
-                configDataSource = HoconDataSource.builder().setCommentsEnabled(true).setFile(getConfigFile()).build();
+                configDataSource = HoconDataSource.builder().setCommentsEnabled(true).setDefaultsFile(getDefaultConfigFile()).setFile(getConfigFile()).build();
             }
             settings = configDataSource.loadToObject(defaults);
             if (settings == null) {

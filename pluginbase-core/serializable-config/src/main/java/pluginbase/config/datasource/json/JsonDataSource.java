@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonFactory;
 import ninja.leaping.configurate.json.FieldValueSeparatorStyle;
 import ninja.leaping.configurate.json.JSONConfigurationLoader;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pluginbase.config.datasource.AbstractDataSource;
 import pluginbase.config.datasource.serializers.DoubleAsStringSerializer;
 import pluginbase.config.datasource.serializers.LongAsStringSerializer;
@@ -27,6 +28,7 @@ public class JsonDataSource extends AbstractDataSource {
     public static class Builder extends AbstractDataSource.Builder<Builder> {
 
         private final JSONConfigurationLoader.Builder builder = JSONConfigurationLoader.builder();
+        private final JSONConfigurationLoader.Builder defaultsBuilder = JSONConfigurationLoader.builder();
 
         protected Builder() { }
 
@@ -52,11 +54,13 @@ public class JsonDataSource extends AbstractDataSource {
         @NotNull
         @Override
         public JsonDataSource build() {
-            return new JsonDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet());
+            return new JsonDataSource(builder.setSource(source).setSink(sink).build(),
+                    defaultsSource != null ? defaultsBuilder.setSource(defaultsSource).setSink(defaultsSink).build() : null,
+                    getBuiltSerializerSet());
         }
     }
 
-    private JsonDataSource(@NotNull JSONConfigurationLoader loader, @NotNull SerializerSet serializerSet) {
-        super(loader, serializerSet, false);
+    private JsonDataSource(@NotNull JSONConfigurationLoader loader, @Nullable JSONConfigurationLoader defaultsLoader, @NotNull SerializerSet serializerSet) {
+        super(loader, defaultsLoader, serializerSet, false);
     }
 }

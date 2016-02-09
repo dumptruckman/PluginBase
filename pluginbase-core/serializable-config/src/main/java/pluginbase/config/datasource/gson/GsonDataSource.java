@@ -3,6 +3,7 @@ package pluginbase.config.datasource.gson;
 
 import ninja.leaping.configurate.gson.GsonConfigurationLoader;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pluginbase.config.datasource.AbstractDataSource;
 import pluginbase.config.datasource.serializers.LongAsStringSerializer;
 import pluginbase.config.serializers.SerializerSet;
@@ -31,6 +32,7 @@ public class GsonDataSource extends AbstractDataSource {
     public static class Builder extends AbstractDataSource.Builder<Builder> {
 
         private final GsonConfigurationLoader.Builder builder = GsonConfigurationLoader.builder();
+        private final GsonConfigurationLoader.Builder defaultsBuilder = GsonConfigurationLoader.builder();
 
         protected Builder() { }
 
@@ -47,11 +49,14 @@ public class GsonDataSource extends AbstractDataSource {
         @NotNull
         @Override
         public GsonDataSource build() {
-            return new GsonDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet());
+
+            return new GsonDataSource(builder.setSource(source).setSink(sink).build(),
+                    defaultsSource != null ? defaultsBuilder.setSource(defaultsSource).setSink(defaultsSink).build() : null,
+                    getBuiltSerializerSet());
         }
     }
 
-    private GsonDataSource(@NotNull GsonConfigurationLoader loader, @NotNull SerializerSet serializerSet) {
-        super(loader, serializerSet, false);
+    private GsonDataSource(@NotNull GsonConfigurationLoader loader, @Nullable GsonConfigurationLoader defaultsLoader, @NotNull SerializerSet serializerSet) {
+        super(loader, defaultsLoader, serializerSet, false);
     }
 }

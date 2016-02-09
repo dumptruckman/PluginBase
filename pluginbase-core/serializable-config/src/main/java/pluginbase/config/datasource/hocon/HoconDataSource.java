@@ -5,6 +5,7 @@ import com.typesafe.config.ConfigParseOptions;
 import com.typesafe.config.ConfigRenderOptions;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import pluginbase.config.datasource.AbstractDataSource;
 import pluginbase.config.serializers.SerializerSet;
 
@@ -23,6 +24,7 @@ public class HoconDataSource extends AbstractDataSource {
     public static class Builder extends AbstractDataSource.Builder<Builder> {
 
         private final HoconConfigurationLoader.Builder builder = HoconConfigurationLoader.builder();
+        private final HoconConfigurationLoader.Builder defaultsBuilder = HoconConfigurationLoader.builder();
 
         protected Builder() { }
 
@@ -51,11 +53,13 @@ public class HoconDataSource extends AbstractDataSource {
         @NotNull
         @Override
         public HoconDataSource build() {
-            return new HoconDataSource(builder.setSource(source).setSink(sink).build(), getBuiltSerializerSet(), commentsEnabled);
+            return new HoconDataSource(builder.setSource(source).setSink(sink).build(),
+                    defaultsSource != null ? defaultsBuilder.setSource(defaultsSource).setSink(defaultsSink).build() : null,
+                    getBuiltSerializerSet(), commentsEnabled);
         }
     }
 
-    private HoconDataSource(@NotNull HoconConfigurationLoader loader, @NotNull SerializerSet serializerSet, boolean commentsEnabled) {
-        super(loader, serializerSet, commentsEnabled);
+    private HoconDataSource(@NotNull HoconConfigurationLoader loader, @Nullable HoconConfigurationLoader defaultsLoader, @NotNull SerializerSet serializerSet, boolean commentsEnabled) {
+        super(loader, defaultsLoader, serializerSet, commentsEnabled);
     }
 }
