@@ -89,7 +89,7 @@ public class SendablePluginBaseException extends PluginBaseException {
             PluginBaseException cause = (PluginBaseException) throwable;
             final BundledMessage bMessage = cause.getBundledMessage();
             final String message = messager.getLocalizedMessage(bMessage.getMessage(), bMessage.getArgs());
-            final BundledMessage newMessage = Message.bundleMessage(Messages.CAUSE_EXCEPTION, message);
+            final BundledMessage newMessage = Messages.CAUSE_EXCEPTION.bundle(message);
             messager.message(receiver, newMessage);
             final PluginBaseException newCause = cause.getCauseException();
             final Throwable tCause = cause.getCause();
@@ -99,7 +99,7 @@ public class SendablePluginBaseException extends PluginBaseException {
                 sendCauseException(tCause, messager, receiver);
             }
         } else {
-            final BundledMessage newMessage = Message.bundleMessage(Messages.CAUSE_EXCEPTION, throwable.getMessage());
+            final BundledMessage newMessage = Messages.CAUSE_EXCEPTION.bundle(throwable.getMessage());
             messager.message(receiver, newMessage);
             final Throwable tCause = throwable.getCause();
             if (tCause != null) {

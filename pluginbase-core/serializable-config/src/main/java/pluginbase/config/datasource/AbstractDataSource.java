@@ -270,7 +270,7 @@ public abstract class AbstractDataSource implements DataSource {
             }
             return SerializableConfig.deserialize(value, serializerSet);
         } catch (IOException e) {
-            throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
+            throw new SendablePluginBaseException(Messages.EXCEPTION.bundle(e), e);
         }
     }
 
@@ -286,7 +286,7 @@ public abstract class AbstractDataSource implements DataSource {
             }
             return SerializableConfig.deserializeAs(value, wantedType, serializerSet);
         } catch (IOException e) {
-            throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
+            throw new SendablePluginBaseException(Messages.EXCEPTION.bundle(e), e);
         }
     }
 
@@ -310,7 +310,7 @@ public abstract class AbstractDataSource implements DataSource {
                 return null;
             }
         } catch (IOException e) {
-            throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
+            throw new SendablePluginBaseException(Messages.EXCEPTION.bundle(e), e);
         }
     }
 
@@ -330,7 +330,7 @@ public abstract class AbstractDataSource implements DataSource {
 
             getLoader().save(node);
         } catch (IOException e) {
-            throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
+            throw new SendablePluginBaseException(Messages.EXCEPTION.bundle(e), e);
         }
     }
 

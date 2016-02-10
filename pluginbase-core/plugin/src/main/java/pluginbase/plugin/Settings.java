@@ -75,7 +75,7 @@ public class Settings extends PropertiesWrapper {
             } else if (newValue >= 0 && newValue <= 3) {
                 return newValue;
             } else {
-                throw new PropertyVetoException(Message.bundleMessage(DebugCommand.INVALID_DEBUG));
+                throw new PropertyVetoException(DebugCommand.INVALID_DEBUG.bundle());
             }
         }
     }

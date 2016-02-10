@@ -66,15 +66,10 @@ public interface Message {
      *
      * @param message The localization message for the bundle.
      * @param args The arguments for the bundled message.
+     * @deprecated This method is now non-static.
      */
     static BundledMessage bundleMessage(@NotNull final Message message, @NotNull final Object... args) {
-        if (args.length != message.getArgCount()) {
-            Logging.warning("Bundled message created without appropriate number of arguments!");
-            for (final StackTraceElement e : Thread.currentThread().getStackTrace()) {
-                Logging.warning(e.toString());
-            }
-        }
-        return new BundledMessage(message, args);
+        return message.bundle(args);
     }
 
     /**
@@ -102,4 +97,22 @@ public interface Message {
      * @return the number of expected arguments for this message.
      */
     int getArgCount();
+
+    /**
+     * Bundles this message with preset arguments.
+     * <p/>
+     * Can be used in cases where you are required to return a message of some sort and it is otherwise impossible to
+     * return a localized message due to also requiring arguments.
+     *
+     * @param args The arguments for the bundled message.
+     */
+    default BundledMessage bundle(@NotNull final Object... args)  {
+        if (args.length != getArgCount()) {
+            Logging.warning("Bundled message created without appropriate number of arguments!");
+            for (final StackTraceElement e : Thread.currentThread().getStackTrace()) {
+                Logging.warning(e.toString());
+            }
+        }
+        return new BundledMessage(this, args);
+    }
 }

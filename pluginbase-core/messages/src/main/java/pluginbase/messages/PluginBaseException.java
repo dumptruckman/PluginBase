@@ -40,7 +40,7 @@ public class PluginBaseException extends Exception {
      */
     public PluginBaseException(@NotNull String message) {
         super(message);
-        this.languageMessage = Message.bundleMessage(Message.createStaticMessage(message));
+        this.languageMessage = Message.createStaticMessage(message).bundle();
     }
 
     /**
@@ -66,7 +66,7 @@ public class PluginBaseException extends Exception {
         if (throwable instanceof PluginBaseException) {
             this.cause = (PluginBaseException) throwable;
         }
-        this.languageMessage = Message.bundleMessage(Message.createStaticMessage(message));
+        this.languageMessage = Message.createStaticMessage(message).bundle();
     }
 
     /**
@@ -110,7 +110,7 @@ public class PluginBaseException extends Exception {
      * @param e The exception to copy.
      */
     public PluginBaseException(@NotNull final Exception e) {
-        this(Message.bundleMessage(Messages.EXCEPTION, e.getMessage()), e.getCause());
+        this(Messages.EXCEPTION.bundle(e.getMessage()), e.getCause());
     }
 
     /**

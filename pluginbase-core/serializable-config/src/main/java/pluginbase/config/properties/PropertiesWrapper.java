@@ -58,7 +58,7 @@ public class PropertiesWrapper implements Properties {
         try {
             field.getPropertyHandler().set(field, value);
         } catch (UnsupportedOperationException e) {
-            throw new PropertyVetoException(Message.bundleMessage(CANNOT_SET_PROPERTY, name));
+            throw new PropertyVetoException(CANNOT_SET_PROPERTY.bundle(name));
         }
     }
 
@@ -68,7 +68,7 @@ public class PropertiesWrapper implements Properties {
         try {
             field.getPropertyHandler().add(field, value);
         } catch (UnsupportedOperationException e) {
-            throw new PropertyVetoException(Message.bundleMessage(CANNOT_MODIFY_NON_COLLECTION, name));
+            throw new PropertyVetoException(CANNOT_MODIFY_NON_COLLECTION.bundle(name));
         }
     }
 
@@ -78,7 +78,7 @@ public class PropertiesWrapper implements Properties {
         try {
             field.getPropertyHandler().remove(field, value);
         } catch (UnsupportedOperationException e) {
-            throw new PropertyVetoException(Message.bundleMessage(CANNOT_MODIFY_NON_COLLECTION, name));
+            throw new PropertyVetoException(CANNOT_MODIFY_NON_COLLECTION.bundle(name));
         }
     }
 
@@ -88,7 +88,7 @@ public class PropertiesWrapper implements Properties {
         try {
             field.getPropertyHandler().clear(field, value);
         } catch (UnsupportedOperationException e) {
-            throw new PropertyVetoException(Message.bundleMessage(CANNOT_MODIFY_NON_COLLECTION, name));
+            throw new PropertyVetoException(CANNOT_MODIFY_NON_COLLECTION.bundle(name));
         }
     }
 

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Can be used in cases where you are required to return a message of some sort and it is otherwise impossible to
  * return a localized message due to also requiring arguments.
  * <p/>
- * See {@link Message#bundleMessage(Message, Object...)} for creation of these bundled messages.
+ * See {@link Message#bundle(Object...)} for creation of these bundled messages.
  */
 public class BundledMessage {
 

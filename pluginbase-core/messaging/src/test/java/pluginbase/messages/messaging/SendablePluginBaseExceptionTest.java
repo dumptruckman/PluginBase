@@ -19,10 +19,10 @@ import static org.mockito.Mockito.*;
 @RunWith(PowerMockRunner.class)
 public class SendablePluginBaseExceptionTest {
 
-    private static final BundledMessage TEST_1 = Message.bundleMessage(Message.createMessage("test.1", "test message 1"));
-    private static final BundledMessage TEST_2 = Message.bundleMessage(Message.createMessage("test.1", "test message 2"));
-    private static final BundledMessage TEST_3 = Message.bundleMessage(Message.createMessage("test.1", "test message 3"));
-    private static final BundledMessage TEST_4 = Message.bundleMessage(Message.createMessage("test.1", "test message 4"));
+    private static final BundledMessage TEST_1 = Message.createMessage("test.1", "test message 1").bundle();
+    private static final BundledMessage TEST_2 = Message.createMessage("test.1", "test message 2").bundle();
+    private static final BundledMessage TEST_3 = Message.createMessage("test.1", "test message 3").bundle();
+    private static final BundledMessage TEST_4 = Message.createMessage("test.1", "test message 4").bundle();
 
     private Messager messager;
     private MessageReceiver receiver;

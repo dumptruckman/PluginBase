@@ -50,7 +50,7 @@ public abstract class QueuedCommand<P> extends Command<P> implements Runnable {
      */
     @NotNull
     protected BundledMessage getConfirmMessage() {
-        return Message.bundleMessage(CommandHandler.MUST_CONFIRM, Duration.valueOf(getExpirationDuration()).asVerboseString());
+        return CommandHandler.MUST_CONFIRM.bundle(Duration.valueOf(getExpirationDuration()).asVerboseString());
     }
 
     final void confirm() {

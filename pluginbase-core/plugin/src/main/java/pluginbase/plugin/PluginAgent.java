@@ -132,7 +132,7 @@ public abstract class PluginAgent<P> {
             try {
                 configFile.createNewFile();
             } catch (IOException e) {
-                throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
+                throw new SendablePluginBaseException(Messages.EXCEPTION.bundle(e), e);
             }
         }
         return configFile;
@@ -144,7 +144,7 @@ public abstract class PluginAgent<P> {
             try {
                 sqlConfigFile.createNewFile();
             } catch (IOException e) {
-                throw new SendablePluginBaseException(Message.bundleMessage(Messages.EXCEPTION, e), e);
+                throw new SendablePluginBaseException(Messages.EXCEPTION.bundle(e), e);
             }
         }
         return sqlConfigFile;

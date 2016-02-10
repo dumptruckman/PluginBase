@@ -137,11 +137,11 @@ public final class CommandContext {
 
                 if (valueFlags.contains(flagName)) {
                     if (this.valueFlags.containsKey(flagName)) {
-                        throw new CommandException(Message.bundleMessage(CommandHandler.VALUE_FLAG_ALREADY_GIVEN, flagName));
+                        throw new CommandException(CommandHandler.VALUE_FLAG_ALREADY_GIVEN.bundle(flagName));
                     }
 
                     if (nextArg >= argList.size()) {
-                        throw new CommandException(Message.bundleMessage(CommandHandler.NO_VALUE_FOR_VALUE_FLAG, flagName));
+                        throw new CommandException(CommandHandler.NO_VALUE_FOR_VALUE_FLAG.bundle(flagName));
                     }
 
                     // If it is a value flag, read another argument and add it

@@ -264,7 +264,7 @@ public abstract class CommandHandler {
         if (command.getPerm() != null && !command.getPerm().hasPermission(player)) {
             BundledMessage permissionMessage = command.getPermissionMessage();
             if (permissionMessage == null) {
-                permissionMessage = Message.bundleMessage(PERMISSION_DENIED);
+                permissionMessage = PERMISSION_DENIED.bundle();
             }
             commandProvider.getMessager().message(player, permissionMessage);
             return false;
@@ -287,20 +287,20 @@ public abstract class CommandHandler {
         }
         final CommandContext context = new CommandContext(args, valueFlags);
         if (context.argsLength() < cmdInfo.min()) {
-            throw new CommandUsageException(Message.bundleMessage(TOO_FEW_ARGUMENTS), getUsage(args, 0, command, cmdInfo));
+            throw new CommandUsageException(TOO_FEW_ARGUMENTS.bundle(), getUsage(args, 0, command, cmdInfo));
         }
         if (cmdInfo.max() != -1 && context.argsLength() > cmdInfo.max()) {
-            throw new CommandUsageException(Message.bundleMessage(TOO_MANY_ARGUMENTS), getUsage(args, 0, command, cmdInfo));
+            throw new CommandUsageException(TOO_MANY_ARGUMENTS.bundle(), getUsage(args, 0, command, cmdInfo));
         }
         if (!cmdInfo.anyFlags()) {
             for (char flag : context.getFlags()) {
                 if (!newFlags.contains(flag)) {
-                    throw new CommandUsageException(Message.bundleMessage(UNKNOWN_FLAG, flag), getUsage(args, 0, command, cmdInfo));
+                    throw new CommandUsageException(UNKNOWN_FLAG.bundle(flag), getUsage(args, 0, command, cmdInfo));
                 }
             }
         }
         if (!command.runCommand(player, context)) {
-            throw new CommandUsageException(Message.bundleMessage(USAGE_ERROR), getUsage(args, 0, command, cmdInfo));
+            throw new CommandUsageException(USAGE_ERROR.bundle(), getUsage(args, 0, command, cmdInfo));
         }
         if (command instanceof QueuedCommand) {
             final QueuedCommand queuedCommand = (QueuedCommand) command;
