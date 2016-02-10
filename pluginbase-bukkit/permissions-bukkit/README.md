@@ -65,7 +65,7 @@ And then shade/relocate it into your plugin with:
 <plugin>
     <groupId>org.apache.maven.plugins</groupId>
     <artifactId>maven-shade-plugin</artifactId>
-    <version>1.5</version>
+    <version>2.4.3</version>
     <executions>
         <execution>
             <id>permissions</id>
