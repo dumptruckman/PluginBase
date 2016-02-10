@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.messages;
 
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import pluginbase.logging.Logging;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,10 +27,10 @@ public class Messages {
     }
 
     @NotNull
-    private static final Map<LocalizablePlugin, Map<String, Message>> messages = new HashMap<LocalizablePlugin, Map<String, Message>>();
+    private static final Map<LocalizablePlugin, Map<Object[], Message>> messages = new HashMap<>();
 
     @NotNull
-    static Set<String> getMessageKeys(@NotNull final LocalizablePlugin localizablePlugin) {
+    static Set<Object[]> getMessageKeys(@NotNull final LocalizablePlugin localizablePlugin) {
         if (!messages.containsKey(localizablePlugin)) {
             throw new IllegalArgumentException("Provider has no registered messages.");
         }
@@ -37,7 +38,7 @@ public class Messages {
     }
 
     @Nullable
-    static Message getMessage(@NotNull final LocalizablePlugin localizablePlugin, @Nullable final String key) {
+    static Message getMessage(@NotNull final LocalizablePlugin localizablePlugin, @Nullable final Object[] key) {
         if (!messages.containsKey(localizablePlugin)) {
             throw new IllegalArgumentException("Provider has no registered messages.");
         }
@@ -47,7 +48,7 @@ public class Messages {
         return messages.get(localizablePlugin).get(key);
     }
 
-    static boolean containsMessageKey(@NotNull final LocalizablePlugin localizablePlugin, @NotNull final String key) {
+    static boolean containsMessageKey(@NotNull final LocalizablePlugin localizablePlugin, @NotNull final Object[] key) {
         if (!messages.containsKey(localizablePlugin)) {
             throw new IllegalArgumentException("Provider has no registered messages.");
         }
@@ -92,9 +93,9 @@ public class Messages {
             return;
         }
         if (!messages.containsKey(localizablePlugin)) {
-            messages.put(localizablePlugin, new HashMap<String, Message>());
+            messages.put(localizablePlugin, new HashMap<>());
         }
-        final Map<String, Message> messages = Messages.messages.get(localizablePlugin);
+        final Map<Object[], Message> messages = Messages.messages.get(localizablePlugin);
         if (!messages.containsKey(SUCCESS.getKey())) {
             messages.put(SUCCESS.getKey(), SUCCESS);
         }
@@ -152,15 +153,15 @@ public class Messages {
      * removed from the file.
      *
      * @param localizablePlugin the object that registered localizable messages.
-     * @param languageFile the language file to load localized messages from.
+     * @param loader the config loader which will load the messages.
      * @param locale the locale to use when formatting the messages.
      * @return a new MessagerProvider loaded with the messages from the given language file and locale.
      */
     @NotNull
     public static MessageProvider loadMessages(@NotNull final LocalizablePlugin localizablePlugin,
-                                               @NotNull final File languageFile,
+                                               @NotNull final ConfigurationLoader loader,
                                                @NotNull final Locale locale) {
-        return new DefaultMessageProvider(localizablePlugin, languageFile, locale);
+        return new DefaultMessageProvider(localizablePlugin, loader, locale);
     }
 }
 

@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.bukkit.messaging;
 
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import pluginbase.messages.BundledMessage;
 import pluginbase.messages.LocalizablePlugin;
 import pluginbase.messages.Message;
@@ -48,14 +49,14 @@ public class BukkitMessager extends Messager {
      * removed from the file.
      *
      * @param localizablePlugin the object that registered localizable messages.
-     * @param languageFile the language file to load localized messages from.
+     * @param loader the configuration loader to load localized messages with.
      * @param locale the locale to use when formatting the messages.
      * @return a new messager loaded with the messages from the given language file and locale.
      */
     public static BukkitMessager loadMessagerWithMessages(@NotNull final LocalizablePlugin localizablePlugin,
-                                                          @NotNull final File languageFile,
+                                                          @NotNull final ConfigurationLoader loader,
                                                           @NotNull final Locale locale) {
-        return new BukkitMessager(Messages.loadMessages(localizablePlugin, languageFile, locale));
+        return new BukkitMessager(Messages.loadMessages(localizablePlugin, loader, locale));
     }
 
     /** {@inheritDoc} */

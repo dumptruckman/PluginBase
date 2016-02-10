@@ -40,11 +40,15 @@ class DefaultMessage implements Message {
     @NotNull
     private final String def;
     @Nullable
-    private final String key;
+    private final String[] key;
     private final int argCount;
 
     DefaultMessage(@Nullable final String key, @NotNull final String def) {
-        this.key = key;
+        if (key != null) {
+            this.key = key.split("\\.");
+        } else {
+            this.key = null;
+        }
         this.def = Theme.parseMessage(def);
         this.argCount = countArgs(this.def);
     }
@@ -82,7 +86,7 @@ class DefaultMessage implements Message {
      * @return The localization key for the message.
      */
     @Nullable
-    public String getKey() {
+    public Object[] getKey() {
         return key;
     }
 

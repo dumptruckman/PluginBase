@@ -1,5 +1,6 @@
 package pluginbase.messages.messaging;
 
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.jetbrains.annotations.NotNull;
 import pluginbase.logging.Logging;
 import pluginbase.logging.PluginLogger;
@@ -28,7 +29,7 @@ public class TestMessagingPlugin implements MessageProvider, Messaging {
 
     @NotNull
     @Override
-    public String getLocalizedMessage(@NotNull final String key, @NotNull final Object... args) {
+    public String getLocalizedMessage(@NotNull final Object[] key, @NotNull final Object... args) {
         return "";
     }
 
@@ -45,7 +46,7 @@ public class TestMessagingPlugin implements MessageProvider, Messaging {
     }
 
     @Override
-    public void loadMessages(@NotNull File languageFile, @NotNull Locale locale) {
+    public void loadMessages(@NotNull ConfigurationLoader loader, @NotNull Locale locale) {
 
     }
 }

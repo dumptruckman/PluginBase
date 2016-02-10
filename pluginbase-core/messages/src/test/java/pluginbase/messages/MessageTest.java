@@ -4,6 +4,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 public class MessageTest {
 
     final String testKey = "this is my key";
@@ -18,7 +20,7 @@ public class MessageTest {
     @Test
     public void testCreateMessage() throws Exception {
         final Message message = Message.createMessage(testKey, testMessage);
-        Assert.assertEquals(testKey, message.getKey());
+        Assert.assertEquals(Arrays.toString(new Object[] {testKey}), Arrays.toString(message.getKey()));
         Assert.assertEquals(testMessage, message.getDefault());
     }
 

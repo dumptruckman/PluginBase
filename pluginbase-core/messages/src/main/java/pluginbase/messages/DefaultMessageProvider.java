@@ -3,18 +3,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.messages;
 
+import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.logging.PluginLogger;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.IllegalFormatException;
 import java.util.Iterator;
 import java.util.Locale;
-import java.util.Properties;
 
 class DefaultMessageProvider implements MessageProvider {
 
@@ -22,47 +21,35 @@ class DefaultMessageProvider implements MessageProvider {
     private final Locale locale;
 
     @NotNull
-    private final Properties messages;
+    private final ConfigurationNode messages;
 
     @NotNull
     private final LocalizablePlugin plugin;
 
     public DefaultMessageProvider(@NotNull final LocalizablePlugin localizablePlugin,
-                                  @NotNull final File languageFile,
+                                  @NotNull final ConfigurationLoader loader,
                                   @NotNull final Locale locale) {
         this.locale = locale;
         this.plugin = localizablePlugin;
-        messages = getProperties(localizablePlugin, languageFile);
-        pruneLanguage(localizablePlugin, messages);
-        storeProperties(languageFile, messages);
+        messages = load(localizablePlugin, loader);
+        prune(localizablePlugin, messages);
+        save(loader, messages);
     }
 
-    private void storeProperties(@NotNull final File languageFile, @NotNull final Properties properties) {
-        FileWriter writer = null;
+    private void save(@NotNull final ConfigurationLoader loader, @NotNull final ConfigurationNode language) {
         try {
-            writer = new FileWriter(languageFile);
-            properties.store(writer,
-                    "You may insert color into the strings by preceding the color code with &."
-                            + "\nExample: &cThis is red\n\nAny place where there is %s represents data"
-                            + " to be filled in by the plugin.\nMAKE SURE THESE REMAIN IN ANY REPLACEMENTS!");
-            getLog().fine("Saved language file %s", languageFile);
+            loader.save(language);
         } catch (IOException e) {
-            getLog().warning("Problem saving language file '%s'", languageFile);
+            getLog().warning("Problem saving current language file");
             e.printStackTrace();
-        } finally {
-            if (writer != null) {
-                try {
-                    writer.close();
-                } catch (IOException ignore) { }
-            }
         }
     }
 
-    private void pruneLanguage(@NotNull final LocalizablePlugin localizable, @NotNull final Properties language){
+    private void prune(@NotNull final LocalizablePlugin localizable, @NotNull final ConfigurationNode language){
         // Prune file
-        final Iterator<Object> it = language.keySet().iterator();
+        final Iterator<? extends ConfigurationNode> it = language.getChildrenList().iterator();
         while (it.hasNext()) {
-            final String key = it.next().toString();
+            final Object[] key = it.next().getPath();
             if (!Messages.containsMessageKey(localizable, key)) {
                 getLog().finer("Removing unused language: %s", key);
                 it.remove();
@@ -71,59 +58,41 @@ class DefaultMessageProvider implements MessageProvider {
     }
 
     @NotNull
-    private Properties getProperties(@NotNull final LocalizablePlugin localizable, @NotNull final File languageFile) {
-        final Properties language = new Properties();
-        if (!languageFile.exists()) {
-            try {
-                languageFile.createNewFile();
-                getLog().fine("Created language file %s", languageFile);
-            } catch (IOException e) {
-                getLog().warning("Problem creating language file '%s'", languageFile);
-                e.printStackTrace();
-            }
+    private ConfigurationNode load(@NotNull final LocalizablePlugin localizable, @NotNull final ConfigurationLoader loader) {
+        ConfigurationNode language;
+        try {
+            language = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+            language = loader.createEmptyNode();
         }
-        if (languageFile.exists()) {
-            FileReader reader = null;
-            try {
-                reader = new FileReader(languageFile);
-                language.load(reader);
-                getLog().fine("Loaded language file %s", languageFile);
-            } catch (IOException e) {
-                getLog().warning("Problem loading language file '%s'", languageFile);
-                e.printStackTrace();
-            } finally {
-                if (reader != null) {
-                    try {
-                        reader.close();
-                    } catch (IOException ignore) { }
-                }
-            }
-        }
-        for (final String key : Messages.getMessageKeys(localizable)) {
-            if (!language.containsKey(key)) {
-                final Message message = Messages.getMessage(localizable, key);
-                if (message != null) {
-                    language.put(key, message.getDefault());
+
+        // TODO check if languages is empty?
+
+        for (final Object[] key : Messages.getMessageKeys(localizable)) {
+            final Message message = Messages.getMessage(localizable, key);
+            ConfigurationNode node = language.getNode(key);
+            if (message != null && node.isVirtual()) {
+                if (node.isVirtual()) {
+                    node.setValue(message.getDefault());
                     getLog().finest("Created new message in language file: %s", message);
-                }
-            } else {
-                final Message message = Messages.getMessage(localizable, key);
-                if (message != null && DefaultMessage.countArgs(language.getProperty(key)) != message.getArgCount()) {
-                    getLog().warning("The message for '%s' in the file '%s' does not have the correct amount of arguments (%s).  The default will be used.", key, languageFile, message.getArgCount());
-                    language.put(key, message.getDefault());
+                } else if(DefaultMessage.countArgs(node.getString()) != message.getArgCount()) {
+                    node.setValue(message.getDefault());
+                    getLog().warning("The message for '%s' in the current language file does not have the correct amount of arguments (%s).  The default will be used.", key, message.getArgCount());
                 }
             }
         }
         return language;
     }
 
-    private String _getMessage(@NotNull final String key) {
-        final String message = this.messages.getProperty(key);
-        if (message == null) {
-            getLog().warning("There is not language entry for %s.  Was it registered?", key);
-            return key;
+    private String _getMessage(@NotNull final Object[] key) {
+        ConfigurationNode node = this.messages.getNode(key);
+        if (node.isVirtual()) {
+            String keyString = Arrays.toString(key);
+            getLog().warning("There is not language entry for %s.  Was it registered?", keyString);
+            return keyString;
         }
-        return message;
+        return node.getString();
     }
 
     @Override
@@ -137,12 +106,12 @@ class DefaultMessageProvider implements MessageProvider {
 
     @NotNull
     @Override
-    public String getLocalizedMessage(@NotNull final String key, @NotNull final Object... args) {
+    public String getLocalizedMessage(@NotNull final Object[] key, @NotNull final Object... args) {
         final String message = _getMessage(key);
         return formatMessage(key, message, args);
     }
 
-    private String formatMessage(@Nullable String key, @NotNull String message, @NotNull final Object... args) {
+    private String formatMessage(@Nullable Object[] key, @NotNull String message, @NotNull final Object... args) {
         try {
             return MessageUtil.formatMessage(locale, message, args);
         } catch (IllegalFormatException e) {

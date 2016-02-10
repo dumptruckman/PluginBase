@@ -10,7 +10,7 @@ import java.util.Locale;
 /**
  * Indicates that localized messages can be retrieved from this class.
  * <p/>
- * See {@link Messages#loadMessages(LocalizablePlugin, java.io.File, java.util.Locale)} for a simple flat file implementation.
+ * See {@link Messages#loadMessages(LocalizablePlugin, ninja.leaping.configurate.loader.ConfigurationLoader, java.util.Locale)} for a simple flat file implementation.
  */
 public interface MessageProvider {
 
@@ -40,7 +40,7 @@ public interface MessageProvider {
      * @return the localized message.
      */
     @NotNull
-    String getLocalizedMessage(@NotNull final String key, @NotNull final Object... args);
+    String getLocalizedMessage(@NotNull final Object[] key, @NotNull final Object... args);
 
     /**
      * Returns the plugin this message provider provides messages for.

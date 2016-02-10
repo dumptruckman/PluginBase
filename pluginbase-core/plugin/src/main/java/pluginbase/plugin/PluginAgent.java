@@ -7,7 +7,11 @@ import pluginbase.command.CommandException;
 import pluginbase.command.CommandInfo;
 import pluginbase.command.CommandProvider;
 import pluginbase.command.CommandUsageException;
+import pluginbase.config.datasource.DataSource;
+import pluginbase.config.datasource.gson.GsonDataSource;
 import pluginbase.config.datasource.hocon.HoconDataSource;
+import pluginbase.config.datasource.json.JsonDataSource;
+import pluginbase.config.datasource.yaml.YamlDataSource;
 import pluginbase.config.properties.Properties;
 import pluginbase.debugsession.DebugSessionManager;
 import pluginbase.jdbc.DatabaseSettings;
@@ -44,10 +48,11 @@ public abstract class PluginAgent<P> {
 
     private boolean loaded = false;
 
+    private ConfigType configType = ConfigType.HOCON;
     private File configFile;
-    private HoconDataSource configDataSource = null;
+    private DataSource configDataSource = null;
     private File sqlConfigFile;
-    private HoconDataSource sqlConfigDataSource = null;
+    private DataSource sqlConfigDataSource = null;
 
     @Nullable
     private Callable<? extends Settings> settingsCallable;
@@ -97,7 +102,8 @@ public abstract class PluginAgent<P> {
     }
 
     public String getLanguageFileName() {
-        return this.languageFilePrefix + "_" + getPluginBase().getSettings().getLocale().toString() + ".properties";
+        return this.languageFilePrefix + "_" + getPluginBase().getSettings().getLocale().toString()
+                + getConfigType().getFileExtension();
     }
 
     protected P getPlugin() {
@@ -110,6 +116,14 @@ public abstract class PluginAgent<P> {
 
     protected PluginLogger getLog() {
         return getPluginBase().getLog();
+    }
+
+    protected ConfigType getConfigType() {
+        return configType;
+    }
+
+    public void setConfigType(@NotNull ConfigType configType) {
+        this.configType = configType;
     }
 
     protected File getConfigFile() throws PluginBaseException {
@@ -138,8 +152,16 @@ public abstract class PluginAgent<P> {
 
     public void loadPluginBase() {
         // Setup config file.
-        configFile = new File(getDataFolder(), "plugin.conf");
-        sqlConfigFile = new File(getDataFolder(), "database.conf");
+        if (getConfigType() == ConfigType.HOCON) {
+            configFile = new File(getDataFolder(), "plugin.conf");
+        } else {
+            configFile = new File(getDataFolder(), "config" + getConfigType().getFileExtension());
+        }
+        if (getConfigType() == ConfigType.HOCON) {
+            configFile = new File(getDataFolder(), "database.conf");
+        } else {
+            configFile = new File(getDataFolder(), "database_config" + getConfigType().getFileExtension());
+        }
 
         getPluginBase().onLoad();
 
@@ -353,7 +375,23 @@ public abstract class PluginAgent<P> {
         Settings settings = defaults;
         try {
             if (configDataSource == null) {
-                configDataSource = HoconDataSource.builder().setCommentsEnabled(true).setFile(getConfigFile()).build();
+                switch (getConfigType()) {
+                    case HOCON:
+                        configDataSource = HoconDataSource.builder().setCommentsEnabled(true).setFile(getConfigFile()).build();
+                        break;
+                    case YAML:
+                        configDataSource = YamlDataSource.builder().setCommentsEnabled(false).setFile(getConfigFile()).build();
+                        break;
+                    case JSON:
+                        configDataSource = JsonDataSource.builder().setFile(getConfigFile()).build();
+                        break;
+                    case GSON:
+                        configDataSource = GsonDataSource.builder().setFile(getConfigFile()).build();
+                        break;
+                    default:
+                        configDataSource = HoconDataSource.builder().setCommentsEnabled(true).setFile(getConfigFile()).build();
+                        break;
+                }
             }
             settings = configDataSource.loadToObject(defaults);
             if (settings == null) {
@@ -375,7 +413,23 @@ public abstract class PluginAgent<P> {
         DatabaseSettings settings = defaults;
         try {
             if (sqlConfigDataSource == null) {
-                sqlConfigDataSource = HoconDataSource.builder().setCommentsEnabled(true).setFile(getSqlConfigFile()).build();
+                switch (getConfigType()) {
+                    case HOCON:
+                        sqlConfigDataSource = HoconDataSource.builder().setCommentsEnabled(true).setFile(getSqlConfigFile()).build();
+                        break;
+                    case YAML:
+                        sqlConfigDataSource = YamlDataSource.builder().setCommentsEnabled(false).setFile(getSqlConfigFile()).build();
+                        break;
+                    case JSON:
+                        sqlConfigDataSource = JsonDataSource.builder().setFile(getSqlConfigFile()).build();
+                        break;
+                    case GSON:
+                        sqlConfigDataSource = GsonDataSource.builder().setFile(getSqlConfigFile()).build();
+                        break;
+                    default:
+                        sqlConfigDataSource = HoconDataSource.builder().setCommentsEnabled(true).setFile(getSqlConfigFile()).build();
+                        break;
+                }
             }
             settings = sqlConfigDataSource.loadToObject(defaults);
             if (settings == null) {

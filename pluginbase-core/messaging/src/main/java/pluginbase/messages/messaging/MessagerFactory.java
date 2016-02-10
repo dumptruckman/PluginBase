@@ -1,5 +1,6 @@
 package pluginbase.messages.messaging;
 
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.jetbrains.annotations.NotNull;
 import pluginbase.messages.LocalizablePlugin;
 import pluginbase.messages.Messages;
@@ -22,17 +23,17 @@ public class MessagerFactory {
      * Loads the messages from the given language file into a new Messager.
      *
      * @param localizablePlugin the plugin the messages belong to.
-     * @param languageFile the language file containing the localized messages.
+     * @param loader the configuration loader used to load localized messages.
      * @param locale the locale of the localized messages.
      * @return a new Messager loaded with the given messages.
      */
     public static Messager createMessager(@NotNull final LocalizablePlugin localizablePlugin,
-                                          @NotNull final File languageFile,
+                                          @NotNull final ConfigurationLoader loader,
                                           @NotNull final Locale locale) {
         if (messagerProvider == null) {
             throw new IllegalStateException("MessagerProvider must be registered before a Messager can be created.");
         }
-        return messagerProvider.createMessager(Messages.loadMessages(localizablePlugin, languageFile, locale));
+        return messagerProvider.createMessager(Messages.loadMessages(localizablePlugin, loader, locale));
     }
 
     /**

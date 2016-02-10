@@ -86,12 +86,12 @@ public interface Message {
     String getDefault();
 
     /**
-     * The localization key for the message.
+     * The localization key for the message. Each object in the array represents a configuration node path.
      *
      * @return The localization key for the message.
      */
     @Nullable
-    String getKey();
+    Object[] getKey();
 
     /**
      * Gets the number of expected arguments for this message.

@@ -1,5 +1,6 @@
 package pluginbase.command;
 
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.logging.PluginLogger;
@@ -131,8 +132,8 @@ public abstract class AbstractCommandProvider<P> implements CommandProvider<P> {
 
     /** {@inheritDoc} */
     @Override
-    public void loadMessages(@NotNull File languageFile, @NotNull Locale locale) {
-        messager = MessagerFactory.createMessager(this, languageFile, locale);
+    public void loadMessages(@NotNull ConfigurationLoader loader, @NotNull Locale locale) {
+        messager = MessagerFactory.createMessager(this, loader, locale);
     }
 
     /** {@inheritDoc} */

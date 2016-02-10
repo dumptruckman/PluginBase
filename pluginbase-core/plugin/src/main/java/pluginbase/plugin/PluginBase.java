@@ -3,6 +3,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.plugin;
 
+import ninja.leaping.configurate.gson.GsonConfigurationLoader;
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
+import ninja.leaping.configurate.json.JSONConfigurationLoader;
+import ninja.leaping.configurate.loader.AbstractConfigurationLoader;
+import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.yaml.YAMLConfigurationLoader;
 import pluginbase.command.Command;
 import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandProvider;
@@ -22,6 +28,7 @@ import pluginbase.permission.PermFactory;
 import pluginbase.plugin.command.builtin.VersionCommand;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.IllegalFormatException;
 import java.util.LinkedList;
 import java.util.List;
@@ -149,7 +156,34 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
 
     private void loadLanguage() {
         Locale locale = settings.getLocale();
-        loadMessages(new File(getDataFolder(), pluginAgent.getLanguageFileName()), locale);
+        File languageFile = new File(getDataFolder(), pluginAgent.getLanguageFileName());
+        if (!languageFile.exists()) {
+            try {
+                languageFile.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        ConfigurationLoader loader;
+        switch (pluginAgent.getConfigType()) {
+            case HOCON:
+                loader = HoconConfigurationLoader.builder().setFile(languageFile).build();
+                break;
+            case YAML:
+                loader = YAMLConfigurationLoader.builder().setFile(languageFile).build();
+                break;
+            case JSON:
+                loader = JSONConfigurationLoader.builder().setFile(languageFile).build();
+                break;
+            case GSON:
+                loader = GsonConfigurationLoader.builder().setFile(languageFile).build();
+                break;
+            default:
+                loader = HoconConfigurationLoader.builder().setFile(languageFile).build();
+                break;
+        }
+        loadMessages(loader, locale);
     }
 
     /** {@inheritDoc} */
@@ -160,8 +194,8 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
     }
 
     @Override
-    public void loadMessages(@NotNull final File languageFile, @NotNull final Locale locale) {
-        pluginAgent.getCommandProvider().loadMessages(languageFile, locale);
+    public void loadMessages(@NotNull final ConfigurationLoader loader, @NotNull final Locale locale) {
+        pluginAgent.getCommandProvider().loadMessages(loader, locale);
     }
 
     /**

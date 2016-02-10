@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.messages.messaging;
 
+import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.jetbrains.annotations.NotNull;
 import pluginbase.messages.LocalizablePlugin;
 
@@ -25,8 +26,8 @@ public interface Messaging extends LocalizablePlugin {
     /**
      * Loads the messages from the give file using the given locale.
      *
-     * @param languageFile the language file to load messages from.
+     * @param loader the configuration loader to load messages with.
      * @param locale the locale used to format the messages.
      */
-    void loadMessages(@NotNull File languageFile, @NotNull Locale locale);
+    void loadMessages(@NotNull ConfigurationLoader loader, @NotNull Locale locale);
 }
