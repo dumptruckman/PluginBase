@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
         <artifactId>PluginBase-Core</artifactId>
-        <version>1.5-SNAPSHOT</version>
+        <version>1.5.1-SNAPSHOT</version>
     </parent>
     <artifactId>Debug-Session</artifactId>
     <version>${debug-session.version}</version>
