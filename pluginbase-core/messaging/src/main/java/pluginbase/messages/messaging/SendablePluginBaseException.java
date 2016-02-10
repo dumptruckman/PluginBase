@@ -25,6 +25,10 @@ public class SendablePluginBaseException extends PluginBaseException {
         super(languageMessage);
     }
 
+    public SendablePluginBaseException(@NotNull final String message) {
+        super(message);
+    }
+
     /**
      * Constructs a PluginBase exception with the given bundled message.
      *
@@ -32,6 +36,10 @@ public class SendablePluginBaseException extends PluginBaseException {
      */
     public SendablePluginBaseException(@NotNull final BundledMessage languageMessage, @NotNull final Throwable throwable) {
         super(languageMessage, throwable);
+    }
+
+    public SendablePluginBaseException(@NotNull final String message, @NotNull final Throwable throwable) {
+        super(message, throwable);
     }
 
     /**
@@ -44,6 +52,10 @@ public class SendablePluginBaseException extends PluginBaseException {
      */
     public SendablePluginBaseException(@NotNull final BundledMessage languageMessage, @NotNull final PluginBaseException cause) {
         super(languageMessage, cause);
+    }
+
+    public SendablePluginBaseException(@NotNull final String message, @NotNull final PluginBaseException cause) {
+        super(message, cause);
     }
 
     /**

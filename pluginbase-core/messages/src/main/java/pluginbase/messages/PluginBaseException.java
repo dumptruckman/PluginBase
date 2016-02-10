@@ -34,6 +34,16 @@ public class PluginBaseException extends Exception {
     }
 
     /**
+     * Constructs a PluginBase exception with the given static message.
+     *
+     * @param message the exception message to send.
+     */
+    public PluginBaseException(@NotNull String message) {
+        super(message);
+        this.languageMessage = Message.bundleMessage(Message.createStaticMessage(message));
+    }
+
+    /**
      * Constructs a PluginBase exception with the given bundled message.
      *
      * @param languageMessage the bundled message to use for this exception.
@@ -47,6 +57,19 @@ public class PluginBaseException extends Exception {
     }
 
     /**
+     * Constructs a PluginBase exception with the given static message.
+     *
+     * @param message the exception message to send.
+     */
+    public PluginBaseException(@NotNull String message, @Nullable final Throwable throwable) {
+        super(message, throwable);
+        if (throwable instanceof PluginBaseException) {
+            this.cause = (PluginBaseException) throwable;
+        }
+        this.languageMessage = Message.bundleMessage(Message.createStaticMessage(message));
+    }
+
+    /**
      * Creates a PluginBase exception with the given bundled message that was caused by another PluginBase exception.
      * <p/>
      * This other exception will be retrievable via {@link #getCauseException()} and {@link #getCause()}.
@@ -56,6 +79,19 @@ public class PluginBaseException extends Exception {
      */
     public PluginBaseException(@NotNull final BundledMessage languageMessage, @Nullable final PluginBaseException cause) {
         this(languageMessage, (Throwable) cause);
+        this.cause = cause;
+    }
+
+    /**
+     * Creates a PluginBase exception with the given static message that was caused by another PluginBase exception.
+     * <p/>
+     * This other exception will be retrievable via {@link #getCauseException()} and {@link #getCause()}.
+     *
+     * @param message the static message to use for this exception.
+     * @param cause the cause exception.
+     */
+    public PluginBaseException(@NotNull String message, @Nullable final PluginBaseException cause) {
+        this(message, (Throwable) cause);
         this.cause = cause;
     }
 
