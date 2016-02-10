@@ -6,16 +6,6 @@ package pluginbase.messages;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.logging.Logging;
 import org.jetbrains.annotations.NotNull;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Enumeration;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * A localization key and its defaults.
@@ -24,62 +14,7 @@ import java.util.regex.Pattern;
  * <br/>
  * The default is what should populate the localization file by default.
  */
-public final class Message {
-
-    static {
-        // Load the theme from theme.xml
-        final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        try {
-            Enumeration<URL> urls = Messages.class.getClassLoader().getResources(Theme.getThemeResource());
-            if (urls.hasMoreElements()) {
-                try {
-                    DocumentBuilder documentBuilder = dbFactory.newDocumentBuilder();
-                    try {
-                        Theme.loadTheme(documentBuilder.parse(urls.nextElement().openStream()));
-                    } catch (SAXException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } catch (ParserConfigurationException e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @NotNull
-    private final String def;
-
-    @Nullable
-    private final String key;
-
-    private final int argCount;
-
-    private Message(@Nullable final String key, @NotNull final String def) {
-        this.key = key;
-        this.def = Theme.parseMessage(def);
-        this.argCount = countArgs(this.def);
-    }
-
-    Message(@NotNull final String def) {
-        this.key = null;
-        this.def = Theme.parseMessage(def);
-        this.argCount = countArgs(this.def);
-    }
-
-    private static final Pattern PATTERN = Pattern.compile("%s");
-
-    static int countArgs(@NotNull final String def) {
-        final Matcher matcher = PATTERN.matcher(def);
-        int count = 0;
-        while (matcher.find()) {
-            count++;
-        }
-        return count;
-    }
+public interface Message {
 
     /**
      * Creates a new localized message.
@@ -95,13 +30,13 @@ public final class Message {
      * @param additionalLines This param allows additional lines to be added to the message. This is optional and
      *                        multiline messages can be given in the original parameter by using line break characters.
      */
-    public static Message createMessage(@NotNull final String key, @NotNull final String def, final String... additionalLines) {
+    static Message createMessage(@NotNull final String key, @NotNull final String def, final String... additionalLines) {
         StringBuilder buffer = new StringBuilder();
         buffer.append(def);
         for (String line : additionalLines) {
             buffer.append("\n").append(line);
         }
-        return new Message(key, buffer.toString());
+        return new DefaultMessage(key, buffer.toString());
     }
 
     /**
@@ -114,13 +49,13 @@ public final class Message {
      * @param additionalLines This param allows additional lines to be added to the message. This is optional and
      *                        multiline messages can be given in the original parameter by using line break characters.
      */
-    public static Message createStaticMessage(@NotNull final String message, final String... additionalLines) {
+    static Message createStaticMessage(@NotNull final String message, final String... additionalLines) {
         StringBuilder buffer = new StringBuilder();
         buffer.append(message);
         for (String line : additionalLines) {
             buffer.append("\n").append(line);
         }
-        return new Message(null, buffer.toString());
+        return new DefaultMessage(null, buffer.toString());
     }
 
     /**
@@ -132,7 +67,7 @@ public final class Message {
      * @param message The localization message for the bundle.
      * @param args The arguments for the bundled message.
      */
-    public static BundledMessage bundleMessage(@NotNull final Message message, @NotNull final Object... args) {
+    static BundledMessage bundleMessage(@NotNull final Message message, @NotNull final Object... args) {
         if (args.length != message.getArgCount()) {
             Logging.warning("Bundled message created without appropriate number of arguments!");
             for (final StackTraceElement e : Thread.currentThread().getStackTrace()) {
@@ -148,9 +83,7 @@ public final class Message {
      * @return The default non-localized messages.
      */
     @NotNull
-    public String getDefault() {
-        return def;
-    }
+    String getDefault();
 
     /**
      * The localization key for the message.
@@ -158,9 +91,7 @@ public final class Message {
      * @return The localization key for the message.
      */
     @Nullable
-    public String getKey() {
-        return key;
-    }
+    String getKey();
 
     /**
      * Gets the number of expected arguments for this message.
@@ -170,16 +101,5 @@ public final class Message {
      *
      * @return the number of expected arguments for this message.
      */
-    public int getArgCount() {
-        return argCount;
-    }
-
-    @Override
-    public String toString() {
-        return "Message{" +
-                "def='" + def + '\'' +
-                ", key='" + key + '\'' +
-                ", argCount=" + argCount +
-                '}';
-    }
+    int getArgCount();
 }
