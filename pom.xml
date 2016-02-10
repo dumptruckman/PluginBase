@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.number>UNKNOWN</project.build.number>
         <!-- PluginBase Version -->
-        <pluginbase.version>1.5.1-SNAPSHOT</pluginbase.version>
+        <pluginbase.version>1.5.2-SNAPSHOT</pluginbase.version>
         <!-- PluginBase Module Versions -->
         <plugin.version>${pluginbase.version}</plugin.version>
         <commands.version>0.1-SNAPSHOT</commands.version>
@@ -201,6 +201,9 @@
                             <exclude>**/TestCommandSender.java</exclude>
                             <exclude>**/TestInstanceCreator.java</exclude>
                         </excludes>
+                        <skipTests>false</skipTests>
+                        <testFailureIgnore>true</testFailureIgnore>
+                        <forkMode>once</forkMode>
                     </configuration>
                     <dependencies>
                         <dependency>
