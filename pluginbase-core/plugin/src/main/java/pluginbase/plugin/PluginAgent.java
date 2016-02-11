@@ -157,9 +157,9 @@ public abstract class PluginAgent<P> {
             configFile = new File(getDataFolder(), "config" + getConfigType().getFileExtension());
         }
         if (getConfigType() == ConfigType.HOCON) {
-            configFile = new File(getDataFolder(), "database.conf");
+            sqlConfigFile = new File(getDataFolder(), "database.conf");
         } else {
-            configFile = new File(getDataFolder(), "database_config" + getConfigType().getFileExtension());
+            sqlConfigFile = new File(getDataFolder(), "database_config" + getConfigType().getFileExtension());
         }
 
         getPluginBase().onLoad();
