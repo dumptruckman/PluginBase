@@ -17,7 +17,6 @@ import pluginbase.debugsession.DebugSessionManager;
 import pluginbase.jdbc.DatabaseSettings;
 import pluginbase.jdbc.JdbcAgent;
 import pluginbase.logging.PluginLogger;
-import pluginbase.messages.Message;
 import pluginbase.messages.Messages;
 import pluginbase.messages.PluginBaseException;
 import pluginbase.messages.messaging.SendablePluginBaseException;
