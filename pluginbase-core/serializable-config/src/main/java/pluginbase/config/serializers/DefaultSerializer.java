@@ -106,11 +106,11 @@ class DefaultSerializer implements Serializer<Object> {
         Collection collection = CollectionSerializer.createCollection(asClass, data.size());
         for (Object object : data) {
             Class collectionType = field.getCollectionType();
-            if (collectionType != null && !collectionType.equals(Object.class)) {
-                collection.add(SerializableConfig.deserializeAs(object, field.getCollectionType(), serializerSet));
-            } else {
+            //if (collectionType != null && !collectionType.equals(Object.class)) {
+            //    collection.add(SerializableConfig.deserializeAs(object, field.getCollectionType(), serializerSet));
+            //} else {
                 collection.add(SerializableConfig.deserialize(object, serializerSet));
-            }
+            //}
         }
         return collection;
     }
@@ -119,11 +119,11 @@ class DefaultSerializer implements Serializer<Object> {
         Map map = MapSerializer.createMap(asClass, data.size());
         for (Map.Entry entry : data.entrySet()) {
             Class mapType = field.getMapType();
-            if (mapType != null && !mapType.equals(Object.class)) {
-                map.put(SerializableConfig.deserialize(entry.getKey(), serializerSet), SerializableConfig.deserializeAs(entry.getValue(), mapType, serializerSet));
-            } else {
+            //if (mapType != null && !mapType.equals(Object.class)) {
+            //    map.put(SerializableConfig.deserialize(entry.getKey(), serializerSet), SerializableConfig.deserializeAs(entry.getValue(), mapType, serializerSet));
+            //} else {
                 map.put(SerializableConfig.deserialize(entry.getKey(), serializerSet), SerializableConfig.deserialize(entry.getValue(), serializerSet));
-            }
+            //}
         }
         return map;
     }
