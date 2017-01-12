@@ -3,8 +3,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 package pluginbase.bukkit.minecraft;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import pluginbase.minecraft.BasePlayer;
+import pluginbase.minecraft.location.BlockCoordinates;
+import pluginbase.minecraft.location.Coordinates;
 import pluginbase.minecraft.location.Vector;
 import pluginbase.util.MinecraftTools;
 import org.bukkit.command.CommandSender;
@@ -94,7 +99,7 @@ public class BukkitTools extends MinecraftTools {
      * @return The Bukkit vector.
      */
     @NotNull
-    public static org.bukkit.util.Vector convertVector(final Vector v) {
+    public static org.bukkit.util.Vector convertVector(@NotNull final Vector v) {
         return new org.bukkit.util.Vector(v.getX(), v.getY(), v.getZ());
     }
 }

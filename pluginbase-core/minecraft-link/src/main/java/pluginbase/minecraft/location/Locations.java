@@ -3,6 +3,8 @@ package pluginbase.minecraft.location;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.UUID;
+
 /**
  * A helper class for creating and copying a variety of location designating objects.
  */
@@ -32,38 +34,38 @@ public class Locations {
     }
 
     @NotNull
-    public static BlockCoordinates getBlockCoordinates(@NotNull final String world,
+    public static BlockCoordinates getBlockCoordinates(@NotNull final String world, @NotNull final UUID worldUUID,
                                                        final int x, final int y, final int z) {
-        return new DefaultWorldCoordinates(world, (double) x, (double) y, (double) z, 0F, 0F);
+        return new DefaultWorldCoordinates(world, worldUUID, (double) x, (double) y, (double) z, 0F, 0F);
     }
 
     @NotNull
-    public static BlockCoordinates getBlockCoordinates(@NotNull final String world,
+    public static BlockCoordinates getBlockCoordinates(@NotNull final String world, @NotNull final UUID worldUUID,
                                                        @NotNull final Coordinates coords) {
         // using the double coordinate getters instead of the getBlock_() methods because it really
         // doesn't matter if we do it now or when somebody calls getBlock_() on the returned object
-        return new DefaultWorldCoordinates(world, coords.getX(), coords.getY(), coords.getZ(), 0F, 0F);
+        return new DefaultWorldCoordinates(world, worldUUID, coords.getX(), coords.getY(), coords.getZ(), 0F, 0F);
     }
 
     @NotNull
-    public static EntityCoordinates getEntityCoordinates(@NotNull final String world,
+    public static EntityCoordinates getEntityCoordinates(@NotNull final String world, @NotNull final UUID worldUUID,
                                                          final double x, final double y, final double z,
                                                          final float pitch, final float yaw) {
-        return new DefaultWorldCoordinates(world, x, y, z, pitch, yaw);
+        return new DefaultWorldCoordinates(world, worldUUID, x, y, z, pitch, yaw);
     }
 
     @NotNull
     public static EntityCoordinates getEntityCoordinates(@NotNull final BlockCoordinates blockCoords,
                                                          final float pitch, final float yaw) {
-        return new DefaultWorldCoordinates(blockCoords.getWorld(), blockCoords.getX(), blockCoords.getY(),
-                blockCoords.getZ(), pitch, yaw);
+        return new DefaultWorldCoordinates(blockCoords.getWorld(), blockCoords.getWorldUUID(), blockCoords.getX(),
+                blockCoords.getY(), blockCoords.getZ(), pitch, yaw);
     }
 
     @NotNull
-    public static EntityCoordinates getEntityCoordinates(@NotNull final String world,
+    public static EntityCoordinates getEntityCoordinates(@NotNull final String world, @NotNull final UUID worldUUID,
                                                          @NotNull final FacingCoordinates facingCoords) {
-        return new DefaultWorldCoordinates(world, facingCoords.getX(), facingCoords.getY(), facingCoords.getZ(),
-                facingCoords.getPitch(), facingCoords.getYaw());
+        return new DefaultWorldCoordinates(world, worldUUID, facingCoords.getX(), facingCoords.getY(),
+                facingCoords.getZ(), facingCoords.getPitch(), facingCoords.getYaw());
     }
 
     @NotNull
@@ -79,15 +81,17 @@ public class Locations {
 
     @NotNull
     public static MutableBlockCoordinates getMutableBlockCoordinates(@NotNull final String world,
+                                                                     @NotNull final UUID worldUUID,
                                                                      final int x, final int y, final int z) {
-        return new DefaultMutableWorldCoordinates(world, (double) x, (double) y, (double) z, 0F, 0F);
+        return new DefaultMutableWorldCoordinates(world, worldUUID, (double) x, (double) y, (double) z, 0F, 0F);
     }
 
     @NotNull
     public static MutableEntityCoordinates getMutableEntityCoordinates(@NotNull final String world,
+                                                                       @NotNull final UUID worldUUID,
                                                                        final double x, final double y, final double z,
                                                                        final float pitch, final float yaw) {
-        return new DefaultMutableWorldCoordinates(world, x, y, z, pitch, yaw);
+        return new DefaultMutableWorldCoordinates(world, worldUUID, x, y, z, pitch, yaw);
     }
 
     public static boolean equal(@Nullable final Coordinates a, @Nullable final Coordinates b) {

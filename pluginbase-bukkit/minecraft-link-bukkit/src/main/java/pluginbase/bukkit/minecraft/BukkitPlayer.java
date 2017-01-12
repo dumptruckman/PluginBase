@@ -31,7 +31,7 @@ class BukkitPlayer extends AbstractBukkitCommandSender<Player> implements Entity
     @Override
     public EntityCoordinates getLocation() {
         Location l = getSender().getLocation();
-        return Locations.getEntityCoordinates(l.getWorld().getName(),
+        return Locations.getEntityCoordinates(l.getWorld().getName(), l.getWorld().getUID(),
                 l.getX(), l.getY(), l.getZ(), l.getPitch(), l.getYaw());
     }
 

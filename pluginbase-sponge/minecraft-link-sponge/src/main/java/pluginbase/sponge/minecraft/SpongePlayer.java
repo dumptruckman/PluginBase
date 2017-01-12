@@ -13,6 +13,7 @@ import pluginbase.minecraft.location.Locations;
 import pluginbase.minecraft.location.Vector;
 
 import java.util.Optional;
+import java.util.UUID;
 
 // TODO make this class safer... Location stuff is wacky because of how Extents work
 public class SpongePlayer extends AbstractSpongeCommandSource<Player> implements Entity {
@@ -37,11 +38,13 @@ public class SpongePlayer extends AbstractSpongeCommandSource<Player> implements
     public EntityCoordinates getLocation() {
         Location l = getSender().getLocation();
         String worldName = "";
+        UUID worldUUID = l.getExtent().getUniqueId();
         if (l.getExtent() instanceof World) {
             worldName = ((World) l.getExtent()).getName();
+
         }
         Vector3d r = getSender().getRotation();
-        return Locations.getEntityCoordinates(worldName, l.getX(), l.getY(), l.getZ(), (float) r.getX(), (float) r.getY());
+        return Locations.getEntityCoordinates(worldName, worldUUID, l.getX(), l.getY(), l.getZ(), (float) r.getX(), (float) r.getY());
     }
 
     /**

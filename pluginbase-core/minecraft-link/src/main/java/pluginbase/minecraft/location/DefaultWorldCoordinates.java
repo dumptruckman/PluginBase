@@ -2,18 +2,24 @@ package pluginbase.minecraft.location;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
+
 class DefaultWorldCoordinates extends DefaultCoordinates implements EntityCoordinates, BlockCoordinates {
 
     @NotNull
+    @Deprecated
     private final String world;
+    @NotNull
+    private final UUID worldUUID;
 
     private final int blockX;
     private final int blockY;
     private final int blockZ;
 
-    DefaultWorldCoordinates(@NotNull final String world, final double x, final double y, final double z, final float pitch, final float yaw) {
+    DefaultWorldCoordinates(@NotNull final String world, @NotNull UUID worldUUID, final double x, final double y, final double z, final float pitch, final float yaw) {
         super(x, y, z, pitch, yaw);
         this.world = world;
+        this.worldUUID = worldUUID;
         this.blockX = super.getBlockX();
         this.blockY = super.getBlockY();
         this.blockZ = super.getBlockZ();
@@ -24,6 +30,12 @@ class DefaultWorldCoordinates extends DefaultCoordinates implements EntityCoordi
     @Override
     public String getWorld() {
         return world;
+    }
+
+    @NotNull
+    @Override
+    public UUID getWorldUUID() {
+        return worldUUID;
     }
 
     /** {@inheritDoc} */
@@ -62,19 +74,19 @@ class DefaultWorldCoordinates extends DefaultCoordinates implements EntityCoordi
 
     @Override
     public DefaultWorldCoordinates getMidpoint(@NotNull final Coordinates o) {
-        return new DefaultWorldCoordinates(getWorld(), (getX() + o.getX()) / 2, (getY() + o.getY()) / 2, (getZ() + o.getZ()) / 2, getPitch(), getYaw());
+        return new DefaultWorldCoordinates(getWorld(), getWorldUUID(), (getX() + o.getX()) / 2, (getY() + o.getY()) / 2, (getZ() + o.getZ()) / 2, getPitch(), getYaw());
     }
 
     /** {@inheritDoc} */
     @Override
     public DefaultWorldCoordinates immutableCopy() {
-        return new DefaultWorldCoordinates(getWorld(), getX(), getY(), getZ(), getPitch(), getYaw());
+        return new DefaultWorldCoordinates(getWorld(), getWorldUUID(), getX(), getY(), getZ(), getPitch(), getYaw());
     }
 
     /** {@inheritDoc} */
     @Override
     public DefaultMutableWorldCoordinates mutableCopy() {
-        return new DefaultMutableWorldCoordinates(getWorld(), getX(), getY(), getZ(), getPitch(), getYaw());
+        return new DefaultMutableWorldCoordinates(getWorld(), getWorldUUID(), getX(), getY(), getZ(), getPitch(), getYaw());
     }
 
     /** {@inheritDoc} */
