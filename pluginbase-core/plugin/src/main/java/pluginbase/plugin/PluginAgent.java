@@ -263,7 +263,7 @@ public abstract class PluginAgent<P> {
                 getPluginBase().getCommandHandler().registerCommand(clazz);
             }
         }
-        commandClassesToRegister = null;
+        commandClassesToRegister.clear();
     }
 
     /**
