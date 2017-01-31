@@ -22,6 +22,7 @@
         <module>minecraft-link-bukkit</module>
         <module>commands-bukkit</module>
         <module>plugin-bukkit</module>
+        <module>pluginbase-api-plugin-bukkit</module>
         <module>testbukkitplugin</module>
     </modules>
 
