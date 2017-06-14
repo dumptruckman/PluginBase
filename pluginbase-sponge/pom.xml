@@ -4,7 +4,7 @@
     <parent>
         <artifactId>PluginBase</artifactId>
         <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
-        <version>1.5.2-SNAPSHOT</version>
+        <version>1.5.2</version>
     </parent>
     <artifactId>PluginBase-Sponge</artifactId>
     <packaging>pom</packaging>

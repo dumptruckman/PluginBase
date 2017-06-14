@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
     <artifactId>PluginBase</artifactId>
-    <version>1.5.2-SNAPSHOT</version>
+    <version>1.5.2</version>
     <name>PluginBase</name>
     <url>http://ci.onarandombox.org</url>
     <description>dumptruckman's plugin template and tools</description>
@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.build.number>UNKNOWN</project.build.number>
         <!-- PluginBase Version -->
-        <pluginbase.version>1.5.2-SNAPSHOT</pluginbase.version>
+        <pluginbase.version>1.5.2</pluginbase.version>
         <!-- PluginBase Module Versions -->
         <plugin.version>${pluginbase.version}</plugin.version>
         <commands.version>0.1-SNAPSHOT</commands.version>
