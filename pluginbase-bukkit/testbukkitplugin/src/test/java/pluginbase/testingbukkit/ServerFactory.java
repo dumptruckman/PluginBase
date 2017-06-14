@@ -27,7 +27,7 @@ public final class ServerFactory {
 
     private static class ServerData {
         private List<World> worlds = new ArrayList<World>();
-        private List<Player> onlinePlayers = new ArrayList<Player>();
+        private Collection<? extends Player> onlinePlayers = new ArrayList<Player>();
         private boolean allowEnd = true;
         private boolean allowNether = true;
 
@@ -58,9 +58,9 @@ public final class ServerFactory {
         when(server.getName()).thenReturn("MockBukkit");
         when(server.getVersion()).thenReturn("0.0.1");
         when(server.getBukkitVersion()).thenReturn("1.8.7-R0.1-SNAPSHOT");
-        when(server.getOnlinePlayers()).thenAnswer(new Answer<Collection<Player>>() {
+        when(server.getOnlinePlayers()).thenAnswer(new Answer<Collection<? extends Player>>() {
             @Override
-            public Collection<Player> answer(InvocationOnMock invocationOnMock) throws Throwable {
+            public Collection<? extends Player> answer(InvocationOnMock invocationOnMock) throws Throwable {
                 return data.onlinePlayers;
             }
         });
@@ -241,7 +241,6 @@ public final class ServerFactory {
         when(server.getOnlineMode()).thenReturn(true);
         when(server.getAllowFlight()).thenReturn(true);
         when(server.isHardcore()).thenReturn(false);
-        when(server.useExactLoginLocation()).thenReturn(true);
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -274,7 +273,7 @@ public final class ServerFactory {
         when(server.isPrimaryThread()).thenReturn(true);
         when(server.getMotd()).thenReturn("Hello, world");
         when(server.getShutdownMessage()).thenReturn("Server shutting down...");
-        when(server._INVALID_getOnlinePlayers()).thenReturn(data.onlinePlayers.toArray(new Player[data.onlinePlayers.size()]));
+        doReturn(data.onlinePlayers).when(server).getOnlinePlayers();
 
         return server;
     }

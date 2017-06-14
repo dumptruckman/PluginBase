@@ -4,6 +4,7 @@ import org.bukkit.Server;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.bukkit.BukkitPluginAgent;
 import pluginbase.testplugin.Language;
@@ -30,8 +31,8 @@ public class TestPlugin extends JavaPlugin {
 
     BukkitPluginAgent pluginAgent;
 
-    TestPlugin(PluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file) {
-        super(loader, server, description, dataFolder, file);
+    TestPlugin(JavaPluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
         init();
     }
 
