@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
         <artifactId>PluginBase-Sponge</artifactId>
-        <version>1.5.3</version>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
     <artifactId>Permissions-Sponge</artifactId>
     <version>${permissions.version}</version>

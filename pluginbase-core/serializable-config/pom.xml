@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
         <artifactId>PluginBase-Core</artifactId>
-        <version>1.5.3</version>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
     <artifactId>Serializable-Config</artifactId>
     <version>${serializable-config.version}</version>

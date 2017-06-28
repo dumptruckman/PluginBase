@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.dumptruckman.minecraft.pluginbase</groupId>
         <artifactId>PluginBase-Bukkit</artifactId>
-        <version>1.5.3</version>
+        <version>1.6.0-SNAPSHOT</version>
     </parent>
     <artifactId>PluginBase-API-Plugin-Bukkit</artifactId>
     <version>${pluginbase.version}</version>
