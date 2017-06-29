@@ -11,14 +11,14 @@ class LocaleSerializer implements Serializer<Locale> {
     @Nullable
     @Override
     public Object serialize(@Nullable Locale locale, @NotNull SerializerSet serializerSet) {
-        return locale != null ? locale.toString() : MessageProvider.DEFAULT_LOCALE.toString();
+        return locale != null ? locale.toString() : MessageProvider.DEFAULT_LOCALE.getValue().toString();
     }
 
     @Nullable
     @Override
     public Locale deserialize(@Nullable Object object, @NotNull Class wantedType, @NotNull SerializerSet serializerSet) throws IllegalArgumentException {
         if (object == null) {
-            return MessageProvider.DEFAULT_LOCALE;
+            return MessageProvider.DEFAULT_LOCALE.getValue();
         }
         String[] split = object.toString().split("_");
         switch (split.length) {

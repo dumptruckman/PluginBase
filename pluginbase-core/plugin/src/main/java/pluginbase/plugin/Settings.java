@@ -31,7 +31,7 @@ public class Settings extends PropertiesWrapper {
     @Comment({"This is the locale you wish to use for messages.", "The general format is a 2 character language code followed by an underscore and a 2 character capitalized country code"})
     @SerializeWith(LocaleSerializer.class)
     @NotNull
-    private Locale locale = MessageProvider.DEFAULT_LOCALE;
+    private Locale locale = MessageProvider.DEFAULT_LOCALE.getValue();
 
     public Settings(@NotNull PluginBase plugin) {
         this.debugLevel.setLogger(plugin.getLog());
@@ -114,14 +114,14 @@ public class Settings extends PropertiesWrapper {
         @Nullable
         @Override
         public Object serialize(@Nullable Locale locale, @NotNull SerializerSet serializerSet) {
-            return locale != null ? locale.toString() : MessageProvider.DEFAULT_LOCALE.toString();
+            return locale != null ? locale.toString() : MessageProvider.DEFAULT_LOCALE.getValue().toString();
         }
 
         @Nullable
         @Override
         public Locale deserialize(@Nullable Object object, @NotNull Class wantedType, @NotNull SerializerSet serializerSet) throws IllegalArgumentException {
             if (object == null) {
-                return MessageProvider.DEFAULT_LOCALE;
+                return MessageProvider.DEFAULT_LOCALE.getValue();
             }
             String[] split = object.toString().split("_");
             switch (split.length) {

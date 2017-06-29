@@ -65,7 +65,7 @@ public class BasicTest extends PluginTest {
 
     @Test
     public void testLocaleChange() throws Exception {
-        assertEquals(MessageProvider.DEFAULT_LOCALE, plugin.getSettings().getLocale());
+        assertEquals(MessageProvider.DEFAULT_LOCALE.getValue(), plugin.getSettings().getLocale());
         DataSource dataSource = HoconDataSource.builder().setFile(new File(plugin.getDataFolder(), "plugin.conf")).build();
         Settings settings = dataSource.load(TestConfig.class);
         assertNotNull(settings);
