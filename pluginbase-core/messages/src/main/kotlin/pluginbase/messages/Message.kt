@@ -61,7 +61,7 @@ class Message private constructor (key: String?, default: String) {
                 Logging.warning(e.toString())
             }
         }
-        return BundledMessage(this, *args)
+        return BundledMessage(this, args)
     }
 
     override fun toString(): String {
