@@ -76,7 +76,8 @@ class DefaultMessageProvider implements MessageProvider {
                 if (node.isVirtual()) {
                     node.setValue(message.getDefault());
                     getLog().finest("Created new message in language file: %s", message);
-                } else if(DefaultMessage.countArgs(node.getString()) != message.getArgCount()) {
+                } else if(Message.countArgs(node.getString())
+                        != message.getArgCount()) {
                     node.setValue(message.getDefault());
                     getLog().warning("The message for '%s' in the current language file does not have the correct amount of arguments (%s).  The default will be used.", key, message.getArgCount());
                 }

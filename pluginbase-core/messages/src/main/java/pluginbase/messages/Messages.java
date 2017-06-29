@@ -56,7 +56,7 @@ public class Messages {
     }
 
     /** A message with no text. */
-    @NotNull public final static Message BLANK = new DefaultMessage("");
+    @NotNull public final static Message BLANK = Message.createStaticMessage("");
 
     /** Used for wrapping regular exceptions into a PluginBaseException. */
     @NotNull public final static Message EXCEPTION = Message.createMessage("generic.exception", Theme.PLAIN + "%s");
