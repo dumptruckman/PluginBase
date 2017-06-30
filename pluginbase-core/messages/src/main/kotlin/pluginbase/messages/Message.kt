@@ -147,7 +147,7 @@ class Message private constructor (key: String?, default: String) {
         private val PATTERN = Pattern.compile("%s")
 
         @JvmStatic
-        protected fun countArgs(def: String): Int {
+        internal fun countArgs(def: String): Int {
             val matcher = PATTERN.matcher(def)
             var count = 0
             while (matcher.find()) {
