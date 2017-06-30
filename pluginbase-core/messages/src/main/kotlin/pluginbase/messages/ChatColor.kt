@@ -109,8 +109,10 @@ enum class ChatColor constructor(
      */
     RESET('r', 0x15);
 
+    private val stringForm by lazy { "$COLOR_CHAR$char" }
+
     override fun toString(): String {
-        return "$COLOR_CHAR$char"
+        return stringForm
     }
 
     /**
