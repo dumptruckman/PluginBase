@@ -16,7 +16,7 @@ import java.util.Locale
  * @return The formatted message.
  */
 @Throws(IllegalFormatException::class)
-fun formatMessage(locale: Locale, message: String, vararg args: Any): String {
+fun formatMessage(locale: Locale, message: String, vararg args: Any?): String {
     var result = message
     result = ChatColor.translateAlternateColorCodes('&', result)
     // TODO need a fix for this when language vars are not passed in as args.

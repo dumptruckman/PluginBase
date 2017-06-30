@@ -54,7 +54,7 @@ class Message private constructor (key: String?, default: String) {
      *
      * @param args The arguments for the bundled message.
      */
-    fun bundle(vararg args: Any): BundledMessage {
+    fun bundle(vararg args: Any?): BundledMessage {
         if (args.size != argCount) {
             Logging.warning("Bundled message created without appropriate number of arguments!")
             for (e in Thread.currentThread().stackTrace) {
@@ -116,7 +116,7 @@ class Message private constructor (key: String?, default: String) {
         @JvmStatic
         @Deprecated("This method now has a non-static method that is preferred.",
                 ReplaceWith("message.bundle(*args)"))
-        fun bundleMessage(message: Message, vararg args: Any): BundledMessage {
+        fun bundleMessage(message: Message, vararg args: Any?): BundledMessage {
             return message.bundle(*args)
         }
 

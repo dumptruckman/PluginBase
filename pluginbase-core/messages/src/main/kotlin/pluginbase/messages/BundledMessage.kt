@@ -23,4 +23,4 @@ class BundledMessage internal constructor(
          *
          * @return the arguments for the bundled message.
          */
-        val args: Array<out Any>)
+        val args: Array<out Any?>)

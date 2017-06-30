@@ -21,7 +21,7 @@ interface MessageProvider {
      * @param args arguments for String.format().
      * @return the localized message.
      */
-    fun getLocalizedMessage(key: Message, vararg args: Any): String
+    fun getLocalizedMessage(key: Message, vararg args: Any?): String
 
     /**
      * Returns a message (as [String]) for the specified key (as [pluginbase.messages.Messages]).
@@ -32,7 +32,7 @@ interface MessageProvider {
      * @param args arguments for String.format().
      * @return the localized message.
      */
-    fun getLocalizedMessage(key: Array<Any>, vararg args: Any): String
+    fun getLocalizedMessage(key: Array<Any>, vararg args: Any?): String
 
     /**
      * Returns the plugin this message provider provides messages for.
