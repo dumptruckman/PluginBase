@@ -6,7 +6,6 @@ package pluginbase.messages
 import org.xml.sax.SAXException
 import pluginbase.logging.Logging
 import java.io.IOException
-import java.util.regex.Pattern
 import javax.xml.parsers.DocumentBuilderFactory
 import javax.xml.parsers.ParserConfigurationException
 
@@ -74,7 +73,7 @@ internal class DefaultMessage internal constructor (key: String?, default: Strin
             // Load the theme from theme.xml
             val dbFactory = DocumentBuilderFactory.newInstance()
             try {
-                val urls = Messages::class.java.classLoader.getResources(Theme.getThemeResource())
+                val urls = Messages::class.java.classLoader.getResources(Theme.themeResource)
                 if (urls.hasMoreElements()) {
                     try {
                         val documentBuilder = dbFactory.newDocumentBuilder()
