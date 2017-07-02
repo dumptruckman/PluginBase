@@ -181,14 +181,14 @@ public abstract class CommandHandler {
     }
 
     /** Message used when a users tries to confirm a command but has not queued one or the queued one has expired. */
-    public static final Message NO_QUEUED_COMMANDS = Message.createMessage("commands.queued.none_queued",
+    public static final Message NO_QUEUED_COMMANDS = Messages.createMessage("commands.queued.none_queued",
             Theme.SORRY + "Sorry, but you have not used any commands that require confirmation.");
     /** Default message used when the user must confirm a queued command. */
-    public static final Message MUST_CONFIRM = Message.createMessage("commands.queued.must_confirm",
+    public static final Message MUST_CONFIRM = Messages.createMessage("commands.queued.must_confirm",
             Theme.DO_THIS + "You must confirm the previous command by typing " + Theme.CMD_HIGHLIGHT + "%s"
                     + "\n" + Theme.INFO + "You have %s to comply.");
 
-    public static final Message PERMISSION_DENIED = Message.createMessage("commands.permission-denied",
+    public static final Message PERMISSION_DENIED = Messages.createMessage("commands.permission-denied",
             Theme.SORRY + "I'm sorry, but you do not have permission to perform this command. Please contact the server administrators if you believe that this is in error.");
 
     /**
@@ -316,19 +316,19 @@ public abstract class CommandHandler {
         return commandTree.joinArgsForKnownCommands(split);
     }
 
-    public static final Message TOO_FEW_ARGUMENTS = Message.createMessage("commands.usage.too_few_arguments",
+    public static final Message TOO_FEW_ARGUMENTS = Messages.createMessage("commands.usage.too_few_arguments",
             Theme.ERROR + "Too few arguments.");
-    public static final Message TOO_MANY_ARGUMENTS = Message.createMessage("commands.usage.too_many_arguments",
+    public static final Message TOO_MANY_ARGUMENTS = Messages.createMessage("commands.usage.too_many_arguments",
             Theme.ERROR + "Too many arguments.");
-    public static final Message UNKNOWN_FLAG = Message.createMessage("commands.usage.unknown_flag", Theme.ERROR + "Unknown flag: " + Theme.VALUE + "%s");
-    public static final Message USAGE_ERROR = Message.createMessage("commands.usage.usage_error", Theme.ERROR + "Usage error...");
+    public static final Message UNKNOWN_FLAG = Messages.createMessage("commands.usage.unknown_flag", Theme.ERROR + "Unknown flag: " + Theme.VALUE + "%s");
+    public static final Message USAGE_ERROR = Messages.createMessage("commands.usage.usage_error", Theme.ERROR + "Usage error...");
 
-    public static final Message VALUE_FLAG_ALREADY_GIVEN = Message.createMessage("commands.usage.value_flag_already_given",
+    public static final Message VALUE_FLAG_ALREADY_GIVEN = Messages.createMessage("commands.usage.value_flag_already_given",
             Theme.ERROR + "Value flag '" + Theme.VALUE + "%s" + Theme.ERROR + "' already given");
-    public static final Message NO_VALUE_FOR_VALUE_FLAG = Message.createMessage("commands.usage.must_specify_value_for_value_flag",
+    public static final Message NO_VALUE_FOR_VALUE_FLAG = Messages.createMessage("commands.usage.must_specify_value_for_value_flag",
             Theme.ERROR + "No value specified for the '" + Theme.VALUE + "-%s" + Theme.ERROR + "' flag.");
 
-    public static final Message SUB_COMMAND_LIST = Message.createMessage("commands.sub_command_list",
+    public static final Message SUB_COMMAND_LIST = Messages.createMessage("commands.sub_command_list",
             Theme.INFO + "The following is a list of sub-commands for '" + Theme.VALUE + "%s" + Theme.INFO + "':\n%s");
 
     /**

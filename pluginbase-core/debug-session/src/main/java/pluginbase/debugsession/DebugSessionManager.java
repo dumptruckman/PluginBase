@@ -3,9 +3,9 @@ package pluginbase.debugsession;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.messages.Message;
+import pluginbase.messages.Messages;
 import pluginbase.messages.Theme;
 import pluginbase.messages.messaging.MessageReceiver;
-import pluginbase.messages.messaging.MessagerDebugSubscription;
 import pluginbase.messages.messaging.Messaging;
 
 import java.util.HashMap;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class DebugSessionManager {
 
-    public static final Message DEBUG_SESSION_REMINDER = Message.createMessage("debugsession.reminder",
+    public static final Message DEBUG_SESSION_REMINDER = Messages.createMessage("debugsession.reminder",
             Theme.INFO + "Your debug session is still running. Don't forget to stop it!");
 
     @NotNull

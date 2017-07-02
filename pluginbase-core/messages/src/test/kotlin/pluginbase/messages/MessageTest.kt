@@ -4,7 +4,6 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.mockito.cglib.core.Local
 import pluginbase.logging.Logging
 import pluginbase.logging.PluginLogger
 
@@ -18,15 +17,22 @@ class MessageTest {
     val testMessage = "this is my default message: %s"
 
     internal enum class TestEnumMessages constructor(key: String, defaultMessage: String,
-                                                     vararg additionalLines: String) : LocalizablePlugin {
+                                                     vararg additionalLines: String) : LocalizablePlugin, Message {
         IN_GAME_ONLY("commands.in_game_only", "To use from console, use \"-p <name>\" to specify a player"),
         INVALID_AMOUNT("commands.invalid_amount", "'%s' is not a valid amount!");
 
-        val message: Message = Message.createMessage(key, defaultMessage, *additionalLines)
+        val message: Message = Messages.createMessage(key, defaultMessage, *additionalLines)
 
         override fun getLog(): PluginLogger {
             return Logging.getLogger()
         }
+
+        override val default: String
+            get() = message.default
+        override val key: Array<*>?
+            get() = message.key
+        override val argCount: Int
+            get() = message.argCount
     }
 
     @Before
@@ -49,7 +55,7 @@ class MessageTest {
     @Test
     @Throws(Exception::class)
     fun testCreateMessage() {
-        val message = Message.createMessage(testKey, testMessage)
+        val message = Messages.createMessage(testKey, testMessage)
         Assert.assertEquals(Arrays.toString(arrayOf<Any>(testKey)), Arrays.toString(message.key))
         Assert.assertEquals(testMessage, message.default)
     }
@@ -57,7 +63,7 @@ class MessageTest {
     @Test
     @Throws(Exception::class)
     fun testBundleMessage() {
-        val message = Message.createMessage(testKey, testMessage)
+        val message = Messages.createMessage(testKey, testMessage)
         //Message.bundleMessage()
     }
 }

@@ -6,6 +6,7 @@ package pluginbase.plugin.command.builtin;
 import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
 import pluginbase.messages.Message;
+import pluginbase.messages.Messages;
 import pluginbase.messages.Theme;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 )
 public class InfoCommand extends BuiltInCommand {
 
-    public final static Message INFO_HELP = Message.createMessage("cmd.info.help", Theme.HELP + "Gives some basic information about this plugin.");
+    public final static Message INFO_HELP = Messages.createMessage("cmd.info.help", Theme.HELP + "Gives some basic information about this plugin.");
 
     private final Perm perm;
 

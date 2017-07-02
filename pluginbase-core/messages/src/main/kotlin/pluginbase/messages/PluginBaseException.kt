@@ -45,7 +45,7 @@ open class PluginBaseException : Exception {
      * @param message the exception message to send.
      */
     constructor(message: String) : super(message) {
-        this.bundledMessage = Message.createStaticMessage(message).bundle()
+        this.bundledMessage = Messages.createStaticMessage(message).bundle()
     }
 
     /**
@@ -70,7 +70,7 @@ open class PluginBaseException : Exception {
         if (throwable is PluginBaseException) {
             this.causeException = throwable
         }
-        this.bundledMessage = Message.createStaticMessage(message).bundle()
+        this.bundledMessage = Messages.createStaticMessage(message).bundle()
     }
 
     /**

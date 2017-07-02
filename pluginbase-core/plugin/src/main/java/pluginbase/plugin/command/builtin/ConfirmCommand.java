@@ -7,6 +7,7 @@ import pluginbase.command.CommandContext;
 import pluginbase.command.CommandHandler;
 import pluginbase.command.CommandInfo;
 import pluginbase.messages.Message;
+import pluginbase.messages.Messages;
 import pluginbase.messages.Theme;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 )
 public class ConfirmCommand extends BuiltInCommand {
 
-    public final static Message COMMAND_CONFIRM_HELP = Message.createMessage("cmd.confirm.help", Theme.HELP + "Confirms the usage of a previously entered command, if required.");
+    public final static Message COMMAND_CONFIRM_HELP = Messages.createMessage("cmd.confirm.help", Theme.HELP + "Confirms the usage of a previously entered command, if required.");
 
     private final Perm perm;
 

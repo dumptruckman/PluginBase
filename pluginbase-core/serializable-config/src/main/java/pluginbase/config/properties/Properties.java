@@ -4,13 +4,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import pluginbase.config.field.PropertyVetoException;
 import pluginbase.messages.Message;
+import pluginbase.messages.Messages;
 
 public interface Properties {
 
-    Message CANNOT_SET_PROPERTY = Message.createMessage("properties.cannot_set_property",
+    Message CANNOT_SET_PROPERTY = Messages.createMessage("properties.cannot_set_property",
             "$-The property '$v%s$-' may not be set in this way.");
 
-    Message CANNOT_MODIFY_NON_COLLECTION = Message.createMessage("properties.cannot_modify_non_collection",
+    Message CANNOT_MODIFY_NON_COLLECTION = Messages.createMessage("properties.cannot_modify_non_collection",
             "$-The property '$v%s$-' cannot be added/removed/cleared.");
 
     @NotNull

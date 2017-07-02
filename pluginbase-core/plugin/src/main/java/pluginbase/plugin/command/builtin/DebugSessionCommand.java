@@ -8,6 +8,7 @@ import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
 import pluginbase.debugsession.DebugSession;
 import pluginbase.messages.Message;
+import pluginbase.messages.Messages;
 import pluginbase.messages.Theme;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
@@ -31,18 +32,18 @@ import java.util.Set;
 )
 public class DebugSessionCommand extends BuiltInCommand {
 
-    public final static Message DEBUG_SESSION_HELP = Message.createMessage("cmd.debugsession.help", Theme.HELP + "Begins or ends a debug session.",
+    public final static Message DEBUG_SESSION_HELP = Messages.createMessage("cmd.debugsession.help", Theme.HELP + "Begins or ends a debug session.",
             "When first using command the console will be spammed with lots of debugging information.",
             "When used a second time, this spam will stop and a link will be given containing a large amount of information from your server.",
             "Give this link to a developer so they can help you debug the situation.");
 
-    public final static Message DEBUG_SESSION_STARTED = Message.createMessage("cmd.debugsession.started", Theme.SUCCESS + "Debug session started!",
+    public final static Message DEBUG_SESSION_STARTED = Messages.createMessage("cmd.debugsession.started", Theme.SUCCESS + "Debug session started!",
             Theme.INFO + "Type the command again to stop the session and get a link to the debug output.");
 
-    public final static Message DEBUG_SESSION_STOPPED = Message.createMessage("cmd.debugsession.stopped", Theme.SUCCESS + "Debug session stopped!",
+    public final static Message DEBUG_SESSION_STOPPED = Messages.createMessage("cmd.debugsession.stopped", Theme.SUCCESS + "Debug session stopped!",
             Theme.INFO + "Standby for a link to your debug session output.",
             Theme.IMPORTANT + "Give the link to a developer if you're in need of assistance!");
-    public final static Message DEBUG_SESSION_DUMPED = Message.createMessage("cmd.debugsession.dumped", Theme.INFO.toString() + Theme.IMPORTANT + "Debug session dumped here: " + Theme.VALUE + Theme.IMPORTANT3 + "%s");
+    public final static Message DEBUG_SESSION_DUMPED = Messages.createMessage("cmd.debugsession.dumped", Theme.INFO.toString() + Theme.IMPORTANT + "Debug session dumped here: " + Theme.VALUE + Theme.IMPORTANT3 + "%s");
 
 
     private final Perm perm;

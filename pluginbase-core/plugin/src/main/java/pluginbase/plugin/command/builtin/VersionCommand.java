@@ -6,6 +6,7 @@ package pluginbase.plugin.command.builtin;
 import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
 import pluginbase.messages.Message;
+import pluginbase.messages.Messages;
 import pluginbase.messages.Theme;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
@@ -32,19 +33,19 @@ import java.util.Set;
 )
 public class VersionCommand extends BuiltInCommand {
 
-    public final static Message VERSION_HELP = Message.createMessage("cmd.version.help",
+    public final static Message VERSION_HELP = Messages.createMessage("cmd.version.help",
             Theme.HELP + "Displays version and other helpful information about the plugin."
                     + "\n" + Theme.HELP + "Flags:"
                     + "\n" + Theme.CMD_FLAG + "  -p " + Theme.HELP + "will output an http://pastie.org url containing the information."
                     + "\n" + Theme.CMD_FLAG + "  -b " + Theme.HELP + "will output an http://pastebin.com url containing the information.");
-    public final static Message VERSION_PLAYER = Message.createMessage("cmd.version.player",
+    public final static Message VERSION_PLAYER = Messages.createMessage("cmd.version.player",
             Theme.INFO.toString() + Theme.IMPORTANT2 + "Version info dumped to console. Please check your server logs.");
-    public final static Message VERSION_PLUGIN_VERSION = Message.createMessage("cmd.version.info.plugin_version", "%s Version: %s");
-    public final static Message VERSION_SERVER_NAME = Message.createMessage("cmd.version.info.server_name", "Server Name: %s");
-    public final static Message VERSION_SERVER_VERSION = Message.createMessage("cmd.version.info.server_version", "Server Version: %s");
-    public final static Message VERSION_LANG_FILE = Message.createMessage("cmd.version.info.lang_file", "Language file: %s");
-    public final static Message VERSION_DEBUG_MODE = Message.createMessage("cmd.version.info.debug_mode", "Debug Mode: %s");
-    public final static Message VERSION_INFO_DUMPED = Message.createMessage("cmd.version.dumped", Theme.INFO.toString() + Theme.IMPORTANT + "Version info dumped here: " + Theme.VALUE + Theme.IMPORTANT3 + "%s");
+    public final static Message VERSION_PLUGIN_VERSION = Messages.createMessage("cmd.version.info.plugin_version", "%s Version: %s");
+    public final static Message VERSION_SERVER_NAME = Messages.createMessage("cmd.version.info.server_name", "Server Name: %s");
+    public final static Message VERSION_SERVER_VERSION = Messages.createMessage("cmd.version.info.server_version", "Server Version: %s");
+    public final static Message VERSION_LANG_FILE = Messages.createMessage("cmd.version.info.lang_file", "Language file: %s");
+    public final static Message VERSION_DEBUG_MODE = Messages.createMessage("cmd.version.info.debug_mode", "Debug Mode: %s");
+    public final static Message VERSION_INFO_DUMPED = Messages.createMessage("cmd.version.dumped", Theme.INFO.toString() + Theme.IMPORTANT + "Version info dumped here: " + Theme.VALUE + Theme.IMPORTANT3 + "%s");
 
     private static final URLShortener SHORTENER = new BitlyURLShortener();
 

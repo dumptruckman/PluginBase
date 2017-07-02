@@ -8,25 +8,28 @@ import pluginbase.logging.Logging
 
 import java.lang.reflect.Modifier
 import java.util.Locale
+import java.util.regex.Pattern
 
 /**
  * A class used for registering and keeping track of localized messages.
  */
 object Messages {
 
-    private val messages = mutableMapOf<LocalizablePlugin, MutableMap<Array<Any>?, Message>>()
+    private val PATTERN = Pattern.compile("%s")
 
-    private fun getMessagesForPlugin(localizablePlugin: LocalizablePlugin): MutableMap<Array<Any>?, Message> {
+    private val messages = mutableMapOf<LocalizablePlugin, MutableMap<Array<*>?, Message>>()
+
+    private fun getMessagesForPlugin(localizablePlugin: LocalizablePlugin): MutableMap<Array<*>?, Message> {
         return messages[localizablePlugin] ?: throw IllegalArgumentException("Provider has no registered messages.")
     }
 
     @JvmStatic
-    internal fun getMessageKeys(localizablePlugin: LocalizablePlugin): MutableSet<Array<Any>?> {
+    internal fun getMessageKeys(localizablePlugin: LocalizablePlugin): MutableSet<Array<*>?> {
         return getMessagesForPlugin(localizablePlugin).keys
     }
 
     @JvmStatic
-    internal fun getMessage(localizablePlugin: LocalizablePlugin, key: Array<Any>?): Message? {
+    internal fun getMessage(localizablePlugin: LocalizablePlugin, key: Array<*>?): Message? {
         val messagesForPlugin = getMessagesForPlugin(localizablePlugin)
         println(key)
         println(messagesForPlugin.keys)
@@ -37,37 +40,37 @@ object Messages {
     }
 
     @JvmStatic
-    internal fun containsMessageKey(localizablePlugin: LocalizablePlugin, key: Array<Any>): Boolean {
+    internal fun containsMessageKey(localizablePlugin: LocalizablePlugin, key: Array<*>): Boolean {
         val messagesForPlugin = getMessagesForPlugin(localizablePlugin)
         return messagesForPlugin.containsKey(key)
     }
 
     /** A message with no text.  */
     @JvmField
-    val BLANK = Message.createStaticMessage("")
+    val BLANK = createStaticMessage("")
 
     /** Used for wrapping regular exceptions into a PluginBaseException.  */
     @JvmField
-    val EXCEPTION = Message.createMessage("generic.exception", Theme.PLAIN.toString() + "%s")
+    val EXCEPTION = createMessage("generic.exception", Theme.PLAIN.toString() + "%s")
 
     /** Used for wrapping PluginBaseExceptions into a PluginBaseException.  */
     @JvmField
-    val CAUSE_EXCEPTION = Message.createMessage("generic.cause_exception", Theme.PLAIN.toString() + "Caused by: %s")
+    val CAUSE_EXCEPTION = createMessage("generic.cause_exception", Theme.PLAIN.toString() + "Caused by: %s")
 
     /** A message of general success  */
     @JvmField
-    val SUCCESS = Message.createMessage("generic.success", Theme.SUCCESS.toString() + "[SUCCESS]")
+    val SUCCESS = createMessage("generic.success", Theme.SUCCESS.toString() + "[SUCCESS]")
 
     /** A message of general error  */
     @JvmField
-    val ERROR = Message.createMessage("generic.error", Theme.ERROR.toString() + "[ERROR]")
+    val ERROR = createMessage("generic.error", Theme.ERROR.toString() + "[ERROR]")
 
     /** A message of general loading error  */
     @JvmField
-    val COULD_NOT_LOAD = Message.createMessage("generic.could_not_load", "Could not load: %s")
+    val COULD_NOT_LOAD = createMessage("generic.could_not_load", "Could not load: %s")
     @JvmField
     /** A message of general loading error  */
-    val COULD_NOT_SAVE = Message.createMessage("generic.could_not_save", "Could not save: %s")
+    val COULD_NOT_SAVE = createMessage("generic.could_not_save", "Could not save: %s")
 
     /**
      * Registers all of the messages in a given class and all inner classes to the localizablePlugin object.
@@ -88,7 +91,7 @@ object Messages {
             return
         }
         if (!messages.containsKey(localizablePlugin)) {
-            messages.put(localizablePlugin,  mutableMapOf<Array<Any>?, Message>())
+            messages.put(localizablePlugin,  mutableMapOf<Array<*>?, Message>())
         }
 
         val messages = getMessagesForPlugin(localizablePlugin)
@@ -145,6 +148,66 @@ object Messages {
                      loader: ConfigurationLoader<*>,
                      locale: Locale): MessageProvider {
         return DefaultMessageProvider(localizablePlugin, loader, locale)
+    }
+
+    /**
+     * Creates a new localized message.
+     *
+     * This should be defined as a final static object (constant).
+     *
+     * The class that contains the definition must be
+     * registered with [Messages.registerMessages] prior to creating a [DefaultMessageProvider]
+     * in order to have the default messages populate the language file.
+     *
+     * @param key The localization key for this message.
+     * @param default The default message in whatever your plugin's primary language is.
+     * @param additionalLines This param allows additional lines to be added to the message. This is optional and
+     *                        multiline messages can be given in the original parameter by using line break characters.
+     */
+    @JvmStatic
+    fun createMessage(key: String, default: String, vararg additionalLines: String): Message {
+        return DefaultMessage(key, (listOf(default) + additionalLines).joinToString("\n"))
+    }
+
+    /**
+     * Creates a new message that will not be localized.
+     *
+     * This is intended to be used sparingly or to provide a simpler api for 3rd parties. These messages will not have
+     * an entry in any language files.
+     *
+     * @param message The non localized message.
+     * @param additionalLines This param allows additional lines to be added to the message. This is optional and
+     *                        multiline messages can be given in the original parameter by using line break characters.
+     */
+    @JvmStatic
+    fun createStaticMessage(message: String, vararg additionalLines: String): Message {
+        return DefaultMessage(null, (listOf(message) + additionalLines).joinToString("\n"))
+    }
+
+    /**
+     * Bundles a [Message] with preset arguments.
+     *
+     * Can be used in cases where you are required to return a message of some sort and it is otherwise impossible to
+     * return a localized message due to also requiring arguments.
+     *
+     * @param message The localization message for the bundle.
+     * @param args The arguments for the bundled message.
+     */
+    @JvmStatic
+    @Deprecated("This method now has a non-static method that is preferred.",
+            ReplaceWith("message.bundle(*args)"))
+    fun bundleMessage(message: Message, vararg args: Any?): BundledMessage {
+        return message.bundle(*args)
+    }
+
+    @JvmStatic
+    internal fun countArgs(def: String): Int {
+        val matcher = PATTERN.matcher(def)
+        var count = 0
+        while (matcher.find()) {
+            count++
+        }
+        return count
     }
 }
 

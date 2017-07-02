@@ -64,7 +64,7 @@ internal class DefaultMessageProvider(override val plugin: LocalizablePlugin,
                 if (node.isVirtual) {
                     node.value = message.default
                     log.finest("Created new message in language file: %s", message)
-                } else if (Message.countArgs(node.string) != message.argCount) {
+                } else if (Messages.countArgs(node.string) != message.argCount) {
                     node.value = message.default
                     log.warning("The message for '%s' in the current language file does not have the correct amount of arguments (%s).  The default will be used.", key, message.argCount)
                 }
@@ -73,7 +73,7 @@ internal class DefaultMessageProvider(override val plugin: LocalizablePlugin,
         return language
     }
 
-    private fun _getMessage(key: Array<Any>): String {
+    private fun _getMessage(key: Array<*>): String {
         val node = this.messages.getNode(*key)
         if (node.isVirtual) {
             val keyString = Arrays.toString(key)
@@ -84,18 +84,19 @@ internal class DefaultMessageProvider(override val plugin: LocalizablePlugin,
     }
 
     override fun getLocalizedMessage(key: Message, vararg args: Any?): String {
-        if (key.key == null) {
+        val actualKey = key.key;
+        if (actualKey == null) {
             return formatMessage(null, key.default, *args)
         }
-        return getLocalizedMessage(key.key, *args)
+        return getLocalizedMessage(actualKey, *args)
     }
 
-    override fun getLocalizedMessage(key: Array<Any>, vararg args: Any?): String {
+    override fun getLocalizedMessage(key: Array<*>, vararg args: Any?): String {
         val message = _getMessage(key)
         return formatMessage(key, message, *args)
     }
 
-    private fun formatMessage(key: Array<Any>?, message: String, vararg args: Any?): String {
+    private fun formatMessage(key: Array<*>?, message: String, vararg args: Any?): String {
         try {
             return formatMessage(locale, message, *args)
         } catch (e: IllegalFormatException) {

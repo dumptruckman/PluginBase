@@ -6,6 +6,7 @@ package pluginbase.plugin.command.builtin;
 import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
 import pluginbase.messages.Message;
+import pluginbase.messages.Messages;
 import pluginbase.messages.Theme;
 import pluginbase.messages.messaging.SendablePluginBaseException;
 import pluginbase.minecraft.BasePlayer;
@@ -25,11 +26,11 @@ import org.jetbrains.annotations.NotNull;
 )
 public class DebugCommand extends BuiltInCommand {
 
-    public final static Message DEBUG_HELP = Message.createMessage("cmd.debug.help", Theme.HELP + "Enables or disable debug mode."
+    public final static Message DEBUG_HELP = Messages.createMessage("cmd.debug.help", Theme.HELP + "Enables or disable debug mode."
             + "  When enabled the console will be spammed with lots of information useful for helping developers debug.");
-    public final static Message DEBUG_SET = Message.createMessage("cmd.debug.set", Theme.SUCCESS + "Debug mode is " + Theme.VALUE + "%s");
-    public final static Message DEBUG_DISABLED = Message.createMessage("cmd.debug.off", Theme.SUCCESS + "Debug mode is " + Theme.VALUE + Theme.IMPORTANT + "OFF");
-    public final static Message INVALID_DEBUG = Message.createMessage("debug.invalid",
+    public final static Message DEBUG_SET = Messages.createMessage("cmd.debug.set", Theme.SUCCESS + "Debug mode is " + Theme.VALUE + "%s");
+    public final static Message DEBUG_DISABLED = Messages.createMessage("cmd.debug.off", Theme.SUCCESS + "Debug mode is " + Theme.VALUE + Theme.IMPORTANT + "OFF");
+    public final static Message INVALID_DEBUG = Messages.createMessage("debug.invalid",
             Theme.ERROR + "Invalid debug level.  Please use number 0-3.  " + Theme.INFO + "(3 being many many messages!)");
 
     private final Perm perm;

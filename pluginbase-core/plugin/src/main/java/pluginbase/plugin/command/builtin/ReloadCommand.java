@@ -6,6 +6,7 @@ package pluginbase.plugin.command.builtin;
 import pluginbase.command.CommandContext;
 import pluginbase.command.CommandInfo;
 import pluginbase.messages.Message;
+import pluginbase.messages.Messages;
 import pluginbase.messages.Theme;
 import pluginbase.minecraft.BasePlayer;
 import pluginbase.permission.Perm;
@@ -24,8 +25,8 @@ import org.jetbrains.annotations.NotNull;
 )
 public class ReloadCommand extends BuiltInCommand {
 
-    public final static Message RELOAD_HELP = Message.createMessage("cmd.reload.help", Theme.HELP + "Reloads the plugin, typically detecting any external changes in plugin files.");
-    public final static Message RELOAD_COMPLETE = Message.createMessage("cmd.reload.complete", Theme.INFO + "===[ Reload Complete! ]===");
+    public final static Message RELOAD_HELP = Messages.createMessage("cmd.reload.help", Theme.HELP + "Reloads the plugin, typically detecting any external changes in plugin files.");
+    public final static Message RELOAD_COMPLETE = Messages.createMessage("cmd.reload.complete", Theme.INFO + "===[ Reload Complete! ]===");
 
     private final Perm perm;
 

@@ -1,7 +1,6 @@
 package pluginbase.messages.messaging;
 
 import pluginbase.messages.BundledMessage;
-import pluginbase.messages.Message;
 import pluginbase.messages.Messages;
 import pluginbase.messages.PluginBaseException;
 import org.junit.After;
@@ -19,10 +18,10 @@ import static org.mockito.Mockito.*;
 @RunWith(PowerMockRunner.class)
 public class SendablePluginBaseExceptionTest {
 
-    private static final BundledMessage TEST_1 = Message.createMessage("test.1", "test message 1").bundle();
-    private static final BundledMessage TEST_2 = Message.createMessage("test.1", "test message 2").bundle();
-    private static final BundledMessage TEST_3 = Message.createMessage("test.1", "test message 3").bundle();
-    private static final BundledMessage TEST_4 = Message.createMessage("test.1", "test message 4").bundle();
+    private static final BundledMessage TEST_1 = Messages.createMessage("test.1", "test message 1").bundle();
+    private static final BundledMessage TEST_2 = Messages.createMessage("test.1", "test message 2").bundle();
+    private static final BundledMessage TEST_3 = Messages.createMessage("test.1", "test message 3").bundle();
+    private static final BundledMessage TEST_4 = Messages.createMessage("test.1", "test message 4").bundle();
 
     private Messager messager;
     private MessageReceiver receiver;
