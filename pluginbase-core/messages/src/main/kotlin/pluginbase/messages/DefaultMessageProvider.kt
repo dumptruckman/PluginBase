@@ -59,7 +59,7 @@ internal class DefaultMessageProvider(override val plugin: LocalizablePlugin,
 
         for (key in Messages.getMessageKeys(localizable)) {
             val message = Messages.getMessage(localizable, key)
-            val node = language.getNode(*key)
+            val node = language.getNode(key)
             if (message != null && node.isVirtual) {
                 if (node.isVirtual) {
                     node.value = message.default
