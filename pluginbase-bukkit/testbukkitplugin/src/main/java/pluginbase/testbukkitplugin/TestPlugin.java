@@ -31,7 +31,7 @@ public class TestPlugin extends JavaPlugin {
 
     BukkitPluginAgent pluginAgent;
 
-    TestPlugin(JavaPluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file) {
+    TestPlugin(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file);
         init();
     }
