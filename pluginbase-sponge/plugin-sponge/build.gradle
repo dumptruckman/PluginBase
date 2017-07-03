@@ -1,0 +1,12 @@
+
+description = ''
+dependencies {
+  compile project(':PluginBase-Core:Plugin')
+  compile project(':PluginBase-Sponge:Permissions-Sponge')
+  compile project(':PluginBase-Sponge:Commands-Sponge')
+  compile project(':PluginBase-Sponge:Minecraft-Link-Sponge')
+  compile project(':PluginBase-Sponge:Messaging-Sponge')
+    testCompile group: 'com.h2database', name: 'h2', version:'1.3.174'
+    testCompile group: 'org.springframework', name: 'spring-jdbc', version:'3.2.4.RELEASE'
+  testCompile project(':PluginBase-Core:JDBC-Spring')
+}

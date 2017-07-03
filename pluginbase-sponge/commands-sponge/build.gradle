@@ -1,0 +1,7 @@
+
+description = ''
+dependencies {
+  compile project(':PluginBase-Core:Commands')
+  compile project(':PluginBase-Sponge:Messaging-Sponge')
+  compile project(':PluginBase-Sponge:Minecraft-Link-Sponge')
+}

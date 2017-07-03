@@ -43,3 +43,10 @@ debug.log
 # Doxygen
 /docs/html
 debug.txt
+
+.gradle/
+anonymous-logging/
+javadoc/pom.xml.versionsBackup
+build/
+pluginbase-core/logging/debug/
+

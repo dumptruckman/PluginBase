@@ -1,0 +1,6 @@
+
+description = ''
+dependencies {
+  compile project(':PluginBase-Core:Logging')
+  compile project(':PluginBase-Core:Properties')
+}

@@ -1,0 +1,6 @@
+
+description = ''
+dependencies {
+  compile project(':PluginBase-Core:Messaging')
+    compile group: 'ninja.leaping.configurate', name: 'configurate-core', version:'3.1'
+}

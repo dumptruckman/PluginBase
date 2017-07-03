@@ -1,0 +1,10 @@
+
+description = ''
+dependencies {
+  compile project(':PluginBase-Core:Logging')
+  compile project(':PluginBase-Core:Utilities')
+  compile project(':PluginBase-Core:Messaging')
+  compile project(':PluginBase-Core:Permissions')
+  compile project(':PluginBase-Core:Minecraft-Link')
+    compile group: 'ninja.leaping.configurate', name: 'configurate-core', version:'3.1'
+}

@@ -1,0 +1,8 @@
+
+description = ''
+dependencies {
+  compile project(':PluginBase-Sponge:Plugin-Sponge')
+  compile project(':PluginBase-Core:TestPlugin')
+  compile project(':PluginBase-Core:JDBC-Spring')
+    compile group: 'com.h2database', name: 'h2', version:'1.3.174'
+}

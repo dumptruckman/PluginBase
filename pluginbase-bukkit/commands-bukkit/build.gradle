@@ -1,0 +1,7 @@
+
+description = ''
+dependencies {
+  compile project(':PluginBase-Core:Commands')
+  compile project(':PluginBase-Bukkit:Messaging-Bukkit')
+  compile project(':PluginBase-Bukkit:Minecraft-Link-Bukkit')
+}

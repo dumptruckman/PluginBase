@@ -1,0 +1,14 @@
+def bukkitVersion = "1.12-R0.1-SNAPSHOT"
+
+subprojects {
+    repositories {
+        mavenLocal()
+
+        maven { url "https://hub.spigotmc.org/nexus/content/groups/public/" }
+    }
+
+    dependencies {
+        compileOnly group: "org.spigotmc", name: "spigot-api", version: bukkitVersion
+        testCompile group: "org.spigotmc", name: "spigot-api", version: bukkitVersion
+    }
+}

@@ -1,0 +1,13 @@
+def spongeVersion = "3.0.0"
+
+subprojects {
+    repositories {
+        mavenLocal()
+
+        maven { url "http://repo.spongepowered.org/maven/" }
+    }
+
+    dependencies {
+        compileOnly group: "org.spongepowered", name: "spongeapi", version: spongeVersion
+    }
+}

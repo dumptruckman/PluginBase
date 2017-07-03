@@ -1,0 +1,7 @@
+
+description = ''
+dependencies {
+  compile project(':PluginBase-Core:Logging')
+  compile project(':PluginBase-Core:Messaging')
+  compile project(':PluginBase-Core:Permissions')
+}

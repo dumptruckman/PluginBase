@@ -1,0 +1,64 @@
+rootProject.name = 'PluginBase'
+include ':PluginBase-Core:Logging'
+include ':PluginBase-Core:Messages'
+include ':PluginBase-Core:Messaging'
+include ':PluginBase-Core:Permissions'
+include ':PluginBase-Core:Properties'
+include ':PluginBase-Core:Minecraft-Link'
+include ':PluginBase-Core:Commands'
+include ':PluginBase-Core:Utilities'
+include ':PluginBase-Core:Plugin'
+include ':PluginBase-Core:Serializable-Config'
+include ':PluginBase-Core:JDBC'
+include ':PluginBase-Core:JDBC-Spring'
+include ':PluginBase-Core:TestPlugin'
+include ':PluginBase-Core:Debug-Session'
+include ':PluginBase-Core'
+include ':PluginBase-Bukkit:Messaging-Bukkit'
+include ':PluginBase-Bukkit:Permissions-Bukkit'
+include ':PluginBase-Bukkit:Properties-Bukkit'
+include ':PluginBase-Bukkit:Minecraft-Link-Bukkit'
+include ':PluginBase-Bukkit:Commands-Bukkit'
+include ':PluginBase-Bukkit:Plugin-Bukkit'
+include ':PluginBase-Bukkit:PluginBase-API-Plugin-Bukkit'
+include ':PluginBase-Bukkit:TestBukkitPlugin'
+include ':PluginBase-Bukkit'
+include ':PluginBase-Sponge:Messaging-Sponge'
+include ':PluginBase-Sponge:Permissions-Sponge'
+include ':PluginBase-Sponge:Minecraft-Link-Sponge'
+include ':PluginBase-Sponge:Commands-Sponge'
+include ':PluginBase-Sponge:Plugin-Sponge'
+include ':PluginBase-Sponge:TestSpongePlugin'
+include ':PluginBase-Sponge'
+
+project(':PluginBase-Core:Logging').projectDir = "$rootDir/pluginbase-core/logging" as File
+project(':PluginBase-Core:Messages').projectDir = "$rootDir/pluginbase-core/messages" as File
+project(':PluginBase-Core:Messaging').projectDir = "$rootDir/pluginbase-core/messaging" as File
+project(':PluginBase-Core:Permissions').projectDir = "$rootDir/pluginbase-core/permissions" as File
+project(':PluginBase-Core:Properties').projectDir = "$rootDir/pluginbase-core/properties" as File
+project(':PluginBase-Core:Minecraft-Link').projectDir = "$rootDir/pluginbase-core/minecraft-link" as File
+project(':PluginBase-Core:Commands').projectDir = "$rootDir/pluginbase-core/commands" as File
+project(':PluginBase-Core:Utilities').projectDir = "$rootDir/pluginbase-core/utilities" as File
+project(':PluginBase-Core:Plugin').projectDir = "$rootDir/pluginbase-core/plugin" as File
+project(':PluginBase-Core:Serializable-Config').projectDir = "$rootDir/pluginbase-core/serializable-config" as File
+project(':PluginBase-Core:JDBC').projectDir = "$rootDir/pluginbase-core/jdbc" as File
+project(':PluginBase-Core:JDBC-Spring').projectDir = "$rootDir/pluginbase-core/jdbc-spring" as File
+project(':PluginBase-Core:TestPlugin').projectDir = "$rootDir/pluginbase-core/testplugin" as File
+project(':PluginBase-Core:Debug-Session').projectDir = "$rootDir/pluginbase-core/debug-session" as File
+project(':PluginBase-Core').projectDir = "$rootDir/pluginbase-core" as File
+project(':PluginBase-Bukkit:Messaging-Bukkit').projectDir = "$rootDir/pluginbase-bukkit/messaging-bukkit" as File
+project(':PluginBase-Bukkit:Permissions-Bukkit').projectDir = "$rootDir/pluginbase-bukkit/permissions-bukkit" as File
+project(':PluginBase-Bukkit:Properties-Bukkit').projectDir = "$rootDir/pluginbase-bukkit/properties-bukkit" as File
+project(':PluginBase-Bukkit:Minecraft-Link-Bukkit').projectDir = "$rootDir/pluginbase-bukkit/minecraft-link-bukkit" as File
+project(':PluginBase-Bukkit:Commands-Bukkit').projectDir = "$rootDir/pluginbase-bukkit/commands-bukkit" as File
+project(':PluginBase-Bukkit:Plugin-Bukkit').projectDir = "$rootDir/pluginbase-bukkit/plugin-bukkit" as File
+project(':PluginBase-Bukkit:PluginBase-API-Plugin-Bukkit').projectDir = "$rootDir/pluginbase-bukkit/pluginbase-api-plugin-bukkit" as File
+project(':PluginBase-Bukkit:TestBukkitPlugin').projectDir = "$rootDir/pluginbase-bukkit/testbukkitplugin" as File
+project(':PluginBase-Bukkit').projectDir = "$rootDir/pluginbase-bukkit" as File
+project(':PluginBase-Sponge:Messaging-Sponge').projectDir = "$rootDir/pluginbase-sponge/messaging-sponge" as File
+project(':PluginBase-Sponge:Permissions-Sponge').projectDir = "$rootDir/pluginbase-sponge/permissions-sponge" as File
+project(':PluginBase-Sponge:Minecraft-Link-Sponge').projectDir = "$rootDir/pluginbase-sponge/minecraft-link-sponge" as File
+project(':PluginBase-Sponge:Commands-Sponge').projectDir = "$rootDir/pluginbase-sponge/commands-sponge" as File
+project(':PluginBase-Sponge:Plugin-Sponge').projectDir = "$rootDir/pluginbase-sponge/plugin-sponge" as File
+project(':PluginBase-Sponge:TestSpongePlugin').projectDir = "$rootDir/pluginbase-sponge/testspongeplugin" as File
+project(':PluginBase-Sponge').projectDir = "$rootDir/pluginbase-sponge" as File

@@ -1,0 +1,15 @@
+
+description = ''
+dependencies {
+    compile project(':PluginBase-Core:Plugin')
+    compile project(':PluginBase-Bukkit:Permissions-Bukkit')
+    compile project(':PluginBase-Bukkit:Commands-Bukkit')
+    compile project(':PluginBase-Bukkit:Minecraft-Link-Bukkit')
+    compile project(':PluginBase-Bukkit:Messaging-Bukkit')
+    compile group: 'ninja.leaping.configurate', name: 'configurate-hocon', version:'3.0'
+    compile group: 'ninja.leaping.configurate', name: 'configurate-core', version:'3.0'
+    compile group: 'com.typesafe', name: 'config', version:'1.3.0'
+    testCompile group: 'com.h2database', name: 'h2', version:'1.3.174'
+    testCompile group: 'org.springframework', name: 'spring-jdbc', version:'3.2.4.RELEASE'
+    testCompile project(':PluginBase-Core:JDBC-Spring')
+}
