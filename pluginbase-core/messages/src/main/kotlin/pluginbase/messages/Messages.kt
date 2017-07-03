@@ -31,8 +31,6 @@ object Messages {
     @JvmStatic
     internal fun getMessage(localizablePlugin: LocalizablePlugin, key: Array<*>?): Message? {
         val messagesForPlugin = getMessagesForPlugin(localizablePlugin)
-        println(key)
-        println(messagesForPlugin.keys)
         if (key == null) {
             return BLANK
         }
@@ -103,7 +101,6 @@ object Messages {
 
         val fields = clazz.declaredFields + clazz.fields
         for (field in fields) {
-            println(field)
             if (Modifier.isStatic(field.modifiers)
                     && Modifier.isFinal(field.modifiers)
                     && Message::class.java.isAssignableFrom(field.type)) {
@@ -113,8 +110,10 @@ object Messages {
                 }
                 try {
                     val message = field.get(null) as Message ?: continue
-                    println("Registering " + message.key.toString())
-                    message.key ?: messages.putIfAbsent(message.key, message)
+                    val key = message.key ?: continue
+                    if (messages.putIfAbsent(key, message) == null) {
+                        Logging.finest("Registering message with key %s", key.joinToString("."))
+                    }
                 } catch (e: IllegalAccessException) {
                     Logging.warning("Could not register language message '%s' from class '%s'", field, clazz)
                 }
