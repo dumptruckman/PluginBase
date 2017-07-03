@@ -190,7 +190,7 @@ enum class ChatColor constructor(
                     b[i + 1] = Character.toLowerCase(b[i + 1])
                 }
             }
-            return b.toString()
+            return String(b)
         }
 
         /**
