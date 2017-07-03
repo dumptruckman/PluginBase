@@ -45,11 +45,11 @@ class MessageTest {
     @Throws(Exception::class)
     fun testEnumMessages() {
         Messages.registerMessages(TestEnumMessages.IN_GAME_ONLY, TestEnumMessages::class.java)
-        Assert.assertNotNull(Messages.getMessage(TestEnumMessages.IN_GAME_ONLY, TestEnumMessages.INVALID_AMOUNT.message.key))
+        Assert.assertNotNull(Messages.getMessage(TestEnumMessages.IN_GAME_ONLY, TestEnumMessages.INVALID_AMOUNT.key))
         val provider = Messages.loadMessages(TestEnumMessages.IN_GAME_ONLY,
                 HoconConfigurationLoader.builder().setFile(File.createTempFile("pluginbase", "test")).build(),
                 Locale.ENGLISH)
-        Assert.assertEquals(TestEnumMessages.IN_GAME_ONLY.message.default, provider.getLocalizedMessage(TestEnumMessages.IN_GAME_ONLY.message))
+        Assert.assertEquals(TestEnumMessages.IN_GAME_ONLY.message.default, provider.getLocalizedMessage(TestEnumMessages.IN_GAME_ONLY))
     }
 
     @Test

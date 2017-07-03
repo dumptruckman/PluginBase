@@ -74,7 +74,7 @@ internal class DefaultMessageProvider(override val plugin: LocalizablePlugin,
     }
 
     private fun _getMessage(key: Array<*>): String {
-        val node = this.messages.getNode(*key)
+        val node = this.messages.getNode(key)
         if (node.isVirtual) {
             val keyString = Arrays.toString(key)
             log.warning("There is not language entry for %s.  Was it registered?", keyString)
@@ -84,10 +84,7 @@ internal class DefaultMessageProvider(override val plugin: LocalizablePlugin,
     }
 
     override fun getLocalizedMessage(key: Message, vararg args: Any?): String {
-        val actualKey = key.key;
-        if (actualKey == null) {
-            return formatMessage(null, key.default, *args)
-        }
+        val actualKey = key.key ?: return formatMessage(null, key.default, *args)
         return getLocalizedMessage(actualKey, *args)
     }
 
