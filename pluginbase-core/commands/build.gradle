@@ -6,5 +6,6 @@ dependencies {
     compile project(':PluginBase-Core:Messaging')
     compile project(':PluginBase-Core:Permissions')
     compile project(':PluginBase-Core:Minecraft-Link')
-    compileOnly group: 'ninja.leaping.configurate', name: 'configurate-core', version:'3.1'
+    compileOnly group: 'ninja.leaping.configurate', name: 'configurate-core', version: configurateVersion
+    testCompile group: 'ninja.leaping.configurate', name: 'configurate-core', version: configurateVersion
 }
