@@ -1,6 +1,17 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
+}
+
+assemble.dependsOn shadowJar
 
 description = ''
 dependencies {
-  compile project(':PluginBase-Core:Messaging')
-    compile group: 'ninja.leaping.configurate', name: 'configurate-core', version:'3.1'
+    compile project(':PluginBase-Core:Messaging')
+    shadow group: 'ninja.leaping.configurate', name: 'configurate-core', version:'3.1'
+}
+
+shadowJar {
+    baseName = project.name
+    classifier = null
+    exclude 'tools.jar'
 }

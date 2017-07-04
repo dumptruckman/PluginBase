@@ -1,3 +1,8 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
+}
+
+assemble.dependsOn shadowJar
 
 description = ''
 dependencies {
@@ -5,4 +10,22 @@ dependencies {
     compile project(':PluginBase-Core:TestPlugin')
     compile project(':PluginBase-Core:JDBC-Spring')
     compile group: 'com.h2database', name: 'h2', version:'1.3.174'
+}
+
+shadowJar {
+    baseName = project.name
+    classifier = null
+    exclude 'tools.jar'
+    dependencies {
+        exclude(dependency("com.google.guava:.*:.*"))
+        exclude(dependency("org.jetbrains:annotations:.*"))
+        // This dependency isn't included in the maven shaded version...
+        exclude(dependency('aopalliance:aopalliance:.*'))
+    }
+    relocate 'org.apache.commons', 'pluginbase.apache-commons'
+    relocate 'com.typesafe', 'pluginbase.typesafe'
+    relocate 'kotlin', 'pluginbase.kotlin'
+    relocate 'ninja.leaping.configurate', 'pluginbase.configurate'
+    relocate 'com.googlecode.gentyref', 'pluginbase.gentyref'
+    relocate 'org.springframework', 'pluginbase.spring'
 }

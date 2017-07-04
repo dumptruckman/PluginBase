@@ -1,6 +1,18 @@
+plugins {
+  id 'com.github.johnrengelman.shadow' version '2.0.1'
+}
+
+assemble.dependsOn shadowJar
 
 description = ''
 dependencies {
   compile project(':PluginBase-Core:Utilities')
   compile project(':PluginBase-Core:Minecraft-Link')
+}
+
+shadowJar {
+  baseName = project.name
+  classifier = null
+  exclude 'tools.jar'
+  relocate 'org.apache.commons', 'pluginbase.apache-commons'
 }

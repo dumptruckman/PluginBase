@@ -2,6 +2,8 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '2.0.1'
 }
 
+assemble.dependsOn shadowJar
+
 description = ''
 dependencies {
     shadow project(':PluginBase-Core:Messaging')
