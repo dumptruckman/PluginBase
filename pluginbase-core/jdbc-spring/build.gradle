@@ -1,7 +1,21 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
+    id 'java'
+}
 
 description = ''
 dependencies {
-  compile project(':PluginBase-Core:Serializable-Config')
-  compile project(':PluginBase-Core:JDBC')
+    shadow project(':PluginBase-Core:Serializable-Config')
+    shadow project(':PluginBase-Core:JDBC')
     compile group: 'org.springframework', name: 'spring-jdbc', version:'3.2.4.RELEASE'
+}
+
+shadowJar {
+    baseName = project.name
+    classifier = null
+    exclude 'tools.jar'
+    dependencies {
+        // This dependency isn't included in the maven shaded version...
+        exclude(dependency('aopalliance:aopalliance:.*'))
+    }
 }

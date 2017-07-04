@@ -1,16 +1,38 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
+}
 
 description = ''
 dependencies {
-  compile project(':PluginBase-Core:Logging')
-  compile project(':PluginBase-Core:Utilities')
-  compile project(':PluginBase-Core:Permissions')
-  compile project(':PluginBase-Core:Messaging')
-  compile project(':PluginBase-Core:Debug-Session')
-  compile project(':PluginBase-Core:Serializable-Config')
-  compile project(':PluginBase-Core:Minecraft-Link')
-  compile project(':PluginBase-Core:Commands')
-  compile project(':PluginBase-Core:JDBC')
-    compile(group: 'org.mcstats.bukkit', name: 'metrics', version:'R6') {
-exclude(module: 'bukkit')
+    compile project(':PluginBase-Core:Logging')
+    compile project(':PluginBase-Core:Utilities')
+    compile project(':PluginBase-Core:Permissions')
+    compile project(':PluginBase-Core:Messaging')
+    compile project(':PluginBase-Core:Debug-Session')
+    compile project(':PluginBase-Core:Serializable-Config')
+    compile project(':PluginBase-Core:Minecraft-Link')
+    compile project(':PluginBase-Core:Commands')
+    compile project(':PluginBase-Core:JDBC')
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    shadow group: 'ninja.leaping.configurate', name: 'configurate-hocon', version: configurateVersion
+    shadow group: 'ninja.leaping.configurate', name: 'configurate-json', version: configurateVersion
+    shadow group: 'ninja.leaping.configurate', name: 'configurate-gson', version: configurateVersion
+    shadow group: 'ninja.leaping.configurate', name: 'configurate-yaml', version: configurateVersion
+    shadow(group: 'org.mcstats.bukkit', name: 'metrics', version:'R6') {
+        exclude(module: 'bukkit')
+    }
+}
+
+shadowJar {
+    baseName = project.name
+    classifier = null
+    exclude 'tools.jar'
+    relocate 'kotlin', kotlinShadedPattern
+    relocate 'com.googlecode.gentyref', 'pluginbase.gentyref'
+    relocate 'com.googlecode.gentyref', 'pluginbase.gentyref'
+    relocate 'org.apache.commons', 'pluginbase.apache-commons'
+    dependencies {
+        exclude(dependency("org.jetbrains:annotations:.*"))
     }
 }

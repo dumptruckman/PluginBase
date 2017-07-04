@@ -1,6 +1,17 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
+}
 
 description = ''
 dependencies {
-  compile project(':PluginBase-Core:Logging')
-  compile project(':PluginBase-Core:Messages')
+    shadow project(':PluginBase-Core:Logging')
+    shadow group: 'ninja.leaping.configurate', name: 'configurate-core', version: configurateVersion
+    compile project(':PluginBase-Core:Messages')
+    testCompile group: 'ninja.leaping.configurate', name: 'configurate-hocon', version: configurateVersion
+}
+
+shadowJar {
+    baseName = project.name
+    classifier = null
+    exclude 'tools.jar'
 }

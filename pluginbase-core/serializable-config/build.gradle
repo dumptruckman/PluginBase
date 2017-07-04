@@ -1,16 +1,31 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '2.0.1'
+}
 
 description = ''
 dependencies {
-  compile project(':PluginBase-Core:Messaging')
+    shadow project(':PluginBase-Core:Messaging')
     compile group: 'com.googlecode.gentyref', name: 'gentyref', version:'1.1.0'
-    compile group: 'ninja.leaping.configurate', name: 'configurate-hocon', version:'3.1'
-    compile group: 'ninja.leaping.configurate', name: 'configurate-json', version:'3.1'
-    compile group: 'ninja.leaping.configurate', name: 'configurate-gson', version:'3.1'
-    compile group: 'ninja.leaping.configurate', name: 'configurate-yaml', version:'3.1'
+    shadow group: 'ninja.leaping.configurate', name: 'configurate-hocon', version: configurateVersion
+    shadow group: 'ninja.leaping.configurate', name: 'configurate-json', version: configurateVersion
+    shadow group: 'ninja.leaping.configurate', name: 'configurate-gson', version: configurateVersion
+    shadow group: 'ninja.leaping.configurate', name: 'configurate-yaml', version: configurateVersion
+    testCompile project(':PluginBase-Core:Messaging')
+    testCompile group: 'ninja.leaping.configurate', name: 'configurate-hocon', version: configurateVersion
+    testCompile group: 'ninja.leaping.configurate', name: 'configurate-json', version: configurateVersion
+    testCompile group: 'ninja.leaping.configurate', name: 'configurate-gson', version: configurateVersion
+    testCompile group: 'ninja.leaping.configurate', name: 'configurate-yaml', version: configurateVersion
 }
 
 task packageTests(type: Jar) {
-  from sourceSets.test.output
-  classifier = 'tests'
+    from sourceSets.test.output
+    classifier = 'tests'
 }
 artifacts.archives packageTests
+
+shadowJar {
+    baseName = project.name
+    classifier = null
+    exclude 'tools.jar'
+    relocate 'com.googlecode.gentyref', 'pluginbase.gentyref'
+}

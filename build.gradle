@@ -49,13 +49,6 @@ allprojects  {
         all*.exclude group: 'com.jetbrains', module: 'ideaIC'
     }
 
-
-    task testrun {
-        doLast {
-
-        }
-    }
-
     patchPluginXml.enabled = false
     prepareSandbox.enabled = false
     buildPlugin.enabled = false
@@ -91,6 +84,11 @@ subprojects {
         maven { url "http://repo.maven.apache.org/maven2" }
     }
 
+    ext {
+        configurateVersion = "3.1"
+        kotlinShadedPattern = "pluginbase.kotlin"
+        kotlin_version = '1.1.3'
+    }
   
     dependencies {
         compileOnly group: 'com.intellij', name: 'annotations', version:'12.0'
