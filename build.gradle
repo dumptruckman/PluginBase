@@ -50,8 +50,6 @@ allprojects  {
     }
 
     patchPluginXml.enabled = false
-    prepareSandbox.enabled = false
-    buildPlugin.enabled = false
     prepareTestingSandbox.enabled = false
     runIde.enabled = false
     publishPlugin.enabled = false
