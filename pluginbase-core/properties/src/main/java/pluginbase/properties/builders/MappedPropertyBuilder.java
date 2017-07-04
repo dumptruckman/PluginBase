@@ -16,7 +16,7 @@ import java.util.Map;
 
 /**
  * Used in the construction of a {@link MappedProperty}.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} to get started.
  *
  * @param <T> the type for the value of the map.

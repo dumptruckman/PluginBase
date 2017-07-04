@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 /**
  * Acts as a go-between for block metadata and a storage medium.
- * <p/>
+ * <br>
  * This class uses a single worker thread to handle loading and saving, however, loading will always block the main
  * thread.
  *
@@ -100,7 +100,7 @@ public class BlockMetadataRegistry<DataType extends BlockMetadatable> {
 
     /**
      * Loads metadata from this registry's data source.
-     * <p/>
+     * <br>
      * The loading occurs on a single worker thread belonging to this registry but blocks the main thread until
      * finished loading. Cleanup, if a cleaner was specified, will occur on the main thread after loading.
      */
@@ -133,7 +133,7 @@ public class BlockMetadataRegistry<DataType extends BlockMetadatable> {
 
     /**
      * Saves all metadata stored in this registry to the registry's data source.
-     * <p/>
+     * <br>
      * This save operation is performed on this registry's single worker thread and can optionally block the main
      * thread.
      *
@@ -195,7 +195,7 @@ public class BlockMetadataRegistry<DataType extends BlockMetadatable> {
 
     /**
      * Checks whether the given block coordinates have associated metadata in this registry.
-     * <p/>
+     * <br>
      * It is important to note that this only checks for metadata in this registry. The block could have other types
      * of metadata available in other registries.
      *

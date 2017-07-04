@@ -5,7 +5,7 @@ package pluginbase.properties;
 
 /**
  * Represents a property that contains an additional set of properties.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} for creating properties.
  *
  * @param <T> the class that represents the nested set of properties.

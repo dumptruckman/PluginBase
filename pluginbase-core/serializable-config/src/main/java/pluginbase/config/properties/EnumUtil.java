@@ -10,7 +10,7 @@ public enum EnumUtil {
 
     /**
      * Finds an enum value by name with case insensitive matching.
-     * <p/>
+     * <br>
      * <em>WARNING:</em> it is possible that the return value will not be the expected value due to the fact that an
      * enum can have values with the same name in different cases.
      *

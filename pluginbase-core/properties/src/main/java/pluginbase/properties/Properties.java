@@ -12,16 +12,16 @@ import java.util.Map;
 
 /**
  * A storage mechanism for {@link ValueProperty} values.
- * <p/>
+ * <br>
  * Essentially this class allows you to map values to {@link ValueProperty} objects.
- * <p/>
+ * <br>
  * Generally a Properties object should have some way to associate {@link ValueProperty} objects it will handle.
  */
 public interface Properties {
 
     /**
      * Flushes any properties existing in memory into any kind of persistence mechanism if existing.
-     * <p/>
+     * <br>
      * Some {@link Properties} may not take advantage of this in which case this method will simply do nothing.
      *
      * @throws PluginBaseException if attempting to do this raises runs into any problems.
@@ -30,7 +30,7 @@ public interface Properties {
 
     /**
      * Reloads any values from any kind of persistence mechanism (if existing) into memory.
-     * <p/>
+     * <br>
      * Some {@link Properties} may not take advantage of this in which case this method will simply do nothing.
      *
      * @throws PluginBaseException if attempting to do this raises runs into any problems.
@@ -139,7 +139,7 @@ public interface Properties {
 
     /**
      * Sets the property validator for the specified value property.
-     * <p/>
+     * <br>
      * This allows external objects to specify what constitutes as a valid value for a property in this properties object.
      *
      * @param property the property to set a validator for.

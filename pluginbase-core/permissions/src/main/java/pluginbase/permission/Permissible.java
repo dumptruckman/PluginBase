@@ -12,7 +12,7 @@ public interface Permissible {
 
     /**
      * Gets the value of the specified permission, if set.
-     * <p/>
+     * <br>
      * If a permission override is not set on this object, the default value of the permission will be returned.
      *
      * @param perm permission to get.
@@ -22,7 +22,7 @@ public interface Permissible {
 
     /**
      * Gets the value of the specified permission, if set.
-     * <p/>
+     * <br>
      * If a permission override is not set on this object, the default value of the permission will be returned.
      *
      * @param perm permission to get.
@@ -32,7 +32,7 @@ public interface Permissible {
 
     /**
      * Gets the value of the specified permission, if set.
-     * <p/>
+     * <br>
      * If a permission override is not set on this object, the default value of the permission will be returned.
      *
      * @param perm permission to get.

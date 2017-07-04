@@ -48,10 +48,10 @@ abstract class ValuePropertyBuilder<T> extends PropertyBuilder<T> {
 
     /**
      * Sets the default serializer for this property.
-     * <p/>
+     * <br>
      * This is what will be used by default if no serializer is defined for the Property in the
      * {@link pluginbase.properties.Properties} object.
-     * <p/>
+     * <br>
      * If no serializer defined in either place, here or the Properties object, the property will be the raw value and
      * not be serialized.
      *
@@ -66,10 +66,10 @@ abstract class ValuePropertyBuilder<T> extends PropertyBuilder<T> {
 
     /**
      * Sets the default validator for this property.
-     * <p/>
+     * <br>
      * This is what will be used by default if no validator is defined for the Property in the
      * {@link pluginbase.properties.Properties} object.
-     * <p/>
+     * <br>
      * If no serializer defined in either place, here or the Properties object, a default validator will be used
      * which always validates true.
      *
@@ -96,10 +96,10 @@ abstract class ValuePropertyBuilder<T> extends PropertyBuilder<T> {
 
     /**
      * Marks this property as deprecated.
-     * <p/>
+     * <br>
      * Typically when you use this you will also want to use java's {@link Deprecated} on the field that the property
      * this builds is stored in.
-     * <p/>
+     * <br>
      * This will indicate to the Properties object that some special handle may need to occur since this Property
      * is deprecated.
      *
@@ -113,10 +113,10 @@ abstract class ValuePropertyBuilder<T> extends PropertyBuilder<T> {
 
     /**
      * Adds an alias to the Property.
-     * <p/>
+     * <br>
      * These are alternate names that can be used to refer to the Property.  What this means is up to the implementer
      * of the Property.
-     * <p/>
+     * <br>
      * Call this multiple times to add multiple aliases.
      *
      * @param alias an alias to add to the property.

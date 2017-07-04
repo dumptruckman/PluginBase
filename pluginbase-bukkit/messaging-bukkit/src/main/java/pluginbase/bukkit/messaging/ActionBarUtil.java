@@ -20,7 +20,7 @@ public class ActionBarUtil {
 
     /**
      * Sends a message to the player's action bar.
-     * <p/>
+     * <br>
      * The message will appear above the player's hot bar for 2 seconds and then fade away over 1 second.
      *
      * @param bukkitPlayer the player to send the message to.
@@ -32,10 +32,10 @@ public class ActionBarUtil {
 
     /**
      * Sends a message to the player's action bar that lasts for an extended duration.
-     * <p/>
+     * <br>
      * The message will appear above the player's hot bar for the specified duration and fade away during the last
      * second of the duration.
-     * <p/>
+     * <br>
      * Only one long duration message can be sent at a time per player. If a new message is sent via this message
      * any previous messages still being displayed will be replaced.
      *

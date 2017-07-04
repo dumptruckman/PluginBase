@@ -8,7 +8,7 @@ import java.io.File;
 
 /**
  * An interface for interacting with required aspects the Minecraft server.
- * <p/>
+ * <br>
  * This must be implemented by the specific server implementation of PluginBase.
  */
 public interface ServerInterface {

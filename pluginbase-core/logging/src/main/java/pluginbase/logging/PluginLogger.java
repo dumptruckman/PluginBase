@@ -17,7 +17,7 @@ import java.util.logging.Logger;
 /**
  * This is the primary class to use for logging purposes.  It allows you to obtain your own copy of PluginLogger
  * via {@link #getLogger(LoggablePlugin)}.
- * <p/>
+ * <br>
  * Features:
  * <br/>- Thread safe logging.
  * <br/>- Plugin name prepended to log messages.
@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  * {@link String#format(String, Object...)}.
  * <br/>- {@link Level#FINE} and finer message do not perform {@link String#format(String, Object...)} on messages that
  * won't be logged.
- * <p/>
+ * <br>
  * Tip: Create a static {@link Logging} class of your own in your own namespace to allow high flexibility in your
  * plugin's logging. (No need to pass an object around everywhere!)
  */
@@ -70,11 +70,11 @@ public class PluginLogger extends Logger {
 
     /**
      * Gets the existing logger for this plugin or prepares a new one if non-existent.
-     * <p/>
+     * <br>
      * Debugging will default to disabled when initialized.
-     * <p/>
+     * <br>
      * This should be called early on in plugin initialization, such as during onLoad() or onEnable().
-     * <p/>
+     * <br>
      * If a logger has already been created for the plugin passed then that will be returned with no additional
      * initialization steps.
      *
@@ -93,11 +93,11 @@ public class PluginLogger extends Logger {
 
     /**
      * Gets the existing logger for this plugin or prepares a new one with a specified parent logger if non-existent.
-     * <p/>
+     * <br>
      * Debugging will default to disabled when initialized.
-     * <p/>
+     * <br>
      * This should be called early on in plugin initialization, such as during onLoad() or onEnable().
-     * <p/>
+     * <br>
      * If a logger has already been created for the plugin passed then that will be returned with no additional
      * initialization steps.
      *
@@ -245,9 +245,9 @@ public class PluginLogger extends Logger {
 
     /**
      * Sets the debug logging level of this plugin.
-     * <p/>
+     * <br>
      * Debug messages will print to the console and to a debug log file when enabled.
-     * <p/>
+     * <br>
      * debugLevel:
      * <br/>0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
      * <br/>1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
@@ -331,10 +331,10 @@ public class PluginLogger extends Logger {
 
     /**
      * Custom log method.
-     * <p/>
+     * <br>
      * Applies String.format() to the message if it is a non-debug level logging and to debug level logging IF debug
      * logging is enabled.
-     * <p/>
+     * <br>
      * Optionally appends version to prefix.
      *
      * @param level       One of the message level identifiers, e.g. SEVERE.

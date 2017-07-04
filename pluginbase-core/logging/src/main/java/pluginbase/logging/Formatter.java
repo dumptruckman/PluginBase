@@ -14,7 +14,7 @@ public class Formatter {
 
     /**
      * Functions exactly like {@link String#format(String, Object...)} but throws no exception on failure.
-     * <p/>
+     * <br>
      * When there would have been an exception, it just returns the original message instead.
      *
      * @param message the string to format.

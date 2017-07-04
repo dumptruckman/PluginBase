@@ -14,10 +14,10 @@ public interface PropertySerializer<T> {
 
     /**
      * Takes the object o and deserializes it to type {@link T}.
-     * <p/>
+     * <br>
      * The Object form could be anything but should typically be known by the implementer of the PropertySerializer and
      * the {@link pluginbase.properties.Properties}.
-     * <p/>
+     * <br>
      * A simple example is taking the string form of o and working from there.
      *
      * @param o the serialized value.
@@ -28,10 +28,10 @@ public interface PropertySerializer<T> {
 
     /**
      * Takes the object t and serializes it to Object form.
-     * <p/>
+     * <br>
      * The serialized form can be anything but needs to work with the {@link pluginbase.properties.Properties}
      * that it is use with.
-     * <p/>
+     * <br>
      * A simple example is turning t into a string and returning that.
      *
      * @param t the deserialized form.

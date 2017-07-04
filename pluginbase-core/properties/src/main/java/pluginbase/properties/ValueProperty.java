@@ -12,9 +12,9 @@ import java.util.List;
 
 /**
  * Represents some type of property that represents a value.
- * <p/>
+ * <br>
  * This property does not store the value, merely identifies it.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} for creating properties.
  *
  * @param <T> the type of the property.
@@ -31,7 +31,7 @@ public interface ValueProperty<T> extends Property<T> {
 
     /**
      * Retrieves the aliases for this property.
-     * <p/>
+     * <br>
      * Aliases are sometimes used when config entries are checked reflectively to offer an easy way to set
      * values via command.
      *
@@ -59,7 +59,7 @@ public interface ValueProperty<T> extends Property<T> {
     /**
      * This defines whether or not the value should be defaulted when retrieved if their is no associated value for
      * this property in a {@link Properties} object.
-     * <p/>
+     * <br>
      * This does not, however, cause the value to be added to the {@link Properties}.
      * It will simply cause the default to be returned.
      *
@@ -69,7 +69,7 @@ public interface ValueProperty<T> extends Property<T> {
 
     /**
      * Gets the default serializer for this property if there is one.
-     * <p/>
+     * <br>
      * This will be used to serialize/deserialize the property if not replaced by the {@link Properties} implementation.
      *
      * @return The default serializer for this property or null if not specified.
@@ -79,7 +79,7 @@ public interface ValueProperty<T> extends Property<T> {
 
     /**
      * Retrieves the description of this entry in the localizable {@link Message} form.
-     * <p/>
+     * <br>
      * This will return {@link pluginbase.messages.Messages#BLANK} by default.
      *
      * @return the description of this entry in in the localizable {@link Message} form.

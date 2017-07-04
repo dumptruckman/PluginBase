@@ -111,7 +111,7 @@ public class BukkitTools extends MinecraftTools {
 
     /**
      * Converts a PluginBase coordinates object into a Bukkit Location.
-     * <p/>
+     * <br>
      * Be aware that if the world the coordinates refers to is not loaded the location will contain a null world
      * reference.
      *

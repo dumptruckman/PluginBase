@@ -22,10 +22,10 @@ import java.util.regex.Pattern;
 
 /**
  * This class is responsible for handling commands.
- * <p/>
+ * <br>
  * This entails everything from registering them to detecting executed commands and delegating them
  * to the appropriate command class.
- * <p/>
+ * <br>
  * This must be implemented fully for a specific Minecraft server implementation.
  */
 public abstract class CommandHandler {
@@ -45,7 +45,7 @@ public abstract class CommandHandler {
 
     /**
      * Creates a new command handler.
-     * <p/>
+     * <br>
      * Typically you only want one of these per plugin.
      *
      * @param commandProvider the provider of commands for this handler.
@@ -86,7 +86,7 @@ public abstract class CommandHandler {
 
     /**
      * Registers the command represented by the given command class for the given command provider.
-     * <p/>
+     * <br>
      * Generally you can use the single arg version of this method as your commands should typically be using the
      * same command provider this CommandHandler was initially set up with.
      *
@@ -234,7 +234,7 @@ public abstract class CommandHandler {
      * @param args the space separated arguments of the command including the base command itself.
      * @return true if the command executed successfully.
      * @throws SendablePluginBaseException if there were any exceptions brought about by the usage of the command.
-     * <p/>
+     * <br>
      * The causes are many fold and include things such as using an improper amount of parameters or attempting to
      * use a flag not recognized by the command.
      * TODO This needs to throw an extended PluginBaseException

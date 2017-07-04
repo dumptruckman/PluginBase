@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Allows for the possibility of comments to appear with the serialized form of a field if they are supported by
  * the {@link pluginbase.config.datasource.DataSource} used.
- * <p/>
+ * <br>
  * Use multiple {@link String}s to have multi-lined comments.
  */
 @Target({ElementType.FIELD, ElementType.TYPE})

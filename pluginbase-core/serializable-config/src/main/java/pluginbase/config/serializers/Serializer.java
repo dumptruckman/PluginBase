@@ -20,7 +20,7 @@ public interface Serializer<T> {
 
     /**
      * Transforms the specified object of type {@code T} to a type recognized by a serialization format.
-     * <p/>
+     * <br>
      * The most common format for serialization is YAML.  Types typically recognized by YAML include:
      * <ul>
      *     <li>all primitives and their wrapper classes</li>
@@ -42,7 +42,7 @@ public interface Serializer<T> {
      * Transforms the specified object to the type specified by wantedType.
      *
      * @param serialized The object to transform.
-     * <p/>
+     * <br>
      * The type of the serialized object <em>should</em> be one of the following:
      * <ul>
      *     <li>all primitives and their wrapper classes</li>
@@ -51,7 +51,7 @@ public interface Serializer<T> {
      *     <li>{@link java.util.Map} of primitives or {@link String}</li>
      *     <li>arrays of primitives or {@link String}</li>
      * </ul>
-     * However, it is possible that serialization could take other forms.<p/>
+     * However, it is possible that serialization could take other forms.<br>
      * @param wantedType The {@link Class} of the object that should be returned.
      * @param serializerSet the serializerSet that contains serializers that may need to be used to deserialize child objects.
      * @return The deserialized form of the serialized object.
@@ -72,7 +72,7 @@ public interface Serializer<T> {
 
     /**
      * This method attempts to map the values contained in the given data Map to the fields of the given target object.
-     * <p/>
+     * <br>
      * The keys in the data map should represent the field names that will be set with the deserialized value.
      *
      * @param data the Map of serialized data with keys representing field names.

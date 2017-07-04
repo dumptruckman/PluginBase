@@ -13,7 +13,7 @@ import java.lang.reflect.Modifier;
 
 /**
  * A simple serializer that uses java's built in string methods to serialize/deserialize.
- * <p/>
+ * <br>
  * To use this serializer, the type in question <b>must</b> have a {@code public static T valueOf({@link String})} method
  * declared as part of the class.
  *

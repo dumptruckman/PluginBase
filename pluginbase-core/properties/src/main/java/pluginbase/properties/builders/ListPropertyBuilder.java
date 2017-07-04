@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * Used in the construction of a {@link ListProperty}.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} to get started.
  *
  * @param <T> the type for the list.

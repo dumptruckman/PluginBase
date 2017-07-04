@@ -25,12 +25,12 @@ import java.util.function.Supplier;
 
 /**
  * A defined set of serializers used internally to lookup the appropriate serializer for various object types.
- * <p/>
+ * <br>
  * Custom serializer set's can be created and passed to the various {@link SerializableConfig} methods
  * in order to use custom serializers in cases where {@link pluginbase.config.annotation.SerializeWith} is not feasible.
- * <p/>
+ * <br>
  * <strong>Note:</strong> Serializer sets are immutable once created.
- * <p/>
+ * <br>
  * Serializers have a general order of priority in which they should be used. See {@link #getClassSerializer(Class)}
  * for details.
  *
@@ -40,7 +40,7 @@ public final class SerializerSet {
 
     /**
      * Returns the default set of built in serializers used by Serializable-Config.
-     * <p/>
+     * <br>
      * The default set includes serializers for the following types:
      * <ul>
      *     <li>All primitive type wrapper classes *</li>
@@ -57,7 +57,7 @@ public final class SerializerSet {
      *     <li>Classes implementing {@link Map}</li>
      * </ul>
      * * Primitive types can be converted to their wrapper type via {@link pluginbase.config.util.PrimitivesUtil#switchForWrapper(Class)}.
-     * <p/>
+     * <br>
      * All custom serializer sets start out containing a copy of the serializers found in the default set.
      *
      * @return the default set of built in serializers used by Serializable-Config.
@@ -68,7 +68,7 @@ public final class SerializerSet {
 
     /**
      * Creates a Builder object to construct an immutable SerializerSet.
-     * <p/>
+     * <br>
      * By default, standard serializers include all those found in the {@link #defaultSet()} but can be replaced as
      * necessary.
      *
@@ -81,7 +81,7 @@ public final class SerializerSet {
 
     /**
      * Creates a Builder object to construct an immutable SerializerSet.
-     * <p/>
+     * <br>
      * This set will begin with all serializers that exist in the given copy set.
      *
      * @param setToCopy the set of serializers to use as the base for the new serializer set.
@@ -128,7 +128,7 @@ public final class SerializerSet {
 
         /**
          * Specifies a standard serializer to be included in the SerializerSet built by the Builder object.
-         * <p/>
+         * <br>
          * This serializers will be used after any override serializers specified by {@link #addOverrideSerializer(Class, Supplier)}
          * and any serializer specified by {@link pluginbase.config.annotation.SerializeWith}.
          *
@@ -146,7 +146,7 @@ public final class SerializerSet {
         // Override serializers are very specific, and will not apply to subclasses.
         /**
          * Specifies an override serializer to be included in the SerializerSet built by the Builder object.
-         * <p/>
+         * <br>
          * If a serializer is defined here it will always be used for the given class except in the special case
          * illustrated in {@link #getClassSerializer(Class)}.
          *
@@ -163,9 +163,9 @@ public final class SerializerSet {
 
         /**
          * Specifies a new fallback serializer to use instead of the default.
-         * <p/>
+         * <br>
          * This should not be used unless you're sure you know what you're doing!
-         * <p/>
+         * <br>
          * The fallback serializer will handle all serialization that is not handled by a more specific serializer.
          * It should be capable of serializing any kind of object. It should also be thread safe.
          *
@@ -180,12 +180,12 @@ public final class SerializerSet {
 
         /**
          * Registers an instance of a given Serializer class for use with {@link SerializeWith}.
-         * <p/>
+         * <br>
          * For a class to be serialized by the serializer specified in {@link SerializeWith} the serializer must have a
          * registered instance. If the serializer has a 0-arg constructor, an instance will be created automatically.
          * This method allows for the registering of serializer instances for serializers without 0-arg constructors
          * and also to replace previous instances should that be needed.
-         * <p/>
+         * <br>
          * If the given serializer class has already been registered this method will <strong>replace</strong> the previous
          * instance with the given instance.
          *
@@ -202,13 +202,13 @@ public final class SerializerSet {
         /**
          * Registers a {@link Predicate} that can be used to check if a class about to be serialized should be treated as the
          * given replacement class for serialization purposes.
-         * <p/>
+         * <br>
          * A very common example for this is serializing all classes that extend a certain class. This can be done
          * like so <code>registerClassReplacement(SomeClass.class::isAssignableFrom, SomeClass.class);</code>
-         * <p/>
+         * <br>
          * It is recommended that the overriden {@link Predicate#test(Object)} method be as fast as possible sine it
          * will potentially be checked very frequently.
-         * <p/>
+         * <br>
          * Predicates will be checked in the order they are registered and the first one that matches will be used.
          * There are a few default predicates that are registered in the following order:
          * <ol>
@@ -231,7 +231,7 @@ public final class SerializerSet {
 
         /**
          * Unregisters all {@link Predicate}s that will cause a replacement with the given replacementClass.
-         * <p/>
+         * <br>
          * This may be useful if the order of checks needs to be altered or one of the default predicates needs to be
          * replaced.
          *
@@ -271,15 +271,15 @@ public final class SerializerSet {
 
     /**
      * Retrieves the most appropriate serializer instance capable of serializing/deserializing the given class.
-     * <p/>
+     * <br>
      * This is the primary method for obtaining a serializer instance to serialize a given class in nearly all
      * scenarios. It will ensure that the most appropriate serializer is obtained.
-     * <p/>
+     * <br>
      * Special treatment is given to classes that extend {@link Collection} and {@link Map} and classes annotated by
      * {@link FauxEnum}. When looking for a <em>non-override</em> serializer for these classes, if one is not found for
      * the specific class, the serializer for Collection, Map, or FauxEnum, respectively, will be used instead. For
      * other types, serializers are only returned for the exact type given.
-     * <p/>
+     * <br>
      * What serializer is returned is determined by the following priority order:
      * <ol>
      *     <li>An override serializer specified in the given SerializerSet</li>
@@ -347,7 +347,7 @@ public final class SerializerSet {
 
     /**
      * Retrieves the global instance for the given serializer class.
-     * <p/>
+     * <br>
      * If an instance has not be previously registered, the serializer will be instantiated and registered before being
      * returned. If the serializer has not been previously registered and does not have a 0-arg constructor an exception
      * will be thrown.
@@ -446,12 +446,12 @@ public final class SerializerSet {
 
     /**
      * Registers a global instance of a given Serializer class for use with {@link SerializeWith}.
-     * <p/>
+     * <br>
      * For a class to be serialized by the serializer specified in {@link SerializeWith} the serializer must have a
      * registered global instance. If the serializer has a 0-arg constructor, a global instance will be created
      * automatically. This method allows for the registering of serializer instances for serializers without 0-arg
      * constructors.
-     * <p/>
+     * <br>
      * If the given serializer class has already been registered this method will <strong>replace</strong> the previous
      * global instance with the given instance.
      *

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 /**
  * Used in the construction of a {@link NullProperty}.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} to get started.
  */
 public class NullPropertyBuilder extends ValuePropertyBuilder<Null> {

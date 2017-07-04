@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * A class that represents the same thing as the java keyword <em>null</em>.
- * <p/>
+ * <br>
  * This is particularly used for {@link NullProperty} but may server other purposes.
- * <p/>
+ * <br>
  * Please do not try to instantiate this class.
  * Instead use this static {@link #NULL} for all purposes uses of this class.
  */

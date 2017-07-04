@@ -11,7 +11,7 @@ import java.io.File;
 /**
  * Provides a basic implementation of CommandProvider for use with Bukkit plugin's that are not utilizing the
  * Plugin-Bukkit module.
- * <p/>
+ * <br>
  * This implementation will provide a {@link pluginbase.logging.PluginLogger} and a {@link pluginbase.messages.messaging.Messager}
  * for your plugin so you will not need to create these on your own.
  */
@@ -23,7 +23,7 @@ public final class BukkitCommandProvider<O> extends AbstractCommandProvider<O> {
     /**
      * Creates a new instance of the basic Bukkit implementation of CommandProvider which can be used for registering
      * and running commands.
-     * <p/>
+     * <br>
      * Queued commands are enabled by default.
      *
      * @param plugin the plugin that needs a CommandProvider.
@@ -37,7 +37,7 @@ public final class BukkitCommandProvider<O> extends AbstractCommandProvider<O> {
     /**
      * Creates a new instance of the basic Bukkit implementation of CommandProvider which can be used for registering
      * and running commands.
-     * <p/>
+     * <br>
      * Queued commands will not be used.
      *
      * @param plugin the plugin that needs a CommandProvider.
@@ -51,7 +51,7 @@ public final class BukkitCommandProvider<O> extends AbstractCommandProvider<O> {
     /**
      * Creates a new instance of the basic Bukkit implementation of CommandProvider which can be used for registering
      * and running commands.
-     * <p/>
+     * <br>
      * Queued commands are enabled by default.
      *
      * @param owner the object that is used for command instantiation.
@@ -66,7 +66,7 @@ public final class BukkitCommandProvider<O> extends AbstractCommandProvider<O> {
     /**
      * Creates a new instance of the basic Bukkit implementation of CommandProvider which can be used for registering
      * and running commands.
-     * <p/>
+     * <br>
      * Queued commands will not be used.
      *
      * @param owner the object that is used for command instantiation.

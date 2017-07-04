@@ -29,7 +29,7 @@ public class Messager implements MessageProvider {
 
     /**
      * Retrieves the most recently created Messager object.
-     * <p/>
+     * <br>
      * You should not store any hard references to the returned Messager as it needs to be able to be garbage collected
      * as needed.
      *
@@ -57,7 +57,7 @@ public class Messager implements MessageProvider {
 
     /**
      * Loads the given language file into a new Messager set to use the given locale.
-     * <p/>
+     * <br>
      * Any messages registered with {@link Messages#registerMessages(pluginbase.messages.LocalizablePlugin, Class)} for the same Localizable object
      * should be present in this file.  If they are not previously present, they will be inserted with the default
      * message.  If any message is located in the file that is not registered as previously mentioned it will be

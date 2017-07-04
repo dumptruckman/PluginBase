@@ -10,9 +10,9 @@ import java.util.Map;
 
 /**
  * Represents a permissions that a Minecraft player may have.
- * <p/>
+ * <br>
  * These should generally be defined as constants.
- * <p/>
+ * <br>
  * This class must be implemented for your specific Minecraft Server implementation.  See {@link #verify(String)}.
  * @deprecated This class is not currently required for Sponge implementation.
  */

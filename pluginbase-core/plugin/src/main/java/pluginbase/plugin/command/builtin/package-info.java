@@ -1,6 +1,6 @@
 /**
  * Contains the many built-in commands for PluginBase plugins.
- * <p/>
+ * <br>
  * Part of com.dumptruckman.minecraft.pluginbase:Plugin.
  */
 package pluginbase.plugin.command.builtin;

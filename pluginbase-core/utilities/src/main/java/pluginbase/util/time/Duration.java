@@ -11,15 +11,15 @@ public final class Duration {
 
     /**
      * Creates a Duration object based on a length of time interpreted from a string form.
-     * <p/>
+     * <br>
      * The string form can fit one of the following formats.
-     * <p/>
+     * <br>
      * <b>Short form: </b>{@code DDd HHh MMm SSs}
      * <br/>
      * <b>Long form: </b>{@code DD day(s) HH hour(s) MM minute(s) SS second(s)}
      * <br/>
      * <b>Seconds: </b>{@code SS}
-     * <p/>
+     * <br>
      * {@code DD} - an amount of days
      * <br/>
      * {@code HH} - an amount of hours
@@ -29,7 +29,7 @@ public final class Duration {
      * {@code SS} - an amount of seconds
      * <br/>
      * {@code (s)} - this "s" is optional
-     * <p/>
+     * <br>
      * Spaces in the string will not affect the parsing.
      * <br/>
      * In the short and long form, any of the time intervals may be omitted as long as one is present.
@@ -114,7 +114,7 @@ public final class Duration {
 
     /**
      * Returns the amount of time this Duration object represents as a verbose human-readable String.
-     * <p/>
+     * <br>
      * Example: {@code 5 days 1 hour 15 minutes 32 seconds}
      *
      * @return the amount of time this Duration object represents as a verbose human-readable String.
@@ -126,7 +126,7 @@ public final class Duration {
 
     /**
      * Returns the amount of time this Duration object represents as a short, concise human-readable String.
-     * <p/>
+     * <br>
      * Example: {@code 5d 1h 15m 32s}
      *
      * @return the amount of time this Duration object represents as a verbose human-readable String.
@@ -138,7 +138,7 @@ public final class Duration {
 
     /**
      * Returns the amount of time this Duration object represents as a short, concise human-readable String.
-     * <p/>
+     * <br>
      * Example: {@code 5d 1h 15m 32s}
      *
      * @return the amount of time this Duration object represents as a verbose human-readable String.

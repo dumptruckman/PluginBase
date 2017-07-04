@@ -5,7 +5,7 @@ package pluginbase.properties;
 
 /**
  * This represents a special type of property that has no value and only typically exists to add section comments.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} for creating properties.
  */
 public interface NullProperty extends ValueProperty<Null> { }

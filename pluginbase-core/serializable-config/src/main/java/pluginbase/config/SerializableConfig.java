@@ -12,13 +12,13 @@ import java.util.*;
 /**
  * A singleton used to serialize and deserialize objects to take advantage of all the features provided by
  * Serializable-Config.
- * <p/>
+ * <br>
  * Serialization is often as simple as calling {@link #serialize(Object)} on the object you want to serialize and
  * {@link #deserialize(Object)} on the object you want to deserialize. However, some classes may require more
  * instruction on how to be serialized in the form of a custom {@link Serializer} which can be added to a class via
  * {@link pluginbase.config.annotation.SerializeWith} or added to a custom {@link SerializerSet} and passed utilized
  * via {@link #serialize(Object, SerializerSet)} and {@link #deserialize(Object, SerializerSet)}.
- * <p/>
+ * <br>
  * For simple and direct serialization to and from a storage medium, refer to {@link pluginbase.config.datasource}.
  *
  * @see SerializerSet
@@ -51,7 +51,7 @@ public enum SerializableConfig {
 
     /**
      * Deserializes the given data using the specified serializer set.
-     * <p/>
+     * <br>
      * To use this method to its fullest potential, data should be in the form of a Map with string keys.
      *
      * @param data the data to deserialize.
@@ -75,7 +75,7 @@ public enum SerializableConfig {
 
     /**
      * Deserializes the given data in the form of the specified class using the specified serializer set.
-     * <p/>
+     * <br>
      * To use this method to its fullest potential, data should be in the form of a Map with string keys.
      *
      * @param data the data to deserialize.
@@ -120,7 +120,7 @@ public enum SerializableConfig {
 
     /**
      * Deserializes the given data using the {@link SerializerSet#defaultSet()}.
-     * <p/>
+     * <br>
      * To use this method to its fullest potential, data should be in the form of a Map with string keys.
      *
      * @param data the data to deserialize.
@@ -133,7 +133,7 @@ public enum SerializableConfig {
 
     /**
      * Deserializes the given data in the form of the specified class using the {@link SerializerSet#defaultSet()}.
-     * <p/>
+     * <br>
      * To use this method to its fullest potential, data should be in the form of a Map with string keys.
      *
      * @param data the data to deserialize.

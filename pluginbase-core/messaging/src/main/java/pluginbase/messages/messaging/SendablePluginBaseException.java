@@ -44,7 +44,7 @@ public class SendablePluginBaseException extends PluginBaseException {
 
     /**
      * Creates a PluginBase exception with the given bundled message that was caused by another PluginBase exception.
-     * <p/>
+     * <br>
      * This other exception will be retrievable via {@link #getCauseException()} and {@link #getCause()}.
      *
      * @param languageMessage the bundled message to use for this exception.

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * An abstract implementation of BasePlayer for Bukkit.
- * <p/>
+ * <br>
  * This will be implemented separately for each CommandSender type as required.
  *
  * @param <S> The implementation of CommandSender used.  Should be implemented as non-generic in the concrete

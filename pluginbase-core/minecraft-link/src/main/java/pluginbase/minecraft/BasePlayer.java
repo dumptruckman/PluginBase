@@ -11,7 +11,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Represents a player/user currently on a Minecraft server.
- * <p/>
+ * <br>
  * It may not always represent an actual player but could also represent a console user.  {@link #isPlayer()} is used
  * to determine this difference.
  */

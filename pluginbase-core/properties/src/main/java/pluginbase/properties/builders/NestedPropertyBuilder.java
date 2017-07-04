@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Used in the construction of a {@link NestedProperty}.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} to get started.
  *
  * @param <T> the type that represents the class holding the properties for the NestedProperty.

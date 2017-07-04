@@ -12,10 +12,10 @@ import java.lang.reflect.InvocationTargetException;
 
 /**
  * A simple serializer that uses java's built in string methods to serialize/deserialize.
- * <p/>
+ * <br>
  * Functions similarly to {@link DefaultStringSerializer} except relies on a public constructor that accepts a single
  * {@link String} argument.
- * <p/>
+ * <br>
  * An example usage would be for the {@link String} class.
  *
  * @param <T> the type to serialize for.

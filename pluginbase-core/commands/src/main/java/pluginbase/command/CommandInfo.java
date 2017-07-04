@@ -11,11 +11,11 @@ public @interface CommandInfo {
 
     /**
      * The primary alias of the command.
-     * <p/>
+     * <br>
      * This shows the primary string required to execute the command.  By default this string must be prefixed by the
      * {@link pluginbase.command.CommandProvider#getCommandPrefix()} followed by a space
      * UNLESS {@link #prefixPrimary()} is set to false.
-     * <p/>
+     * <br>
      * Additionally if {@link #directlyPrefixPrimary()} is set to true, the space between the command prefix and this
      * string is not required.
      *
@@ -34,7 +34,7 @@ public @interface CommandInfo {
 
     /**
      * Whether the primary alias is directly (no space) prefixed by the {@link pluginbase.command.CommandProvider#getCommandPrefix()}.
-     * <p/>
+     * <br>
      * If {@link #prefixPrimary()} is false, this setting is ignored.
      *
      * @return true if the primary alias must be directly prefixed by the {@link pluginbase.command.CommandProvider#getCommandPrefix()}.
@@ -43,7 +43,7 @@ public @interface CommandInfo {
 
     /**
      * These are alternate aliases for this command with no predefined prefix.
-     * <p/>
+     * <br>
      * These aliases must be entered by the user exactly as shown here to active this command.
      *
      * @return alternate aliases for this command.
@@ -52,7 +52,7 @@ public @interface CommandInfo {
 
     /**
      * These are alternate aliases for this command that utilize the {@link pluginbase.command.CommandProvider#getCommandPrefix()} followed by a space.
-     * <p/>
+     * <br>
      * These aliases must be entered by the user following the command prefix and a space to activate this command.
      *
      * @return alternate aliases for this command that utilize the {@link pluginbase.command.CommandProvider#getCommandPrefix()} followed by a space.
@@ -61,7 +61,7 @@ public @interface CommandInfo {
 
     /**
      * These are alternate aliases for this command that utilize the {@link pluginbase.command.CommandProvider#getCommandPrefix()} with no space.
-     * <p/>
+     * <br>
      * These aliases must be entered by the user directly following the command prefix to activate this command.
      *
      * @return alternate aliases for this command that utilize the {@link pluginbase.command.CommandProvider#getCommandPrefix()} with no space.
@@ -70,9 +70,9 @@ public @interface CommandInfo {
 
     /**
      * Describes the usage of this command beyond just the alias.
-     * <p/>
+     * <br>
      * This should demonstrate only the parameters that are used for the command.
-     * <p/>
+     * <br>
      * example: {@code <required> [optional 1] [optional 2]}
      *
      * @return the usage of this command beyond just the alias.
@@ -103,12 +103,12 @@ public @interface CommandInfo {
 
     /**
      * Gets the flags for the command.
-     * <p/>
+     * <br>
      * Flags allow special processing for flags such as -h in the command,
      * allowing users to easily turn on a flag.
-     * <p/>
+     * <br>
      * This is a string with each character being a flag. Use A-Z and a-z as possible flags.
-     *  <p/>
+     *  <br>
      * Appending a flag with a : makes the flag character before a value flag,
      * meaning that if it is given it must have a value
      *

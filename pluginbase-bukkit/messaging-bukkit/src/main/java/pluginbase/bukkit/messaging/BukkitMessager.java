@@ -23,9 +23,9 @@ import java.util.Locale;
 
 /**
  * A Bukkit specific implementation of {@link pluginbase.messages.messaging.Messager}.
- * <p/>
+ * <br>
  * Provides word wrapping on messages too long to fit on one line.
- * <p/>
+ * <br>
  * Please refer to {@link pluginbase.messages.messaging.Messager} for javadoc for the methods in this class.  This class merely adds
  * convenience methods for Bukkit CommandSenders.
  */
@@ -42,7 +42,7 @@ public class BukkitMessager extends Messager {
 
     /**
      * Loads the given language file into a new BukkitMessager set to use the given locale.
-     * <p/>
+     * <br>
      * Any messages registered with {@link Messages#registerMessages(pluginbase.messages.LocalizablePlugin, Class)} for the same Localizable object
      * should be present in this file.  If they are not previously present, they will be inserted with the default
      * message.  If any message is located in the file that is not registered as previously mentioned it will be

@@ -9,7 +9,7 @@ import java.io.File;
 
 /**
  * Any plugin wishing to use the PluginLogger must implement this method.
- * <p/>
+ * <br>
  * In a Bukkit plugin this is as simple as adding this class in an implements clause.
  */
 public interface LoggablePlugin {

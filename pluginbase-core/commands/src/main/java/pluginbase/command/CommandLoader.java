@@ -10,7 +10,7 @@ enum CommandLoader {
 
     /**
      * Constructs a command object from the given Command class.
-     * <p/>
+     * <br>
      * The command class must accept a single parameter which is an object extending both
      * {@link Messaging} and {@link CommandProvider}.
      *

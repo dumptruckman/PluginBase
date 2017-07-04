@@ -1,8 +1,8 @@
 /**
  * Classes used for managing object properties.
- * <p/>
+ * <br>
  * See {@link PropertyFactory} for details on creating your own Property objects.
- * <p/>
+ * <br>
  * This is part of com.dumptruckman.minecraft.pluginbase:Properties.
  */
 package pluginbase.properties;

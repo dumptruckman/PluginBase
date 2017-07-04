@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 /**
  * Anonymous static plugin logger.
- * <p/>
+ * <br>
  * This class's methods should only be used if you do not care where the log messages appear to originate from.
  */
 public final class Logging {
@@ -66,9 +66,9 @@ public final class Logging {
 
     /**
      * Sets the debug logging level of this plugin.
-     * <p/>
+     * <br>
      * Debug messages will print to the console and to a debug log file when enabled.
-     * <p/>
+     * <br>
      * debugLevel:
      * <br/>0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
      * <br/>1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
@@ -83,7 +83,7 @@ public final class Logging {
 
     /**
      * Custom log method that always logs to a single static logger.
-     * <p/>
+     * <br>
      * Applies String.format() to the message if it is a non-debug level logging and to debug level logging IF debug
      * logging is enabled.
      * <br/>

@@ -97,7 +97,7 @@ public final class PropertyFactory extends PropertyBuilder {
 
     /**
      * Creates a new builder for a new MappedProperty.
-     * <p/>
+     * <br>
      * All MappedPropertys represent a {@code Map<String, T>}
      *
      * @param type the class for the map property value type. For instance, for a {@code Map<String, Boolean>} you should use
@@ -113,7 +113,7 @@ public final class PropertyFactory extends PropertyBuilder {
 
     /**
      * Creates a new builder for a new MappedProperty.
-     * <p/>
+     * <br>
      * All MappedPropertys represent a {@code Map<String, T>}
      *
      * @param type the class for the map property value type. For instance, for a {@code Map<String, Boolean>} you should use
@@ -131,7 +131,7 @@ public final class PropertyFactory extends PropertyBuilder {
 
     /**
      * Creates a new builder for a new MappedProperty.
-     * <p/>
+     * <br>
      * All MappedPropertys represent a {@code Map<String, T>}
      *
      * @param type the class for the map property value type. For instance, for a {@code Map<String, Boolean>} you should use

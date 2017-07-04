@@ -7,7 +7,7 @@ import pluginbase.permission.PermFactory;
 
 /**
  * Use this to create new SpongePerm objects.
- * <p/>
+ * <br>
  * If you are attempting to abstract your code from Sponge, you can use {@link pluginbase.permission.PermFactory} instead.
  * @deprecated This class is not currently required by the Sponge implementation.
  */

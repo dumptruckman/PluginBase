@@ -75,7 +75,7 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
 
     /**
      * Gets the config object backing this Properties object.
-     * <p/>
+     * <br>
      * Should be overridden in NestedProperties to give the appropriate ConfigurationSection for the Properties sub
      * path of the backing Configuration object.
      *
@@ -98,7 +98,7 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
 
     /**
      * The name of this Properties object which is used to define the path it holds in the Configuration object.
-     * <p/>
+     * <br>
      * Should be overridden in NestedProperties to indicate the sub path this Properties object has in the
      * backing Configuration object.
      *
@@ -112,7 +112,7 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
     /**
      * Tells this AbstractFileProperties to associate the comments for its Property objects with the key associated with
      * the Property's value in the backing Configuration object.
-     * <p/>
+     * <br>
      * This is typically done right before saving the Configuration to disk.
      *
      * @param config The backing configuration object to apply comments to.
@@ -137,10 +137,10 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
 
     /**
      * Deserializes all the values in the backing Configuration object.
-     * <p/>
+     * <br>
      * This causes the Configuration object to hold references to the actual objects each Property represents instead
      * of references to serialized form.
-     * <p/>
+     * <br>
      * If this is overridden this super method should probably still be called.
      */
     protected void deserializeAll() {
@@ -210,10 +210,10 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
 
     /**
      * Serializes all the values in the backing Configuration object.
-     * <p/>
+     * <br>
      * This causes the Configuration object to hold references to the serialized form of the objects each Property
      * represents instead of references to the actual form.
-     * <p/>
+     * <br>
      * If this is overridden this super method should probably still be called.
      *
      * @param newConfig the section of the config to be serializing for.
@@ -294,7 +294,7 @@ public abstract class AbstractFileProperties extends AbstractProperties implemen
 
     /**
      * Loads default settings for any missing config values.
-     * <p/>
+     * <br>
      * If this is overridden this super method should probably still be called.
      */
     protected void setDefaults() {

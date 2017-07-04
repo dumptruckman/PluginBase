@@ -39,7 +39,7 @@ class YamlCommentMap {
 
     /**
      * Sets the comments for a path in a yaml file.
-     * <p/>
+     * <br>
      * The comment can be multiple lines.  An empty string will indicate a blank line.
      *
      * @param path Configuration path to add comment.  Must use the path separator character specified with {@link YamlCommentMap#getYamlCommentMap(int, char)}
@@ -104,9 +104,9 @@ class YamlCommentMap {
 
     /**
      * Retrieves the comments for a path in a yaml file.
-     * <p/>
+     * <br>
      * The path must utilize the same path separator character specified with {@link YamlCommentMap#getYamlCommentMap(int, char)}
-     * <p/>
+     * <br>
      * This will return a single String which will be properly formatted for a yaml file and the given path.
      */
     @NotNull

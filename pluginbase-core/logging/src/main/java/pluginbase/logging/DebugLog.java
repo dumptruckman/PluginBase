@@ -58,7 +58,7 @@ class DebugLog {
 
     /**
      * Sets the debug level for this logger.
-     * <p/>
+     * <br>
      * PluginLogger stores its debug level in this debug logger so that plugins sharing the debug log can share a
      * debug level setting.
      *

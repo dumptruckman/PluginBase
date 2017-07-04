@@ -1,8 +1,8 @@
 /**
  * Classes used for serializing object properties.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} for details on creating your own Property objects.
- * <p/>
+ * <br>
  * This is part of com.dumptruckman.minecraft.pluginbase:Properties.
  */
 package pluginbase.properties.serializers;

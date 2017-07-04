@@ -17,9 +17,9 @@ import java.io.UnsupportedEncodingException;
 
 /**
  * Optionally commented Yaml implementation of Properties.
- * <p/>
+ * <br>
  * <b>Do note:</b> Using comments will cause disk writes to take significantly longer than not using them.
- * <p/>
+ * <br>
  * See {@link pluginbase.bukkit.properties.YamlProperties.Loader} for creating a YamlProperties object.
  */
 public class YamlProperties extends AbstractFileProperties implements Properties {
@@ -65,10 +65,10 @@ public class YamlProperties extends AbstractFileProperties implements Properties
 
         /**
          * Creates a new datasource for a YamlProperties object.
-         * <p/>
+         * <br>
          * By default, the loaded YamlProperties will have comments and automatically set defaults.
          * Use the optional methods in this class to change these options.
-         * <p/>
+         * <br>
          * Use {@link #load()} to finalize the options and create the YamlProperties object.
          *
          * @param logger a logger to use for any important messages this Properties object may need to log.
@@ -85,7 +85,7 @@ public class YamlProperties extends AbstractFileProperties implements Properties
 
         /**
          * Specifies whether ot not to use comments on the YamlProperties object.
-         * <p/>
+         * <br>
          * <b>default:</b> true
          *
          * @param doComments true to use comments.
@@ -98,7 +98,7 @@ public class YamlProperties extends AbstractFileProperties implements Properties
 
         /**
          * Specifies whether ot not to automatically default values on the YamlProperties object.
-         * <p/>
+         * <br>
          * <b>default:</b> true
          *
          * @param autoDefaults true to use automatically default Property values.

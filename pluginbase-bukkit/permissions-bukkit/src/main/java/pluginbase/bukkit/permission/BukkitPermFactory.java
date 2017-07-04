@@ -7,7 +7,7 @@ import pluginbase.permission.PermFactory;
 
 /**
  * Use this to create new BukkitPerm objects.
- * <p/>
+ * <br>
  * If you are attempting to abstract your code from Bukkit, you can use {@link pluginbase.permission.PermFactory} instead.
  */
 public class BukkitPermFactory extends PermFactory<BukkitPermFactory, BukkitPerm> {

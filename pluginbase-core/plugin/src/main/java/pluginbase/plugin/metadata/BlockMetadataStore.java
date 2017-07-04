@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * This is a data class for storage of block metadata in a {@link pluginbase.config.SerializableConfig}.
- * <p/>
+ * <br>
  * The data is stored as a list of objects where each object keeps track of location data itself. The data is then
  * loaded as a list and piped out as a map with each object mapped to its coordinates.
  *

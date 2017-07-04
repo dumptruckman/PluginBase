@@ -6,7 +6,7 @@ import pluginbase.minecraft.location.BlockCoordinates;
 
 /**
  * Implement in a class that represents block metadata.
- * <p/>
+ * <br>
  * The implementing class must be compatible with serialization via {@link pluginbase.config.SerializableConfig}.
  * Each instance of this should only be added to a single {@link BlockMetadataRegistry}.
  */
@@ -22,7 +22,7 @@ public interface BlockMetadatable {
 
     /**
      * Sets the registry which this block metadata is stored in.
-     * <p/>
+     * <br>
      * Null may be given to disassociate this metadata from a registry.
      *
      * @param registry The block metadata registry to store this metadata in.

@@ -14,7 +14,7 @@ public class GsonDataSource extends AbstractDataSource {
 
     /**
      * Returns the default serializer set used for a Gson data source.
-     * <p/>
+     * <br>
      * Long values are given special treatment in this set.
      *
      * @return the default serializer set used for a Gson data source.

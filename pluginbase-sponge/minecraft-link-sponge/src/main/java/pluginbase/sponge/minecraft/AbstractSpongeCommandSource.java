@@ -7,7 +7,7 @@ import pluginbase.minecraft.BasePlayer;
 
 /**
  * An abstract implementation of BasePlayer for Sponge.
- * <p/>
+ * <br>
  * This will be implemented separately for each CommandSource type as required.
  *
  * @param <S> The implementation of CommandSource used.  Should be implemented as non-generic in the concrete

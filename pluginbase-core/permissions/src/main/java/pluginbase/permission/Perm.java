@@ -44,7 +44,7 @@ public abstract class Perm {
 
     /**
      * Retrieves the Perm that represents the top level all command encompassing permission for your plugin.
-     * <p/>
+     * <br>
      * {@link pluginbase.permission.PermFactory#commandPermission()} adds this as a parent
      * to the new Perm.
      *
@@ -116,9 +116,9 @@ public abstract class Perm {
 
     /**
      * Gets the permission's fully realized name.
-     * <p/>
+     * <br>
      * This name represents the full namespace for the permission.  Example: pluginbase.cmd.info.
-     * <p/>
+     * <br>
      * This method will also verify that the name given represents a valid permission.
      *
      * @return The permission's fully realized name.
@@ -133,9 +133,9 @@ public abstract class Perm {
 
     /**
      * Gets the permission's fully realized name with a specific sub node attachment.
-     * <p/>
+     * <br>
      * This name represents the full namespace for the permission.  Example: multiverse.access.hellworld
-     * <p/>
+     * <br>
      * This method will also verify that the name given represents a valid permission.
      *
      * @param specific  The specific sub-node to attach.
@@ -185,7 +185,7 @@ public abstract class Perm {
 
     /**
      * Checks if the sender has the permission in question.
-     * <p/>
+     * <br>
      * This method will also take any steps necessary to initialize the permission in Minecraft if required.
      *
      * @param permissible Permissible to check permission for.
@@ -197,13 +197,13 @@ public abstract class Perm {
 
     /**
      * Checks if the sender has a specific sub-node of the permission in question.
-     * <p/>
+     * <br>
      * Sub-nodes are useful when you need permissions for non-constant things.
-     * <p/>
+     * <br>
      * For example, if you need to check if someone can access a specific world, you can have a
      * permission like 'multiverse.access' and use this method to check the name of the world which would
      * ultimately check if the player has access to 'multiverse.access.worldname'.
-     * <p/>
+     * <br>
      * This method will also take any steps necessary to initialize the specific permission in Minecraft if required.
      *
      * @param permissible Permissible to check permission for.
@@ -217,7 +217,7 @@ public abstract class Perm {
     /**
      * This method will perform all the necessary steps required to initialize a permission in your Minecraft server
      * implementation.
-     * <p/>
+     * <br>
      * For example, in Bukkit, this will register any permission that is not already registered.
      *
      * @param name The name of the permission to verify.

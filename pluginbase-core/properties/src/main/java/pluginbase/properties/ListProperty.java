@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * A {@link ValueProperty} that represents a list of objects of some type.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} for creating properties.
  *
  * @param <T> the type of the objects in the List.

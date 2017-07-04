@@ -268,11 +268,11 @@ public abstract class PluginAgent<P> {
 
     /**
      * Retrieves the list of commands that will be registered after {@link #registerCommands()} has been called.
-     * <p/>
+     * <br>
      * This will contain the default commands.  You may remove commands from this list if you do not wish them to be registered.
-     * <p/>
+     * <br>
      * After {@link #registerCommands()} has been called this method will always return null.
-     * <p/>
+     * <br>
      * Ordering of commands can matter.  If you have a parent command, "test", and you want a child command, "test help",
      * you must ensure that "test" is in this list ahead of "test help" or "test" will not work 100%.
      *
@@ -310,7 +310,7 @@ public abstract class PluginAgent<P> {
 
     /**
      * Adds an additional alias to a command.  Any amount may be added by calling this method multiple times.
-     * <p/>
+     * <br>
      * This must be called before command registration occurs!
      *
      * @param commandClass the command class to add aliases for.

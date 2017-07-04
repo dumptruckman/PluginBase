@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * A {@link ValueProperty} that represents a map of objects of some type with String keys.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} for creating properties.
  *
  * @param <T> the type of the value objects in the map.

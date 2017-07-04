@@ -9,10 +9,10 @@ import java.lang.annotation.Target;
 /**
  * Tells the serializer to ignore fields from any super interfaces/classes and only use the fields declared in the
  * annotated class.
- * <p/>
+ * <br>
  * If this is present on a parent of a child class it will include the fields of both the parent and child but will not
  * include any from the parent's parent.
- * <p/>
+ * <br>
  * This may only work when not using a custom serializer for the annotated type.
  */
 @Documented

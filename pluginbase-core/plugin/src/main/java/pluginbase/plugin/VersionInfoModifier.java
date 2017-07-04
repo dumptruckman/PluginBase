@@ -6,7 +6,7 @@ import java.util.List;
 
 /**
  * An interface that will allow for modifying the output of the version command.
- * <p/>
+ * <br>
  * See {@link pluginbase.plugin.PluginAgent#setVersionInfoModifier(VersionInfoModifier)}.
  */
 public interface VersionInfoModifier {

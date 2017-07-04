@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * A 3-dimensional immutable mathematical vector.
- * <p/>
+ * <br>
  * Any mutator methods in this class will produce a NEW object.
  */
 public class Vector extends VectorBase implements Cloneable {

@@ -8,9 +8,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * This represents the simplest of Properties and should represent a key : value pair where the value is not
  * a list or a map.
- * <p/>
+ * <br>
  * This property does not store the value, merely identifies it.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} for creating properties.
  *
  * @param <T> the type of the property.

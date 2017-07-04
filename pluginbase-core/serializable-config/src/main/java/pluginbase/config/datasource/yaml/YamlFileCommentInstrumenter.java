@@ -30,9 +30,9 @@ class YamlFileCommentInstrumenter {
 
     /**
      * Creates an YamlFileCommentInstrumenter which will allow you to add comments to a YAML file.
-     * <p/>
+     * <br>
      * See {@link #setCommentsForPath(String, String...)} for linking comments to the nodes in the file yaml structure.
-     * <p/>
+     * <br>
      * <b>Note: </b> The indentation must be uniform in the file for the instrumentation to work correctly.
      * Behavior is unknown for files with non-uniform indentation.
      *
@@ -49,7 +49,7 @@ class YamlFileCommentInstrumenter {
 
     /**
      * Sets the comments for a path in a yaml file.
-     * <p/>
+     * <br>
      * The comment can be multiple lines.  An empty string will indicate a blank line.
      *
      * @param path Configuration path to add comment.  Separate nodes in a path with a '.' (period).

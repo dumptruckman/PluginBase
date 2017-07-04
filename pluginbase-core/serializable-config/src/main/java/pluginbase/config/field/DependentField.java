@@ -39,7 +39,7 @@ public abstract class DependentField<T, D> implements VirtualField<T> {
 
     /**
      * Sets the value for the dependency if it is available.
-     * <p/>
+     * <br>
      * Also will always set the backup value if {@link #alwaysSetBackupValue()} returns true.
      *
      * @param value the new value to use.

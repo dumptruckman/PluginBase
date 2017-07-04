@@ -9,9 +9,9 @@ import java.util.List;
 
 /**
  * Represents a property of some type.
- * <p/>
+ * <br>
  * This class is the basis of many others and should typically not be used directly.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} for creating properties.
  *
  * @param <T> the type of the property.
@@ -20,7 +20,7 @@ public interface Property<T> {
 
     /**
      * Retrieves the key for this property.
-     * <p/>
+     * <br>
      * If this property is persisted this should be the name to reference the value within the persistence.
      *
      * @return the key for this property.

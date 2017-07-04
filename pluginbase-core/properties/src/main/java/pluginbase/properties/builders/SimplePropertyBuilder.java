@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 /**
  * Used in the construction of a {@link SimpleProperty}.
- * <p/>
+ * <br>
  * See {@link pluginbase.properties.PropertyFactory} to get started.
  *
  * @param <T> the type for the property.

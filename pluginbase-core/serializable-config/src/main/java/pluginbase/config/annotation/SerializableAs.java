@@ -11,9 +11,9 @@ import java.lang.annotation.Target;
 /**
  * Represents an "alias" that a class may be stored as.  If this is not present on a class, serializers will generally
  * use the fully qualified name of the class instead.
- * <p/>
+ * <br>
  * This name MUST be unique. A non-unique name may result in undesirable behavior.
- * <p/>
+ * <br>
  * <strong>Note:</strong> To use this annotation, the class <strong>must</strong> be registered via
  * {@link SerializableConfig#registerSerializableAsClass(Class)} before any serialization occurs or
  * problems may arise.

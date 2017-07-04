@@ -11,7 +11,7 @@ import pluginbase.util.time.Duration;
 
 /**
  * A PluginBase user queued command that requires confirmation before executing.
- * <p/>
+ * <br>
  * This is for commands to be used on the server by the server operator or the players on the server.
  * A queued command waits for the user to execute a confirmation command before performing the actual
  * command.  A queued command will have an expiration time after which it will stop waiting for the confirm
@@ -26,7 +26,7 @@ public abstract class QueuedCommand<P> extends Command<P> implements Runnable {
 
     /**
      * Constructs a queued command.
-     * <p/>
+     * <br>
      * You will never need to call this constructor.  It is used by {@link CommandHandler}
      *
      * @param plugin your plugin.
@@ -41,7 +41,7 @@ public abstract class QueuedCommand<P> extends Command<P> implements Runnable {
     /**
      * This method should return a user friendly message explaining that this command
      * requires confirmation using the appropriate confirm command.
-     * <p/>
+     * <br>
      * The confirm command is "/" + {@link pluginbase.command.CommandProvider#getCommandPrefix()} + " confirm" by default.
      * <br/>
      * This returns a built in message and must be overridden to provide a custom message.
@@ -74,7 +74,7 @@ public abstract class QueuedCommand<P> extends Command<P> implements Runnable {
 
     /**
      * Gives the command a chance to do something before the confirm command has been used.
-     * <p/>
+     * <br>
      * This is called internally and must simply be implemented.  It is okay for this method to be blank.
      *
      * @param sender the command sender.
@@ -85,7 +85,7 @@ public abstract class QueuedCommand<P> extends Command<P> implements Runnable {
 
     /**
      * This runs the actual command once it is confirmed.
-     * <p/>
+     * <br>
      * Implement with what the command should actually do.
      *
      * @param sender the command sender.
@@ -95,7 +95,7 @@ public abstract class QueuedCommand<P> extends Command<P> implements Runnable {
 
     /**
      * Gives the command a chance to do something when the user has missed the confirmation window.
-     * <p/>
+     * <br>
      * This is called internally and must simply be implemented.  It is okay for this method to be blank.
      * <br/>
      * If you desire for the command sender to know when the command has expired, you must use this to send a
@@ -117,7 +117,7 @@ public abstract class QueuedCommand<P> extends Command<P> implements Runnable {
 
     /**
      * This will cause the expiration of the queued command.
-     * <p/>
+     * <br>
      * This is mostly for use internally.
      */
     @Override

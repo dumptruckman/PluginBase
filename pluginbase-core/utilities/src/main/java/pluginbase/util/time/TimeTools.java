@@ -7,7 +7,7 @@ import java.text.ParseException;
 /**
  * Several utility methods for converting amounts of times from seconds to human readable string representations
  * and back.
- * <p/>
+ * <br>
  * It is recommended that you generally use {@link Duration} for these purposes however.
  */
 public class TimeTools {
@@ -18,7 +18,7 @@ public class TimeTools {
 
     /**
      * Returns the amount of time the given amount of seconds represents as a short, concise human-readable String.
-     * <p/>
+     * <br>
      * Example: {@code 5d 1h 15m 32s}
      *
      * @param second the amount of seconds to stringify.
@@ -53,7 +53,7 @@ public class TimeTools {
 
     /**
      * Returns the amount of time the given amount of seconds represents as a verbose human-readable String.
-     * <p/>
+     * <br>
      * Example: {@code 5 days 1 hour 15 minutes 32 seconds}
      *
      * @param second the amount of seconds to stringify.
@@ -108,11 +108,11 @@ public class TimeTools {
 
     /**
      * Converts a string that represents a length of time into an amount of seconds.
-     * <p/>
+     * <br>
      * The string form must be:
-     * <p/>
+     * <br>
      * <b>Short form: </b>{@code DDd HHh MMm SSs}
-     * <p/>
+     * <br>
      * {@code DD} - an amount of days
      * <br/>
      * {@code HH} - an amount of hours
@@ -120,7 +120,7 @@ public class TimeTools {
      * {@code MM} - an amount of minutes
      * <br/>
      * {@code SS} - an amount of seconds
-     * <p/>
+     * <br>
      * Spaces in the string will not affect the parsing.
      * <br/>
      * In the short form, any of the time intervals may be omitted as long as one is present.
@@ -175,11 +175,11 @@ public class TimeTools {
 
     /**
      * Converts a string that represents a length of time into an amount of seconds.
-     * <p/>
+     * <br>
      * The string form must be:
-     * <p/>
+     * <br>
      * <b>Long form: </b>{@code DD day(s) HH hour(s) MM minute(s) SS second(s)}
-     * <p/>
+     * <br>
      * {@code DD} - an amount of days
      * <br/>
      * {@code HH} - an amount of hours
@@ -189,7 +189,7 @@ public class TimeTools {
      * {@code SS} - an amount of seconds
      * <br/>
      * {@code (s)} - this "s" is optional
-     * <p/>
+     * <br>
      * Spaces in the string will not affect the parsing.
      * <br/>
      * In the long form, any of the time intervals may be omitted as long as one is present.

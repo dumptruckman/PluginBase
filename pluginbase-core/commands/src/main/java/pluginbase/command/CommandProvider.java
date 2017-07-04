@@ -15,7 +15,7 @@ public interface CommandProvider<P> extends Messaging, LoggablePlugin {
 
     /**
      * Gets the prefix for commands used by this CommandProvider.
-     * <p/>
+     * <br>
      * This prefix will be use on all command primary aliases but is optional on alternate aliases.
      *
      * @return the prefix for commands used by this CommandProvider.
@@ -33,10 +33,10 @@ public interface CommandProvider<P> extends Messaging, LoggablePlugin {
 
     /**
      * Schedules a queued command to be run later in order to deal with it's expiration when left unconfirmed.
-     * <p/>
+     * <br>
      * This method should simply run the QueuedCommand (which implements {@link Runnable}) an amount of seconds later.
      * The amount is specified with {@link pluginbase.command.QueuedCommand#getExpirationDuration()}.
-     * <p/>
+     * <br>
      * This will automatically be called by the command handler when the queued command is used initially in order to
      * schedule its expiration.
      * </p>
@@ -48,9 +48,9 @@ public interface CommandProvider<P> extends Messaging, LoggablePlugin {
 
     /**
      * Whether or not the command provider offers queued commands.
-     * <p/>
+     * <br>
      * This is important to note as it determines whether or not the provider should have a built in confirm command.
-     * <p/>
+     * <br>
      * Simply implement this method to return true to offer queued commands.
      *
      * @return true means this provider offers queued commands and has a built in confirm command.
@@ -59,7 +59,7 @@ public interface CommandProvider<P> extends Messaging, LoggablePlugin {
 
     /**
      * Provides additional aliases that commands should use.
-     * <p/>
+     * <br>
      * This is useful for when the CommandProvider does not have access to the Command class in order to add them normally.
      *
      * @return an array of additional command aliases.
@@ -69,7 +69,7 @@ public interface CommandProvider<P> extends Messaging, LoggablePlugin {
 
     /**
      * Adds an additional alias to a command.  Any amount may be added by calling this method multiple times.
-     * <p/>
+     * <br>
      * This must be called before command registration occurs!
      *
      * @param commandClass the command class to add aliases for.

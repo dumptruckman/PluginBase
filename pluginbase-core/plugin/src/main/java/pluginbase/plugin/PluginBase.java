@@ -35,7 +35,7 @@ import java.util.Locale;
 
 /**
  * This represents the PluginBase plugin itself.
- * <p/>
+ * <br>
  * Provides numerous useful methods for general plugin self-management.
  */
 public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandProvider<P> {
@@ -135,7 +135,7 @@ public final class PluginBase<P> implements LoggablePlugin, Messaging, CommandPr
 
     /**
      * Retrieves the JDBC agent for this plugin, if configured.
-     * <p/>
+     * <br>
      * This agent will provide a connection to a database which can be used to execute queries.
      *
      * @return the JDBC agent for this plugin or null if not configured.

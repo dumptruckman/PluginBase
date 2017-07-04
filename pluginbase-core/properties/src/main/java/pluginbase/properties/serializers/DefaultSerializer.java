@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * A extremely basic "serializer".
- * <p/>
+ * <br>
  * Performs no actual serialization.  Simply uses the values as-is.
  *
  * @param <T> the type of the value.

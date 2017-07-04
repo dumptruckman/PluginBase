@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * A 3-dimensional mutable mathematical vector.
- * <p/>
+ * <br>
  * Any mutator methods in this class will modify this object.
  */
 public class MutableVector extends VectorBase implements MutableCoordinates, Cloneable {

@@ -14,7 +14,7 @@ import java.util.Map;
 
 /**
  * Used to construct new {@link Property} objects.
- * <p/>
+ * <br>
  * An implementation of this will be returned by the {@link pluginbase.properties.PropertyFactory}.
  * Look there for all your Property building needs!
  *
@@ -50,7 +50,7 @@ public abstract class PropertyBuilder<T> {
 
     /**
      * Adds a comment to the comments of this property.
-     * <p/>
+     * <br>
      * This can be called multiple times.  Each time generally adds a comment on a new line though this ultimately
      * depends on the implementation of {@link pluginbase.properties.Properties} for actual
      * usage.

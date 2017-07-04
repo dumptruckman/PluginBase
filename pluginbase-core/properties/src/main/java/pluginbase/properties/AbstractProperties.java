@@ -21,7 +21,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * A skeleton implementation of Properties to take care of several of the minor aspects of Properties as well as give
  * additional options for the implementer.
- * <p/>
+ * <br>
  *
  */
 public abstract class AbstractProperties implements Properties {
@@ -60,12 +60,12 @@ public abstract class AbstractProperties implements Properties {
 
     /**
      * Any property serializers specific to this Properties object should be registered within this method.
-     * <p/>
+     * <br>
      * <b>If serialization will occur with this properties object, you MUST register serializers for each class type.</b>
      * <br/>
      * It is possible the default serializer {@link pluginbase.properties.ValueProperty#getDefaultSerializer()}
      * will be sufficient for your needs but you must register it with {@link #setPropertySerializer(Class, pluginbase.properties.serializers.PropertySerializer)}.
-     * <p/>
+     * <br>
      * Use {@link #setPropertySerializer(Class, pluginbase.properties.serializers.PropertySerializer)}
      * to register a serializer.
      */
@@ -112,7 +112,7 @@ public abstract class AbstractProperties implements Properties {
 
     /**
      * Registers the given property serializer for the given class type.
-     * <p/>
+     * <br>
      * Any time the type is serialized or deserialized it should use this property serializer to handle those operations.
      * This should be managed by the specific implementations of the Properties.
      *

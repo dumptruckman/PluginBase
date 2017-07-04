@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a point in 3-dimensional space.
- * <p/>
+ * <br>
  * Unlike {@link Coordinates} this point may be altered.
  */
 public interface MutableCoordinates extends Coordinates {

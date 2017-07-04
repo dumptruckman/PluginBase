@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * A PluginBase user command.
- * <p/>
+ * <br>
  * This is for commands to be used on the server by the server operator or the players on the server.
  * <br/>
  * Commands for PluginBase's command handler <b>must</b> implement this class AND annotate it with the
@@ -27,7 +27,7 @@ public abstract class Command<P> {
 
     /**
      * Constructs a command.
-     * <p/>
+     * <br>
      * You will never need to call this constructor.  It is used by {@link CommandHandler}.
      *
      * @param commandProvider the command's provider.
@@ -93,7 +93,7 @@ public abstract class Command<P> {
 
     /**
      * This is the method called when someone executes this command.
-     * <p/>
+     * <br>
      * If any parameter limitations are set in the {@link CommandInfo} then this method will only be called if the
      * executor used the correct amount of parameters.
      *

@@ -9,7 +9,7 @@ public interface FacingCoordinates extends Coordinates {
 
     /**
      * Gets the pitch of the facing.
-     * <p/>
+     * <br>
      * The pitch is the up/down angle of the facing.
      *
      * @return the pitch of the facing.
@@ -18,7 +18,7 @@ public interface FacingCoordinates extends Coordinates {
 
     /**
      * Gets the yaw of the facing.
-     * <p/>
+     * <br>
      * The yaw is the left/right angle of the facing.
      *
      * @return the yaw of the facing.

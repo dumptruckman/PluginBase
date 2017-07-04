@@ -47,7 +47,7 @@ public abstract class AbstractDataSource implements DataSource {
 
     /**
      * This builder class is used to properly configure and create a DataSource object.
-     * <p/>
+     * <br>
      * You may specify both a source and a sink for the storage medium or simply specify a File which counts as both.
      * <br/>
      * Once all the options are set for the storage medium, simply call {@link #build()} to create a DataSource tied
@@ -229,9 +229,9 @@ public abstract class AbstractDataSource implements DataSource {
 
         /**
          * Sets whether or not the DataSource should write comments when saving data to a file.
-         * <p/>
+         * <br>
          * Comments can be added to a data object via {@link Comment}.
-         * <p/>
+         * <br>
          * <strong>Note:</strong> Comments are not available on all DataSource implementations. Enabling comments on an
          * implementation that does not support them will do nothing.
          *

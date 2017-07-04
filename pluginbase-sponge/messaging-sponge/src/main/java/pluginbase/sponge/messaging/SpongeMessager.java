@@ -21,9 +21,9 @@ import java.util.List;
 
 /**
  * A Sponge specific implementation of {@link pluginbase.messages.messaging.Messager}.
- * <p/>
+ * <br>
  * Provides word wrapping on messages too long to fit on one line.
- * <p/>
+ * <br>
  * Please refer to {@link pluginbase.messages.messaging.Messager} for javadoc for the methods in this class.  This class merely adds
  * convenience methods for Sponge CommandSenders.
  */

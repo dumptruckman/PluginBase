@@ -1,6 +1,6 @@
 /**
  * Classes used for setting up Properties in a Bukkit environment.
- * <p/>
+ * <br>
  * This is a part of com.dumptruckman.minecraft.pluginbase:Properties-Bukkit.
  */
 package pluginbase.bukkit.properties;

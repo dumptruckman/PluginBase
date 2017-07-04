@@ -22,7 +22,7 @@ import java.util.Set;
 
 /**
  * Produces version information related to this plugin.
- * <p/>
+ * <br>
  * Specific information for the plugin can be displayed and is determined by {@link pluginbase.plugin.PluginBase#dumpVersionInfo()}.
  * Also has the option to output to pastebin or pastie.
  */
