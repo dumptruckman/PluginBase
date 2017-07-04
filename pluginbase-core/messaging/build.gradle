@@ -3,6 +3,7 @@ plugins {
 }
 
 assemble.dependsOn shadowJar
+install.dependsOn shadowJar
 
 description = ''
 dependencies {
