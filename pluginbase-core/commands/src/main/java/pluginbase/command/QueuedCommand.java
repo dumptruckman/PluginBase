@@ -16,7 +16,7 @@ import pluginbase.util.time.Duration;
  * A queued command waits for the user to execute a confirmation command before performing the actual
  * command.  A queued command will have an expiration time after which it will stop waiting for the confirm
  * command and simply not run.  A queued command that is expired must be typed in again and confirmed.
- * <br/>
+ * <br>
  * Queued commands for PluginBase's command handler <b>must</b> implement this class AND annotate it with the
  * {@link CommandInfo} annotation.
  *
@@ -43,7 +43,7 @@ public abstract class QueuedCommand<P> extends Command<P> implements Runnable {
      * requires confirmation using the appropriate confirm command.
      * <br>
      * The confirm command is "/" + {@link pluginbase.command.CommandProvider#getCommandPrefix()} + " confirm" by default.
-     * <br/>
+     * <br>
      * This returns a built in message and must be overridden to provide a custom message.
      *
      * @return The confirm required message.
@@ -97,7 +97,7 @@ public abstract class QueuedCommand<P> extends Command<P> implements Runnable {
      * Gives the command a chance to do something when the user has missed the confirmation window.
      * <br>
      * This is called internally and must simply be implemented.  It is okay for this method to be blank.
-     * <br/>
+     * <br>
      * If you desire for the command sender to know when the command has expired, you must use this to send a
      * message as no other warning is given.
      *

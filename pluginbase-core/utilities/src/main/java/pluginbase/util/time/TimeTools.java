@@ -114,15 +114,15 @@ public class TimeTools {
      * <b>Short form: </b>{@code DDd HHh MMm SSs}
      * <br>
      * {@code DD} - an amount of days
-     * <br/>
+     * <br>
      * {@code HH} - an amount of hours
-     * <br/>
+     * <br>
      * {@code MM} - an amount of minutes
-     * <br/>
+     * <br>
      * {@code SS} - an amount of seconds
      * <br>
      * Spaces in the string will not affect the parsing.
-     * <br/>
+     * <br>
      * In the short form, any of the time intervals may be omitted as long as one is present.
      * However, the order must remain consistent as given in the examples.  For instance, the minutes may not
      * come before the hours in the string.
@@ -181,17 +181,17 @@ public class TimeTools {
      * <b>Long form: </b>{@code DD day(s) HH hour(s) MM minute(s) SS second(s)}
      * <br>
      * {@code DD} - an amount of days
-     * <br/>
+     * <br>
      * {@code HH} - an amount of hours
-     * <br/>
+     * <br>
      * {@code MM} - an amount of minutes
-     * <br/>
+     * <br>
      * {@code SS} - an amount of seconds
-     * <br/>
+     * <br>
      * {@code (s)} - this "s" is optional
      * <br>
      * Spaces in the string will not affect the parsing.
-     * <br/>
+     * <br>
      * In the long form, any of the time intervals may be omitted as long as one is present.
      * However, the order must remain consistent as given in the examples.  For instance, the minutes may not
      * come before the hours in the string.

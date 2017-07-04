@@ -15,7 +15,7 @@ import java.util.List;
  * A PluginBase user command.
  * <br>
  * This is for commands to be used on the server by the server operator or the players on the server.
- * <br/>
+ * <br>
  * Commands for PluginBase's command handler <b>must</b> implement this class AND annotate it with the
  * {@link CommandInfo} annotation.
  *

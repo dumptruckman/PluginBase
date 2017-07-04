@@ -139,8 +139,8 @@ public class Vector extends VectorBase implements Cloneable {
      * Calculates the cross product of this point with another. The cross
      * product is defined as:
      * <p>
-     * x = y1 * z2 - y2 * z1<br/>
-     * y = z1 * x2 - z2 * x1<br/>
+     * x = y1 * z2 - y2 * z1<br>
+     * y = z1 * x2 - z2 * x1<br>
      * z = x1 * y2 - x2 * y1
      *
      * @param o The other point.

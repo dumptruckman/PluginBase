@@ -49,7 +49,7 @@ public abstract class AbstractDataSource implements DataSource {
      * This builder class is used to properly configure and create a DataSource object.
      * <br>
      * You may specify both a source and a sink for the storage medium or simply specify a File which counts as both.
-     * <br/>
+     * <br>
      * Once all the options are set for the storage medium, simply call {@link #build()} to create a DataSource tied
      * to the configured storage medium.
      */
@@ -119,7 +119,7 @@ public abstract class AbstractDataSource implements DataSource {
 
         /**
          * Refer to the docs for {@link SerializerSet.Builder#addSerializer(Class, Supplier)}.
-         * <br/>
+         * <br>
          * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
          * to be replaced!
          */
@@ -132,7 +132,7 @@ public abstract class AbstractDataSource implements DataSource {
 
         /**
          * Refer to the docs for {@link SerializerSet.Builder#setFallbackSerializer(Supplier)}.
-         * <br/>
+         * <br>
          * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
          * to be replaced!
          */
@@ -144,7 +144,7 @@ public abstract class AbstractDataSource implements DataSource {
 
         /**
          * Refer to the docs for {@link SerializerSet.Builder#addOverrideSerializer(Class, Supplier)}.
-         * <br/>
+         * <br>
          * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
          * to be replaced!
          */
@@ -157,7 +157,7 @@ public abstract class AbstractDataSource implements DataSource {
 
         /**
          * Refer to the docs for {@link SerializerSet.Builder#registerSerializeWithInstance(Class, Supplier)}.
-         * <br/>
+         * <br>
          * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
          * to be replaced!
          */
@@ -168,7 +168,7 @@ public abstract class AbstractDataSource implements DataSource {
 
         /**
          * Refer to the docs for {@link SerializerSet.Builder#registerClassReplacement(Predicate, Class)}.
-         * <br/>
+         * <br>
          * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
          * to be replaced!
          */
@@ -179,7 +179,7 @@ public abstract class AbstractDataSource implements DataSource {
 
         /**
          * Refer to the docs for {@link SerializerSet.Builder#unregisterClassReplacement(Class)}.
-         * <br/>
+         * <br>
          * <strong>Note:</strong> using this method will cause any SerializerSet provided through {@link #setAlternateSerializerSet(SerializerSet)}
          * to be replaced!
          */
@@ -198,7 +198,7 @@ public abstract class AbstractDataSource implements DataSource {
         /**
          * Normally a DataSource will be built with a copy of the {@link SerializerSet#defaultSet()}. This method
          * allows for specifying an alternate already built set.
-         * <br/>
+         * <br>
          * <strong>Note:</strong> some DataSource implementations may introduce custom serializers by default to handle
          * any special cases in their format. In this case, the implementation should provide a way to obtain a set
          * containing the special serializers so that a copy can be made if required. Additionally, the implementation

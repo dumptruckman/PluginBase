@@ -62,7 +62,7 @@ public abstract class AbstractProperties implements Properties {
      * Any property serializers specific to this Properties object should be registered within this method.
      * <br>
      * <b>If serialization will occur with this properties object, you MUST register serializers for each class type.</b>
-     * <br/>
+     * <br>
      * It is possible the default serializer {@link pluginbase.properties.ValueProperty#getDefaultSerializer()}
      * will be sufficient for your needs but you must register it with {@link #setPropertySerializer(Class, pluginbase.properties.serializers.PropertySerializer)}.
      * <br>

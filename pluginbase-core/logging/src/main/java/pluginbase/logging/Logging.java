@@ -70,10 +70,10 @@ public final class Logging {
      * Debug messages will print to the console and to a debug log file when enabled.
      * <br>
      * debugLevel:
-     * <br/>0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
-     * <br/>1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
-     * <br/>2 - enables debug logging of {@link java.util.logging.Level#FINER} or lower messages.
-     * <br/>3 - enables debug logging of {@link java.util.logging.Level#FINEST} or lower messages.
+     * <br>0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
+     * <br>1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
+     * <br>2 - enables debug logging of {@link java.util.logging.Level#FINER} or lower messages.
+     * <br>3 - enables debug logging of {@link java.util.logging.Level#FINEST} or lower messages.
      *
      * @param debugLevel 0 = off, 1-3 = debug level
      */
@@ -86,7 +86,7 @@ public final class Logging {
      * <br>
      * Applies String.format() to the message if it is a non-debug level logging and to debug level logging IF debug
      * logging is enabled.
-     * <br/>
+     * <br>
      * Optionally appends version to prefix.
      *
      * @param level       One of the message level identifiers, e.g. SEVERE.

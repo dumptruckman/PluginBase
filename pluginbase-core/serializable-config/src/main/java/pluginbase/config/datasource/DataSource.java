@@ -30,7 +30,7 @@ public interface DataSource {
 
     /**
      * Attempts to extract the data out of this storage medium and insert it into the given destination object.
-     * <br/>
+     * <br>
      * Note that if the data is incomplete in the storage medium, it will not replace those missing values in the given
      * destination object.
      *

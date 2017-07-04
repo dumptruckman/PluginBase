@@ -19,16 +19,16 @@ import java.util.logging.Logger;
  * via {@link #getLogger(LoggablePlugin)}.
  * <br>
  * Features:
- * <br/>- Thread safe logging.
- * <br/>- Plugin name prepended to log messages.
- * <br/>- Debug messages append plugin name with -Debug.  {@link #setDebugPrefix(String)}.
- * <br/>- {@link Level#CONFIG} messages can be silenced via {@link #setShowingConfig(boolean)}.
- * <br/>- {@link Level#FINE}, {@link Level#FINER}, {@link Level#FINEST} show as {@link Level#INFO} with
+ * <br>- Thread safe logging.
+ * <br>- Plugin name prepended to log messages.
+ * <br>- Debug messages append plugin name with -Debug.  {@link #setDebugPrefix(String)}.
+ * <br>- {@link Level#CONFIG} messages can be silenced via {@link #setShowingConfig(boolean)}.
+ * <br>- {@link Level#FINE}, {@link Level#FINER}, {@link Level#FINEST} show as {@link Level#INFO} with
  *   {@link #setDebugLevel(int)} while also being written to a debug.log file.
- * <br/>- Allows you to share debug logs with another plugin.  (How Multiverse does it..)
- * <br/>- Adds var-arg parameter logging methods for use with messages in the style of
+ * <br>- Allows you to share debug logs with another plugin.  (How Multiverse does it..)
+ * <br>- Adds var-arg parameter logging methods for use with messages in the style of
  * {@link String#format(String, Object...)}.
- * <br/>- {@link Level#FINE} and finer message do not perform {@link String#format(String, Object...)} on messages that
+ * <br>- {@link Level#FINE} and finer message do not perform {@link String#format(String, Object...)} on messages that
  * won't be logged.
  * <br>
  * Tip: Create a static {@link Logging} class of your own in your own namespace to allow high flexibility in your
@@ -249,10 +249,10 @@ public class PluginLogger extends Logger {
      * Debug messages will print to the console and to a debug log file when enabled.
      * <br>
      * debugLevel:
-     * <br/>0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
-     * <br/>1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
-     * <br/>2 - enables debug logging of {@link java.util.logging.Level#FINER} or lower messages.
-     * <br/>3 - enables debug logging of {@link java.util.logging.Level#FINEST} or lower messages.
+     * <br>0 - turns off debug logging, disabling the debug logger, closing any open file hooks.
+     * <br>1 - enables debug logging of {@link java.util.logging.Level#FINE} or lower messages.
+     * <br>2 - enables debug logging of {@link java.util.logging.Level#FINER} or lower messages.
+     * <br>3 - enables debug logging of {@link java.util.logging.Level#FINEST} or lower messages.
      *
      * @param debugLevel 0 = off, 1-3 = debug level
      */
