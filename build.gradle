@@ -5,6 +5,7 @@ buildscript {
 
     repositories {
         mavenCentral()
+        jcenter()
         maven {
             url "http://repo.onarandombox.com/content/groups/public/"
         }
@@ -19,6 +20,7 @@ buildscript {
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.2.13"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.15"
     }
 
     ext.env = System.getenv()
@@ -32,6 +34,7 @@ configurations {
 allprojects  {
     apply plugin: 'maven'
     apply plugin: 'org.jetbrains.intellij'
+    apply plugin: 'org.jetbrains.dokka'
 
     group = 'com.dumptruckman.minecraft.pluginbase'
     version = '1.6.0-SNAPSHOT'
@@ -63,8 +66,19 @@ allprojects  {
         from sourceSets.main.allSource
     }
 
+    dokka {
+        outputFormat = 'javadoc'
+        outputDirectory = "$buildDir/javadoc"
+    }
+
+    task javadocJar(type: Jar) {
+        classifier 'javadoc'
+        from dokka
+    }
+
     artifacts {
         archives sourcesJar
+        archives javadocJar
     }
 }
 
