@@ -6,6 +6,7 @@ plugins {
 description = ''
 dependencies {
     shadow project(':PluginBase-Core:Serializable-Config')
+    shadow project(':PluginBase-Core:Messaging')
     shadow project(':PluginBase-Core:JDBC')
     compile group: 'org.springframework', name: 'spring-jdbc', version:'3.2.4.RELEASE'
 }
@@ -18,4 +19,6 @@ shadowJar {
         // This dependency isn't included in the maven shaded version...
         exclude(dependency('aopalliance:aopalliance:.*'))
     }
+    relocate 'org.apache.commons', 'pluginbase.apache-commons'
+    relocate 'org.springframework', 'pluginbase.spring'
 }
