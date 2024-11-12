@@ -78,7 +78,6 @@
     <modules>
         <module>pluginbase-core</module>
         <module>pluginbase-bukkit</module>
-        <module>pluginbase-sponge</module>
         <!--module>javadoc</module-->
     </modules>
 
