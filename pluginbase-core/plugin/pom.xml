@@ -11,12 +11,12 @@
 
     <repositories>
         <repository>
-            <id>onarandombox</id>
-            <url>http://repo.onarandombox.com/content/groups/public/</url>
+            <id>dumptruckman</id>
+            <url>https://repo.dumptruckman.com/public/</url>
         </repository>
         <repository>
-            <id>onarandombox-bukkit-3rdparty</id>
-            <url>http://repo.onarandombox.com/content/repositories/bukkit-thirdparty/</url>
+            <id>codemc</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
         </repository>
     </repositories>
 

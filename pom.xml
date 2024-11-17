@@ -39,20 +39,20 @@
 
     <ciManagement>
         <system>jenkins</system>
-        <url>http://ci.onarandombox.com</url>
+        <url>https://ci.onarandombox.com</url>
     </ciManagement>
 
     <repositories>
         <repository>
-            <id>onarandombox</id>
-            <url>http://repo.onarandombox.com/content/groups/public/</url>
+            <id>dumptruckman</id>
+            <url>https://repo.dumptruckman.com/public/</url>
         </repository>
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
-            <id>onarandombox-3rdparty</id>
-            <url>http://repo.onarandombox.com/content/repositories/thirdparty</url>
+            <id>dumptruckman</id>
+            <url>https://repo.dumptruckman.com/public/</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -83,12 +83,12 @@
 
     <distributionManagement>
         <repository>
-            <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/thirdparty/</url>
+            <id>dumptruckman-releases</id>
+            <url>http://repo.dumptruckman.com/dumptruckman-releases/</url>
         </repository>
         <snapshotRepository>
-            <id>OnARandomBox</id>
-            <url>http://repo.onarandombox.com/content/repositories/thirdparty-dev/</url>
+            <id>dumptruckman-snapshots</id>
+            <url>http://repo.dumptruckman.com/dumptruckman-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
