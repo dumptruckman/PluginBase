@@ -84,6 +84,13 @@
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>2.2.1</version>
+            <type>jar</type>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -155,7 +162,7 @@
                                     <include>com.dumptruckman.minecraft.pluginbase:Minecraft-Link-Bukkit</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Messaging-Bukkit</include>
                                     <include>com.dumptruckman.minecraft.pluginbase:Debug-Session</include>
-                                    <include>org.mcstats:metrics</include>
+                                    <include>org.bstats:bstats-bukkit</include>
                                     <include>ninja.leaping.configurate:configurate-core</include>
                                     <include>ninja.leaping.configurate:configurate-hocon</include>
                                     <include>com.typesafe:config</include>

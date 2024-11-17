@@ -1,11 +1,12 @@
 package pluginbase.bukkit;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.mcstats.Metrics;
 import pluginbase.bukkit.command.BukkitCommandProvider;
 import pluginbase.bukkit.messaging.BukkitMessagerProvider;
 import pluginbase.bukkit.minecraft.BukkitTools;
@@ -57,11 +58,13 @@ public class BukkitPluginAgent<P> extends PluginAgent<P> {
     }
 
     public void enableMetrics() throws IOException {
-        getMetrics().enable();
+        // TODO Fix?
+        // getMetrics().enable();
     }
 
     public void disableMetrics() throws IOException {
-        getMetrics().disable();
+        // TODO Fix?
+        // getMetrics().disable();
     }
 
     /**
@@ -73,7 +76,8 @@ public class BukkitPluginAgent<P> extends PluginAgent<P> {
     @NotNull
     public Metrics getMetrics() throws IOException {
         if (metrics == null) {
-            metrics = new Metrics(plugin);
+            // TODO fix metrics implementation
+            // metrics = new Metrics((JavaPlugin) plugin, 0);
         }
         return metrics;
     }
